@@ -1,3 +1,5 @@
+[Screenshot here](http://www.hostingpics.net/viewer.php?id=554516HyperCardPreview.png)
+
 HyperCardPreview is an Mac OS X application that can display HyperCard stacks, with an look
 very faithful to the original. It makes the stack files alive again in the Finder with
 their real icons, so they don't appear as "binaries", and provides a QuickLook plug-in.
