@@ -39,18 +39,18 @@ class InfoPanelController {
         
         let version: String = stack.versionAtLastModification?.description ?? "unknown"
         
-        infoView.string = "Number of Cards: \(stack.cards.count)\n" +
-            "Number of Backgrounds: \(stack.backgrounds.count)\n" +
-            "Resources: \(stack.resources != nil)\n\n" +
-            "Password: \(stack.passwordHash != nil)\n" +
-            "User Level: \(stack.userLevel.rawValue)\n" +
-            "Can't Abort: \(stack.cantAbort)\n" +
-            "Can't Delete: \(stack.cantDelete)\n" +
-            "Can't Modify: \(stack.cantModify)\n" +
-            "Can't Peek: \(stack.cantPeek)\n" +
-            "Private Access: \(stack.privateAccess)\n\n" +
-            "HyperCard Version: \(version)\n\n" +
-            "Size: \(stack.size.width) x \(stack.size.height)"
+        infoView.string = ["Number of Cards: \(stack.cards.count)",
+            "Number of Backgrounds: \(stack.backgrounds.count)",
+            "Resources: \(stack.resources != nil)\n",
+            "Password: \(stack.passwordHash != nil)",
+            "User Level: \(stack.userLevel.rawValue)",
+            "Can't Abort: \(stack.cantAbort)",
+            "Can't Delete: \(stack.cantDelete)",
+            "Can't Modify: \(stack.cantModify)",
+            "Can't Peek: \(stack.cantPeek)",
+            "Private Access: \(stack.privateAccess)\n",
+            "HyperCard Version: \(version)\n",
+            "Size: \(stack.size.width) x \(stack.size.height)"].joined(separator: "\n")
     }
     
     func displayBackground(_ background: Background) {
@@ -58,11 +58,11 @@ class InfoPanelController {
         displayScript(background.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
-        infoView.string = "Name: \"\(background.name)\"\n" +
-            "Number of parts: \(background.parts.count)\n\n" +
-            "Show Pict: \(background.showPict)\n\n" +
-            "Don't Search: \(background.dontSearch)\n" +
-            "Can't Delete: \(background.cantDelete)"
+        infoView.string = ["Name: \"\(background.name)\"",
+            "Number of parts: \(background.parts.count)\n",
+            "Show Pict: \(background.showPict)\n",
+            "Don't Search: \(background.dontSearch)",
+            "Can't Delete: \(background.cantDelete)"].joined(separator: "\n")
     }
     
     func displayCard(_ card: Card) {
@@ -70,12 +70,12 @@ class InfoPanelController {
         displayScript(card.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
-        infoView.string = "Name: \"\(card.name)\"\n" +
-            "Number of parts: \(card.parts.count)\n\n" +
-            "Marked: \(card.marked)\n" +
-            "Show Pict: \(card.showPict)\n\n" +
-            "Don't Search: \(card.dontSearch)\n" +
-            "Can't Delete: \(card.cantDelete)"
+        infoView.string = ["Name: \"\(card.name)\"",
+            "Number of parts: \(card.parts.count)\n",
+            "Marked: \(card.marked)",
+            "Show Pict: \(card.showPict)\n",
+            "Don't Search: \(card.dontSearch)",
+            "Can't Delete: \(card.cantDelete)"].joined(separator: "\n")
     }
     
     func displayButton(_ button: Button, withContent content: HString) {
@@ -83,16 +83,16 @@ class InfoPanelController {
         displayScript(button.script)
         contentView.string = content.description
         
-        infoView.string = "Name: \"\(button.name)\"\n" +
-            "Style: \(button.style)\n\n" +
-            "Visible: \(button.visible)\n" +
-            "Enabled: \(button.enabled)\n" +
-            "Hilite: \(button.hilite)\n" +
-            "Auto Hilite: \(button.autoHilite)\n" +
-            "Shared Hilite: \(button.sharedHilite)\n" +
-            "Show Name: \(button.showName)\n\n" +
-            "Family: \(button.family)\n\n" +
-            "Title Width: \(button.titleWidth)"        
+        infoView.string = ["Name: \"\(button.name)\"",
+            "Style: \(button.style)\n",
+            "Visible: \(button.visible)",
+            "Enabled: \(button.enabled)",
+            "Hilite: \(button.hilite)",
+            "Auto Hilite: \(button.autoHilite)",
+            "Shared Hilite: \(button.sharedHilite)",
+            "Show Name: \(button.showName)\n",
+            "Family: \(button.family)\n",
+            "Title Width: \(button.titleWidth)"].joined(separator: "\n")
     }
     
     func displayField(_ field: Field, withContent content: HString) {
@@ -100,19 +100,19 @@ class InfoPanelController {
         displayScript(field.script)
         contentView.string = content.description
         
-        infoView.string = "Name: \"\(field.name)\"\n" +
-            "Style: \(field.style)\n\n" +
-            "Visible: \(field.visible)\n" +
-            "Lock Text: \(field.lockText)\n" +
-            "Auto Tab: \(field.autoTab)\n" +
-            "Fixed Line Height: \(field.fixedLineHeight)\n" +
-            "Shared Text: \(field.sharedText)\n" +
-            "Don't Search: \(field.dontSearch)\n" +
-            "Don't Wrap: \(field.dontWrap)\n" +
-            "Multiple Lines: \(field.multipleLines)\n" +
-            "Wide Margins: \(field.wideMargins)\n" +
-            "Show Lines: \(field.showLines)\n" +
-            "Auto Select: \(field.autoSelect)"
+        infoView.string = ["Name: \"\(field.name)\"",
+            "Style: \(field.style)\n",
+            "Visible: \(field.visible)",
+            "Lock Text: \(field.lockText)",
+            "Auto Tab: \(field.autoTab)",
+            "Fixed Line Height: \(field.fixedLineHeight)",
+            "Shared Text: \(field.sharedText)",
+            "Don't Search: \(field.dontSearch)",
+            "Don't Wrap: \(field.dontWrap)",
+            "Multiple Lines: \(field.multipleLines)",
+            "Wide Margins: \(field.wideMargins)",
+            "Show Lines: \(field.showLines)",
+            "Auto Select: \(field.autoSelect)"].joined(separator: "\n")
         
     }
     
