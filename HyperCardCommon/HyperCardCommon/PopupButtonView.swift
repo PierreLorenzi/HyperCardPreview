@@ -53,17 +53,19 @@ public class PopupButtonView: View {
         let arrowX = (popupRectangle.width > 22) ? popupRectangle.right - PopupArrowDistanceFromBorder : popupRectangle.left + popupRectangle.width / 2 - PopupArrowImage.width / 2 - 1
         drawing.drawMaskedImage(PopupArrowImage, position: Point(x: arrowX, y: popupRectangle.top + (popupRectangle.height - PopupArrowHeight)/2), clipRectangle: popupRectangle)
         
-        /* Draw the text */
-            
-        /* Get the line */
-        let text = items[selectedIndex]
-        
-        /* Fit it into the button margins */
-        let (textToDraw, currentFont) = fitPopupText(text, buttonWidth: popupRectangle.width)
-        
-        /* Draw it */
-        drawing.drawString(textToDraw, position: Point(x: popupRectangle.x + PopupTextLeftMargin, y: baseLineY), font: currentFont, clip: popupRectangle)
-            
+        if items.count > selectedIndex && selectedIndex >= 0 {
+            /* Draw the text */
+
+            /* Get the line */
+            let text = items[selectedIndex]
+
+            /* Fit it into the button margins */
+            let (textToDraw, currentFont) = fitPopupText(text, buttonWidth: popupRectangle.width)
+
+            /* Draw it */
+            drawing.drawString(textToDraw, position: Point(x: popupRectangle.x + PopupTextLeftMargin, y: baseLineY), font: currentFont, clip: popupRectangle)
+        }
+
         
         /* Enabled / disabled */
         if !enabled {
