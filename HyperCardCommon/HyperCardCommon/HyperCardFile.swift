@@ -7,12 +7,15 @@
 //
 
 
+/// A HyperCard stack, as a parsed file, not as an HyperCard object
 public class HyperCardFile: ClassicFile {
     
+    /// The stack object contained in the file
     public var stack: Stack {
         return FileStack(fileContent: self.parsedData, resources: self.resourceRepository)
     }
     
+    /// The data blocks contained in the file
     public var parsedData: HyperCardFileData {
         let data = self.dataFork!
         let dataRange = DataRange(sharedData: data, offset: 0, length: data.count)
@@ -30,6 +33,8 @@ public class HyperCardFile: ClassicFile {
         }
     }
     
+    /// The version of the stack format: V1 or V2. Parsed here because it must be read before
+    /// parsing the file.
     public var version: Version {
         let format = self.dataFork![0x13]
         switch format {
@@ -46,6 +51,7 @@ public class HyperCardFile: ClassicFile {
         }
     }
     
+    /// The possible versions of the stack format.
     public enum Version: Int {
         case notHyperCardStack
         case preReleaseV1

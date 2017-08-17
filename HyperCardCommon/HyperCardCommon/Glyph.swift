@@ -6,16 +6,22 @@
 //  Copyright © 2017 Pierre Lorenzi. All rights reserved.
 //
 
-import Cocoa
 
+/// A glyph in a bitmap font.
+/// <p>
+/// It is a class, not a struct, so it can be lazily loaded and shared (the missing glyph in a font is
+/// always used for several characters).
 public class Glyph {
     
-    /** The width of a character is the distance from the origin of the character to the origin of the next one. */
+    /// The width of a character is the distance from the origin of the character to the origin of the next one.
     public var width: Int           = 0
     
-    /** The offset is the position of the character bitmap relative to the character origin. Positive towards the right. */
+    ///  The offset is the position of the character bitmap relative to the character origin. Positive towards the right.
     public var imageOffset: Int     = 0
-    /** Top of image, from the baseline */
+    
+    /// Top of image, from the baseline
     public var imageTop: Int        = 0
+    
+    /// The image of the character
     public var image: MaskedImage?   = nil
 }

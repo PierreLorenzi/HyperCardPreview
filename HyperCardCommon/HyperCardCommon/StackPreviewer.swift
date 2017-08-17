@@ -6,7 +6,7 @@
 //  Copyright © 2017 Pierre Lorenzi. All rights reserved.
 //
 
-/* Class intended to be used by objective-c objects. It is just a wrapper of Browser. */
+/// Class intended to be used by objective-c objects. It is just a wrapper of Browser.
 public class StackPreviewer: NSObject {
     
     private let browser: Browser

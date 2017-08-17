@@ -7,6 +7,7 @@
 //
 
 
+/// The Style Block (STBL), containing the text styles used in the stack.
 public class StyleBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {

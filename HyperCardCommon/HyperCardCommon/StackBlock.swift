@@ -7,6 +7,7 @@
 //
 
 
+/// The stack block (STAK), containing the global data about the stack
 public class StackBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {

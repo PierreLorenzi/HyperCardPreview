@@ -7,12 +7,19 @@
 //
 
 
+/// A stack of resource forks. In Classic Mac OS, resource forks are stacked, from
+/// local to global. When a resource is present in several forks, the first one has
+/// precedence, so the global resources of the system can be overriden by local
+/// resources in stacks.
 public struct ResourceSystem {
     
+    /// The resource forks in their order
     public var repositories: [ResourceRepository]   = []
     
+    /// Main constructor, declared to be public
     public init() {}
     
+    /// Finds a resource in the forks, respecting the order of precedence
     public func findResource<T>(ofType type: ResourceType<T>, withIdentifier identifier: Int) -> Resource<T>? {
         for repository in repositories {
             for resource in repository.resources {
@@ -24,6 +31,7 @@ public struct ResourceSystem {
         return nil
     }
     
+    /// Lists all the resources of a certain type. Respects the order of precedence.
     public func listResources<T>(ofType type: ResourceType<T>) -> [Resource<T>] {
         var list = [Resource<T>]()
         var identifiers = Set<Int>()

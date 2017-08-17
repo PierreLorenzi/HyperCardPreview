@@ -7,6 +7,7 @@
 //
 
 
+/// The master block (MAST), containing the locations of the other blocks
 public class MasterBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {

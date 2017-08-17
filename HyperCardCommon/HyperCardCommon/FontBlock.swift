@@ -7,6 +7,7 @@
 //
 
 
+/// The Font Block (FTBL), containing the names of the fonts used in the stack
 public class FontBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {

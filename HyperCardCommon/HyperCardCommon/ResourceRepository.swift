@@ -8,11 +8,13 @@
 
 
 
+/// A resource fork, not as a raw data but as a typed data
 public struct ResourceRepository {
     
-    /* The Resource<> objects have not common superclass, so no type can be given to the array   */
+    /// The resources. The Resource<> objects have not common superclass, so no type can be given to the array
     public var resources: [Any]    = []
     
+    /// The repository representing the resource forks of HyperCard and Mac OS.
     public static let mainRepository = buildMainRepository()
     
 }

@@ -8,14 +8,25 @@
 
 import Foundation
 
+
+/// A file as it appears in Classic Mac OS, with a data fork and a resource fork.
 open class ClassicFile {
     
+    /// The raw data fork
     public let dataFork: Data?
+    
+    /// The raw resource fork
     public let resourceFork: Data?
     
+    /// The resources contained in the resource fork
     public let resourceRepository: ResourceRepository?
+    
+    /// The parsed resource fork
     public let parsedResourceData: ResourceFork?
     
+    /// Reads a file at the specified path. Reads the resource fork as an X_ATTR attribute.
+    /// <p>
+    /// Set loadResourcesFromDataFork for a rsrc file with the resources in the data fork.
     public init(path: String, loadResourcesFromDataFork: Bool = false) {
         
         /* Register the data */
@@ -45,6 +56,7 @@ open class ClassicFile {
         return ResourceFork(data: dataRange)
     }
     
+    /// Reads the raw resource fork of the file at the specified path.
     public static func loadResourceFork(_ path: String) -> Data? {
         
         /* Get the size of the fork */
@@ -67,6 +79,7 @@ open class ClassicFile {
         return data as Data
     }
     
+    /// Reads the raw data fork of the file at the specified path.
     public static func loadDataFork(_ path: String) -> Data? {
         
         return (try? Data(contentsOf: URL(fileURLWithPath: path)))
@@ -76,6 +89,7 @@ open class ClassicFile {
 
 public extension ResourceRepository {
     
+    /// Makes a list of the resources in a parsed resource fork.
     public init(fromFork fork: ResourceFork) {
         self.init()
         

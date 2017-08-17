@@ -7,6 +7,7 @@
 //
 
 
+/// A 4-byte identifier, printed as a 4-char string. It was common in old Mac OS.
 public struct NumericName: Equatable, CustomStringConvertible {
     public let value: Int
     

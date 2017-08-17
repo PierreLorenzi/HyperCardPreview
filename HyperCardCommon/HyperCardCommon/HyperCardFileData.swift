@@ -8,16 +8,17 @@
 
 
 
+/// The parsed data blocks in a stack file
 public class HyperCardFileData: DataBlock {
     
-    /* Stack */
+    /// The stack block
     public var stack: StackBlock {
         let length = data.readUInt32(at: 0x0)
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
         return StackBlock(data: dataRange)
     }
     
-    /* Master */
+    /// The master block
     public var master: MasterBlock {
         let stackLength = data.readUInt32(at: 0x0)
         let masterLength = data.readUInt32(at: stackLength)
@@ -26,13 +27,13 @@ public class HyperCardFileData: DataBlock {
     }
     
     
-    /* List */
+    /// The list block
     public var list: ListBlock {
         let identifier = self.stack.listIdentifier
         return self.loadBlock(identifier: identifier, initializer: ListBlock.init)
     }
     
-    /* Style Block */
+    /// The Style Block
     public var styleBlock: StyleBlock? {
         guard let identifier = self.stack.styleBlockIdentifier else {
             return nil
@@ -40,7 +41,7 @@ public class HyperCardFileData: DataBlock {
         return self.loadBlock(identifier: identifier, initializer: StyleBlock.init)
     }
     
-    /* Font Block */
+    /// The Font Block
     public var fontBlock: FontBlock? {
         guard let identifier = self.stack.fontBlockIdentifier else {
             return nil
@@ -48,6 +49,7 @@ public class HyperCardFileData: DataBlock {
         return self.loadBlock(identifier: identifier, initializer: FontBlock.init)
     }
     
+    /// The page blocks (PAGE), containing sections of the card list
     public var pages: [PageBlock] {
         
         var pages = [PageBlock]()
@@ -78,6 +80,7 @@ public class HyperCardFileData: DataBlock {
         return pages
     }
     
+    /// The card blocks (CARD), contaning the data about the cards. They are in the order of the cards.
     public var cards: [CardBlock] {
         
         var cards = [CardBlock]()
@@ -107,22 +110,23 @@ public class HyperCardFileData: DataBlock {
         return cards
     }
     
-    /* Access to backgrounds, BEWARE: they are not ordered, use the fields nextBackgroundIdentifier and previousBackgroundIdentifier */
+    /// The background blocks (BKGD), they are not ordered, use the fields nextBackgroundIdentifier and previousBackgroundIdentifier to loop on them */
     public var backgrounds: [BackgroundBlock] {
         return self.buildElementList(BackgroundBlock.init)
     }
     
-    /* Access to bitmaps */
+    /// The bitmap blocks (BMAP), containing the images of the cards and backgrounds. They are not ordered.
     public var bitmaps: [BitmapBlock] {
         return self.buildElementList(BitmapBlock.init)
     }
     
-    /* Cache of the block offsets in the file */
+    /// Cache of the block offsets in the file
     private lazy var masterEntries: [MasterBlock.Entry] = {
         [unowned self] in
         return self.master.entries
         }()
     
+    /// List the data blocks of a certain kind in the file, in the order where they appear in the data.
     public func buildElementList<T: HyperCardFileBlock>(_ initializer: (DataRange) -> T) -> [T] {
         
         var elements = [T]()

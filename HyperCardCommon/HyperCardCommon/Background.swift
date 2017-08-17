@@ -8,11 +8,16 @@
 
 
 
+/// A background
 public class Background: Layer {
     
+    /// The identifier
     public var identifier: Int          = 0
+    
+    /// The name
     public var name: HString            = ""
     
-    public var script: HString      = ""
+    /// The script
+    public var script: HString          = ""
     
 }

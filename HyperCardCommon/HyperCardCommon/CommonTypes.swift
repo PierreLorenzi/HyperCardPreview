@@ -6,7 +6,7 @@
 //  Copyright © 2017 Pierre Lorenzi. All rights reserved.
 //
 
-/// 2D geometric position
+/// 2D geometric position, in pixels
 ///<p>
 /// x is left to right, y top to bottom
 public struct Point: Equatable {
@@ -24,7 +24,7 @@ public struct Point: Equatable {
 }
 
 
-/// 2D geometric size
+/// 2D geometric size, in pixels
 public struct Size {
     public var width: Int
     public var height: Int
@@ -35,7 +35,7 @@ public struct Size {
     }
 }
 
-/// 2D geometric retangle
+/// 2D geometric retangle, in pixels
 /// <p>
 /// It includes the pixels respecting the inequalities left&lt;=x&lt;right and top&lt;=y&lt;bottom
 public struct Rectangle: Equatable {

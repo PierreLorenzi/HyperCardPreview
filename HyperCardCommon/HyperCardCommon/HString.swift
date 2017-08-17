@@ -10,6 +10,7 @@
 public typealias HChar = UInt8
 
 
+/// A Mac OS Roman string
 public struct HString: Equatable, Hashable, Comparable, ExpressibleByStringLiteral, CustomStringConvertible {
     
     public private(set) var data: Data

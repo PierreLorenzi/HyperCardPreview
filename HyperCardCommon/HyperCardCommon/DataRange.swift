@@ -9,38 +9,51 @@
 import Foundation
 
 
+/// An object pointing to a section of a data
 public struct DataRange {
     
+    /// The data pointed by by the object
     public let sharedData: Data
+    
+    /// The start of the pointed section
     public let offset: Int
+    
+    /// The length of the pointed section
     public let length: Int
     
+    /// Main constructor, declared to be public
     public init(sharedData: Data, offset: Int, length: Int) {
         self.sharedData = sharedData
         self.offset = offset
         self.length = length
     }
     
+    /// Reads a unsigned byte in the pointed data
     public func readUInt8(at offset: Int) -> Int {
         return self.sharedData.readUInt8(at: self.offset + offset)
     }
     
+    /// Reads a signed byte in the pointed data
     public func readSInt8(at offset: Int) -> Int {
         return self.sharedData.readSInt8(at: self.offset + offset)
     }
     
+    /// Reads a big-endian unsigned 2-byte integer in the pointed data
     public func readUInt16(at offset: Int) -> Int {
         return self.sharedData.readUInt16(at: self.offset + offset)
     }
     
+    /// Reads a big-endian signed 2-byte integer in the pointed data
     public func readSInt16(at offset: Int) -> Int {
         return self.sharedData.readSInt16(at: self.offset + offset)
     }
     
+    /// Reads a big-endian unsigned 4-byte integer in the pointed data
     public func readUInt32(at offset: Int) -> Int {
         return self.sharedData.readUInt32(at: self.offset + offset)
     }
     
+    /// Reads a big-endian signed 4-byte integer in the pointed data
     public func readSInt32(at offset: Int) -> Int {
         return self.sharedData.readSInt32(at: self.offset + offset)
     }
@@ -50,12 +63,14 @@ public struct DataRange {
 
 public extension DataRange {
     
+    /// Reads a bit inside a big-endian 2-byte integer in the pointed data
     public func readFlag(at offset: Int, bitOffset: Int) -> Bool {
         
         let flags = readUInt16(at: offset)
         return (flags & (1 << bitOffset)) != 0
     }
     
+    /// Reads a 2D rectangle in the pointed data
     public func readRectangle(at offset: Int) -> Rectangle {
         /* Sometimes a flag is added to top bit, so remove it */
         let top = self.readUInt16(at: offset) & 0x7FFF
@@ -65,10 +80,12 @@ public extension DataRange {
         return Rectangle(top: top, left: left, bottom: bottom, right: right)
     }
     
+    /// Reads a null-terminated Mac OS Roman string in the pointed data
     public func readString(at offset: Int) -> HString {
         return HString(copyNullTerminatedFrom: sharedData, at: self.offset + offset)
     }
     
+    /// Reads a Mac OS Roman string in the pointed data
     public func readString(at offset: Int, length: Int) -> HString {
         return HString(copyFrom: sharedData, at: self.offset + offset, length: length)
     }
@@ -77,10 +94,12 @@ public extension DataRange {
 
 public extension Data {
     
+    /// Reads a unsigned byte
     public func readUInt8(at offset: Int) -> Int {
         return Int(self[offset])
     }
     
+    /// Reads a signed byte
     public func readSInt8(at offset: Int) -> Int {
         let value = readUInt8(at: offset)
         if value > Int(Int8.max) {
@@ -89,10 +108,12 @@ public extension Data {
         return value
     }
     
+    /// Reads a big-endian unsigned 2-byte integer
     public func readUInt16(at offset: Int) -> Int {
         return Int(self[offset]) << 8 | Int(self[offset+1])
     }
     
+    /// Reads a big-endian signed 2-byte integer
     public func readSInt16(at offset: Int) -> Int {
         let value = readUInt16(at: offset)
         if value > Int(Int16.max) {
@@ -101,10 +122,12 @@ public extension Data {
         return value
     }
     
+    /// Reads a big-endian unsigned 4-byte integer
     public func readUInt32(at offset: Int) -> Int {
         return Int(self[offset]) << 24 | Int(self[offset+1]) << 16 | Int(self[offset+2]) << 8 | Int(self[offset+3])
     }
     
+    /// Reads a big-endian signed 4-byte integer
     public func readSInt32(at offset: Int) -> Int {
         let value = readUInt32(at: offset)
         if value > Int(Int32.max) {
@@ -117,6 +140,7 @@ public extension Data {
 
 public extension Image {
     
+    /// Reads an uncompressed 1-bit image in a data
     public init(data: Data, offset: Int, width: Int, height: Int) {
         
         /* Create the image */
@@ -175,7 +199,7 @@ public extension HString {
         self.init(data: stringData)
     }
     
-    /// Init with null-terminated data
+    /// Init with data
     public init(copyFrom data: Data, at offset: Int, length: Int) {
         
         /* Extract the data for the string */

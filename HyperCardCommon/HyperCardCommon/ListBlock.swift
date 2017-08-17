@@ -13,6 +13,8 @@ public struct PageReference {
 }
 
 
+/// The list block (LIST), containing the card list. To make insertions and deletions faster,
+/// it is divided in sections called pages.
 public class ListBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {

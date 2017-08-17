@@ -15,17 +15,20 @@ private let iconButtonFontSize = 9
 private let iconButtonFontStyle = PlainTextStyle
 
 
-
+/// Browses through a stack: maintains a current card and current background and draws them.
 public class Browser {
     
+    /// The stack being browsed
     public let stack: Stack
     
+    /// The index of the current card. Set it to browse.
     public var cardIndex: Int {
         didSet {
             refresh()
         }
     }
     
+    /// Activate this flag for the background view: only the background is drawn
     public var displayOnlyBackground = false {
         didSet {
             refresh()
@@ -37,19 +40,24 @@ public class Browser {
     private let resources: ResourceSystem
     private let fontManager: FontManager
     
+    /// The image of the current card with its background
     public var image: Image {
         return drawing.image
     }
     
+    /// The current card
     public var currentCard: Card {
         return self.stack.cards[cardIndex]
     }
+    
+    /// The current background
     public var currentBackground: Background {
         return self.currentCard.background
     }
     
     private let stackView: StackView
     
+    /// Builds a new browser from the given stack. A starting card index can be given.
     public init(stack: Stack, cardIndex: Int = 0) {
         self.stack = stack
         drawing = Drawing(width: stack.size.width, height: stack.size.height)
