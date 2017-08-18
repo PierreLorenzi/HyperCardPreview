@@ -13,6 +13,7 @@
 
 public enum FontDecorating {
     
+    /// Applies a font variation to a bitmap font
     public static func decorateFont(from baseFont: BitmapFont, with style: TextStyle, in family: FontFamily) -> BitmapFont {
         
         let font = BitmapFont()
@@ -78,6 +79,7 @@ public enum FontDecorating {
 
 
 
+/// A glyph that lazily applies a font variation to a base glyph
 public class DecoratedGlyph: Glyph {
     
     private let baseGlyph: Glyph

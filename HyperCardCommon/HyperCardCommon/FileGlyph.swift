@@ -7,6 +7,10 @@
 //
 
 
+/// Subclass of Glyph with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
 public class FileGlyph: Glyph {
     
     private let font: BitmapFontResourceBlock

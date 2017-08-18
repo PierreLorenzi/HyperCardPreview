@@ -7,6 +7,10 @@
 //
 
 
+/// Implementation of Icon Resource with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
 public class FileIconResource: Resource<Image> {
     
     private let resource: IconResourceBlock

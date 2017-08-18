@@ -7,6 +7,10 @@
 //
 
 
+/// Implementation of Font Family Resource with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
 public class FileFontFamilyResource : Resource<FontFamily> {
     
     private let resource: FontFamilyResourceBlock

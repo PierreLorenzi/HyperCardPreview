@@ -43,21 +43,40 @@ private struct LineLayout {
 
 
 
+/// A view of a field
 public class FieldView: View {
     
+    /// The visual style of the view
     public var style: PartStyle         = .transparent { didSet { needsLayout = true }}
+    
+    /// The content text
     public var content: RichText        = RichText() { didSet { needsLayout = true }}
+    
+    /// The 2D position of the view
     public var rectangle: Rectangle     = Rectangle(top: 0, left: 0, bottom: 0, right: 0) { didSet { needsLayout = true }}
     
+    /// Whether or not the lines all have the same height
     public var fixedLineHeight: Bool    = false { didSet { needsLayout = true }}
+    
+    /// Whether or not the text wraps to the next line when it reaches the right of the field
     public var dontWrap: Bool           = false { didSet { needsLayout = true }}
+    
+    /// If set, the margins are wider, which make a more readable text
     public var wideMargins: Bool        = false { didSet { needsLayout = true }}
+    
+    /// Whether or not the text lines are marked with gray lines
     public var showLines: Bool          = false
+    
+    /// Whether or not the view is visible
     public var visible: Bool            = true
     
+    /// The alignment of the text
     public var alignment: TextAlign      = .left
+    
+    /// The height of the lines, if it is fixed
     public var textHeight: Int          = 16 { didSet { needsLayout = true }}
     
+    /// The scroll shift, in pixels. Only used in scrolling fields.
     public var scroll: Int              = 0
     
     private var needsLayout: Bool      = false

@@ -9,6 +9,9 @@
 
 
 
+/// A utility for HyperCard icons: automatically builds a mask for an image by
+/// making black the black pixels, white the white pixels enclosed by black pixels,
+/// and transparent the white pixels not enclosed by black pixels.
 public func maskIcon(_ image: Image) -> MaskedImage {
     
     /* Build the mask */

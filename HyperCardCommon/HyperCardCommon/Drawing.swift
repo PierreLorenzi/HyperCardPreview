@@ -7,34 +7,57 @@
 //
 
 
+/// A composition defines how an image is to be super-imposed on another image
+/// <p>
+/// Here are the arguments:
+/// 1: some pixels in a row of the destination image. The process must be applied on them
+/// 2: the corresponding pixels in the image that is drawn
+/// 3. the index of the 32-bit integer in the row
+/// 4. the y-coordinate of the pixels
 public typealias ImageComposition = (inout UInt32, UInt32, Int, Int) -> ()
 
 
 
+/// This classes handles all the 2D drawing. It contains a 1-bit image (without mask), and
+/// methods to draw on it.
 public class Drawing {
     
+    /// The underlying image
+    /// <p>
+    /// It is available so optimized processes can be made on the raw data
     public var image: Image
     
     private var row: [UInt32]
     
+    /// The width of the drawing, in pixels
     public var width: Int {
         return image.width
     }
+    
+    /// The height of the drawing, in pixels
     public var height: Int {
         return image.height
     }
     
+    /// Direct composition: the black pixels of the drawn image are drawn black
     public static let DirectComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a |= b }
+    
+    /// Mask Composition: the black pixels of the drawn image are drawn white
     public static let MaskComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a &= ~b }
+    
+    /// Xor Composition: the target image is inverted at the black pixels of the drawn image
     public static let XorComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a ^= b}
+    
+    /// No Composition: nothing is drawn
     public static let NoComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in return }
     
+    /// Builds a white drawing
     public init(width: Int, height: Int) {
         self.image = Image(width: width, height: height)
         self.row = [UInt32](repeating: 0, count: image.integerCountInRow + 1)
     }
     
-    /* Pixel-wide editing */
+    /// To edit pixel by pixel
     public subscript(x: Int, y: Int) -> Bool {
         get {
             return image[x, y]
@@ -44,12 +67,15 @@ public class Drawing {
         }
     }
     
+    /// Makes the whole drawing white
     public func clear() {
         for i in 0..<image.data.count {
             image.data[i] = UInt32.allZeros
         }
     }
     
+    /// Draws a rectangle. A clip rectangle can be provided, the rectangle is intersected with it. A composition
+    /// can be provided.
     public func drawRectangle(_ unclippedRectangle: Rectangle, clipRectangle optionalClipRectangle: Rectangle? = nil, composition: ImageComposition = DirectComposition) {
         
         /* Clip */
@@ -82,6 +108,11 @@ public class Drawing {
         return wholeRectangle
     }
     
+    /// Draws an image. The position is the top-left origin of the point where the image is drawn. rectangleToDraw
+    /// is the portion of the image to draw (changing the origin of this rectangle doesn't change the position where
+    /// it will be drawn), this rectangle is in the coordinates of the image being drawn, not the drawing. A clip
+    /// rectangle can be provided in the cooordinates of the drawing, the resulting image will be intersected with it.
+    /// A composition can be provided.
     public func drawImage(_ image: Image, position unclippedPosition: Point, rectangleToDraw: Rectangle? = nil, clipRectangle optionalClippingRectangle: Rectangle? = nil, composition: ImageComposition = DirectComposition) {
         
         /* Correct optional argument */
@@ -141,6 +172,7 @@ public class Drawing {
         return (clippedPosition, clippedRectangleToDraw)
     }
     
+    /// Fills the internal temporery buffer of the drawing with a row of an image
     public func fillRowWithImage(_ image: Image, position: Point, length: Int) {
         
         /* Check which integers are involved */
@@ -160,6 +192,7 @@ public class Drawing {
         
     }
     
+    /// Fills the internal temporary buffer of the drawing with a row of a mask
     public func fillRowWithMask(_ index: Int, length: Int) {
         
         let allOnes = ~UInt32.allZeros
@@ -191,6 +224,7 @@ public class Drawing {
         
     }
     
+    /// Draws the internal temporary buffer in a row of the drawing
     public func applyRow(_ position: Point, length: Int, composition: ImageComposition = DirectComposition) {
         
         /* Check which integers are involved */
@@ -206,6 +240,7 @@ public class Drawing {
         
     }
     
+    /// Shifts the internal temporary buffer
     public func shiftRowRight(_ value: Int) {
         assert(value >= -32 && value <= 32)
         
@@ -236,6 +271,11 @@ public class Drawing {
         
     }
     
+    /// Draws an masked image. The position is the top-left origin of the point where the image is drawn. rectangleToDraw
+    /// is the portion of the image to draw (changing the origin of this rectangle doesn't change the position where
+    /// it will be drawn), this rectangle is in the coordinates of the image being drawn, not the drawing. A clip
+    /// rectangle can be provided in the cooordinates of the drawing, the resulting image will be intersected with it.
+    /// Two compositions can be provided, one for the image layer and one for the mask layer.
     public func drawMaskedImage(_ image: MaskedImage, position: Point, rectangleToDraw: Rectangle? = nil, clipRectangle: Rectangle? = nil, imageComposition: ImageComposition? = Drawing.DirectComposition, maskComposition: ImageComposition? = Drawing.MaskComposition) {
         
         /* Correct optional argument */
@@ -297,6 +337,10 @@ public class Drawing {
         
     }
     
+    /// Draws a string on the image. A sub-range of the string can be specified. The position is the origin of the
+    /// first glyph, it is on the baseline. A font must be provided. A clip rectangle can be provided, the
+    /// glyphs will be intersected with it. Two compositions may be provided, for the image layer and for the
+    /// mask layer of the glyphs.
     public func drawString(_ string: HString, index: Int = 0, length optionalLength: Int? = nil, position: Point, font: BitmapFont, clip: Rectangle? = nil, composition: @escaping ImageComposition = Drawing.DirectComposition, maskComposition: @escaping ImageComposition = Drawing.MaskComposition) {
         
         /* Correct the optional arguments */
@@ -329,6 +373,9 @@ public class Drawing {
         
     }
     
+    /// Fills a rectangle with a pattern, that is, a tiled image. offset is the shift to apply to
+    /// the pattern, by default the pattern is aligned with the top-left of the image. A composition
+    // can be provided.
     public func drawPattern(_ image: Image, rectangle: Rectangle, offset: Point = Point(x: 0, y: 0), composition: ImageComposition = DirectComposition) {
         
         /* Compute an origin closest to the top left of the rectangle */

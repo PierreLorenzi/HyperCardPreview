@@ -7,17 +7,25 @@
 //
 
 
+/// Associates font descriptor, with user-friendly font names and variations, to low-level
+/// bitmap fonts that can be directly drawn.
+/// <p>
+/// It needs a stack of resource forks to look for font resources in it.
 public class FontManager {
     
     private let resources: ResourceSystem
     
     private var cachedFonts: [FontDescriptor: BitmapFont]
     
+    /// Builds a manager. A stack of resource forks must be provided, the fonts are searched in it.
     public init(resources: ResourceSystem) {
         self.resources = resources
         cachedFonts = [:]
     }
     
+    /// Associates a font descriptor with a bitmap font
+    /// <p>
+    /// If no mathing font is found, a font is automatically generated for the descriptor.
     public func findFont(withIdentifier identifier: Int, size: Int, style: TextStyle) -> BitmapFont {
         
         /* Look in the cache */

@@ -18,18 +18,31 @@ private let RadioClick = MaskedImage(named: "radio click")!
 
 
 
+/// A view of a check-box or radio button
 public class CheckBoxButtonView: View {
     
+    /// The 2D position of the view
     public var rectangle: Rectangle     = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     
+    /// The name to display
     public var name: HString            = ""
+    
+    /// The font of the name
     public var font: BitmapFont         = BitmapFont()
+    
+    /// Whether the name is visible or not
     public var showName: Bool           = true
     
+    /// The visual style of the view
     public var style: PartStyle         = .checkBox
     
+    /// Whether the button is checked or not
     public var hilite: Bool             = false
+    
+    /// Whether the view is enabled or not. A disabled view is drawn gray.
     public var enabled: Bool            = true
+    
+    /// Whether the view is visible
     public var visible: Bool            = true
 
     

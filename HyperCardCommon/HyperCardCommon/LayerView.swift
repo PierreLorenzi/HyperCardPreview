@@ -7,11 +7,16 @@
 //
 
 
+/// A view of a card or a background
 public class LayerView: View {
     
+    /// The views of the parts
     public var partViews: [View]     = []
+    
+    /// The image of the layer, drawn behind the parts
     public var image: MaskedImage?   = nil
     
+    /// Whether or not the image is drawn
     public var showImage: Bool       = true
     
     public override func draw(in drawing: Drawing) {

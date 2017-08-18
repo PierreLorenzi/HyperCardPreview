@@ -10,26 +10,46 @@ import AppKit
 
 
 
+/// A 1-bit image with a 1-bit mask
+/// <p>
+/// The structure of this object is a little complex because it is meant to handle card
+/// bitmaps, which have a special strucure. It is not just an image and a mask side by side.
+/// Both the image and the mask can be restricted to a sub-area of the whole image, and
+/// they can be declared as filled rectangles instead of pixel data.
+/// <p>
+/// The mask is not a multiplicative mask, it just gives the position of the white pixels.
+/// When a pixel is set in the image layer and not in the mask, it is black.
 public struct MaskedImage {
     
+    /// The width of the image, in pixels
     public let width: Int
+    
+    /// The height of the image, in pixels
     public let height: Int
     
+    /// The image layer
     public let image: MaskedImage.Layer
+    
+    /// The mask layer
     public let mask: MaskedImage.Layer
     
+    /// A layer can be either a bitmap restricted to a sub-rectangle of the whole image,
+    /// a filled sub-rectangle of the image, or nothing.
     public enum Layer {
         case bitmap(image: Image, imageRectangle: Rectangle, realRectangleInImage: Rectangle)
         case rectangular(rectangle: Rectangle)
         case clear
     }
     
+    /// The color of a pixel of the image, resulting from the combination of the image layer and
+    /// mask layer.
     public enum Color {
         case white
         case black
         case transparent
     }
     
+    /// Main constructor
     public init(width: Int, height: Int, image: MaskedImage.Layer, mask: MaskedImage.Layer) {
         self.width = width
         self.height = height
@@ -37,6 +57,9 @@ public struct MaskedImage {
         self.mask = mask
     }
     
+    /// Get the color of the pixel at (x,y)
+    /// <p>
+    /// x is counted from the left, y from the top
     public subscript(x: Int, y: Int) -> Color {
         
         let position = Point(x: x, y: y)
@@ -97,6 +120,7 @@ public extension MaskedImage {
         }
     }
     
+    /// Converts the HyperCard image to a Cocoa image
     public func convertToRgb() -> NSImage {
         
         var pixels = [RgbColor](repeating: RgbWhite, count: self.width*self.height)
@@ -128,11 +152,14 @@ public extension MaskedImage {
 
 public extension MaskedImage {
     
+    /// Builds a masked image from a simple image, making the black pixels black and the while pixels
+    /// transparent
     public init(image: Image) {
         let rectangle = Rectangle(top: 0, left: 0, bottom: image.height, right: image.width)
         self.init(width: image.width, height: image.height, image: .bitmap(image: image, imageRectangle: rectangle, realRectangleInImage: rectangle), mask: .clear)
     }
     
+    /// Builds the image from an image in the resources
     public init?(named name: String) {
         
         /* Load the image with the proper bundle */
@@ -146,6 +173,7 @@ public extension MaskedImage {
         self.init(representation: representation)
     }
     
+    /// Builds an image from a Cocoa image
     public init?(representation: NSBitmapImageRep) {
         
         let width = representation.pixelsWide
@@ -185,6 +213,7 @@ public extension MaskedImage {
 
 public extension Image {
     
+    /// Build an image from a image in the resources
     public init?(named name: String) {
         guard let maskedImage = MaskedImage(named: name) else {
             return nil

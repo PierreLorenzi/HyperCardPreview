@@ -14,20 +14,34 @@ private let PopupArrowDistanceFromBorder = 18
 private let PopupArrowHeight = 6
 
 
+/// A view of a pop-up button
 public class PopupButtonView: View {
     
+    /// The 2D position of the view
     public var rectangle: Rectangle         = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     
+    /// The item names in the pop-up menu
     public var items: [HString]             = [""]
+    
+    /// The index of the selected item, which is displayed on the button
     public var selectedIndex: Int           = 0
     
+    /// The title of the button, displayed on the left
     public var title: HString               = ""
+    
+    /// The width let to the title on the left, in pixels
     public var titleWidth: Int              = 0
     
+    /// Whether or not the view is enabled.
     public var enabled: Bool                = true
+    
+    /// Whether or not the view is visible
     public var visible: Bool                = true
     
+    /// The font for the title and the selected item
     public var font: BitmapFont             = BitmapFont()
+    
+    /// The condensed variant of the font, which can be used if there is not enough room
     public var condensedFont: BitmapFont    = BitmapFont()
     
     public override init() {}

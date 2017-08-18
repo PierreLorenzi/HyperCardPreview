@@ -54,21 +54,38 @@ private let DefaultBorderThickness = BorderThickness(top: 3, left: 3, bottom: 3,
 
 
 
+/// A view of a regular button: transparent, opaque, rectangle, shadow, standard, default, round rect,
+/// oval.
 public class RegularButtonView: View {
     
+    /// The 2D position of the view
     public var rectangle: Rectangle     = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     
+    /// The name being displayed
     public var name: HString            = ""
+    
+    /// Whether the name is visible or not
     public var showName: Bool           = true
     
+    /// The visual style of the view
     public var style: PartStyle         = .transparent
 
+    /// The icon to display next to the name
     public var icon: MaskedImage?       = nil
+    
+    /// Whether the view is hilited. A hilited button has inverted colors.
     public var hilite: Bool             = false
+    
+    /// Whether the view is enabled. A disabled button is drawn gray.
     public var enabled: Bool            = true
+    
+    /// Whether the view is visible
     public var visible: Bool            = true
     
+    /// The alignment of the name
     public var alignment: TextAlign     = .center
+    
+    /// The font of the name
     public var font: BitmapFont         = BitmapFont()
     
     public override func draw(in drawing: Drawing) {
