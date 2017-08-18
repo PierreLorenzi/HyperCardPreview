@@ -84,9 +84,14 @@ class Document: NSDocument {
     /// Redraws the HyperCard view
     func refresh() {
         
+        displayImage(self.browser.image)
+    }
+    
+    /// Redraws the HyperCard view
+    func displayImage(_ image: Image) {
+        
         /* Convert the 1-bit image to a Core Graphics image and display it in the HyperCard view */
         
-        let image = self.browser.image
         for x in 0..<image.width {
             for y in 0..<image.height {
                 let value = image[x, y] ? RgbBlack2 : RgbWhite2
@@ -116,14 +121,66 @@ class Document: NSDocument {
         view.layer!.contents = cgimage
     }
     
+    func applyVisualEffect(from image: Image) {
+        
+        /* Get the selected visual effect */
+        let appDelegate = NSApp.delegate as! AppDelegate
+        let visualEffect = appDelegate.selectedVisualEffect
+        
+        /* Apply it */
+        switch visualEffect {
+            
+        case .dissolve:
+            applyDissolveVisualEffect(from: image)
+            
+        default:
+            refresh()
+        }
+        
+    }
+    
+    func applyDissolveVisualEffect(from image: Image) {
+        
+        let thread = Thread(block: {
+            
+            let drawing = Drawing(image: image)
+            let startDate = Date()
+            let stepDuration: TimeInterval = VisualEffects.duration / Double(VisualEffects.dissolveStepCount)
+            
+            /* Apply all the steps of the dissolve */
+            for i in 0..<VisualEffects.dissolveStepCount {
+                
+                /* Wait if we're too fast */
+                Thread.sleep(until: startDate.addingTimeInterval(stepDuration * Double(i)))
+                
+                /* Apply the effect */
+                VisualEffects.dissolve(self.browser.image, on: drawing, at: i)
+                
+                /* Display the intermediary image */
+                DispatchQueue.main.sync {
+                    self.displayImage(drawing.image)
+                }
+            }
+            
+        })
+        
+        thread.start()
+        
+    }
+    
+    /// Move to a card with a visual effect
+    func goToPage(at index: Int) {
+        let oldImage = browser.image
+        browser.cardIndex = index
+        self.applyVisualEffect(from: oldImage)
+    }
+    
     func goToFirstPage(_ sender: AnyObject) {
-        browser.cardIndex = 0
-        refresh()
+        self.goToPage(at: 0)
     }
     
     func goToLastPage(_ sender: AnyObject) {
-        browser.cardIndex = browser.stack.cards.count-1
-        refresh()
+        self.goToPage(at: browser.stack.cards.count-1)
     }
     
     func goToNextPage(_ sender: AnyObject) {
@@ -132,8 +189,7 @@ class Document: NSDocument {
         if cardIndex == browser.stack.cards.count {
             cardIndex = 0
         }
-        browser.cardIndex = cardIndex
-        refresh()
+        self.goToPage(at: cardIndex)
     }
     
     func goToPreviousPage(_ sender: AnyObject) {
@@ -142,8 +198,7 @@ class Document: NSDocument {
         if cardIndex == -1 {
             cardIndex = browser.stack.cards.count - 1
         }
-        browser.cardIndex = cardIndex
-        refresh()
+        self.goToPage(at: cardIndex)
     }
     
     func displayOnlyBackground(_ sender: AnyObject) {

@@ -8,10 +8,37 @@
 
 import Cocoa
 
+enum VisualEffect: Int {
+    case none
+    case dissolve
+}
+
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-
+    @IBOutlet weak var visualEffectMenu: NSMenu!
+    var selectedVisualEffect: VisualEffect = .none
+    
+    @IBAction func selectVisualEffect(_ sender: Any?) {
+        
+        guard let menuItem = sender as? NSMenuItem else {
+            return
+        }
+        
+        /* Extract the index of the visual effect */
+        let index = menuItem.tag
+        
+        /* Update the state */
+        self.selectedVisualEffect = VisualEffect(rawValue: index)!
+        
+        /* Handle menu selection */
+        for i in 0..<self.visualEffectMenu.numberOfItems {
+            
+            let item = self.visualEffectMenu.item(at: i)!
+            item.state = (item === menuItem) ? 1 : 0
+        }
+        
+    }
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application

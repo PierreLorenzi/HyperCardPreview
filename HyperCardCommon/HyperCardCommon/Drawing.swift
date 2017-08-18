@@ -57,6 +57,12 @@ public class Drawing {
         self.row = [UInt32](repeating: 0, count: image.integerCountInRow + 1)
     }
     
+    /// Builds a drawing from an image
+    public init(image: Image) {
+        self.image = image
+        self.row = [UInt32](repeating: 0, count: image.integerCountInRow + 1)
+    }
+    
     /// To edit pixel by pixel
     public subscript(x: Int, y: Int) -> Bool {
         get {

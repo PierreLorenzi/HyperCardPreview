@@ -19,6 +19,7 @@
 		6C4FE2571E75849700E2BF12 /* Stack.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6C4FE2561E75849700E2BF12 /* Stack.icns */; };
 		6C4FE2671E75A4CE00E2BF12 /* Application.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6C4FE2661E75A4CE00E2BF12 /* Application.icns */; };
 		6C9E6D401E75C02700BBF925 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */; };
+		6CADCC071F474A3C00B895FB /* VisualEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CADCC061F474A3C00B895FB /* VisualEffects.swift */; };
 		6CCC93A11E73483D0059C8D8 /* InfoPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */; };
 		6CCC93A31E734A580059C8D8 /* InfoPanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */; };
 /* End PBXBuildFile section */
@@ -77,6 +78,7 @@
 		6C4FE2661E75A4CE00E2BF12 /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Application.icns; sourceTree = "<group>"; };
 		6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HyperCardCommon.xcodeproj; path = HyperCardCommon/HyperCardCommon.xcodeproj; sourceTree = "<group>"; };
 		6C9E6D5B1E75C10800BBF925 /* HyperCardPreviewQL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HyperCardPreviewQL.xcodeproj; path = HyperCardPreviewQL/HyperCardPreviewQL.xcodeproj; sourceTree = "<group>"; };
+		6CADCC061F474A3C00B895FB /* VisualEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffects.swift; sourceTree = "<group>"; };
 		6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoPanel.xib; sourceTree = "<group>"; };
 		6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPanelController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -119,6 +121,7 @@
 				6C26B8C71E6D7520006C314B /* Document.swift */,
 				6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */,
 				6C26B8DA1E6D7577006C314B /* DocumentView.swift */,
+				6CADCC061F474A3C00B895FB /* VisualEffects.swift */,
 				6C26B8C91E6D7520006C314B /* Document.xib */,
 				6C26B8CC1E6D7520006C314B /* Assets.xcassets */,
 				6C26B8CE1E6D7520006C314B /* MainMenu.xib */,
@@ -260,6 +263,7 @@
 			files = (
 				6C26B8C81E6D7520006C314B /* Document.swift in Sources */,
 				6C3682AE1E735EFF00EDF16D /* ScriptBorderView.swift in Sources */,
+				6CADCC071F474A3C00B895FB /* VisualEffects.swift in Sources */,
 				6C26B8DB1E6D7577006C314B /* DocumentView.swift in Sources */,
 				6CCC93A31E734A580059C8D8 /* InfoPanelController.swift in Sources */,
 				6C26B8C61E6D7520006C314B /* AppDelegate.swift in Sources */,
