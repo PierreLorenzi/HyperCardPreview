@@ -7,14 +7,17 @@
 //
 
 
+/// A Mac OS Roman character, in a single byte
 public typealias HChar = UInt8
 
 
 /// A Mac OS Roman string
 public struct HString: Equatable, Hashable, Comparable, ExpressibleByStringLiteral, CustomStringConvertible {
     
+    /// The bytes of the string, without null terminator
     public private(set) var data: Data
     
+    /// Main constructor
     public init(data: Data) {
         self.data = data
     }
@@ -32,6 +35,7 @@ public struct HString: Equatable, Hashable, Comparable, ExpressibleByStringLiter
         self.init(stringLiteral: unicodeScalarLiteral)
     }
     
+    /// Get or set a single character
     public subscript(index: Int) -> HChar {
         get {
             return data[index]
@@ -61,6 +65,7 @@ public struct HString: Equatable, Hashable, Comparable, ExpressibleByStringLiter
         }
     }
     
+    /// The number of characters in the string
     public var length: Int {
         return data.count
     }

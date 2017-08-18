@@ -12,7 +12,10 @@ import Foundation
 
 /* Class to access the framework bundle */
 private class UselessBundleClass {}
+
+/// The Bundle of the HyperCardCommon Framework
 public let HyperCardBundle = Bundle(for: type(of: UselessBundleClass()))
 
 
+/// The size of the icons in the Classic Mac OS Resources
 public let IconSize = 32

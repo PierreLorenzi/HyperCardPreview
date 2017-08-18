@@ -55,6 +55,9 @@ public struct SearchHash {
         
     }
     
+    /// Converts a word to an integer representation, that is used to check for the word.
+    /// This method is made public so the conversion can be made once even if the word is
+    /// checked on several search hashes.
     public static func encodeString(_ string: HString) -> [Int]? {
         
         var encodedString = [Int]()
@@ -95,6 +98,7 @@ public struct SearchHash {
         return nil
     }
     
+    /// Checks if the word is detected present by the hash
     public func isStringSpotted(_ string: HString) -> Bool? {
         guard let code = SearchHash.encodeString(string) else {
             return nil
@@ -102,6 +106,7 @@ public struct SearchHash {
         return self.isEncodedStringSpotted(code)
     }
     
+    /// Checks if the encoded version of a word is detected present by the hash
     public func isEncodedStringSpotted(_ code: [Int]) -> Bool {
         
         /* Check the first values */
@@ -149,6 +154,7 @@ public struct SearchHash {
         
     }
     
+    /// Tells if the word is excluded or not from the hash. For example words that are too short are excluded.
     public static func isWordIndexed(_ word: HString) -> Bool {
         
         /* Words less than 3 characters are not indexed */
