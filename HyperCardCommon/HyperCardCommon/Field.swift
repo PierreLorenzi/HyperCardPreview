@@ -63,7 +63,7 @@ public class Field: Part {
     public var textAlign: TextAlign     = .left
     
     /// The resource identifier of the font in which text in the specified field appears.
-    public var textFontIdentifier: Int  = FontManager.UsualIdentifiers.geneva
+    public var textFontIdentifier: Int  = FontIdentifiers.geneva
     
     /// The type size in which text in the specified field appears.
     public var textFontSize: Int        = 12

@@ -48,7 +48,7 @@ public class Button: Part {
     public var textAlign: TextAlign     = .center
     
     /// The resource identifier of the font in which text in the specified button appears.
-    public var textFontIdentifier: Int  = FontManager.UsualIdentifiers.charcoal
+    public var textFontIdentifier: Int  = FontIdentifiers.charcoal
     
     /// The type size in which text in the specified button appears.
     public var textFontSize: Int        = 12

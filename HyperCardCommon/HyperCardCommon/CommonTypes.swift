@@ -429,3 +429,23 @@ public func ==(v1: Version, v2: Version) -> Bool {
     return v1.major == v2.major && v1.minor1 == v2.minor1 && v1.minor2 == v2.minor2 && v1.state == v2.state && v1.release == v2.release
 }
 
+/// Identifiers of some basic fonts of Classic Mac OS
+public enum FontIdentifiers {
+    public static let chicago = 0
+    public static let newYork = 2
+    public static let geneva = 3
+    public static let monaco = 4
+    public static let venice = 5
+    public static let london = 6
+    public static let athens = 7
+    public static let sanFrancisco = 8
+    public static let cairo = 11
+    public static let losAngeles = 12
+    public static let palatino = 16
+    public static let times = 20
+    public static let helvetica = 21
+    public static let courier = 22
+    public static let symbol = 23
+    public static let charcoal = 2002
+}
+

@@ -10,7 +10,7 @@
 
 private let trueHiliteContent: HString = "1"
 
-private let iconButtonFontIdentifier = FontManager.UsualIdentifiers.geneva
+private let iconButtonFontIdentifier = FontIdentifiers.geneva
 private let iconButtonFontSize = 9
 private let iconButtonFontStyle = PlainTextStyle
 

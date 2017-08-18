@@ -65,26 +65,7 @@ public class FontManager {
     
     private func findAnyFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont {
         
-        return findFont(withIdentifier: UsualIdentifiers.geneva, size: descriptor.size, style: descriptor.style)
-    }
-    
-    public enum UsualIdentifiers {
-        public static let chicago = 0
-        public static let newYork = 2
-        public static let geneva = 3
-        public static let monaco = 4
-        public static let venice = 5
-        public static let london = 6
-        public static let athens = 7
-        public static let sanFrancisco = 8
-        public static let cairo = 11
-        public static let losAngeles = 12
-        public static let palatino = 16
-        public static let times = 20
-        public static let helvetica = 21
-        public static let courier = 22
-        public static let symbol = 23
-        public static let charcoal = 2002
+        return findFont(withIdentifier: FontIdentifiers.geneva, size: descriptor.size, style: descriptor.style)
     }
     
 }
