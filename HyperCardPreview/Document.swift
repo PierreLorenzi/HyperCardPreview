@@ -10,30 +10,10 @@ import Cocoa
 import HyperCardCommon
 import QuickLook
 
-struct RgbColor {
-    var r: UInt8
-    var g: UInt8
-    var b: UInt8
-    var a: UInt8
-    
-    init(a: UInt8, r: UInt8, g: UInt8, b: UInt8) {
-        self.r = r
-        self.g = g
-        self.b = b
-        self.a = a
-    }
-}
+typealias RgbColor2 = UInt64
+let RgbWhite2: RgbColor2 = 0xFFFF_FFFF_FFFF_FFFF
+let RgbBlack2: RgbColor2 = 0xFF00_0000_FF00_0000
 
-struct RgbColor2 {
-    var color0: RgbColor
-    var color1: RgbColor
-}
-
-let RgbWhite = RgbColor(a: 255, r: 255, g: 255, b: 255)
-let RgbBlack = RgbColor(a: 255, r: 0, g: 0, b: 0)
-
-let RgbWhite2 = RgbColor2(color0: RgbWhite, color1: RgbWhite)
-let RgbBlack2 = RgbColor2(color0: RgbBlack, color1: RgbBlack)
 
 let RgbColorSpace = CGColorSpaceCreateDeviceRGB()
 let BitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
@@ -92,16 +72,9 @@ class Document: NSDocument {
         
         /* Convert the 1-bit image to a Core Graphics image and display it in the HyperCard view */
         
-        for x in 0..<image.width {
-            for y in 0..<image.height {
-                let value = image[x, y] ? RgbBlack2 : RgbWhite2
-                let offset0 = x + 2*y*image.width
-                let offset1 = offset0 + image.width
-                self.pixels[offset0] = value
-                self.pixels[offset1] = value
-            }
-        }
-        let data = NSMutableData(bytes: &pixels, length: self.pixels.count * 2 * MemoryLayout<RgbColor>.size)
+        self.fillBuffer(with: image)
+        
+        let data = NSMutableData(bytes: &pixels, length: self.pixels.count * MemoryLayout<RgbColor2>.size)
         let providerRef = CGDataProvider(data: data)
         let width = file.stack.size.width;
         let height = file.stack.size.height;
@@ -110,7 +83,7 @@ class Document: NSDocument {
             height: height*2,
             bitsPerComponent: BitsPerComponent,
             bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width*2 * MemoryLayout<RgbColor>.size,
+            bytesPerRow: width * MemoryLayout<RgbColor2>.size,
             space: RgbColorSpace,
             bitmapInfo: BitmapInfo,
             provider: providerRef!,
@@ -119,6 +92,33 @@ class Document: NSDocument {
             intent: CGColorRenderingIntent.defaultIntent)
         CATransaction.setDisableActions(true)
         view.layer!.contents = cgimage
+    }
+    
+    func fillBuffer(with image: Image) {
+        
+        /* As the scale is two, there are two rows to fill at every pixel */
+        var offset0 = 0
+        var offset1 = image.width
+        
+        var integerIndex = 0
+        
+        for _ in 0..<image.height {
+            for _ in 0..<image.integerCountInRow {
+                
+                let integer = image.data[integerIndex]
+                integerIndex += 1
+                
+                for i in (UInt32(0)...UInt32(31)).reversed() {
+                    let value = ((integer >> i & 1) == 1) ? RgbBlack2 : RgbWhite2
+                    self.pixels[offset0] = value
+                    self.pixels[offset1] = value
+                    offset0 += 1
+                    offset1 += 1
+                }
+            }
+            offset0 += image.width
+            offset1 += image.width
+        }
     }
     
     func applyVisualEffect(from image: Image) {
