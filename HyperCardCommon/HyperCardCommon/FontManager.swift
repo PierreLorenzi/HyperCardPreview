@@ -67,7 +67,7 @@ public class FontManager {
         }
         
         /* We can't do anything, just return whatever font */
-        NSLog("Unavailable font family: %d", descriptor.identifier)
+        NSLog("Unavailable font family: \(descriptor.identifier) for size \(descriptor.size) and style \(descriptor.style)")
         return findAnyFont(forDescriptor: descriptor)
     }
     
