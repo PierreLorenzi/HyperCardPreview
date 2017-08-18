@@ -238,10 +238,31 @@ public class Drawing {
         let integerLength = (upToMultiple(position.x + length, 32) - downToMultiple(position.x, 32)) / 32
         
         let rowIntegerIndex = position.x / 32
+        let integerLastIndex = integerIndex + integerLength - 1
+        
+        /* Save the first and last integer, so we can redraw the pixels included in
+         the 32-bit aligment but not in the image */
+        let integerLeft = self.image.data[integerIndex]
+        let integerRight = self.image.data[integerLastIndex]
         
         /* Apply the integers in-between */
         for i in 0..<integerLength {
             composition(&self.image.data[i + integerIndex], row[i], rowIntegerIndex + i, position.y)
+        }
+        
+        /* Redraw the outer pixels on the left */
+        let outerPixelCountLeft = position.x % 32
+        if outerPixelCountLeft > 0 {
+            // I have to use a super weird expression because Swift throws "Shift too large"
+            let maskLeft = UInt32.max << UInt32(-outerPixelCountLeft + MemoryLayout<UInt32>.size * 8)
+            self.image.data[integerIndex] = (self.image.data[integerIndex] & ~maskLeft) | (integerLeft & maskLeft)
+        }
+        
+        /* Redraw the outer pixels on the right */
+        let outerPixelCountRight = 31 - (position.x + length - 1) % 32
+        if outerPixelCountRight > 0 {
+            let maskRight = UInt32.max >> UInt32(32 - outerPixelCountRight)
+            self.image.data[integerLastIndex] = (self.image.data[integerLastIndex] & ~maskRight) | (integerRight & maskRight)
         }
         
     }
