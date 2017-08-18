@@ -222,6 +222,18 @@
                                     <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="8hT-72-WrE"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Wipe" tag="2" id="EQK-vp-WZ2">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="AVK-om-kq3"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Scroll" tag="3" id="xsh-mf-Q7g">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="niN-60-2u3"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>

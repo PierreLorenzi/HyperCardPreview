@@ -121,7 +121,7 @@ class Document: NSDocument {
         }
     }
     
-    func applyVisualEffect(from image: Image) {
+    func applyVisualEffect(from image: Image, to direction: VisualEffects.Direction = .left) {
         
         /* Get the selected visual effect */
         let appDelegate = NSApp.delegate as! AppDelegate
@@ -132,6 +132,12 @@ class Document: NSDocument {
             
         case .dissolve:
             applyDissolveVisualEffect(from: image)
+            
+        case .wipe:
+            applyContinuousVisualEffect(VisualEffects.wipe, from: image, to: direction)
+            
+        case .scroll:
+            applyContinuousVisualEffect(VisualEffects.scroll, from: image, to: direction)
             
         default:
             refresh()
@@ -168,19 +174,55 @@ class Document: NSDocument {
         
     }
     
+    func applyContinuousVisualEffect(_ effect: @escaping (Image, Drawing, VisualEffects.Direction, Double) -> Void, from image: Image, to direction: VisualEffects.Direction) {
+        
+        let thread = Thread(block: {
+            
+            let drawing = Drawing(image: image)
+            let startDate = Date()
+            
+            var interval: TimeInterval = 0
+            
+            /* Animate with the greatest rate possible */
+            while interval < VisualEffects.duration {
+                
+                /* Apply the effect */
+                let step = interval / VisualEffects.duration
+                effect(self.browser.image, drawing, direction, step)
+                
+                /* Display the intermediary image */
+                DispatchQueue.main.sync {
+                    self.displayImage(drawing.image)
+                }
+                
+                /* Check the time */
+                interval = -startDate.timeIntervalSinceNow
+            }
+            
+            /* Display the final state */
+            DispatchQueue.main.async {
+                self.refresh()
+            }
+            
+        })
+        
+        thread.start()
+        
+    }
+    
     /// Move to a card with a visual effect
-    func goToPage(at index: Int) {
+    func goToPage(at index: Int, to direction: VisualEffects.Direction = .left) {
         let oldImage = browser.image
         browser.cardIndex = index
-        self.applyVisualEffect(from: oldImage)
+        self.applyVisualEffect(from: oldImage, to: direction)
     }
     
     func goToFirstPage(_ sender: AnyObject) {
-        self.goToPage(at: 0)
+        self.goToPage(at: 0, to: .bottom)
     }
     
     func goToLastPage(_ sender: AnyObject) {
-        self.goToPage(at: browser.stack.cards.count-1)
+        self.goToPage(at: browser.stack.cards.count-1, to: .top)
     }
     
     func goToNextPage(_ sender: AnyObject) {
@@ -198,7 +240,7 @@ class Document: NSDocument {
         if cardIndex == -1 {
             cardIndex = browser.stack.cards.count - 1
         }
-        self.goToPage(at: cardIndex)
+        self.goToPage(at: cardIndex, to: .right)
     }
     
     func displayOnlyBackground(_ sender: AnyObject) {

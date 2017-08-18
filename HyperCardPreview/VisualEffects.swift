@@ -64,5 +64,75 @@ struct VisualEffects {
         
     }
     
+    enum Direction {
+        case left
+        case right
+        case top
+        case bottom
+    }
+    
+    /* Define a composition where both white and black pixels are drawn */
+    static let totalComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in
+        a = b
+    }
+    
+    /// Draws an increment of the dissolve visual effect. The step is between 0 and 1
+    static func wipe(_ image: Image, on drawing: Drawing, to direction: Direction, step: Double) {
+        
+        switch direction {
+            
+        case .left:
+            let length = Int( Double(image.width) * step )
+            let position = Point(x: image.width - length, y: 0)
+            let rectangleToDraw = Rectangle(top: 0, left: image.width - length, bottom: image.height, right: image.width)
+            drawing.drawImage(image, position: position, rectangleToDraw: rectangleToDraw, composition: totalComposition)
+            
+        case .right:
+            let length = Int( Double(image.width) * step )
+            let position = Point(x: 0, y: 0)
+            let rectangleToDraw = Rectangle(top: 0, left: 0, bottom: image.height, right: length)
+            drawing.drawImage(image, position: position, rectangleToDraw: rectangleToDraw, composition: totalComposition)
+            
+        case .top:
+            let length = Int( Double(image.height) * step )
+            let position = Point(x: 0, y: image.height - length)
+            let rectangleToDraw = Rectangle(top: image.height - length, left: 0, bottom: image.height, right: image.width)
+            drawing.drawImage(image, position: position, rectangleToDraw: rectangleToDraw, composition: totalComposition)
+            
+        case .bottom:
+            let length = Int( Double(image.height) * step )
+            let position = Point(x: 0, y: 0)
+            let rectangleToDraw = Rectangle(top: 0, left: 0, bottom: length, right: image.width)
+            drawing.drawImage(image, position: position, rectangleToDraw: rectangleToDraw, composition: totalComposition)
+            
+        }
+        
+    }
+    
+    /// Draws an increment of the dissolve visual effect. The step is between 0 and 1
+    static func scroll(_ image: Image, on drawing: Drawing, to direction: Direction, step: Double) {
+        
+        switch direction {
+            
+        case .left:
+            let length = Int( Double(image.width) * step )
+            drawing.drawImage(image, position: Point(x: image.width - length, y: 0), composition: totalComposition)
+            
+        case .right:
+            let length = Int( Double(image.width) * step )
+            drawing.drawImage(image, position: Point(x: length - image.width, y: 0), composition: totalComposition)
+            
+        case .top:
+            let length = Int( Double(image.height) * step )
+            drawing.drawImage(image, position: Point(x: 0, y: image.height - length), composition: totalComposition)
+            
+        case .bottom:
+            let length = Int( Double(image.height) * step )
+            drawing.drawImage(image, position: Point(x: 0, y: length - image.height), composition: totalComposition)
+            
+        }
+        
+    }
+    
 }
 

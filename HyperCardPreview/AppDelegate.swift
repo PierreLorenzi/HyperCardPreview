@@ -11,6 +11,8 @@ import Cocoa
 enum VisualEffect: Int {
     case none
     case dissolve
+    case wipe
+    case scroll
 }
 
 @NSApplicationMain
