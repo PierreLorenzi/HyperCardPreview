@@ -7,12 +7,14 @@
 //
 
 
+/// Parsed icon resource
 public class IconResourceBlock: ResourceBlock {
     
     public override class var Name: NumericName {
         return NumericName(string: "ICON")!
     }
     
+    /// Image of the icon
     public lazy var image: Image = {
         [unowned self] in
         

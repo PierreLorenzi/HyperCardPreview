@@ -7,6 +7,7 @@
 //
 
 
+/// Subclass for V1 stacks
 public class BackgroundBlockV1: BackgroundBlock {
     
     /* We can't inherit, so we compose */

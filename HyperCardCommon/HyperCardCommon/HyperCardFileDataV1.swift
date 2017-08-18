@@ -8,6 +8,7 @@
 
 
 
+/// Subclass for V1 stacks
 public class HyperCardFileDataV1: HyperCardFileData {
     
     /* Stack */

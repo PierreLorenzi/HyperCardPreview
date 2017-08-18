@@ -7,27 +7,37 @@
 //
 
 
-/// The Style Block (STBL), containing the text styles used in the stack.
+/// The Style Block contain the text styles used in the stack.
 public class StyleBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {
         return NumericName(string: "STBL")!
     }
     
+    /// A record of a text style
     public struct Style {
+        
+        /// The ID of the style
         public var number: Int
+        
+        /// The number of times this style is used in the stack
         public var runCount: Int
+        
+        /// The text attribute
         public var textAttribute: TextFormatting
     }
     
+    /// Number of text styles
     public var styleCount: Int {
         return data.readUInt32(at: 0x10)
     }
     
+    /// Style ID to use for next style
     public var nextAvailableStyleNumber: Int {
         return data.readUInt32(at: 0x14)
     }
     
+    /// The text styles
     public var styles: [Style] {
         let count = self.styleCount
         var offset = 0x18

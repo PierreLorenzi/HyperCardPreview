@@ -9,6 +9,7 @@
 
 
 
+/// Subclass for V1 stacks
 public class ContentBlockV1: ContentBlock {
     
     /* All contents are raw strings */

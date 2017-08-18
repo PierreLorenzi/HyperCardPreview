@@ -7,6 +7,7 @@
 //
 
 
+/// Subclass for V1 stacks
 public class StackBlockV1: StackBlock {
 
     /* Checksum is moved */

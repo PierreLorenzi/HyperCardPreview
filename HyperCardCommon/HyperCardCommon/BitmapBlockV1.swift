@@ -8,6 +8,7 @@
 
 import AppKit
 
+/// Subclass for V1 stacks
 public class BitmapBlockV1: BitmapBlock {
     
     /* All the values are shifted */

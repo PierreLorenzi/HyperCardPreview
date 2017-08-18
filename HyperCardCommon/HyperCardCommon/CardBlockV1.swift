@@ -7,6 +7,7 @@
 //
 
 
+/// Subclass for V1 stacks
 public class CardBlockV1: CardBlock {
     
     /* We can't inherit, so we compose */

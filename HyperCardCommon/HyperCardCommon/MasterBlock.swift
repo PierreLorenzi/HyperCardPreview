@@ -14,11 +14,18 @@ public class MasterBlock: HyperCardFileBlock {
         return NumericName(string: "MAST")!
     }
     
+    /// A record of a data block
     public struct Entry {
-        let identifierLastByte: Int
-        let offset: Int
+        
+        /// Last byte of the identifier of the data block (it can be ambiguous, the whole
+        /// identifier must be checked at the block)
+        public let identifierLastByte: Int
+        
+        /// Offset of the data block in the stack file
+        public let offset: Int
     }
     
+    /// Records of the data blocks in the stack file
     public var entries: [Entry] {
         var entries: [Entry] = []
         let blockLength = self.data.length

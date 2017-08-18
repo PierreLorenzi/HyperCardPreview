@@ -6,44 +6,52 @@
 //  Copyright © 2016 Pierre Lorenzi. All rights reserved.
 //
 
-import Foundation
 
-
+/// A parsed resource fork
 public class ResourceFork: DataBlock {
     
+    /// Offset from beginning of resource file to resource data
     public var dataOffset: Int {
         return data.readUInt32(at: 0x0)
     }
     
+    /// Offset from beginning of resource file to resource map
     public var mapOffset: Int {
         return data.readUInt32(at: 0x4)
     }
     
+    /// Length of resource data
     public var dataLength: Int {
         return data.readUInt32(at: 0x8)
     }
     
+    /// Length of resource map
     public var mapLength: Int {
         return data.readUInt32(at: 0xC)
     }
     
+    /// The resource map
     public var resourceMap: ResourceMap {
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset + self.mapOffset, length: self.mapLength)
         return ResourceMap(data: dataRange)
     }
     
+    /// Quick access to the icon resource blocks
     public var icons: [IconResourceBlock] {
         return self.listResources(withType: IconResourceBlock.self)
     }
     
+    /// Quick access to the font family resource blocks
     public var fontFamilies: [FontFamilyResourceBlock] {
         return self.listResources(withType: FontFamilyResourceBlock.self)
     }
     
+    /// Quick access to the bitmap font resource blocks
     public var bitmapFonts: [BitmapFontResourceBlock] {
         return self.listResources(withType: BitmapFontResourceBlock.self)
     }
     
+    /// Quick access to the vector font resource blocks
     public var vectorFonts: [VectorFontResourceBlock] {
         return self.listResources(withType: VectorFontResourceBlock.self)
     }
@@ -53,6 +61,7 @@ public class ResourceFork: DataBlock {
         return self.resourceMap.references
     }()
     
+    /// Lists the resource blocks for a certain type
     public func listResources<T: ResourceBlock>(withType type: T.Type) -> [T] {
         
         var resources = [T]()
@@ -79,21 +88,25 @@ public class ResourceFork: DataBlock {
     
 }
 
+/// A resource map of a resource fork, listing the resources present in the fork
 public class ResourceMap: DataBlock {
     
     private static let HeaderLength = 30
     private static let TypeLength = 8
     private static let ReferenceLength = 12
     
+    /// Offset from beginning of resource map to resource name list
     public var nameListOffset: Int {
         return data.readUInt16(at: 0x1A)
     }
     
+    /// Number of resource types in the map
     public var typeCount: Int {
         let countMinusOne = data.readSInt16(at: 0x1C)
         return countMinusOne + 1
     }
     
+    /// The resource records in the map
     public var references: [ResourceReference] {
         
         /* Define the list to return */
@@ -157,9 +170,18 @@ public class ResourceMap: DataBlock {
     
 }
 
+/// A resource record in the map
 public struct ResourceReference {
+    
+    /// Type of the resource
     public var type: NumericName
+    
+    /// ID of the resource
     public var identifier: Int
+    
+    /// Name of the resource
     public var name: HString
+    
+    /// Offset of the resource in the data section of the resource fork
     public var dataOffset: Int
 }

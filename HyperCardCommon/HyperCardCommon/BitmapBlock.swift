@@ -8,6 +8,11 @@
 
 import AppKit
 
+/// A bitmap stores the picture of a card or a background.
+/// <p>
+/// It has two layers with one bit per pixel: an image, to tell where the black pixels are, and a mask, to tell where the white pixels are. This is not the classical notion of mask: the mask is not about transparency, it just tells where the blank pixels are. If a pixel is activated in the image and not in the mask, it is black. It it is activated only in the mask, it is blank. If it is activated in both, it is black. The pixels neither activated in the image and in the mask are transparent.
+/// <p>
+/// The mask and the image both have rectangles where they are enclosed, relative to the card coordinates. Outside the rectangles, the pixels are transparent. The mask and image rectangles are not necessarily in the same place.
 public class BitmapBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {
@@ -16,30 +21,37 @@ public class BitmapBlock: HyperCardFileBlock {
     
     private static let ZeroRectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     
+    /// The size of the card, as a rectangle
     public var cardRectangle: Rectangle {
         return data.readRectangle(at: 0x18)
     }
     
+    /// The position of the mask
     public var maskRectangle: Rectangle {
         return data.readRectangle(at: 0x20)
     }
     
+    /// The position of the image
     public var imageRectangle: Rectangle {
         return data.readRectangle(at: 0x28)
     }
     
+    /// Size of the mask data
     public var maskLength: Int {
         return data.readUInt32(at: 0x38)
     }
     
+    /// Size of the image data
     public var imageLength: Int {
         return data.readUInt32(at: 0x3C)
     }
     
+    /// Offset of the mask data in the block
     public var dataOffset: Int {
         return 0x40
     }
     
+    /// The decoded image
     public var image: MaskedImage {
         guard data.length > self.dataOffset else {
             return MaskedImage(width: self.cardRectangle.width, height: self.cardRectangle.height, image: .rectangular(rectangle: self.imageRectangle), mask: .rectangular(rectangle: self.maskRectangle))

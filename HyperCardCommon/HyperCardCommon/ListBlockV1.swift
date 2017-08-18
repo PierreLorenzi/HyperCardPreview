@@ -9,6 +9,7 @@
 
 
 
+/// Subclass for V1 stacks
 public class ListBlockV1: ListBlock {
     
     /* All the values are shifted but the card references are at the same offset */

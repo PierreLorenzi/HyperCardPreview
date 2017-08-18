@@ -7,22 +7,31 @@
 //
 
 
-/// The Font Block (FTBL), containing the names of the fonts used in the stack
+/// The font name table.
+/// <p>
+/// Since fonts IDs were not consistent across the installations, HyperCard stores a table of the names of the fonts used in the stack. This block appears only once in a file.
 public class FontBlock: HyperCardFileBlock {
     
     override class var Name: NumericName {
         return NumericName(string: "FTBL")!
     }
     
+    /// A record of a font name
     public struct FontReference {
+        
+        /// ID of the font
         public var identifier: Int
+        
+        /// Name of the font
         public var name: HString
     }
     
+    /// Number of font names
     public var fontCount: Int {
         return data.readUInt32(at: 0x10)
     }
     
+    /// The font names
     public var fontReferences: [FontReference] {
         let count = self.fontCount
         var offset = 0x18

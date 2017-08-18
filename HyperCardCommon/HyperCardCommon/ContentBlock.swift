@@ -7,17 +7,27 @@
 //
 
 
+/// A layer can be either a card or a background
 public enum LayerType {
     case card
     case background
 }
 
 
+/// Content of a part
+/// <p>
+/// Part contents are separated from parts because it makes text search easier, because
+/// background fields have text contents in the card, because background buttons have hilite
+/// contents in the card
 public class ContentBlock: DataBlock {
     
+    /// The identifier of the part, this parameter is read separately
     public let identifier: Int
+    
+    /// Whether the part is in the background or the card, this parameter is read separately
     public let layerType: LayerType
     
+    /// Main constructor
     public init(data: DataRange, identifier: Int, layerType: LayerType) {
         self.identifier = identifier
         self.layerType = layerType
@@ -25,6 +35,7 @@ public class ContentBlock: DataBlock {
         super.init(data: data)
     }
     
+    /// The string content
     public var string: HString {
         
         /* Check if we're a raw string or a formatted text */
@@ -43,11 +54,17 @@ public class ContentBlock: DataBlock {
     }
     
     
+    /// A style record of a styled content
     public struct TextFormatting {
-        let offset: Int
-        let styleIdentifier: Int
+        
+        /// Offset of the style in the string content
+        public let offset: Int
+        
+        /// ID of the style in the style table
+        public let styleIdentifier: Int
     }
     
+    /// The style records. They are sorted by offset. If nil, the string has no associated style.
     public var formattingChanges: [TextFormatting]? {
         
         /* Check if we're a raw string or a formatted text */

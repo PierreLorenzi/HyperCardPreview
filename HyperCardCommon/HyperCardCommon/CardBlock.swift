@@ -7,24 +7,45 @@
 //
 
 
+/// A card block contains the properties of a card
 public class CardBlock: LayerBlock {
     
     override public class var Name: NumericName {
         return NumericName(string: "CARD")!
     }
     
+    /// Is card marked
+    /// <p>
+    /// This parameter must be provided because it is only present in the page referencing the card
     public let marked: Bool
+    
+    /// Has the card text content in the fields
+    /// <p>
+    /// This parameter must be provided because it is only present in the page referencing the card
     public let hasTextContent: Bool
+    
+    /// Is the card at the beginning of a background
+    /// <p>
+    /// This parameter must be provided because it is only present in the page referencing the card
     public let isStartOfBackground: Bool
+    
+    /// Has the card a name
+    /// <p>
+    /// This parameter must be provided because it is only present in the page referencing the card
     public let hasName: Bool
+    
+    /// The search hash of the card
+    /// <p>
+    /// This parameter must be provided because it is only present in the page referencing the card
     public let searchHash: SearchHash
     
+    /// Main constructor
     public convenience init(data: DataRange, marked: Bool, hasTextContent: Bool, isStartOfBackground: Bool, hasName: Bool, searchHash: SearchHash) {
         
         self.init(data: data, marked: marked, hasTextContent: hasTextContent, isStartOfBackground: isStartOfBackground, hasName: hasName, searchHash: searchHash, partOffset: 0x36)
     }
     
-    /* Initializer for card v1 */
+    /// Constructor used to handle stack in V1 format
     init(data: DataRange, marked: Bool, hasTextContent: Bool, isStartOfBackground: Bool, hasName: Bool, searchHash: SearchHash, partOffset: Int) {
         self.marked = marked
         self.hasTextContent = hasTextContent
@@ -34,10 +55,12 @@ public class CardBlock: LayerBlock {
         super.init(data: data, partOffset: partOffset)
     }
     
+    /// Identifier of the page referencing the card
     public var pageIdentifier: Int {
         return data.readUInt32(at: 0x20)
     }
     
+    /// Identifier of the background of the card
     public var backgroundIdentifier: Int {
         return data.readUInt32(at: 0x24)
     }

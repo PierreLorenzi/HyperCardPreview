@@ -14,45 +14,57 @@ public class StackBlock: HyperCardFileBlock {
         return NumericName(string: "STAK")!
     }
     
-    /* Size */
+    /// Total size of the stack data fork
     public var totalSize: Int {
         return data.readUInt32(at: 0x14)
     }
+    
+    /// Size of the STAK block
     public var stackSize: Int {
         return data.readUInt32(at: 0x18)
     }
     
-    /* Backgrounds */
+    /// Number of backgrounds in this stack
     public var backgroundCount: Int {
         return data.readUInt32(at: 0x24)
     }
+    
+    /// ID of the first background
     public var firstBackgroundIdentifier: Int {
         return data.readUInt32(at: 0x28)
     }
     
-    /* Cards */
+    /// Number of cards in this stack
     public var cardCount: Int {
         return data.readUInt32(at: 0x2C)
     }
+    
+    /// ID of the first card
     public var firstCardIdentifier: Int {
         return data.readUInt32(at: 0x30)
     }
+    
+    /// ID of the 'LIST' block in the stack file
     public var listIdentifier: Int {
         return data.readUInt32(at: 0x34)
     }
     
-    /* Free */
+    /// Number of FREE blocks
     public var freeCount: Int {
         return data.readUInt32(at: 0x38)
     }
+    
+    /// Total size of all FREE blocks (=the free size of this stack)
     public var freeSize: Int {
         return data.readUInt32(at: 0x3C)
     }
     
+    /// ID of the 'PRNT' block in the stack file
     public var printBlockIdentifier: Int {
         return data.readUInt32(at: 0x40)
     }
     
+    /// Hash of the password
     public var passwordHash: Int? {
         let value = data.readUInt32(at: 0x44)
         guard value != 0 else {
@@ -61,30 +73,38 @@ public class StackBlock: HyperCardFileBlock {
         return value
     }
     
-    /* User Level */
+    /// User Level for this stack
     public var userLevel: UserLevel {
         let userLevelIndex = data.readUInt16(at: 0x48)
         return UserLevel(rawValue: userLevelIndex)!
     }
     
-    /* Security */
+    /// Can't Abort
     public var cantAbort: Bool {
         return data.readFlag(at: 0x4C, bitOffset: 11)
     }
+    
+    /// Can't Delete
     public var cantDelete: Bool {
         return data.readFlag(at: 0x4C, bitOffset: 14)
     }
+    
+    /// Can't Modify
     public var cantModify: Bool {
         return data.readFlag(at: 0x4C, bitOffset: 15)
     }
+    
+    /// Can't Peek
     public var cantPeek: Bool {
         return data.readFlag(at: 0x4C, bitOffset: 10)
     }
+    
+    /// Private Access
     public var privateAccess: Bool {
         return data.readFlag(at: 0x4C, bitOffset: 13)
     }
     
-    /* Version */
+    /// HyperCard Version at creation
     public var versionAtCreation: Version? {
         let code = data.readUInt32(at: 0x60)
         guard code != 0 else {
@@ -92,6 +112,8 @@ public class StackBlock: HyperCardFileBlock {
         }
         return Version(code: code)
     }
+    
+    /// HyperCard Version at last compacting
     public var versionAtLastCompacting: Version? {
         let code = data.readUInt32(at: 0x64)
         guard code != 0 else {
@@ -99,6 +121,8 @@ public class StackBlock: HyperCardFileBlock {
         }
         return Version(code: code)
     }
+    
+    /// HyperCard Version at last modification since last compacting
     public var versionAtLastModificationSinceLastCompacting: Version? {
         let code = data.readUInt32(at: 0x68)
         guard code != 0 else {
@@ -106,6 +130,8 @@ public class StackBlock: HyperCardFileBlock {
         }
         return Version(code: code)
     }
+    
+    /// HyperCard Version at last modification
     public var versionAtLastModification: Version? {
         let code = data.readUInt32(at: 0x6C)
         guard code != 0 else {
@@ -114,9 +140,12 @@ public class StackBlock: HyperCardFileBlock {
         return Version(code: code)
     }
     
+    /// Checksum of the STAK block
     public var checkSum: Int {
         return data.readUInt32(at: 0x70)
     }
+    
+    /// Checks the checksum
     public func isChecksumValid() -> Bool {
         var sum: UInt32 = 0
         for i in 0..<0x180 {
@@ -125,24 +154,29 @@ public class StackBlock: HyperCardFileBlock {
         return sum == 0
     }
     
+    /// Number of marked cards in this stack
     public var markedCardCount: Int {
         return data.readUInt32(at: 0x74)
     }
     
-    /* Window size */
+    /// Rectangle of the card window in the screen
     public var windowRectangle: Rectangle {
         return data.readRectangle(at: 0x78)
     }
+    
+    /// Screen resolution for the window rectangle
     public var screenRectangle: Rectangle {
         return data.readRectangle(at: 0x80)
     }
+    
+    /// Origin of scroll
     public var scrollPoint: Point {
         let y = data.readUInt32(at: 0x88)
         let x = data.readUInt32(at: 0x8A)
         return Point(x: x, y: y)
     }
     
-    /* Text fonts and styles */
+    /// ID of the FTBL (font table) block
     public var fontBlockIdentifier: Int? {
         let value = data.readUInt32(at: 0x1B0)
         guard value != 0 else {
@@ -150,6 +184,8 @@ public class StackBlock: HyperCardFileBlock {
         }
         return value
     }
+    
+    /// ID of the STBL (style table) block
     public var styleBlockIdentifier: Int? {
         let value = data.readUInt32(at: 0x1B4)
         guard value != 0 else {
@@ -161,7 +197,7 @@ public class StackBlock: HyperCardFileBlock {
     public static let defaultWidth = 512
     public static let defaultHeight = 342
     
-    /* Size */
+    /// 2D size of the cards in this stack
     public var size: Size {
         let dataWidth = data.readUInt16(at: 0x1BA)
         let dataHeight = data.readUInt16(at: 0x1B8)
@@ -170,7 +206,7 @@ public class StackBlock: HyperCardFileBlock {
         return Size(width: width, height: height)
     }
     
-    /* Patterns */
+    /// Table of patterns
     public var patterns: [Image] {
         var offset = 0x2C0
         var patterns = [Image]()
@@ -187,11 +223,13 @@ public class StackBlock: HyperCardFileBlock {
         return patterns
     }
     
-    /* Free blocks */
+    /// Record of a free block in a stack file
     public struct FreeLocation {
         public var offset: Int
         public var size: Int
     }
+    
+    /// Table of the FREE blocks
     public var freeLocations: [FreeLocation] {
         var locations = [FreeLocation]()
         var offset = 0x400
@@ -205,7 +243,7 @@ public class StackBlock: HyperCardFileBlock {
         return locations
     }
     
-    /* Script */
+    /// Stack script
     public var script: HString {
         guard self.data.length > 0x600 else {
             return ""

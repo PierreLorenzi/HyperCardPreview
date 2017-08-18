@@ -8,26 +8,40 @@
 
 
 
+/// Parsed font family resource
+/// <p>
+/// A font family represents what the user perceives as a font. It contains a list of
+/// bitmap fonts and vector fonts to use for different sizes and styles.
+/// <p>
+/// All the sizes and styles don't need to be present. If one is missing, it is generated.
 public class FontFamilyResourceBlock: ResourceBlock {
     
     public override class var Name: NumericName {
         return NumericName(string: "FOND")!
     }
     
+    /// Each value indicates the extra width, in pixels, that would be added to the glyphs of a 1-point font in this font family after a stylistic variation has been applied
     public struct StyleProperties {
-        var plainExtraWidth: Int
-        var boldExtraWidth: Int
-        var italicExtraWidth: Int
-        var underlineExtraWidth: Int
-        var outlineExtraWidth: Int
-        var shadowExtraWidth: Int
-        var condensedExtraWidth: Int
-        var extendedExtraWidth: Int
+        public var plainExtraWidth: Double
+        public var boldExtraWidth: Double
+        public var italicExtraWidth: Double
+        public var underlineExtraWidth: Double
+        public var outlineExtraWidth: Double
+        public var shadowExtraWidth: Double
+        public var condensedExtraWidth: Double
+        public var extendedExtraWidth: Double
     }
     
+    /// A font record, mapping a size and a style to a font
     public struct FontAssociation {
+        
+        /// The size of the font (if 0, the font is vector, elsewhere the font is bitmap)
         public let size: Int
+        
+        /// The style of the font
         public let style: TextStyle
+        
+        /// The ID of the font resource
         public let resourceIdentifier: Int
     }
     
@@ -36,72 +50,96 @@ public class FontFamilyResourceBlock: ResourceBlock {
         return Double(number) / Double(1 << 12)
     }
     
+    /// Whether the font family contains a glyph-width table
     public var containsGlyphWidthTable: Bool {
         return data.readFlag(at: 0, bitOffset: 1)
     }
     
+    /// Whether the fonts are fixed-width
     public var isFixedWidth: Bool {
         return data.readFlag(at: 0, bitOffset: 15)
     }
     
+    /// ID of the font family
     public var fontIdentifier: Int {
         return data.readUInt16(at: 0x2)
     }
     
+    /// The ASCII character code of the first glyph in the font family
     public var firstCharacterCode: Int {
         return data.readUInt16(at: 0x4)
     }
     
+    /// The ASCII character code of the last glyph in the font family
     public var lastCharacterCode: Int {
         return data.readUInt16(at: 0x6)
     }
     
+    /// The maximum ascent measurement for a one-point font of the font family
     public var maximumAscent: Double {
         return self.readFraction(at: 0x8)
     }
     
+    /// The maximum descent measurement for a one-point font of the font family
     public var maximumDescent: Double {
         return self.readFraction(at: 0xA)
     }
     
+    /// The maximum leading for a 1-point font of the font family
     public var maximumLeading: Double {
         return self.readFraction(at: 0xC)
     }
     
+    /// The maximum glyph width of any glyph in a one-point font of the font family
     public var maximumGlyphWidth: Double {
         return self.readFraction(at: 0xE)
     }
     
+    /// The offset to the family glyph-width table from the beginning of the font family resource to the beginning of the table, in bytes
     public var glyphWidthTableOffset: Int {
         return data.readUInt32(at: 0x10)
     }
     
+    /// The offset to the beginning of the kerning table from the beginning of the 'FOND' resource, in bytes
     public var kerningTableOffset: Int {
         return data.readUInt32(at: 0x14)
     }
     
+    /// The offset to the style-mapping table from the beginning of the font family resource to the beginning of the table, in bytes
     public var styleMappingTableOffset: Int {
         return data.readUInt32(at: 0x18)
     }
     
     public var styleProperties: StyleProperties {
         
-        let plainExtraWidth = data.readUInt16(at: 0x1C)
-        let boldExtraWidth = data.readUInt16(at: 0x1E)
-        let italicExtraWidth = data.readUInt16(at: 0x20)
-        let underlineExtraWidth = data.readUInt16(at: 0x22)
-        let outlineExtraWidth = data.readUInt16(at: 0x24)
-        let shadowExtraWidth = data.readUInt16(at: 0x26)
-        let condensedExtraWidth = data.readUInt16(at: 0x28)
-        let extendedExtraWidth = data.readUInt16(at: 0x2A)
+        let plainExtraWidth = self.readFraction(at: 0x1C)
+        let boldExtraWidth = self.readFraction(at: 0x1E)
+        let italicExtraWidth = self.readFraction(at: 0x20)
+        let underlineExtraWidth = self.readFraction(at: 0x22)
+        let outlineExtraWidth = self.readFraction(at: 0x24)
+        let shadowExtraWidth = self.readFraction(at: 0x26)
+        let condensedExtraWidth = self.readFraction(at: 0x28)
+        let extendedExtraWidth = self.readFraction(at: 0x2A)
         
         return StyleProperties(plainExtraWidth: plainExtraWidth, boldExtraWidth: boldExtraWidth, italicExtraWidth: italicExtraWidth, underlineExtraWidth: underlineExtraWidth, outlineExtraWidth: outlineExtraWidth, shadowExtraWidth: shadowExtraWidth, condensedExtraWidth: condensedExtraWidth, extendedExtraWidth: extendedExtraWidth)
     }
     
+    /// An integer value that specifies the version number of the font family resource, which indicates whether certain tables are available
+    /// <p>
+    /// Possible values are:
+    /// <p>
+    /// 0	Created by the Macintosh system software. The font family resource will not have the glyph-width tables and the fields will contain 0.
+    /// <p>
+    /// 1	Original format as designed by the font developer. This font family record probably has the width tables and most of the fields are filled.
+    /// <p>
+    /// 2	This record may contain the offset and bounding-box tables.
+    /// <p>
+    /// 3	This record definitely contains the offset and bounding-box tables.
     public var version: Int {
         return data.readUInt16(at: 0x32)
     }
     
+    /// The font records
     public var fontAssociationTable: [FontAssociation] {
         var offset = 0x34
         let countMinusOne = data.readUInt16(at: offset)

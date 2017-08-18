@@ -9,12 +9,14 @@
 import Foundation
 
 
+/// Parsed vector font resource
 public class VectorFontResourceBlock: ResourceBlock {
     
     public override class var Name: NumericName {
         return NumericName(string: "sfnt")!
     }
     
+    /// The resource contains a vector font file, that can be read with Core Graphics
     public var cgfont: CGFont {
         
         /* Copy the data */

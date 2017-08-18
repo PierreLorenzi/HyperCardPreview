@@ -13,6 +13,7 @@
  */
 
 
+/// Subclass for V1 stacks
 public class LayerBlockV1: DataBlock {
     
     /* LAYER V1 VALUES, we have to write them here to keep inheriting from Card */

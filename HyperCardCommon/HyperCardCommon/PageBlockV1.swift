@@ -9,6 +9,7 @@
 
 
 
+/// Subclass for V1 stacks
 public class PageBlockV1: PageBlock {
     
     /* The values are shifted */
