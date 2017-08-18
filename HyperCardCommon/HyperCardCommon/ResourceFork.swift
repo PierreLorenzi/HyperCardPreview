@@ -48,7 +48,17 @@ public class ResourceFork: DataBlock {
     
     /// Quick access to the bitmap font resource blocks
     public var bitmapFonts: [BitmapFontResourceBlock] {
-        return self.listResources(withType: BitmapFontResourceBlock.self)
+        
+        /* Append the 'NFNT' resources */
+        var fonts = self.listResources(withType: BitmapFontResourceBlock.self)
+        
+        /* Append the 'FONT' resources */
+        let oldFonts = self.listResources(withType: BitmapFontResourceBlockOld.self)
+        for oldFont in oldFonts {
+            fonts.append(oldFont)
+        }
+        
+        return fonts
     }
     
     /// Quick access to the vector font resource blocks

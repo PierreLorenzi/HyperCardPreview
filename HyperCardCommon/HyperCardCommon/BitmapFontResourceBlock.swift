@@ -147,3 +147,12 @@ public class BitmapFontResourceBlock: ResourceBlock {
     
 }
 
+/// A sub-class for the 'FONT' resources. They have the same structure and they may be also present
+public class BitmapFontResourceBlockOld: BitmapFontResourceBlock {
+    
+    public override class var Name: NumericName {
+        return NumericName(string: "FONT")!
+}
+
+}
+
