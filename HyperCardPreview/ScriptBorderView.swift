@@ -10,6 +10,7 @@ import AppKit
 import HyperCardCommon
 
 
+/// The view displaying a ghost of a button or a field
 class ScriptBorderView: NSView {
     
     let part: LayerPart

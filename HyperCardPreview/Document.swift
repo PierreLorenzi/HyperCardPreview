@@ -81,7 +81,10 @@ class Document: NSDocument {
         refresh()
     }
     
+    /// Redraws the HyperCard view
     func refresh() {
+        
+        /* Convert the 1-bit image to a Core Graphics image and display it in the HyperCard view */
         
         let image = self.browser.image
         for x in 0..<image.width {

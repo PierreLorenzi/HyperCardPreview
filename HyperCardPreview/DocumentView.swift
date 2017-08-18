@@ -8,6 +8,7 @@
 
 import Cocoa
 
+/// The view displaying the HyperCard stack
 class DocumentView: NSView {
     
     required init?(coder: NSCoder) {
