@@ -27,7 +27,7 @@ public extension Stack {
         let backgroundsInitializer = LazyInitializer(property: self.backgroundsProperty, initialization: {
             let backgroundBlocks = fileContent.backgrounds
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
-                return FileBackground(backgroundBlock: block, fileContent: fileContent)
+                return Background(backgroundBlock: block, fileContent: fileContent)
             })
         })
         self.backgroundsProperty.observers.append(backgroundsInitializer)

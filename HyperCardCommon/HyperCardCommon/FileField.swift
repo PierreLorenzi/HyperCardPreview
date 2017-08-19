@@ -73,7 +73,7 @@ public class FileField: Field {
     public override var content: PartContent {
         get {
             if !contentLoaded {
-                super.content = FileLayer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
+                super.content = Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
                 contentLoaded = true
             }
             return super.content

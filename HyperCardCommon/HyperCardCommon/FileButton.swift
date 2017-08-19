@@ -72,7 +72,7 @@ public class FileButton: Button {
     public override var content: HString {
         get {
             if !contentLoaded {
-                let partContent = FileLayer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
+                let partContent = Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
                 super.content = partContent.string
                 contentLoaded = true
             }

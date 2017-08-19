@@ -7,8 +7,44 @@
 //
 
 
-enum FileLayer {
-
+public extension Layer {
+    
+    func setupLazyInitialization(layerBlock: LayerBlock, fileContent: HyperCardFileData) {
+        
+        /* Enable lazy initialization */
+        
+        /* cantDelete */
+        self.cantDeleteProperty.observers.append(LazyInitializer(property: self.cantDeleteProperty, initialization: {
+            return layerBlock.cantDelete
+        }))
+        
+        /* showPict */
+        self.showPictProperty.observers.append(LazyInitializer(property: self.showPictProperty, initialization: {
+            return layerBlock.showPict
+        }))
+        
+        /* dontSearch */
+        self.dontSearchProperty.observers.append(LazyInitializer(property: self.dontSearchProperty, initialization: {
+            return layerBlock.dontSearch
+        }))
+        
+        /* image */
+        self.imageProperty.observers.append(LazyInitializer(property: self.imageProperty, initialization: {
+            return Layer.loadImage(layerBlock: layerBlock, fileContent: fileContent)
+        }))
+        
+        /* parts */
+        self.partsProperty.observers.append(LazyInitializer(property: self.partsProperty, initialization: {
+            return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
+        }))
+        
+        /* nextAvailablePartIdentifier */
+        self.nextAvailablePartIdentifierProperty.observers.append(LazyInitializer(property: self.nextAvailablePartIdentifierProperty, initialization: {
+            return layerBlock.nextAvailableIdentifier
+        }))
+        
+    }
+    
     static func loadImage(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> MaskedImage? {
         
         /* Get the identifier of the bitmap in the file */
@@ -91,5 +127,6 @@ enum FileLayer {
         return PartContent.formattedString(text)
         
     }
-
+    
 }
+
