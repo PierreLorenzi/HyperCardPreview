@@ -8,22 +8,36 @@
 
 
 
-private let fakeImage = Image(width: 0, height: 0)
 
-
-public extension Resource where T == Image {
+/// Implementation of Icon Resource with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
+public class FileIconResource: Resource<Image> {
     
-    public convenience init(resource: IconResourceBlock) {
+    private let resource: IconResourceBlock
+    
+    private static let fakeImage = Image(width: 0, height: 0)
+    
+    public init(resource: IconResourceBlock) {
+        self.resource = resource
         
-        self.init(identifier: resource.identifier, name: resource.name, type: ResourceTypes.icon, content: fakeImage)
-        
-        /* Enable lazy initialization */
-        
-        /* content */
-        self.contentProperty.observers.append(LazyInitializer(property: self.contentProperty, initialization: {
-            return resource.image
-        }))
-        
+        super.init(identifier: resource.identifier, name: resource.name, type: ResourceTypes.icon, content: FileIconResource.fakeImage)
+    }
+    
+    private var contentLoaded = false
+    override public var content: Image {
+        get {
+            if !contentLoaded {
+                super.content = resource.image
+                contentLoaded = true
+            }
+            return super.content
+        }
+        set {
+            contentLoaded = true
+            super.content = newValue
+        }
     }
     
 }

@@ -39,7 +39,7 @@ public extension Stack {
         /* Cards */
         let cardsInitializer = LazyInitializer(property: self.cardsProperty, initialization: {
             let cardBlocks = fileContent.cards
-            return cardBlocks.map({ return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
+            return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
         })
         self.cardsProperty.observers.append(cardsInitializer)
         

@@ -8,36 +8,51 @@
 
 
 
-private let fakeFontFamily = FontFamily()
-
-
-public extension Resource where T == FontFamily {
+/// Implementation of Font Family Resource with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
+public class FileFontFamilyResource : Resource<FontFamily> {
     
-    public convenience init(resource: FontFamilyResourceBlock, fork: ResourceFork) {
+    private let resource: FontFamilyResourceBlock
+    private let fork: ResourceFork
+    
+    private static let fakeFontFamily = FontFamily()
+    
+    public init(resource: FontFamilyResourceBlock, fork: ResourceFork) {
+        self.resource = resource
+        self.fork = fork
         
-        self.init(identifier: resource.identifier, name: resource.name, type: ResourceTypes.fontFamily, content: fakeFontFamily)
-        
-        /* Enable lazy initialization */
-        
-        /* content */
-        self.contentProperty.observers.append(LazyInitializer(property: self.contentProperty, initialization: {
-            return self.loadContent(resource: resource, fork: fork)
-        }))
-        
+        super.init(identifier: resource.identifier, name: resource.name, type: ResourceTypes.fontFamily, content: FileFontFamilyResource.fakeFontFamily)
     }
     
-    private func loadContent(resource: FontFamilyResourceBlock, fork: ResourceFork) -> FontFamily {
+    private var contentLoaded = false
+    override public var content: FontFamily {
+        get {
+            if !contentLoaded {
+                super.content = loadContent()
+                contentLoaded = true
+            }
+            return super.content
+        }
+        set {
+            contentLoaded = true
+            super.content = newValue
+        }
+    }
+    
+    private func loadContent() -> FontFamily {
         
         /* Get the references from the resource */
         let associations = resource.fontAssociationTable
         
         /* Load the bitmap fonts */
         let bitmapAssociations = associations.filter({ $0.size != 0 })
-        let bitmapFonts = bitmapAssociations.flatMap({ return self.convertAssociationToBitmapReference(association: $0, fork: fork) })
+        let bitmapFonts = bitmapAssociations.flatMap(self.convertAssociationToBitmapReference)
         
         /* Load the vector fonts */
         let vectorAssociations = associations.filter({ $0.size == 0 })
-        let vectorFonts = vectorAssociations.flatMap({ return self.convertAssociationToVectorReference(association: $0, fork: fork) })
+        let vectorFonts = vectorAssociations.flatMap(self.convertAssociationToVectorReference)
         
         /* Build the family */
         var family = FontFamily()
@@ -47,7 +62,7 @@ public extension Resource where T == FontFamily {
         
     }
     
-    private func convertAssociationToBitmapReference(association: FontFamilyResourceBlock.FontAssociation, fork: ResourceFork) -> FontFamily.FamilyBitmapFont? {
+    private func convertAssociationToBitmapReference(association: FontFamilyResourceBlock.FontAssociation) -> FontFamily.FamilyBitmapFont? {
         
         /* Find the font in the fork */
         guard let index = fork.bitmapFonts.index(where: {$0.identifier == association.resourceIdentifier}) else {
@@ -56,14 +71,14 @@ public extension Resource where T == FontFamily {
         
         /* Build a new font */
         let fontResource = fork.bitmapFonts[index]
-        let font = BitmapFont(block: fontResource)
+        let font = FileBitmapFont(block: fontResource)
         
         /* Build the reference */
         return FontFamily.FamilyBitmapFont(size: association.size, style: association.style, font: font)
         
     }
     
-    private func convertAssociationToVectorReference(association: FontFamilyResourceBlock.FontAssociation, fork: ResourceFork) -> FontFamily.FamilyVectorFont? {
+    private func convertAssociationToVectorReference(association: FontFamilyResourceBlock.FontAssociation) -> FontFamily.FamilyVectorFont? {
         
         /* Find the vector font in the fork */
         guard let index = fork.vectorFonts.index(where: {$0.identifier == association.resourceIdentifier}) else {
@@ -80,4 +95,3 @@ public extension Resource where T == FontFamily {
     }
     
 }
-

@@ -11,7 +11,9 @@
 public class HyperCardFile: ClassicFile {
     
     /// The stack object contained in the file
-    public lazy var stack: Stack = Stack(fileContent: self.parsedData, resources: self.resourceRepository)
+    public lazy var stack: Stack = { [unowned self] in
+        return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
+    }()
     
     /// The data blocks contained in the file
     public var parsedData: HyperCardFileData {

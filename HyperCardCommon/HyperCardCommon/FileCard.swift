@@ -31,7 +31,7 @@ public extension Card {
         
         /* backgroundPartContents */
         self.backgroundPartContentsProperty.observers.append(LazyInitializer(property: self.backgroundPartContentsProperty, initialization: {
-            return self.loadBackgroundPartContents(cardBlock: cardBlock, fileContent: fileContent)
+            return Card.loadBackgroundPartContents(cardBlock: cardBlock, fileContent: fileContent)
         }))
         
         /* script */
@@ -41,7 +41,7 @@ public extension Card {
         
     }
     
-    private func loadBackgroundPartContents(cardBlock: CardBlock, fileContent: HyperCardFileData) -> [BackgroundPartContent] {
+    private static func loadBackgroundPartContents(cardBlock: CardBlock, fileContent: HyperCardFileData) -> [BackgroundPartContent] {
         
         /* Get the contents */
         let contents = cardBlock.contents

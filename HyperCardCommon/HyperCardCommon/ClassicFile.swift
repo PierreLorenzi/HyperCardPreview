@@ -95,13 +95,13 @@ public extension ResourceRepository {
         
         /* Add the icons */
         for iconResourceBlock in fork.icons {
-            let iconResource = Resource<Image>(resource: iconResourceBlock)
+            let iconResource = FileIconResource(resource: iconResourceBlock)
             self.resources.append(iconResource)
         }
         
         /* Add the font families */
         for fontFamilyResourceBlock in fork.fontFamilies {
-            let fontFamilyResource = Resource<FontFamily>(resource: fontFamilyResourceBlock, fork: fork)
+            let fontFamilyResource = FileFontFamilyResource(resource: fontFamilyResourceBlock, fork: fork)
             self.resources.append(fontFamilyResource)
         }
     }

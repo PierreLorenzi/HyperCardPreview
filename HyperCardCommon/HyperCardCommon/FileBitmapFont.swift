@@ -7,11 +7,18 @@
 //
 
 
-public extension BitmapFont {
+/// Subclass of BitmapFont with lazy loading from a file
+/// <p>
+/// Lazy loading is implemented by hand because an inherited property can't be made
+/// lazy in swift.
+public class FileBitmapFont: BitmapFont {
     
-    public convenience init(block: BitmapFontResourceBlock) {
+    private let block: BitmapFontResourceBlock
+    
+    public init(block: BitmapFontResourceBlock) {
+        self.block = block
         
-        self.init()
+        super.init()
         
         /* Read now the scalar fields */
         self.maximumWidth = block.maximumWidth
@@ -20,22 +27,29 @@ public extension BitmapFont {
         self.fontRectangleHeight = block.fontRectangleHeight
         self.maximumAscent = block.maximumAscent
         self.maximumDescent = block.maximumDescent
-        
-        /* Enable lazy initialization */
-        
-        /* glyphs */
-        self.glyphsProperty.observers.append(LazyInitializer(property: self.glyphsProperty, initialization: {
-            return self.loadGlyphs(block: block)
-        }))
-        
     }
     
-    private func loadGlyphs(block: BitmapFontResourceBlock) -> [Glyph] {
+    private var glyphsLoaded = false
+    override public var glyphs: [Glyph] {
+        get {
+            if !glyphsLoaded {
+                super.glyphs = loadGlyphs()
+                glyphsLoaded = true
+            }
+            return super.glyphs
+        }
+        set {
+            glyphsLoaded = true
+            super.glyphs = newValue
+        }
+    }
+    
+    private func loadGlyphs() -> [Glyph] {
         
         var glyphs = [Glyph]()
         
         /* The special glyph is used outside the character bounds. It is the last in the font */
-        let specialGlyph = Glyph(font: block, index: block.lastCharacterCode - block.firstCharacterCode + 1)
+        let specialGlyph = FileGlyph(font: block, index: block.lastCharacterCode - block.firstCharacterCode + 1)
         
         for index in 0..<256 {
             
@@ -46,7 +60,7 @@ public extension BitmapFont {
             }
             
             /* Build the glyph */
-            let glyph = Glyph(font: block, index: index)
+            let glyph = FileGlyph(font: block, index: index)
             glyphs.append(glyph)
             
         }
