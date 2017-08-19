@@ -16,27 +16,17 @@ public extension Card {
         
         self.init(background: background)
         
+        /* Read now the scalar fields */
+        self.identifier = cardBlock.identifier
+        self.marked = cardBlock.marked
+        self.searchHash = cardBlock.searchHash
+        
         /* Enable lazy initialization */
         super.setupLazyInitialization(layerBlock: cardBlock, fileContent: fileContent)
-        
-        /* identifier */
-        self.identifierProperty.observers.append(LazyInitializer(property: self.identifierProperty, initialization: {
-            return cardBlock.identifier
-        }))
         
         /* name */
         self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {
             return cardBlock.name
-        }))
-        
-        /* marked */
-        self.markedProperty.observers.append(LazyInitializer(property: self.markedProperty, initialization: {
-            return cardBlock.marked
-        }))
-        
-        /* searchHash */
-        self.searchHashProperty.observers.append(LazyInitializer(property: self.searchHashProperty, initialization: {
-            return cardBlock.searchHash
         }))
         
         /* backgroundPartContents */

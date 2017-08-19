@@ -12,29 +12,15 @@ public extension Part {
     
     func setupLazyInitialization(partBlock: PartBlock) {
         
-        /* identifier */
-        self.identifierProperty.observers.append(LazyInitializer(property: self.identifierProperty, initialization: {
-            return partBlock.identifier
-        }))
+        /* Read now the scalar fields */
+        self.identifier = partBlock.identifier
+        self.style = partBlock.style
+        self.visible = partBlock.visible
+        self.rectangle = partBlock.rectangle
         
         /* name */
         self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {
             return partBlock.name
-        }))
-        
-        /* style */
-        self.styleProperty.observers.append(LazyInitializer(property: self.styleProperty, initialization: {
-            return partBlock.style
-        }))
-        
-        /* visible */
-        self.visibleProperty.observers.append(LazyInitializer(property: self.visibleProperty, initialization: {
-            return partBlock.visible
-        }))
-        
-        /* rectangle */
-        self.rectangleProperty.observers.append(LazyInitializer(property: self.rectangleProperty, initialization: {
-            return partBlock.rectangle
         }))
         
         /* script */

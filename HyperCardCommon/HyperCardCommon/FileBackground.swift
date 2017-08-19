@@ -13,13 +13,11 @@ public extension Background {
         
         self.init()
         
+        /* Read now the scalar fields */
+        self.identifier = backgroundBlock.identifier
+        
         /* Enable lazy initialization */
         super.setupLazyInitialization(layerBlock: backgroundBlock, fileContent: fileContent)
-        
-        /* identifier */
-        self.identifierProperty.observers.append(LazyInitializer(property: self.identifierProperty, initialization: {
-            return backgroundBlock.identifier
-        }))
         
         /* name */
         self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {

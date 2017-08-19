@@ -19,6 +19,23 @@ public extension Stack {
         /* Enable lazy initialization */
         let stackBlock = fileContent.stack
         
+        /* Read now the scalar fields */
+        self.passwordHash = stackBlock.passwordHash
+        self.userLevel = stackBlock.userLevel
+        self.cantAbort = stackBlock.cantAbort
+        self.cantDelete = stackBlock.cantDelete
+        self.cantModify = stackBlock.cantModify
+        self.cantPeek = stackBlock.cantPeek
+        self.privateAccess = stackBlock.privateAccess
+        self.versionAtCreation = stackBlock.versionAtCreation
+        self.versionAtLastCompacting = stackBlock.versionAtLastCompacting
+        self.versionAtLastModificationSinceLastCompacting = stackBlock.versionAtLastModificationSinceLastCompacting
+        self.versionAtLastModification = stackBlock.versionAtLastModification
+        self.size = stackBlock.size
+        self.windowRectangle = stackBlock.windowRectangle
+        self.screenRectangle = stackBlock.screenRectangle
+        self.scrollPoint = stackBlock.scrollPoint
+        
         /* Cards */
         let cardsInitializer = LazyInitializer(property: self.cardsProperty, initialization: {
             let cardBlocks = fileContent.cards
@@ -34,81 +51,6 @@ public extension Stack {
             })
         })
         self.backgroundsProperty.observers.append(backgroundsInitializer)
-        
-        /* passwordHash */
-        self.passwordHashProperty.observers.append(LazyInitializer(property: self.passwordHashProperty, initialization: {
-            return stackBlock.passwordHash
-        }))
-        
-        /* userLevel */
-        self.userLevelProperty.observers.append(LazyInitializer(property: self.userLevelProperty, initialization: {
-            return stackBlock.userLevel
-        }))
-        
-        /* cantAbort */
-        self.cantAbortProperty.observers.append(LazyInitializer(property: self.cantAbortProperty, initialization: {
-            return stackBlock.cantAbort
-        }))
-        
-        /* cantDelete */
-        self.cantDeleteProperty.observers.append(LazyInitializer(property: self.cantDeleteProperty, initialization: {
-            return stackBlock.cantDelete
-        }))
-        
-        /* cantModify */
-        self.cantModifyProperty.observers.append(LazyInitializer(property: self.cantModifyProperty, initialization: {
-            return stackBlock.cantModify
-        }))
-        
-        /* cantPeek */
-        self.cantPeekProperty.observers.append(LazyInitializer(property: self.cantPeekProperty, initialization: {
-            return stackBlock.cantPeek
-        }))
-        
-        /* privateAccess */
-        self.privateAccessProperty.observers.append(LazyInitializer(property: self.privateAccessProperty, initialization: {
-            return stackBlock.privateAccess
-        }))
-        
-        /* versionAtCreation */
-        self.versionAtCreationProperty.observers.append(LazyInitializer(property: self.versionAtCreationProperty, initialization: {
-            return stackBlock.versionAtCreation
-        }))
-        
-        /* versionAtLastCompacting */
-        self.versionAtLastCompactingProperty.observers.append(LazyInitializer(property: self.versionAtLastCompactingProperty, initialization: {
-            return stackBlock.versionAtLastCompacting
-        }))
-        
-        /* versionAtLastModificationSinceLastCompacting */
-        self.versionAtLastModificationSinceLastCompactingProperty.observers.append(LazyInitializer(property: self.versionAtLastModificationSinceLastCompactingProperty, initialization: {
-            return stackBlock.versionAtLastModificationSinceLastCompacting
-        }))
-        
-        /* versionAtLastModification */
-        self.versionAtLastModificationProperty.observers.append(LazyInitializer(property: self.versionAtLastModificationProperty, initialization: {
-            return stackBlock.versionAtLastModification
-        }))
-        
-        /* size */
-        self.sizeProperty.observers.append(LazyInitializer(property: self.sizeProperty, initialization: {
-            return stackBlock.size
-        }))
-        
-        /* windowRectangle */
-        self.windowRectangleProperty.observers.append(LazyInitializer(property: self.windowRectangleProperty, initialization: {
-            return stackBlock.windowRectangle
-        }))
-        
-        /* screenRectangle */
-        self.screenRectangleProperty.observers.append(LazyInitializer(property: self.screenRectangleProperty, initialization: {
-            return stackBlock.screenRectangle
-        }))
-        
-        /* scrollPoint */
-        self.scrollPointProperty.observers.append(LazyInitializer(property: self.scrollPointProperty, initialization: {
-            return stackBlock.scrollPoint
-        }))
         
         /* patterns */
         self.patternsProperty.observers.append(LazyInitializer(property: self.patternsProperty, initialization: {

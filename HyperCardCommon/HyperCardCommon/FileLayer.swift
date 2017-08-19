@@ -11,22 +11,13 @@ public extension Layer {
     
     func setupLazyInitialization(layerBlock: LayerBlock, fileContent: HyperCardFileData) {
         
+        /* Read now the scalar fields */
+        self.cantDelete = layerBlock.cantDelete
+        self.showPict = layerBlock.showPict
+        self.dontSearch = layerBlock.dontSearch
+        self.nextAvailablePartIdentifier = layerBlock.nextAvailableIdentifier
+        
         /* Enable lazy initialization */
-        
-        /* cantDelete */
-        self.cantDeleteProperty.observers.append(LazyInitializer(property: self.cantDeleteProperty, initialization: {
-            return layerBlock.cantDelete
-        }))
-        
-        /* showPict */
-        self.showPictProperty.observers.append(LazyInitializer(property: self.showPictProperty, initialization: {
-            return layerBlock.showPict
-        }))
-        
-        /* dontSearch */
-        self.dontSearchProperty.observers.append(LazyInitializer(property: self.dontSearchProperty, initialization: {
-            return layerBlock.dontSearch
-        }))
         
         /* image */
         self.imageProperty.observers.append(LazyInitializer(property: self.imageProperty, initialization: {
@@ -36,11 +27,6 @@ public extension Layer {
         /* parts */
         self.partsProperty.observers.append(LazyInitializer(property: self.partsProperty, initialization: {
             return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
-        }))
-        
-        /* nextAvailablePartIdentifier */
-        self.nextAvailablePartIdentifierProperty.observers.append(LazyInitializer(property: self.nextAvailablePartIdentifierProperty, initialization: {
-            return layerBlock.nextAvailableIdentifier
         }))
         
     }
