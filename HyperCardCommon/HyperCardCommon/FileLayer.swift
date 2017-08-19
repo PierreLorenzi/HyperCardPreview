@@ -73,7 +73,7 @@ public extension Layer {
             /* Check if the part is a field or a button */
             switch (partBlock.type) {
             case .button:
-                let button = FileButton(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let button = Button(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
                 parts.append(LayerPart.button(button))
             case .field:
                 let field = Field(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)

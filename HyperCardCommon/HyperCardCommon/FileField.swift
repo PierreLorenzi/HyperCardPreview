@@ -15,35 +15,12 @@ public extension Field {
         self.init()
         
         /* Enable lazy initialization */
+        super.setupLazyInitialization(partBlock: partBlock)
         
-        /* identifier */
-        self.identifierProperty.observers.append(LazyInitializer(property: self.identifierProperty, initialization: {
-            return partBlock.identifier
-        }))
-        
-        /* name */
-        self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {
-            return partBlock.name
-        }))
-        
-        /* style */
-        self.styleProperty.observers.append(LazyInitializer(property: self.styleProperty, initialization: {
-            return partBlock.style
-        }))
         
         /* content */
         self.contentProperty.observers.append(LazyInitializer(property: self.contentProperty, initialization: {
             return Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
-        }))
-        
-        /* rectangle */
-        self.rectangleProperty.observers.append(LazyInitializer(property: self.rectangleProperty, initialization: {
-            return partBlock.rectangle
-        }))
-        
-        /* script */
-        self.scriptProperty.observers.append(LazyInitializer(property: self.scriptProperty, initialization: {
-            return partBlock.script
         }))
         
         /* lockText */
@@ -74,11 +51,6 @@ public extension Field {
         /* dontWrap */
         self.dontWrapProperty.observers.append(LazyInitializer(property: self.dontWrapProperty, initialization: {
             return partBlock.dontWrap
-        }))
-        
-        /* visible */
-        self.visibleProperty.observers.append(LazyInitializer(property: self.visibleProperty, initialization: {
-            return partBlock.visible
         }))
         
         /* multipleLines */

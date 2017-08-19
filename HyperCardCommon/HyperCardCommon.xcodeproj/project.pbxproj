@@ -10,6 +10,7 @@
 		6C039FC81F486DD900B3246E /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FC71F486DD900B3246E /* Property.swift */; };
 		6C039FCA1F486E1100B3246E /* ChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FC91F486E1100B3246E /* ChangeObserver.swift */; };
 		6C039FCC1F486E2B00B3246E /* LazyInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FCB1F486E2B00B3246E /* LazyInitializer.swift */; };
+		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
 		6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */; };
@@ -345,6 +346,7 @@
 		6C039FC71F486DD900B3246E /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		6C039FC91F486E1100B3246E /* ChangeObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeObserver.swift; sourceTree = "<group>"; };
 		6C039FCB1F486E2B00B3246E /* LazyInitializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyInitializer.swift; sourceTree = "<group>"; };
+		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -857,6 +859,7 @@
 				6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */,
 				6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */,
 				6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */,
+				6C30878C1F48957100CCA9A7 /* FilePart.swift */,
 				6C9E6ADF1E75BCFA00BBF925 /* FileField.swift */,
 				6C9E6AE01E75BCFA00BBF925 /* FileButton.swift */,
 			);
@@ -1613,6 +1616,7 @@
 				6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */,
 				6C9E6B0B1E75BCFA00BBF925 /* ResourceRepository.swift in Sources */,
+				6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */,
 				6C9E6B251E75BCFA00BBF925 /* PageBlockV1.swift in Sources */,
 				6C9E6B051E75BCFA00BBF925 /* Card.swift in Sources */,
 				6C9E6B201E75BCFA00BBF925 /* StyleBlock.swift in Sources */,
