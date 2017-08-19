@@ -7,8 +7,30 @@
 //
 
 
-enum FileLayer {
-
+public extension Layer {
+    
+    func setupLazyInitialization(layerBlock: LayerBlock, fileContent: HyperCardFileData) {
+        
+        /* Read now the scalar fields */
+        self.cantDelete = layerBlock.cantDelete
+        self.showPict = layerBlock.showPict
+        self.dontSearch = layerBlock.dontSearch
+        self.nextAvailablePartIdentifier = layerBlock.nextAvailableIdentifier
+        
+        /* Enable lazy initialization */
+        
+        /* image */
+        self.imageProperty.observers.append(LazyInitializer(property: self.imageProperty, initialization: {
+            return Layer.loadImage(layerBlock: layerBlock, fileContent: fileContent)
+        }))
+        
+        /* parts */
+        self.partsProperty.observers.append(LazyInitializer(property: self.partsProperty, initialization: {
+            return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
+        }))
+        
+    }
+    
     static func loadImage(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> MaskedImage? {
         
         /* Get the identifier of the bitmap in the file */
@@ -37,10 +59,10 @@ enum FileLayer {
             /* Check if the part is a field or a button */
             switch (partBlock.type) {
             case .button:
-                let button = FileButton(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let button = Button(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
                 parts.append(LayerPart.button(button))
             case .field:
-                let field = FileField(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let field = Field(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
                 parts.append(LayerPart.field(field))
             }
             
@@ -91,5 +113,6 @@ enum FileLayer {
         return PartContent.formattedString(text)
         
     }
-
+    
 }
+

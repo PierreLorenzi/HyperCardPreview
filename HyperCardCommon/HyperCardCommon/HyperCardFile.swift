@@ -11,9 +11,15 @@
 public class HyperCardFile: ClassicFile {
     
     /// The stack object contained in the file
-    public var stack: Stack {
-        return FileStack(fileContent: self.parsedData, resources: self.resourceRepository)
-    }
+    public lazy var stack: Stack = { [unowned self] in
+        
+        /* Crash if there is private access, because the header is encrypted */
+        if self.parsedData.stack.privateAccess {
+            fatalError("can't read a stack protected by private access because the header is encrypted")
+        }
+        
+        return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
+    }()
     
     /// The data blocks contained in the file
     public var parsedData: HyperCardFileData {
@@ -31,6 +37,7 @@ public class HyperCardFile: ClassicFile {
             fatalError("the data is not a HyperCard Stack")
             
         }
+        
     }
     
     /// The version of the stack format: V1 or V2. Parsed here because it must be read before

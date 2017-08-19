@@ -11,7 +11,7 @@
 /// A resource data in a resource fork. T is the type of the data contained in the resource.
 public class Resource<T> {
     
-    /// The identifier of the resource, to identify it among the resources of the same type
+    /// The identifier
     public var identifier: Int
     
     /// The name

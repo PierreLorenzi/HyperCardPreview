@@ -297,10 +297,19 @@ public class Browser {
         view.titleWidth = button.titleWidth
         view.items = separateStringLines(in: button.content)
         
+        /* Set the condensed font */
+        var consensedStyle = button.textStyle
+        consensedStyle.condense = true
+        view.condensedFont = fontManager.findFont(withIdentifier: button.textFontIdentifier, size: button.textFontSize, style: consensedStyle)
+        
         return view
     }
     
     private func separateStringLines(in string: HString) -> [HString] {
+        
+        guard string.length > 0 else {
+            return []
+        }
         
         var lines = [HString]()
         
@@ -314,6 +323,10 @@ public class Browser {
                 lineStart = i+1
             }
         }
+        
+        /* Add the last line */
+        let lastLine = string[lineStart..<string.length]
+        lines.append(lastLine)
         
         return lines
     }

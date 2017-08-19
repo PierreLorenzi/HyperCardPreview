@@ -12,101 +12,21 @@
 /// Lazy loading is implemented by hand because an inherited property can't be made
 /// lazy in swift.
 public class FileBitmapFont: BitmapFont {
-
+    
     private let block: BitmapFontResourceBlock
     
     public init(block: BitmapFontResourceBlock) {
         self.block = block
-    }
-    
-    private var maximumWidthLoaded = false
-    override public var maximumWidth: Int {
-        get {
-            if !maximumWidthLoaded {
-                super.maximumWidth = block.maximumWidth
-                maximumWidthLoaded = true
-            }
-            return super.maximumWidth
-        }
-        set {
-            maximumWidthLoaded = true
-            super.maximumWidth = newValue
-        }
-    }
-    
-    private var maximumKerningLoaded = false
-    override public var maximumKerning: Int {
-        get {
-            if !maximumKerningLoaded {
-                super.maximumKerning = block.maximumKerning
-                maximumKerningLoaded = true
-            }
-            return super.maximumKerning
-        }
-        set {
-            maximumKerningLoaded = true
-            super.maximumKerning = newValue
-        }
-    }
-    
-    private var fontRectangleWidthLoaded = false
-    override public var fontRectangleWidth: Int {
-        get {
-            if !fontRectangleWidthLoaded {
-                super.fontRectangleWidth = block.fontRectangleWidth
-                fontRectangleWidthLoaded = true
-            }
-            return super.fontRectangleWidth
-        }
-        set {
-            fontRectangleWidthLoaded = true
-            super.fontRectangleWidth = newValue
-        }
-    }
-    
-    private var fontRectangleHeightLoaded = false
-    override public var fontRectangleHeight: Int {
-        get {
-            if !fontRectangleHeightLoaded {
-                super.fontRectangleHeight = block.fontRectangleHeight
-                fontRectangleHeightLoaded = true
-            }
-            return super.fontRectangleHeight
-        }
-        set {
-            fontRectangleHeightLoaded = true
-            super.fontRectangleHeight = newValue
-        }
-    }
-    
-    private var maximumAscentLoaded = false
-    override public var maximumAscent: Int {
-        get {
-            if !maximumAscentLoaded {
-                super.maximumAscent = block.maximumAscent
-                maximumAscentLoaded = true
-            }
-            return super.maximumAscent
-        }
-        set {
-            maximumAscentLoaded = true
-            super.maximumAscent = newValue
-        }
-    }
-    
-    private var maximumDescentLoaded = false
-    override public var maximumDescent: Int {
-        get {
-            if !maximumDescentLoaded {
-                super.maximumDescent = block.maximumDescent
-                maximumDescentLoaded = true
-            }
-            return super.maximumDescent
-        }
-        set {
-            maximumDescentLoaded = true
-            super.maximumDescent = newValue
-        }
+        
+        super.init()
+        
+        /* Read now the scalar fields */
+        self.maximumWidth = block.maximumWidth
+        self.maximumKerning = block.maximumKerning
+        self.fontRectangleWidth = block.fontRectangleWidth
+        self.fontRectangleHeight = block.fontRectangleHeight
+        self.maximumAscent = block.maximumAscent
+        self.maximumDescent = block.maximumDescent
     }
     
     private var glyphsLoaded = false
@@ -149,3 +69,4 @@ public class FileBitmapFont: BitmapFont {
     }
     
 }
+

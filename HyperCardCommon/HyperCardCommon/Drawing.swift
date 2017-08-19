@@ -238,31 +238,44 @@ public class Drawing {
         let integerLength = (upToMultiple(position.x + length, 32) - downToMultiple(position.x, 32)) / 32
         
         let rowIntegerIndex = position.x / 32
-        let integerLastIndex = integerIndex + integerLength - 1
         
-        /* Save the first and last integer, so we can redraw the pixels included in
-         the 32-bit aligment but not in the image */
+        /* Left integer */
         let integerLeft = self.image.data[integerIndex]
-        let integerRight = self.image.data[integerLastIndex]
-        
-        /* Apply the integers in-between */
-        for i in 0..<integerLength {
-            composition(&self.image.data[i + integerIndex], row[i], rowIntegerIndex + i, position.y)
-        }
-        
-        /* Redraw the outer pixels on the left */
+        var newIntegerLeft = integerLeft
+        composition(&newIntegerLeft, row[0], rowIntegerIndex, position.y)
         let outerPixelCountLeft = position.x % 32
         if outerPixelCountLeft > 0 {
             // I have to use a super weird expression because Swift throws "Shift too large"
             let maskLeft = UInt32.max << UInt32(-outerPixelCountLeft + MemoryLayout<UInt32>.size * 8)
-            self.image.data[integerIndex] = (self.image.data[integerIndex] & ~maskLeft) | (integerLeft & maskLeft)
+            newIntegerLeft = (newIntegerLeft & ~maskLeft) | (integerLeft & maskLeft)
         }
         
-        /* Redraw the outer pixels on the right */
+        /* Special case: there is only one integer */
         let outerPixelCountRight = 31 - (position.x + length - 1) % 32
+        if integerLength == 1 {
+            if outerPixelCountRight > 0 {
+                let maskRight = UInt32.max >> UInt32(32 - outerPixelCountRight)
+                newIntegerLeft = (newIntegerLeft & ~maskRight) | (integerLeft & maskRight)
+            }
+            self.image.data[integerIndex] = newIntegerLeft
+            return
+        }
+        
+        self.image.data[integerIndex] = newIntegerLeft
+        
+        /* Right integer */
+        let integerRight = self.image.data[integerIndex + integerLength - 1]
+        var newIntegerRight = integerRight
+        composition(&newIntegerRight, row[integerLength - 1], rowIntegerIndex + integerLength - 1, position.y)
         if outerPixelCountRight > 0 {
             let maskRight = UInt32.max >> UInt32(32 - outerPixelCountRight)
-            self.image.data[integerLastIndex] = (self.image.data[integerLastIndex] & ~maskRight) | (integerRight & maskRight)
+            newIntegerRight = (newIntegerRight & ~maskRight) | (integerRight & maskRight)
+        }
+        self.image.data[integerIndex + integerLength - 1] = newIntegerRight
+        
+        /* Apply the integers in-between */
+        for i in 1..<(integerLength - 1) {
+            composition(&self.image.data[i + integerIndex], row[i], rowIntegerIndex + i, position.y)
         }
         
     }

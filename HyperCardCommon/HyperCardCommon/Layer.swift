@@ -12,23 +12,47 @@
 public class Layer {
     
     /// The graphic image of the layer, displayed behind the parts
-    public var image: MaskedImage?      = nil
+    public var image: MaskedImage? {
+        get { return self.imageProperty.value }
+        set { self.imageProperty.value = newValue }
+    }
+    public let imageProperty = Property<MaskedImage?>(nil)
     
     /// Whether the image is displayed
-    public var showPict: Bool           = true
+    public var showPict: Bool {
+        get { return self.showPictProperty.value }
+        set { self.showPictProperty.value = newValue }
+    }
+    public let showPictProperty = Property<Bool>(true)
     
     /// Whether or not the fields are searched with the find command
-    public var dontSearch: Bool         = false
+    public var dontSearch: Bool {
+        get { return self.dontSearchProperty.value }
+        set { self.dontSearchProperty.value = newValue }
+    }
+    public let dontSearchProperty = Property<Bool>(false)
     
     /// Whether or not the user can delete the specified layer
-    public var cantDelete: Bool         = false
+    public var cantDelete: Bool {
+        get { return self.cantDeleteProperty.value }
+        set { self.cantDeleteProperty.value = newValue }
+    }
+    public let cantDeleteProperty = Property<Bool>(false)
     
     /// The part list. This list defines the order in which the parts are drawn, and their
     /// indexes when in a script when there is "part 3"
-    public var parts: [LayerPart]                   = []
+    public var parts: [LayerPart] {
+        get { return self.partsProperty.value }
+        set { self.partsProperty.value = newValue }
+    }
+    public let partsProperty = Property<[LayerPart]>([])
     
     /// The identifier to be given to the next created part
-    public var nextAvailablePartIdentifier: Int     = 1
+    public var nextAvailablePartIdentifier: Int {
+        get { return self.nextAvailablePartIdentifierProperty.value }
+        set { self.nextAvailablePartIdentifierProperty.value = newValue }
+    }
+    public let nextAvailablePartIdentifierProperty = Property<Int>(1)
     
     
     /// A filter on the parts to access the fields. This list is necessary because fields have
