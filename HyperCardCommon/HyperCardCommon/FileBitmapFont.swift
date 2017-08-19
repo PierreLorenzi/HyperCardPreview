@@ -29,6 +29,7 @@ public class FileBitmapFont: BitmapFont {
             return super.maximumWidth
         }
         set {
+            maximumWidthLoaded = true
             super.maximumWidth = newValue
         }
     }
@@ -43,6 +44,7 @@ public class FileBitmapFont: BitmapFont {
             return super.maximumKerning
         }
         set {
+            maximumKerningLoaded = true
             super.maximumKerning = newValue
         }
     }
@@ -57,6 +59,7 @@ public class FileBitmapFont: BitmapFont {
             return super.fontRectangleWidth
         }
         set {
+            fontRectangleWidthLoaded = true
             super.fontRectangleWidth = newValue
         }
     }
@@ -71,6 +74,7 @@ public class FileBitmapFont: BitmapFont {
             return super.fontRectangleHeight
         }
         set {
+            fontRectangleHeightLoaded = true
             super.fontRectangleHeight = newValue
         }
     }
@@ -85,6 +89,7 @@ public class FileBitmapFont: BitmapFont {
             return super.maximumAscent
         }
         set {
+            maximumAscentLoaded = true
             super.maximumAscent = newValue
         }
     }
@@ -99,6 +104,7 @@ public class FileBitmapFont: BitmapFont {
             return super.maximumDescent
         }
         set {
+            maximumDescentLoaded = true
             super.maximumDescent = newValue
         }
     }
@@ -113,6 +119,7 @@ public class FileBitmapFont: BitmapFont {
             return super.glyphs
         }
         set {
+            glyphsLoaded = true
             super.glyphs = newValue
         }
     }

@@ -35,6 +35,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
             return super.content
         }
         set {
+            contentLoaded = true
             super.content = newValue
         }
     }

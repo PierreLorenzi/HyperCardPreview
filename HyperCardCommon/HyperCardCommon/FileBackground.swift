@@ -30,6 +30,7 @@ public class FileBackground: Background {
             return super.identifier
         }
         set {
+            identifierLoaded = true
             super.identifier = newValue
         }
     }
@@ -44,6 +45,7 @@ public class FileBackground: Background {
             return super.name
         }
         set {
+            nameLoaded = true
             super.name = newValue
         }
     }
@@ -58,6 +60,7 @@ public class FileBackground: Background {
             return super.cantDelete
         }
         set {
+            cantDeleteLoaded = true
             super.cantDelete = newValue
         }
     }
@@ -72,6 +75,7 @@ public class FileBackground: Background {
             return super.showPict
         }
         set {
+            showPictLoaded = true
             super.showPict = newValue
         }
     }
@@ -86,6 +90,7 @@ public class FileBackground: Background {
             return super.dontSearch
         }
         set {
+            dontSearchLoaded = true
             super.dontSearch = newValue
         }
     }
@@ -100,6 +105,7 @@ public class FileBackground: Background {
             return super.script
         }
         set {
+            scriptLoaded = true
             super.script = newValue
         }
     }
@@ -114,6 +120,7 @@ public class FileBackground: Background {
             return super.image
         }
         set {
+            imageLoaded = true
             super.image = newValue
         }
     }
@@ -128,6 +135,7 @@ public class FileBackground: Background {
             return super.parts
         }
         set {
+            partsLoaded = true
             super.parts = newValue
         }
     }
@@ -142,6 +150,7 @@ public class FileBackground: Background {
             return super.nextAvailablePartIdentifier
         }
         set {
+            nextAvailablePartIdentifierLoaded = true
             super.nextAvailablePartIdentifier = newValue
         }
     }

@@ -40,6 +40,7 @@ public class FileStack: Stack {
             return super.cards
         }
         set {
+            cardsLoaded = true
             super.cards = newValue
         }
     }
@@ -72,6 +73,7 @@ public class FileStack: Stack {
             return super.backgrounds
         }
         set {
+            backgroundsLoaded = true
             super.backgrounds = newValue
         }
     }
@@ -86,6 +88,7 @@ public class FileStack: Stack {
             return super.passwordHash
         }
         set {
+            passwordHashLoaded = true
             super.passwordHash = newValue
         }
     }
@@ -100,6 +103,7 @@ public class FileStack: Stack {
             return super.userLevel
         }
         set {
+            userLevelLoaded = true
             super.userLevel = newValue
         }
     }
@@ -114,6 +118,7 @@ public class FileStack: Stack {
             return super.cantAbort
         }
         set {
+            cantAbortLoaded = true
             super.cantAbort = newValue
         }
     }
@@ -128,6 +133,7 @@ public class FileStack: Stack {
             return super.cantDelete
         }
         set {
+            cantDeleteLoaded = true
             super.cantDelete = newValue
         }
     }
@@ -142,6 +148,7 @@ public class FileStack: Stack {
             return super.cantModify
         }
         set {
+            cantModifyLoaded = true
             super.cantModify = newValue
         }
     }
@@ -156,6 +163,7 @@ public class FileStack: Stack {
             return super.cantPeek
         }
         set {
+            cantPeekLoaded = true
             super.cantPeek = newValue
         }
     }
@@ -170,6 +178,7 @@ public class FileStack: Stack {
             return super.privateAccess
         }
         set {
+            privateAccessLoaded = true
             super.privateAccess = newValue
         }
     }
@@ -184,6 +193,7 @@ public class FileStack: Stack {
             return super.versionAtCreation
         }
         set {
+            versionAtCreationLoaded = true
             super.versionAtCreation = newValue
         }
     }
@@ -198,6 +208,7 @@ public class FileStack: Stack {
             return super.versionAtLastCompacting
         }
         set {
+            versionAtLastCompactingLoaded = true
             super.versionAtLastCompacting = newValue
         }
     }
@@ -212,6 +223,7 @@ public class FileStack: Stack {
             return super.versionAtLastModificationSinceLastCompacting
         }
         set {
+            versionAtLastModificationSinceLastCompactingLoaded = true
             super.versionAtLastModificationSinceLastCompacting = newValue
         }
     }
@@ -226,6 +238,7 @@ public class FileStack: Stack {
             return super.versionAtLastModification
         }
         set {
+            versionAtLastModificationLoaded = true
             super.versionAtLastModification = newValue
         }
     }
@@ -240,6 +253,7 @@ public class FileStack: Stack {
             return super.size
         }
         set {
+            sizeLoaded = true
             super.size = newValue
         }
     }
@@ -254,6 +268,7 @@ public class FileStack: Stack {
             return super.windowRectangle
         }
         set {
+            windowRectangleLoaded = true
             super.windowRectangle = newValue
         }
     }
@@ -268,6 +283,7 @@ public class FileStack: Stack {
             return super.screenRectangle
         }
         set {
+            screenRectangleLoaded = true
             super.screenRectangle = newValue
         }
     }
@@ -282,6 +298,7 @@ public class FileStack: Stack {
             return super.scrollPoint
         }
         set {
+            scrollPointLoaded = true
             super.scrollPoint = newValue
         }
     }
@@ -296,6 +313,7 @@ public class FileStack: Stack {
             return super.patterns
         }
         set {
+            patternsLoaded = true
             super.patterns = newValue
         }
     }
@@ -310,6 +328,7 @@ public class FileStack: Stack {
             return super.script
         }
         set {
+            scriptLoaded = true
             super.script = newValue
         }
     }

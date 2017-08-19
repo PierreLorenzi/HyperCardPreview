@@ -33,6 +33,7 @@ public class FileIconResource: Resource<Image> {
             return super.content
         }
         set {
+            contentLoaded = true
             super.content = newValue
         }
     }

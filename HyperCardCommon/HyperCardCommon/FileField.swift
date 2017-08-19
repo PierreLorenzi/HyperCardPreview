@@ -34,6 +34,7 @@ public class FileField: Field {
             return super.identifier
         }
         set {
+            identifierLoaded = true
             super.identifier = newValue
         }
     }
@@ -48,6 +49,7 @@ public class FileField: Field {
             return super.name
         }
         set {
+            nameLoaded = true
             super.name = newValue
         }
     }
@@ -62,6 +64,7 @@ public class FileField: Field {
             return super.style
         }
         set {
+            styleLoaded = true
             super.style = newValue
         }
     }
@@ -76,6 +79,7 @@ public class FileField: Field {
             return super.content
         }
         set {
+            contentLoaded = true
             super.content = newValue
         }
     }
@@ -90,6 +94,7 @@ public class FileField: Field {
             return super.rectangle
         }
         set {
+            rectangleLoaded = true
             super.rectangle = newValue
         }
     }
@@ -104,6 +109,7 @@ public class FileField: Field {
             return super.script
         }
         set {
+            scriptLoaded = true
             super.script = newValue
         }
     }
@@ -118,6 +124,7 @@ public class FileField: Field {
             return super.lockText
         }
         set {
+            lockTextLoaded = true
             super.lockText = newValue
         }
     }
@@ -132,6 +139,7 @@ public class FileField: Field {
             return super.autoTab
         }
         set {
+            autoTabLoaded = true
             super.autoTab = newValue
         }
     }
@@ -146,6 +154,7 @@ public class FileField: Field {
             return super.fixedLineHeight
         }
         set {
+            fixedLineHeightLoaded = true
             super.fixedLineHeight = newValue
         }
     }
@@ -160,6 +169,7 @@ public class FileField: Field {
             return super.sharedText
         }
         set {
+            sharedTextLoaded = true
             super.sharedText = newValue
         }
     }
@@ -174,6 +184,7 @@ public class FileField: Field {
             return super.dontSearch
         }
         set {
+            dontSearchLoaded = true
             super.dontSearch = newValue
         }
     }
@@ -188,6 +199,7 @@ public class FileField: Field {
             return super.dontWrap
         }
         set {
+            dontWrapLoaded = true
             super.dontWrap = newValue
         }
     }
@@ -202,6 +214,7 @@ public class FileField: Field {
             return super.visible
         }
         set {
+            visibleLoaded = true
             super.visible = newValue
         }
     }
@@ -216,6 +229,7 @@ public class FileField: Field {
             return super.multipleLines
         }
         set {
+            multipleLinesLoaded = true
             super.multipleLines = newValue
         }
     }
@@ -230,6 +244,7 @@ public class FileField: Field {
             return super.wideMargins
         }
         set {
+            wideMarginsLoaded = true
             super.wideMargins = newValue
         }
     }
@@ -244,6 +259,7 @@ public class FileField: Field {
             return super.showLines
         }
         set {
+            showLinesLoaded = true
             super.showLines = newValue
         }
     }
@@ -258,6 +274,7 @@ public class FileField: Field {
             return super.autoSelect
         }
         set {
+            autoSelectLoaded = true
             super.autoSelect = newValue
         }
     }
@@ -272,6 +289,7 @@ public class FileField: Field {
             return super.selectedLine
         }
         set {
+            selectedLineLoaded = true
             super.selectedLine = newValue
         }
     }
@@ -286,6 +304,7 @@ public class FileField: Field {
             return super.lastSelectedLine
         }
         set {
+            lastSelectedLineLoaded = true
             super.lastSelectedLine = newValue
         }
     }
@@ -300,6 +319,7 @@ public class FileField: Field {
             return super.textAlign
         }
         set {
+            textAlignLoaded = true
             super.textAlign = newValue
         }
     }
@@ -314,6 +334,7 @@ public class FileField: Field {
             return super.textFontIdentifier
         }
         set {
+            textFontIdentifierLoaded = true
             super.textFontIdentifier = newValue
         }
     }
@@ -328,6 +349,7 @@ public class FileField: Field {
             return super.textFontSize
         }
         set {
+            textFontSizeLoaded = true
             super.textFontSize = newValue
         }
     }
@@ -342,6 +364,7 @@ public class FileField: Field {
             return super.textStyle
         }
         set {
+            textStyleLoaded = true
             super.textStyle = newValue
         }
     }
@@ -356,6 +379,7 @@ public class FileField: Field {
             return super.textHeight
         }
         set {
+            textHeightLoaded = true
             super.textHeight = newValue
         }
     }

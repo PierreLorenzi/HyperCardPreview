@@ -37,6 +37,7 @@ public class FileGlyph: Glyph {
             return super.image
         }
         set {
+            imageLoaded = true
             super.image = newValue
         }
     }

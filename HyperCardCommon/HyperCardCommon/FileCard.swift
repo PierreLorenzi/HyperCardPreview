@@ -33,6 +33,7 @@ public class FileCard: Card {
             return super.identifier
         }
         set {
+            identifierLoaded = true
             super.identifier = newValue
         }
     }
@@ -47,6 +48,7 @@ public class FileCard: Card {
             return super.name
         }
         set {
+            nameLoaded = true
             super.name = newValue
         }
     }
@@ -61,6 +63,7 @@ public class FileCard: Card {
             return super.cantDelete
         }
         set {
+            cantDeleteLoaded = true
             super.cantDelete = newValue
         }
     }
@@ -75,6 +78,7 @@ public class FileCard: Card {
             return super.showPict
         }
         set {
+            showPictLoaded = true
             super.showPict = newValue
         }
     }
@@ -89,6 +93,7 @@ public class FileCard: Card {
             return super.dontSearch
         }
         set {
+            dontSearchLoaded = true
             super.dontSearch = newValue
         }
     }
@@ -103,6 +108,7 @@ public class FileCard: Card {
             return super.marked
         }
         set {
+            markedLoaded = true
             super.marked = newValue
         }
     }
@@ -117,6 +123,7 @@ public class FileCard: Card {
             return super.searchHash
         }
         set {
+            searchHashLoaded = true
             super.searchHash = newValue
         }
     }
@@ -131,6 +138,7 @@ public class FileCard: Card {
             return super.backgroundPartContents
         }
         set {
+            backgroundPartContentsLoaded = true
             super.backgroundPartContents = newValue
         }
     }
@@ -165,6 +173,7 @@ public class FileCard: Card {
             return super.script
         }
         set {
+            scriptLoaded = true
             super.script = newValue
         }
     }
@@ -179,6 +188,7 @@ public class FileCard: Card {
             return super.image
         }
         set {
+            imageLoaded = true
             super.image = newValue
         }
     }
@@ -193,6 +203,7 @@ public class FileCard: Card {
             return super.parts
         }
         set {
+            partsLoaded = true
             super.parts = newValue
         }
     }
@@ -207,6 +218,7 @@ public class FileCard: Card {
             return super.nextAvailablePartIdentifier
         }
         set {
+            nextAvailablePartIdentifierLoaded = true
             super.nextAvailablePartIdentifier = newValue
         }
     }

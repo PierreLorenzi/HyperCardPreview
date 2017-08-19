@@ -33,6 +33,7 @@ public class FileButton: Button {
             return super.identifier
         }
         set {
+            identifierLoaded = true
             super.identifier = newValue
         }
     }
@@ -47,6 +48,7 @@ public class FileButton: Button {
             return super.name
         }
         set {
+            nameLoaded = true
             super.name = newValue
         }
     }
@@ -61,6 +63,7 @@ public class FileButton: Button {
             return super.style
         }
         set {
+            styleLoaded = true
             super.style = newValue
         }
     }
@@ -76,6 +79,7 @@ public class FileButton: Button {
             return super.content
         }
         set {
+            contentLoaded = true
             super.content = newValue
         }
     }
@@ -90,6 +94,7 @@ public class FileButton: Button {
             return super.rectangle
         }
         set {
+            rectangleLoaded = true
             super.rectangle = newValue
         }
     }
@@ -104,6 +109,7 @@ public class FileButton: Button {
             return super.script
         }
         set {
+            scriptLoaded = true
             super.script = newValue
         }
     }
@@ -118,6 +124,7 @@ public class FileButton: Button {
             return super.enabled
         }
         set {
+            enabledLoaded = true
             super.enabled = newValue
         }
     }
@@ -132,6 +139,7 @@ public class FileButton: Button {
             return super.visible
         }
         set {
+            visibleLoaded = true
             super.visible = newValue
         }
     }
@@ -146,6 +154,7 @@ public class FileButton: Button {
             return super.hilite
         }
         set {
+            hiliteLoaded = true
             super.hilite = newValue
         }
     }
@@ -160,6 +169,7 @@ public class FileButton: Button {
             return super.autoHilite
         }
         set {
+            autoHiliteLoaded = true
             super.autoHilite = newValue
         }
     }
@@ -174,6 +184,7 @@ public class FileButton: Button {
             return super.sharedHilite
         }
         set {
+            sharedHiliteLoaded = true
             super.sharedHilite = newValue
         }
     }
@@ -188,6 +199,7 @@ public class FileButton: Button {
             return super.showName
         }
         set {
+            showNameLoaded = true
             super.showName = newValue
         }
     }
@@ -202,6 +214,7 @@ public class FileButton: Button {
             return super.iconIdentifier
         }
         set {
+            iconIdentifierLoaded = true
             super.iconIdentifier = newValue
         }
     }
@@ -216,6 +229,7 @@ public class FileButton: Button {
             return super.selectedItem
         }
         set {
+            selectedItemLoaded = true
             super.selectedItem = newValue
         }
     }
@@ -230,6 +244,7 @@ public class FileButton: Button {
             return super.family
         }
         set {
+            familyLoaded = true
             super.family = newValue
         }
     }
@@ -244,6 +259,7 @@ public class FileButton: Button {
             return super.titleWidth
         }
         set {
+            titleWidthLoaded = true
             super.titleWidth = newValue
         }
     }
@@ -258,6 +274,7 @@ public class FileButton: Button {
             return super.textAlign
         }
         set {
+            textAlignLoaded = true
             super.textAlign = newValue
         }
     }
@@ -272,6 +289,7 @@ public class FileButton: Button {
             return super.textFontIdentifier
         }
         set {
+            textFontIdentifierLoaded = true
             super.textFontIdentifier = newValue
         }
     }
@@ -286,6 +304,7 @@ public class FileButton: Button {
             return super.textFontSize
         }
         set {
+            textFontSizeLoaded = true
             super.textFontSize = newValue
         }
     }
@@ -300,6 +319,7 @@ public class FileButton: Button {
             return super.textStyle
         }
         set {
+            textStyleLoaded = true
             super.textStyle = newValue
         }
     }
@@ -314,6 +334,7 @@ public class FileButton: Button {
             return super.textHeight
         }
         set {
+            textHeightLoaded = true
             super.textHeight = newValue
         }
     }
