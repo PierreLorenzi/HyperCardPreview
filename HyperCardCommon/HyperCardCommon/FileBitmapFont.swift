@@ -7,129 +7,57 @@
 //
 
 
-/// Subclass of BitmapFont with lazy loading from a file
-/// <p>
-/// Lazy loading is implemented by hand because an inherited property can't be made
-/// lazy in swift.
-public class FileBitmapFont: BitmapFont {
-
-    private let block: BitmapFontResourceBlock
+public extension BitmapFont {
     
-    public init(block: BitmapFontResourceBlock) {
-        self.block = block
+    public convenience init(block: BitmapFontResourceBlock) {
+        
+        self.init()
+        
+        /* Enable lazy initialization */
+        
+        /* maximumWidth */
+        self.maximumWidthProperty.observers.append(LazyInitializer(property: self.maximumWidthProperty, initialization: {
+            return block.maximumWidth
+        }))
+        
+        /* maximumKerning */
+        self.maximumKerningProperty.observers.append(LazyInitializer(property: self.maximumKerningProperty, initialization: {
+            return block.maximumKerning
+        }))
+        
+        /* fontRectangleWidth */
+        self.fontRectangleWidthProperty.observers.append(LazyInitializer(property: self.fontRectangleWidthProperty, initialization: {
+            return block.fontRectangleWidth
+        }))
+        
+        /* fontRectangleHeight */
+        self.fontRectangleHeightProperty.observers.append(LazyInitializer(property: self.fontRectangleHeightProperty, initialization: {
+            return block.fontRectangleHeight
+        }))
+        
+        /* maximumAscent */
+        self.maximumAscentProperty.observers.append(LazyInitializer(property: self.maximumAscentProperty, initialization: {
+            return block.maximumAscent
+        }))
+        
+        /* maximumDescent */
+        self.maximumDescentProperty.observers.append(LazyInitializer(property: self.maximumDescentProperty, initialization: {
+            return block.maximumDescent
+        }))
+        
+        /* glyphs */
+        self.glyphsProperty.observers.append(LazyInitializer(property: self.glyphsProperty, initialization: {
+            return self.loadGlyphs(block: block)
+        }))
+        
     }
     
-    private var maximumWidthLoaded = false
-    override public var maximumWidth: Int {
-        get {
-            if !maximumWidthLoaded {
-                super.maximumWidth = block.maximumWidth
-                maximumWidthLoaded = true
-            }
-            return super.maximumWidth
-        }
-        set {
-            maximumWidthLoaded = true
-            super.maximumWidth = newValue
-        }
-    }
-    
-    private var maximumKerningLoaded = false
-    override public var maximumKerning: Int {
-        get {
-            if !maximumKerningLoaded {
-                super.maximumKerning = block.maximumKerning
-                maximumKerningLoaded = true
-            }
-            return super.maximumKerning
-        }
-        set {
-            maximumKerningLoaded = true
-            super.maximumKerning = newValue
-        }
-    }
-    
-    private var fontRectangleWidthLoaded = false
-    override public var fontRectangleWidth: Int {
-        get {
-            if !fontRectangleWidthLoaded {
-                super.fontRectangleWidth = block.fontRectangleWidth
-                fontRectangleWidthLoaded = true
-            }
-            return super.fontRectangleWidth
-        }
-        set {
-            fontRectangleWidthLoaded = true
-            super.fontRectangleWidth = newValue
-        }
-    }
-    
-    private var fontRectangleHeightLoaded = false
-    override public var fontRectangleHeight: Int {
-        get {
-            if !fontRectangleHeightLoaded {
-                super.fontRectangleHeight = block.fontRectangleHeight
-                fontRectangleHeightLoaded = true
-            }
-            return super.fontRectangleHeight
-        }
-        set {
-            fontRectangleHeightLoaded = true
-            super.fontRectangleHeight = newValue
-        }
-    }
-    
-    private var maximumAscentLoaded = false
-    override public var maximumAscent: Int {
-        get {
-            if !maximumAscentLoaded {
-                super.maximumAscent = block.maximumAscent
-                maximumAscentLoaded = true
-            }
-            return super.maximumAscent
-        }
-        set {
-            maximumAscentLoaded = true
-            super.maximumAscent = newValue
-        }
-    }
-    
-    private var maximumDescentLoaded = false
-    override public var maximumDescent: Int {
-        get {
-            if !maximumDescentLoaded {
-                super.maximumDescent = block.maximumDescent
-                maximumDescentLoaded = true
-            }
-            return super.maximumDescent
-        }
-        set {
-            maximumDescentLoaded = true
-            super.maximumDescent = newValue
-        }
-    }
-    
-    private var glyphsLoaded = false
-    override public var glyphs: [Glyph] {
-        get {
-            if !glyphsLoaded {
-                super.glyphs = loadGlyphs()
-                glyphsLoaded = true
-            }
-            return super.glyphs
-        }
-        set {
-            glyphsLoaded = true
-            super.glyphs = newValue
-        }
-    }
-    
-    private func loadGlyphs() -> [Glyph] {
+    private func loadGlyphs(block: BitmapFontResourceBlock) -> [Glyph] {
         
         var glyphs = [Glyph]()
         
         /* The special glyph is used outside the character bounds. It is the last in the font */
-        let specialGlyph = FileGlyph(font: block, index: block.lastCharacterCode - block.firstCharacterCode + 1)
+        let specialGlyph = Glyph(font: block, index: block.lastCharacterCode - block.firstCharacterCode + 1)
         
         for index in 0..<256 {
             
@@ -140,7 +68,7 @@ public class FileBitmapFont: BitmapFont {
             }
             
             /* Build the glyph */
-            let glyph = FileGlyph(font: block, index: index)
+            let glyph = Glyph(font: block, index: index)
             glyphs.append(glyph)
             
         }
@@ -149,3 +77,4 @@ public class FileBitmapFont: BitmapFont {
     }
     
 }
+

@@ -7,42 +7,28 @@
 //
 
 
-/// Subclass of Glyph with lazy loading from a file
-/// <p>
-/// Lazy loading is implemented by hand because an inherited property can't be made
-/// lazy in swift.
-public class FileGlyph: Glyph {
+
+public extension Glyph {
     
-    private let font: BitmapFontResourceBlock
-    private let index: Int
-    
-    public init(font: BitmapFontResourceBlock, index: Int) {
-        self.font = font
-        self.index = index
+    public convenience init(font: BitmapFontResourceBlock, index: Int) {
         
-        super.init()
+        self.init()
         
+        /* Read now the scalar fields */
         self.width = font.widthTable[index]
         self.imageOffset = font.maximumKerning + font.offsetTable[index]
         self.imageTop = font.maximumAscent
+        
+        /* Enable lazy initialization */
+        
+        /* image */
+        self.imageProperty.observers.append(LazyInitializer(property: self.imageProperty, initialization: {
+            return self.loadImage(font: font, index: index)
+        }))
+        
     }
     
-    private var imageLoaded = false
-    override public var image: MaskedImage? {
-        get {
-            if !imageLoaded {
-                super.image = loadImage()
-                imageLoaded = true
-            }
-            return super.image
-        }
-        set {
-            imageLoaded = true
-            super.image = newValue
-        }
-    }
-    
-    private func loadImage() -> MaskedImage? {
+    private func loadImage(font: BitmapFontResourceBlock, index: Int) -> MaskedImage? {
         
         /* Get the position of the image in the resource bitmap */
         let startOffset = font.bitmapLocationTable[index]
@@ -62,3 +48,4 @@ public class FileGlyph: Glyph {
     }
     
 }
+
