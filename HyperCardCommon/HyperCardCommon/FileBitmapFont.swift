@@ -13,37 +13,15 @@ public extension BitmapFont {
         
         self.init()
         
+        /* Read now the scalar fields */
+        self.maximumWidth = block.maximumWidth
+        self.maximumKerning = block.maximumKerning
+        self.fontRectangleWidth = block.fontRectangleWidth
+        self.fontRectangleHeight = block.fontRectangleHeight
+        self.maximumAscent = block.maximumAscent
+        self.maximumDescent = block.maximumDescent
+        
         /* Enable lazy initialization */
-        
-        /* maximumWidth */
-        self.maximumWidthProperty.observers.append(LazyInitializer(property: self.maximumWidthProperty, initialization: {
-            return block.maximumWidth
-        }))
-        
-        /* maximumKerning */
-        self.maximumKerningProperty.observers.append(LazyInitializer(property: self.maximumKerningProperty, initialization: {
-            return block.maximumKerning
-        }))
-        
-        /* fontRectangleWidth */
-        self.fontRectangleWidthProperty.observers.append(LazyInitializer(property: self.fontRectangleWidthProperty, initialization: {
-            return block.fontRectangleWidth
-        }))
-        
-        /* fontRectangleHeight */
-        self.fontRectangleHeightProperty.observers.append(LazyInitializer(property: self.fontRectangleHeightProperty, initialization: {
-            return block.fontRectangleHeight
-        }))
-        
-        /* maximumAscent */
-        self.maximumAscentProperty.observers.append(LazyInitializer(property: self.maximumAscentProperty, initialization: {
-            return block.maximumAscent
-        }))
-        
-        /* maximumDescent */
-        self.maximumDescentProperty.observers.append(LazyInitializer(property: self.maximumDescentProperty, initialization: {
-            return block.maximumDescent
-        }))
         
         /* glyphs */
         self.glyphsProperty.observers.append(LazyInitializer(property: self.glyphsProperty, initialization: {
