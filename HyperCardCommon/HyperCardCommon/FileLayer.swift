@@ -76,7 +76,7 @@ public extension Layer {
                 let button = FileButton(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
                 parts.append(LayerPart.button(button))
             case .field:
-                let field = FileField(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let field = Field(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
                 parts.append(LayerPart.field(field))
             }
             

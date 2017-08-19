@@ -13,6 +13,9 @@ public extension Stack {
         
         self.init()
         
+        /* Register the resources */
+        self.resources = resources
+        
         /* Enable lazy initialization */
         let stackBlock = fileContent.stack
         
