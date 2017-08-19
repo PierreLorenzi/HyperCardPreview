@@ -13,9 +13,9 @@ public class HyperCardFile: ClassicFile {
     /// The stack object contained in the file
     public lazy var stack: Stack = { [unowned self] in
         
-        /* Crash if there is a password, because the header is encrypted */
-        if self.dataFork![0x44] != 0 {
-            fatalError("can't read a stack protected by password")
+        /* Crash if there is private access, because the header is encrypted */
+        if self.parsedData.stack.privateAccess {
+            fatalError("can't read a stack protected by private access because the header is encrypted")
         }
         
         return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
