@@ -58,6 +58,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
         var family = FontFamily()
         family.bitmapFonts = bitmapFonts
         family.vectorFonts = vectorFonts
+        family.styleProperties = (resource.useIntegerExtraWidth) ? nil : resource.styleProperties
         return family
         
     }

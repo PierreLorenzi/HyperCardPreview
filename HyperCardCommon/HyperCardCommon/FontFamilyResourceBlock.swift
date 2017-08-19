@@ -20,18 +20,6 @@ public class FontFamilyResourceBlock: ResourceBlock {
         return NumericName(string: "FOND")!
     }
     
-    /// Each value indicates the extra width, in pixels, that would be added to the glyphs of a 1-point font in this font family after a stylistic variation has been applied
-    public struct StyleProperties {
-        public var plainExtraWidth: Double
-        public var boldExtraWidth: Double
-        public var italicExtraWidth: Double
-        public var underlineExtraWidth: Double
-        public var outlineExtraWidth: Double
-        public var shadowExtraWidth: Double
-        public var condensedExtraWidth: Double
-        public var extendedExtraWidth: Double
-    }
-    
     /// A font record, mapping a size and a style to a font
     public struct FontAssociation {
         
@@ -54,6 +42,12 @@ public class FontFamilyResourceBlock: ResourceBlock {
     public var containsGlyphWidthTable: Bool {
         return data.readFlag(at: 0, bitOffset: 1)
     }
+    
+    ///This bit is set to 1 if the font family should use integer extra width for stylistic variations. If not set, the font family should compute the fixed-point extra width from the family style-mapping table, but only if the FractEnable global variable has a value of TRUE.
+    public var useIntegerExtraWidth: Bool {
+        return data.readFlag(at: 0, bitOffset: 13)
+    }
+    
     
     /// Whether the fonts are fixed-width
     public var isFixedWidth: Bool {
@@ -110,7 +104,8 @@ public class FontFamilyResourceBlock: ResourceBlock {
         return data.readUInt32(at: 0x18)
     }
     
-    public var styleProperties: StyleProperties {
+    /// Each value indicates the extra width, in pixels, that would be added to the glyphs of a 1-point font in this font family after a stylistic variation has been applied
+    public var styleProperties: FontStyleProperties {
         
         let plainExtraWidth = self.readFraction(at: 0x1C)
         let boldExtraWidth = self.readFraction(at: 0x1E)
@@ -121,7 +116,7 @@ public class FontFamilyResourceBlock: ResourceBlock {
         let condensedExtraWidth = self.readFraction(at: 0x28)
         let extendedExtraWidth = self.readFraction(at: 0x2A)
         
-        return StyleProperties(plainExtraWidth: plainExtraWidth, boldExtraWidth: boldExtraWidth, italicExtraWidth: italicExtraWidth, underlineExtraWidth: underlineExtraWidth, outlineExtraWidth: outlineExtraWidth, shadowExtraWidth: shadowExtraWidth, condensedExtraWidth: condensedExtraWidth, extendedExtraWidth: extendedExtraWidth)
+        return FontStyleProperties(plainExtraWidth: plainExtraWidth, boldExtraWidth: boldExtraWidth, italicExtraWidth: italicExtraWidth, underlineExtraWidth: underlineExtraWidth, outlineExtraWidth: outlineExtraWidth, shadowExtraWidth: shadowExtraWidth, condensedExtraWidth: condensedExtraWidth, extendedExtraWidth: extendedExtraWidth)
     }
     
     /// An integer value that specifies the version number of the font family resource, which indicates whether certain tables are available

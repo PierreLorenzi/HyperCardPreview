@@ -17,6 +17,8 @@ public struct FontFamily {
     /// The vector fonts of the family
     public var vectorFonts: [FamilyVectorFont]  = []
     
+    /// Parameters for when styles are applied
+    public var styleProperties: FontStyleProperties? = nil
     
     /// A record of a bitmap font for a specific size and style
     public struct FamilyBitmapFont {

@@ -16,6 +16,7 @@ public enum FontDecorating {
     /// Applies a font variation to a bitmap font
     public static func decorateFont(from baseFont: BitmapFont, with style: TextStyle, in family: FontFamily) -> BitmapFont {
         
+        /* Copy the font */
         let font = BitmapFont()
         font.maximumWidth = baseFont.maximumWidth
         font.maximumKerning = baseFont.maximumKerning
@@ -23,12 +24,17 @@ public enum FontDecorating {
         font.fontRectangleHeight = baseFont.fontRectangleHeight
         font.maximumAscent = baseFont.maximumAscent
         font.maximumDescent = baseFont.maximumDescent
+        
+        /* Decorate the glyphs */
         font.glyphs = baseFont.glyphs.map({ DecoratedGlyph(baseGlyph: $0, style: style) })
+        
+        /* Adjust the metrics */
+        FontDecorating.adjustMeasures(of: font, for: style)
         
         return font
     }
     
-    private func adjustMeasures(of font: BitmapFont, for style: TextStyle) {
+    private static func adjustMeasures(of font: BitmapFont, for style: TextStyle) {
         
         if style.bold {
             font.maximumWidth += 1

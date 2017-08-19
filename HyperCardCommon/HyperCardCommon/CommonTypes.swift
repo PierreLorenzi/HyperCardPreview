@@ -449,3 +449,15 @@ public enum FontIdentifiers {
     public static let charcoal = 2002
 }
 
+/// Properties of the text styles in font families
+public struct FontStyleProperties {
+    public var plainExtraWidth: Double
+    public var boldExtraWidth: Double
+    public var italicExtraWidth: Double
+    public var underlineExtraWidth: Double
+    public var outlineExtraWidth: Double
+    public var shadowExtraWidth: Double
+    public var condensedExtraWidth: Double
+    public var extendedExtraWidth: Double
+}
+

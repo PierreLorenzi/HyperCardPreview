@@ -54,7 +54,7 @@ public class PopupButtonView: View {
         
         /* Draw the title */
         let baseLineY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - 2
-        drawing.drawString(title, index: 0, length: nil, position: Point(x: rectangle.left + 3, y: baseLineY), font: font, clip: rectangle)
+        drawing.drawString(title, index: 0, length: nil, position: Point(x: rectangle.left + 4, y: baseLineY), font: font, clip: rectangle)
         let popupRectangle = Rectangle(top: rectangle.top, left: rectangle.left + titleWidth, bottom: rectangle.bottom, right: rectangle.right)
         if popupRectangle.width <= 0 {
             return
