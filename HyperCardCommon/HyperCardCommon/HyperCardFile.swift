@@ -12,6 +12,12 @@ public class HyperCardFile: ClassicFile {
     
     /// The stack object contained in the file
     public lazy var stack: Stack = { [unowned self] in
+        
+        /* Crash if there is a password, because the header is encrypted */
+        if self.dataFork![0x44] != 0 {
+            fatalError("can't read a stack protected by password")
+        }
+        
         return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
     }()
     
@@ -31,6 +37,7 @@ public class HyperCardFile: ClassicFile {
             fatalError("the data is not a HyperCard Stack")
             
         }
+        
     }
     
     /// The version of the stack format: V1 or V2. Parsed here because it must be read before
