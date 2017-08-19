@@ -71,8 +71,8 @@ public class VectorGlyph: Glyph {
         
         self.vectorFont = font
         self.vectorGlyph = glyph
-        self.glyphWidth = Int(ceil(boundingRect.size.width))
-        self.glyphHeight = Int(ceil(boundingRect.size.height))
+        self.glyphWidth = Int(ceil(boundingRect.size.width) + 1)
+        self.glyphHeight = Int(ceil(boundingRect.size.height) + 1)
         
         super.init()
         
@@ -102,28 +102,24 @@ public class VectorGlyph: Glyph {
             return nil
         }
         
-        /* Get the shape of the glyph */
-        guard let path = CTFontCreatePathForGlyph(vectorFont, vectorGlyph, nil) else {
+        /* Build a graphic context where to draw the glyph */
+        guard let context = CGContext(data: nil, width: glyphWidth, height: glyphHeight, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             return nil
         }
+        context.setShouldAntialias(false)
         
-        /* Create a drawing */
-        var image = Image(width: glyphWidth, height: glyphHeight)
-        let pathTop = Double(self.imageTop)
-        let pathLeft = Double(self.imageOffset)
+        /* Draw the glyph */
+        var glyphs = [vectorGlyph]
+        var positions = [CGPoint(x: Double(-self.imageOffset), y: Double(self.glyphHeight-self.imageTop))]
+        CTFontDrawGlyphs(vectorFont, &glyphs, &positions, 1, context)
         
-        for x in 0..<glyphWidth {
-            for y in 0..<glyphHeight {
-                
-                let point = CGPoint(x: pathLeft + Double(x) + 0.5, y: pathTop - Double(y) - 0.5)
-                if path.contains(point) {
-                    image[x, y] = true
-                }
-                
-            }
-        }
+        /* Convert the image to 1-bit */
+        let image: CGImage = context.makeImage()!
+        let imageRep = NSBitmapImageRep.init(cgImage: image)
+        let maskedImage = MaskedImage(representation: imageRep)
         
-        return MaskedImage(image: image)
+        return maskedImage
+        
     }
     
 }
