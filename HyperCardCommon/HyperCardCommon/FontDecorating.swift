@@ -14,7 +14,7 @@
 public enum FontDecorating {
     
     /// Applies a font variation to a bitmap font
-    public static func decorateFont(from baseFont: BitmapFont, with style: TextStyle, in family: FontFamily) -> BitmapFont {
+    public static func decorateFont(from baseFont: BitmapFont, with style: TextStyle, in family: FontFamily, size: Int) -> BitmapFont {
         
         /* Copy the font */
         let font = BitmapFont()
@@ -26,27 +26,29 @@ public enum FontDecorating {
         font.maximumDescent = baseFont.maximumDescent
         
         /* Decorate the glyphs */
-        font.glyphs = baseFont.glyphs.map({ DecoratedGlyph(baseGlyph: $0, style: style) })
+        font.glyphs = baseFont.glyphs.map({ DecoratedGlyph(baseGlyph: $0, style: style, properties: family.styleProperties, size: size) })
         
         /* Adjust the metrics */
-        FontDecorating.adjustMeasures(of: font, for: style)
+        FontDecorating.adjustMeasures(of: font, for: style, properties: family.styleProperties, size: size)
         
         return font
     }
     
-    private static func adjustMeasures(of font: BitmapFont, for style: TextStyle) {
+    private static func adjustMeasures(of font: BitmapFont, for style: TextStyle, properties: FontStyleProperties?, size: Int) {
         
         if style.bold {
-            font.maximumWidth += 1
+            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.boldExtraWidth, size: size)
             font.fontRectangleWidth += 1
         }
         
         if style.italic {
+            font.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.italicExtraWidth, size: size)
             font.maximumKerning -= font.maximumDescent/2
             font.fontRectangleWidth += font.fontRectangleHeight/2
         }
         
         if style.underline {
+            font.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.underlineExtraWidth, size: size)
             font.fontRectangleWidth += 2
             if font.maximumDescent < 2 {
                 font.fontRectangleHeight += 2 - font.maximumDescent
@@ -55,7 +57,7 @@ public enum FontDecorating {
         }
         
         if style.outline {
-            font.maximumWidth += 1
+            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.outlineExtraWidth, size: size)
             font.maximumKerning -= 1
             font.fontRectangleWidth += 2
             font.fontRectangleHeight += 2
@@ -65,18 +67,18 @@ public enum FontDecorating {
         
         if style.shadow {
             let value = (style.outline ? 2 : 1)
-            font.maximumWidth += value
+            font.maximumWidth += value * computeExtraWidth(byDefault: 1, property: properties?.shadowExtraWidth, size: size)
             font.fontRectangleWidth += value
             font.maximumDescent += value
             font.fontRectangleHeight += value
         }
         
         if style.condense {
-            font.maximumWidth -= 1
+            font.maximumWidth += computeExtraWidth(byDefault: -1, property: properties?.condensedExtraWidth, size: size)
         }
         
         if style.extend {
-            font.maximumWidth += 1
+            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.extendedExtraWidth, size: size)
         }
         
     }
@@ -84,16 +86,29 @@ public enum FontDecorating {
 }
 
 
+private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> Int {
+    
+    if let property = property {
+        return Int(property * Double(size))
+    }
+    
+    return byDefault
+}
+
 
 /// A glyph that lazily applies a font variation to a base glyph
 public class DecoratedGlyph: Glyph {
     
     private let baseGlyph: Glyph
     private let style: TextStyle
+    private let properties: FontStyleProperties?
+    private let size: Int
     
-    public init(baseGlyph: Glyph, style: TextStyle) {
+    public init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int) {
         self.baseGlyph = baseGlyph
         self.style = style
+        self.properties = properties
+        self.size = size
         
         super.init()
         
@@ -110,11 +125,12 @@ public class DecoratedGlyph: Glyph {
         
         /* Bold (inferred by Outline and Shadow): add black pixel next to every black pixel */
         if style.bold {
-            self.width += 1
+            self.width += computeExtraWidth(byDefault: 1, property: properties?.boldExtraWidth, size: size)
         }
         
         /* Italic: slant with slope 2, and the glyph origin must be the same */
         if style.italic {
+            self.width += computeExtraWidth(byDefault: 0, property: properties?.italicExtraWidth, size: size)
             if let image = baseGlyph.image {
                 self.imageOffset -= (image.height - baseGlyph.imageTop) / 2
             }
@@ -124,19 +140,20 @@ public class DecoratedGlyph: Glyph {
         if style.outline || style.shadow {
             self.imageOffset -= 1
             self.imageTop += 1
-            self.width += 1
+            self.width += computeExtraWidth(byDefault: 1, property: properties?.outlineExtraWidth, size: size)
         }
         
         if style.shadow {
-            self.width += style.shadow ? 2 : 1
+            let value = style.shadow ? 2 : 1
+            self.width += value * computeExtraWidth(byDefault: 1, property: properties?.shadowExtraWidth, size: size)
         }
         
         if style.condense {
-            self.width -= 1
+            self.width += computeExtraWidth(byDefault: -1, property: properties?.condensedExtraWidth, size: size)
         }
         
         if style.extend {
-            self.width += 1
+            self.width += computeExtraWidth(byDefault: 1, property: properties?.extendedExtraWidth, size: size)
         }
         
     }

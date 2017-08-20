@@ -58,7 +58,7 @@ public class FontManager {
         if descriptor.style != PlainTextStyle {
             let plainDescriptor = FontDescriptor(identifier: descriptor.identifier, size: descriptor.size, style: PlainTextStyle)
             let plainFont = retrieveFont(forDescriptor: plainDescriptor)
-            return FontDecorating.decorateFont(from: plainFont, with: descriptor.style, in: family)
+            return FontDecorating.decorateFont(from: plainFont, with: descriptor.style, in: family, size: descriptor.size)
         }
         
         /* Look for a vector font */

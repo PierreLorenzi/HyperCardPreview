@@ -34,8 +34,10 @@ public class FontFamilyResourceBlock: ResourceBlock {
     }
     
     private func readFraction(at offset: Int) -> Double {
-        let number = data.readSInt16(at: offset)
-        return Double(number) / Double(1 << 12)
+        let bits = data.readUInt16(at: offset)
+        let value = bits & 0x7FFF
+        let negative = ((bits >> 15) == 1)
+        return Double(value) / Double(1 << 12) * (negative ? -1.0 : 1.0)
     }
     
     /// Whether the font family contains a glyph-width table
