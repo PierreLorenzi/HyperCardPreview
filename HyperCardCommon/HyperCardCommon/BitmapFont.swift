@@ -35,6 +35,11 @@ public class BitmapFont {
     /// The descent is the number of pixels below the baseline.
     public var maximumDescent = 0
     
+    /// Leading.
+    /// <p>
+    /// An integer value that specifies the leading measurement for the entire font, in pixels. Leading is the distance from the descent line of one line of single-spaced text to the ascent line of the next line of text. This value is represented by the leading field in the FontRec data type.
+    public var leading = 0
+    
     /// The glyphs. The indexes range from 0 to 255
     public var glyphs: [Glyph] = []
     

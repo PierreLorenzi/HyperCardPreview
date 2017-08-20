@@ -24,6 +24,7 @@ public enum FontDecorating {
         font.fontRectangleHeight = baseFont.fontRectangleHeight
         font.maximumAscent = baseFont.maximumAscent
         font.maximumDescent = baseFont.maximumDescent
+        font.leading = baseFont.leading
         
         /* Decorate the glyphs */
         font.glyphs = baseFont.glyphs.map({ DecoratedGlyph(baseGlyph: $0, style: style, properties: family.styleProperties, size: size) })

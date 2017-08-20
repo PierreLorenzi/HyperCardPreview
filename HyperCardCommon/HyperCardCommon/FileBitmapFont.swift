@@ -27,6 +27,7 @@ public class FileBitmapFont: BitmapFont {
         self.fontRectangleHeight = block.fontRectangleHeight
         self.maximumAscent = block.maximumAscent
         self.maximumDescent = block.maximumDescent
+        self.leading = block.leading
     }
     
     private var glyphsLoaded = false

@@ -37,6 +37,7 @@ private struct LineLayout {
     var baseLineY: Int
     var ascent: Int
     var descent: Int
+    var leading: Int
     var bottom: Int
     var initialAttributeIndex: Int
 }
@@ -311,6 +312,7 @@ public class FieldView: View {
                 let font = content.attributes[attributeIndex].font
                 layout.ascent = max(layout.ascent, font.maximumAscent)
                 layout.descent = max(layout.descent, font.maximumDescent)
+                layout.leading = min(layout.leading, font.leading)
             }
             index += 1
             if character != carriageReturn {
@@ -331,6 +333,7 @@ public class FieldView: View {
                                        baseLineY: 0,
                                        ascent: font.maximumAscent,
                                        descent: font.maximumDescent,
+                                       leading: font.leading,
                                        bottom: 0,
                                        initialAttributeIndex: attributeIndex)
         
@@ -360,10 +363,10 @@ public class FieldView: View {
         /* Compute the vertical position of the layout */
         if fixedLineHeight {
             layout.bottom = textBottom + textHeight
-            layout.baseLineY = textBottom + textHeight - layout.descent * textHeight / (layout.ascent + layout.descent)
+            layout.baseLineY = textBottom + textHeight - (layout.leading + layout.descent) * textHeight / (layout.ascent + layout.descent + layout.leading)
         }
         else {
-            layout.bottom = textBottom + layout.ascent + layout.descent
+            layout.bottom = textBottom + layout.ascent + layout.descent + layout.leading
             layout.baseLineY = textBottom + layout.ascent
         }
         
