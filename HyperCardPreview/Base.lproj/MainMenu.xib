@@ -206,9 +206,9 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Visual Effects" id="Pk0-nA-dCJ">
+                <menuItem title="Visual Effect" id="Pk0-nA-dCJ">
                     <modifierMask key="keyEquivalentModifierMask"/>
-                    <menu key="submenu" title="Visual Effects" id="5FU-r5-9Uz">
+                    <menu key="submenu" title="Visual Effect" id="5FU-r5-9Uz">
                         <items>
                             <menuItem title="None" state="on" id="apZ-12-6mE">
                                 <modifierMask key="keyEquivalentModifierMask"/>
@@ -232,6 +232,30 @@
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="niN-60-2u3"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Barn Door" tag="4" id="zBf-da-9XQ">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="9QK-q8-RwF"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Iris" tag="5" id="Mnx-95-p1h">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="zxN-t8-lqg"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Venetian Blinds" tag="6" id="Mbm-FP-as4">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="oxH-RG-N0u"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Checker Board" tag="7" id="RXZ-zh-jiI">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="selectVisualEffect:" target="Voe-Tx-rLC" id="q0R-vN-E2z"/>
                                 </connections>
                             </menuItem>
                         </items>

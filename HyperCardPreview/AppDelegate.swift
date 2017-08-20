@@ -13,6 +13,10 @@ enum VisualEffect: Int {
     case dissolve
     case wipe
     case scroll
+    case barnDoor
+    case iris
+    case venetianBlinds
+    case checkerBoard
 }
 
 @NSApplicationMain

@@ -121,7 +121,7 @@ class Document: NSDocument {
         }
     }
     
-    func applyVisualEffect(from image: Image, to direction: VisualEffects.Direction = .left) {
+    func applyVisualEffect(from image: Image, advance: Bool) {
         
         /* Get the selected visual effect */
         let appDelegate = NSApp.delegate as! AppDelegate
@@ -134,10 +134,22 @@ class Document: NSDocument {
             applyDissolveVisualEffect(from: image)
             
         case .wipe:
-            applyContinuousVisualEffect(VisualEffects.wipe, from: image, to: direction)
+            applyContinuousVisualEffect(VisualEffects.Wipe(to: advance ? .left : .right), from: image)
             
         case .scroll:
-            applyContinuousVisualEffect(VisualEffects.scroll, from: image, to: direction)
+            applyContinuousVisualEffect(VisualEffects.Scroll(to: advance ? .left : .right), from: image)
+            
+        case .barnDoor:
+            applyContinuousVisualEffect(VisualEffects.BarnDoor(advance ? .open : .close), from: image)
+            
+        case .iris:
+            applyContinuousVisualEffect(VisualEffects.Iris(advance ? .open : .close), from: image)
+            
+        case .venetianBlinds:
+            applyContinuousVisualEffect(VisualEffects.VenetianBlinds(), from: image)
+            
+        case .checkerBoard:
+            applyContinuousVisualEffect(VisualEffects.CheckerBoard(), from: image)
             
         default:
             refresh()
@@ -174,7 +186,7 @@ class Document: NSDocument {
         
     }
     
-    func applyContinuousVisualEffect(_ effect: @escaping (Image, Drawing, VisualEffects.Direction, Double) -> Void, from image: Image, to direction: VisualEffects.Direction) {
+    func applyContinuousVisualEffect(_ effect: VisualEffects.ContinuousVisualEffect, from image: Image) {
         
         let thread = Thread(block: {
             
@@ -188,7 +200,7 @@ class Document: NSDocument {
                 
                 /* Apply the effect */
                 let step = interval / VisualEffects.duration
-                effect(self.browser.image, drawing, direction, step)
+                effect.draw(self.browser.image, on: drawing, step: step)
                 
                 /* Display the intermediary image */
                 DispatchQueue.main.sync {
@@ -211,18 +223,18 @@ class Document: NSDocument {
     }
     
     /// Move to a card with a visual effect
-    func goToPage(at index: Int, to direction: VisualEffects.Direction = .left) {
+    func goToPage(at index: Int, advance: Bool = true) {
         let oldImage = browser.image
         browser.cardIndex = index
-        self.applyVisualEffect(from: oldImage, to: direction)
+        self.applyVisualEffect(from: oldImage, advance: advance)
     }
     
     func goToFirstPage(_ sender: AnyObject) {
-        self.goToPage(at: 0, to: .bottom)
+        self.goToPage(at: 0, advance: false)
     }
     
     func goToLastPage(_ sender: AnyObject) {
-        self.goToPage(at: browser.stack.cards.count-1, to: .top)
+        self.goToPage(at: browser.stack.cards.count-1, advance: false)
     }
     
     func goToNextPage(_ sender: AnyObject) {
@@ -240,7 +252,7 @@ class Document: NSDocument {
         if cardIndex == -1 {
             cardIndex = browser.stack.cards.count - 1
         }
-        self.goToPage(at: cardIndex, to: .right)
+        self.goToPage(at: cardIndex, advance: false)
     }
     
     func displayOnlyBackground(_ sender: AnyObject) {
