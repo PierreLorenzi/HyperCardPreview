@@ -19,14 +19,14 @@ public extension Part {
         self.rectangle = partBlock.rectangle
         
         /* name */
-        self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {
+        self.nameProperty.compute = {
             return partBlock.name
-        }))
+        }
         
         /* script */
-        self.scriptProperty.observers.append(LazyInitializer(property: self.scriptProperty, initialization: {
+        self.scriptProperty.compute = {
             return partBlock.script
-        }))
+        }
         
     }
     

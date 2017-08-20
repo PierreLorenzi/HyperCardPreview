@@ -20,14 +20,14 @@ public extension Layer {
         /* Enable lazy initialization */
         
         /* image */
-        self.imageProperty.observers.append(LazyInitializer(property: self.imageProperty, initialization: {
+        self.imageProperty.compute = {
             return Layer.loadImage(layerBlock: layerBlock, fileContent: fileContent)
-        }))
+        }
         
         /* parts */
-        self.partsProperty.observers.append(LazyInitializer(property: self.partsProperty, initialization: {
+        self.partsProperty.compute = {
             return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
-        }))
+        }
         
     }
     

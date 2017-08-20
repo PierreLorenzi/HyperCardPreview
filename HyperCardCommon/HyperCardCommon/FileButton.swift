@@ -35,10 +35,10 @@ public extension Button {
         super.setupLazyInitialization(partBlock: partBlock)
         
         /* content */
-        self.contentProperty.observers.append(LazyInitializer(property: self.contentProperty, initialization: {
+        self.contentProperty.compute = {
             let partContent = Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
             return partContent.string
-        }))
+        }
         
         
     }

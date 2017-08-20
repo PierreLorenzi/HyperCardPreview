@@ -37,30 +37,28 @@ public extension Stack {
         self.scrollPoint = stackBlock.scrollPoint
         
         /* Cards */
-        let cardsInitializer = LazyInitializer(property: self.cardsProperty, initialization: {
+        self.cardsProperty.compute = {
             let cardBlocks = fileContent.cards
             return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
-        })
-        self.cardsProperty.observers.append(cardsInitializer)
+        }
         
         /* Backgrounds */
-        let backgroundsInitializer = LazyInitializer(property: self.backgroundsProperty, initialization: {
+        self.backgroundsProperty.compute = {
             let backgroundBlocks = fileContent.backgrounds
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
                 return Background(backgroundBlock: block, fileContent: fileContent)
             })
-        })
-        self.backgroundsProperty.observers.append(backgroundsInitializer)
+        }
         
         /* patterns */
-        self.patternsProperty.observers.append(LazyInitializer(property: self.patternsProperty, initialization: {
+        self.patternsProperty.compute = {
             return stackBlock.patterns
-        }))
+        }
         
         /* script */
-        self.scriptProperty.observers.append(LazyInitializer(property: self.scriptProperty, initialization: {
+        self.scriptProperty.compute = {
             return stackBlock.script
-        }))
+        }
 
         
     }

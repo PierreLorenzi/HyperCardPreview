@@ -25,19 +25,19 @@ public extension Card {
         super.setupLazyInitialization(layerBlock: cardBlock, fileContent: fileContent)
         
         /* name */
-        self.nameProperty.observers.append(LazyInitializer(property: self.nameProperty, initialization: {
+        self.nameProperty.compute = {
             return cardBlock.name
-        }))
+        }
         
         /* backgroundPartContents */
-        self.backgroundPartContentsProperty.observers.append(LazyInitializer(property: self.backgroundPartContentsProperty, initialization: {
+        self.backgroundPartContentsProperty.compute = {
             return Card.loadBackgroundPartContents(cardBlock: cardBlock, fileContent: fileContent)
-        }))
+        }
         
         /* script */
-        self.scriptProperty.observers.append(LazyInitializer(property: self.scriptProperty, initialization: {
+        self.scriptProperty.compute = {
             return cardBlock.script
-        }))
+        }
         
     }
     

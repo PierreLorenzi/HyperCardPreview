@@ -38,9 +38,9 @@ public extension Field {
         
         
         /* content */
-        self.contentProperty.observers.append(LazyInitializer(property: self.contentProperty, initialization: {
+        self.contentProperty.compute = {
             return Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
-        }))
+        }
         
     }
     

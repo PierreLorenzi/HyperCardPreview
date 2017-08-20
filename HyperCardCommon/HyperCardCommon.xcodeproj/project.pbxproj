@@ -7,9 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C039FC81F486DD900B3246E /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FC71F486DD900B3246E /* Property.swift */; };
-		6C039FCA1F486E1100B3246E /* ChangeObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FC91F486E1100B3246E /* ChangeObserver.swift */; };
-		6C039FCC1F486E2B00B3246E /* LazyInitializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C039FCB1F486E2B00B3246E /* LazyInitializer.swift */; };
 		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
@@ -340,12 +337,10 @@
 		6C9E6D3D1E75BEEA00BBF925 /* Symbol.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */; };
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
+		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6C039FC71F486DD900B3246E /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
-		6C039FC91F486E1100B3246E /* ChangeObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChangeObserver.swift; sourceTree = "<group>"; };
-		6C039FCB1F486E2B00B3246E /* LazyInitializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LazyInitializer.swift; sourceTree = "<group>"; };
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
@@ -678,6 +673,7 @@
 		6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Symbol.dfont; sourceTree = "<group>"; };
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
+		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -691,16 +687,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6C039FC61F486DB900B3246E /* Model */ = {
-			isa = PBXGroup;
-			children = (
-				6C039FC71F486DD900B3246E /* Property.swift */,
-				6C039FC91F486E1100B3246E /* ChangeObserver.swift */,
-				6C039FCB1F486E2B00B3246E /* LazyInitializer.swift */,
-			);
-			name = Model;
-			sourceTree = "<group>";
-		};
 		6C9E6A811E75BCCD00BBF925 = {
 			isa = PBXGroup;
 			children = (
@@ -742,7 +728,7 @@
 				6C9E6AA11E75BCFA00BBF925 /* NumericName.swift */,
 				6C9E6AA21E75BCFA00BBF925 /* HString.swift */,
 				6C9E6AA31E75BCFA00BBF925 /* SearchHash.swift */,
-				6C039FC61F486DB900B3246E /* Model */,
+				6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1549,7 +1535,6 @@
 				6C9E6B161E75BCFA00BBF925 /* StackBlock.swift in Sources */,
 				6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */,
 				6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */,
-				6C039FCC1F486E2B00B3246E /* LazyInitializer.swift in Sources */,
 				6C9E6B0A1E75BCFA00BBF925 /* Resource.swift in Sources */,
 				6C9E6B1B1E75BCFA00BBF925 /* CardBlock.swift in Sources */,
 				6C9E6B381E75BCFA00BBF925 /* FileFontFamilyResource.swift in Sources */,
@@ -1573,10 +1558,10 @@
 				6C9E6AFE1E75BCFA00BBF925 /* Numeric Functions.swift in Sources */,
 				6C9E6B151E75BCFA00BBF925 /* HyperCardFileData.swift in Sources */,
 				6C9E6B3B1E75BCFA00BBF925 /* Image.swift in Sources */,
+				6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */,
 				6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */,
 				6C9E6B371E75BCFA00BBF925 /* FileIconResource.swift in Sources */,
 				6C9E6B411E75BCFA00BBF925 /* LayerView.swift in Sources */,
-				6C039FC81F486DD900B3246E /* Property.swift in Sources */,
 				6C9E6B2D1E75BCFA00BBF925 /* IconResourceBlock.swift in Sources */,
 				6C9E6B291E75BCFA00BBF925 /* ContentBlockV1.swift in Sources */,
 				6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */,
@@ -1612,7 +1597,6 @@
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6C9E6B221E75BCFA00BBF925 /* HyperCardFileDataV1.swift in Sources */,
 				6C9E6B281E75BCFA00BBF925 /* BackgroundBlockV1.swift in Sources */,
-				6C039FCA1F486E1100B3246E /* ChangeObserver.swift in Sources */,
 				6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */,
 				6C9E6B0B1E75BCFA00BBF925 /* ResourceRepository.swift in Sources */,

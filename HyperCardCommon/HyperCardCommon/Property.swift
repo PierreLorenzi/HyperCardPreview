@@ -2,64 +2,57 @@
 //  Property.swift
 //  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 19/08/2017.
+//  Created by Pierre Lorenzi on 20/08/2017.
 //  Copyright © 2017 Pierre Lorenzi. All rights reserved.
 //
 
+
 public class Property<T> {
-    public var storedValue: T
+    
+    private var storedValue: T? = nil
     
     public var observers: [PropertyObserver] = []
     
     public init(_ value: T) {
-        self.storedValue = value
+        self.compute = { return value }
+    }
+    
+    public init(compute: @escaping () -> T) {
+        self.compute = compute
     }
     
     public var value: T {
         get {
-            let sessionObservers: [SessionObserver] = observers.flatMap { (c: PropertyObserver) -> SessionObserver? in
-                return c.generateGetObserver()
+            guard let someStoredValue = storedValue else {
+                let newValue = compute()
+                self.storedValue = newValue
+                return newValue
             }
-            for observer in sessionObservers {
-                observer.willStart()
-            }
-            let value = self.storedValue
-            for observer in sessionObservers {
-                observer.didFinish()
-            }
-            return value
+            return someStoredValue
         }
         set {
-            let sessionObservers: [SessionObserver] = observers.flatMap { (c: PropertyObserver) -> SessionObserver? in
-                return c.generateSetObserver()
-            }
-            for observer in sessionObservers {
-                observer.willStart()
-            }
-            self.storedValue = newValue
-            for observer in sessionObservers {
-                observer.didFinish()
-            }
+            self.compute = { return newValue }
         }
     }
-}
-
-public class PropertyObserver {
     
-    func generateGetObserver() -> SessionObserver? {
-        return nil
+    public var compute: () -> T {
+        didSet {
+            self.invalidate()
+        }
     }
     
-    func generateSetObserver() -> SessionObserver? {
-        return nil
+    public func invalidate() {
+        self.storedValue = nil
+        
+        for observer in observers {
+            observer.valueDidChange()
+        }
     }
     
 }
 
-public struct SessionObserver {
+public protocol PropertyObserver {
     
-    let willStart: () -> ()
-    
-    let didFinish: () -> ()
+    func valueDidChange()
     
 }
