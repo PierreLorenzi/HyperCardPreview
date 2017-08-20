@@ -305,15 +305,19 @@ public class FieldView: View {
             return
         }
         
+        /* Get the visual properties as they are now */
+        let richText = self.richText
+        let lineLayouts = self.lineLayouts
+        
         /* Draw the frame */
-        drawFieldFrame(drawing: drawing)
+        drawFieldFrame(in: drawing, lineLayouts: lineLayouts)
         
         /* Draw the text */
-        drawText(in: drawing)
+        drawText(in: drawing, content: richText, lineLayouts: lineLayouts)
         
     }
     
-    private func drawFieldFrame(drawing: Drawing) {
+    private func drawFieldFrame(in drawing: Drawing, lineLayouts: [LineLayout]) {
         
         switch field.style {
             
@@ -389,9 +393,8 @@ public class FieldView: View {
         
     }
     
-    private func drawText(in drawing: Drawing) {
+    private func drawText(in drawing: Drawing, content: RichText, lineLayouts: [LineLayout]) {
         
-        let content = self.richText
         let textRectangle = FieldView.computeTextRectangle(of: field)
         let contentRectangle = FieldView.computeContentRectangle(of: field)
         
@@ -439,7 +442,7 @@ public class FieldView: View {
             
             /* Draw the line */
             if lineIndex < lineLayouts.count {
-                drawLine(atIndex: lineIndex, atLineBaseY: baseLineY, in: drawing, contentRectangle: contentRectangle, textRectangle: textRectangle, content: content)
+                drawLine(atIndex: lineIndex, atLineBaseY: baseLineY, in: drawing, lineLayouts: lineLayouts, contentRectangle: contentRectangle, textRectangle: textRectangle, content: content)
                 lineIndex += 1
             }
             
@@ -447,7 +450,7 @@ public class FieldView: View {
         
     }
     
-    private func drawLine(atIndex lineIndex: Int, atLineBaseY lineY: Int, in drawing: Drawing, contentRectangle: Rectangle, textRectangle: Rectangle, content: RichText) {
+    private func drawLine(atIndex lineIndex: Int, atLineBaseY lineY: Int, in drawing: Drawing, lineLayouts: [LineLayout], contentRectangle: Rectangle, textRectangle: Rectangle, content: RichText) {
         
         /* Get the layout for that line */
         let layout = lineLayouts[lineIndex]
