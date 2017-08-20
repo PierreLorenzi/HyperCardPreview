@@ -81,9 +81,6 @@
 		6C9E6B401E75BCFA00BBF925 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */; };
 		6C9E6B411E75BCFA00BBF925 /* LayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */; };
 		6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF01E75BCFA00BBF925 /* PartView.swift */; };
-		6C9E6B431E75BCFA00BBF925 /* RegularButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF11E75BCFA00BBF925 /* RegularButtonView.swift */; };
-		6C9E6B441E75BCFA00BBF925 /* CheckBoxButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF21E75BCFA00BBF925 /* CheckBoxButtonView.swift */; };
-		6C9E6B451E75BCFA00BBF925 /* PopupButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF31E75BCFA00BBF925 /* PopupButtonView.swift */; };
 		6C9E6B461E75BCFA00BBF925 /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */; };
 		6C9E6B471E75BCFA00BBF925 /* FontManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF61E75BCFA00BBF925 /* FontManager.swift */; };
 		6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF71E75BCFA00BBF925 /* FontDecorating.swift */; };
@@ -338,6 +335,7 @@
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
+		6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -417,9 +415,6 @@
 		6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
 		6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerView.swift; sourceTree = "<group>"; };
 		6C9E6AF01E75BCFA00BBF925 /* PartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartView.swift; sourceTree = "<group>"; };
-		6C9E6AF11E75BCFA00BBF925 /* RegularButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegularButtonView.swift; sourceTree = "<group>"; };
-		6C9E6AF21E75BCFA00BBF925 /* CheckBoxButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckBoxButtonView.swift; sourceTree = "<group>"; };
-		6C9E6AF31E75BCFA00BBF925 /* PopupButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopupButtonView.swift; sourceTree = "<group>"; };
 		6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
 		6C9E6AF61E75BCFA00BBF925 /* FontManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontManager.swift; sourceTree = "<group>"; };
 		6C9E6AF71E75BCFA00BBF925 /* FontDecorating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontDecorating.swift; sourceTree = "<group>"; };
@@ -674,6 +669,7 @@
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
+		6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -891,9 +887,7 @@
 				6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */,
 				6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */,
 				6C9E6AF01E75BCFA00BBF925 /* PartView.swift */,
-				6C9E6AF11E75BCFA00BBF925 /* RegularButtonView.swift */,
-				6C9E6AF21E75BCFA00BBF925 /* CheckBoxButtonView.swift */,
-				6C9E6AF31E75BCFA00BBF925 /* PopupButtonView.swift */,
+				6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */,
 				6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */,
 			);
 			name = Views;
@@ -1539,14 +1533,13 @@
 				6C9E6B1B1E75BCFA00BBF925 /* CardBlock.swift in Sources */,
 				6C9E6B381E75BCFA00BBF925 /* FileFontFamilyResource.swift in Sources */,
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
+				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
-				6C9E6B431E75BCFA00BBF925 /* RegularButtonView.swift in Sources */,
 				6C9E6B001E75BCFA00BBF925 /* NumericName.swift in Sources */,
 				6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */,
 				6C9E6B1F1E75BCFA00BBF925 /* BitmapBlock.swift in Sources */,
 				6C9E6B071E75BCFA00BBF925 /* Part.swift in Sources */,
-				6C9E6B441E75BCFA00BBF925 /* CheckBoxButtonView.swift in Sources */,
 				6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */,
 				6C9E6B231E75BCFA00BBF925 /* StackBlockV1.swift in Sources */,
 				6C9E6B2C1E75BCFA00BBF925 /* ResourceBlock.swift in Sources */,
@@ -1589,7 +1582,6 @@
 				6C9E6B1C1E75BCFA00BBF925 /* BackgroundBlock.swift in Sources */,
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
 				6C9E6B2F1E75BCFA00BBF925 /* BitmapFontResourceBlock.swift in Sources */,
-				6C9E6B451E75BCFA00BBF925 /* PopupButtonView.swift in Sources */,
 				6C9E6B361E75BCFA00BBF925 /* FileButton.swift in Sources */,
 				6C9E6B3A1E75BCFA00BBF925 /* FileGlyph.swift in Sources */,
 				6C9E6B171E75BCFA00BBF925 /* MasterBlock.swift in Sources */,

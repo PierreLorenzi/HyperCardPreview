@@ -157,70 +157,40 @@ public class Browser {
     
     private func buildButtonView(for button: Button) -> View {
         
-        switch button.style {
-            
-        case .transparent, .opaque, .rectangle, .shadow, .roundRect, .standard, .`default`, .oval:
-            return buildRegularButtonView(for: button)
-            
-        case .checkBox, .radio:
-            return buildCheckBoxButtonView(for: button)
-            
-        case .popup:
-            return buildPopupButtonView(for: button)
-            
-        default:
-            return View()
-        }
+        let hiliteProperty = retrieveHilite(of: button)
+        
+        return ButtonView(button: button, hiliteProperty: hiliteProperty, fontManager: fontManager, resources: resources)
     }
     
-    private func buildRegularButtonView(for button: Button) -> RegularButtonView {
-        
-        let view = RegularButtonView()
-        
-        view.name = button.name
-        view.rectangle = button.rectangle
-        view.icon = button.iconIdentifier == 0 ? nil : findIcon(withIdentifier: button.iconIdentifier)
-        view.style = button.style
-        view.hilite = retrieveHilite(of: button)
-        view.visible = button.visible
-        view.enabled = button.enabled
-        view.showName = button.showName
-        view.alignment = button.textAlign
-        
-        /* Font */
-        let fontIdentifier = (button.iconIdentifier != 0) ? iconButtonFontIdentifier : button.textFontIdentifier
-        let fontSize = (button.iconIdentifier != 0) ? iconButtonFontSize : button.textFontSize
-        let fontStyle = (button.iconIdentifier != 0) ? iconButtonFontStyle : button.textStyle
-        view.font = fontManager.findFont(withIdentifier: fontIdentifier, size: fontSize, style: fontStyle)
-        
-        return view
-    }
-    
-    private func retrieveHilite(of button: Button) -> Bool {
+    private func retrieveHilite(of button: Button) -> Property<Bool> {
         
         /* Special case: bg buttons with not shared hilite */
         if !button.sharedHilite && isPartInBackground(button) {
             
-            /* If we're displaying the background, do not display the card contents */
-            if displayOnlyBackground {
-                return false
-            }
+            return Property<Bool>(compute: {
+                [unowned self, unowned button] in
             
-            /* Get the content of the button in the card */
-            guard let content = findContentInCurrentCard(of: button) else {
-                return false
-            }
+                /* If we're displaying the background, do not display the card contents */
+                if self.displayOnlyBackground {
+                    return false
+                }
+                
+                /* Get the content of the button in the card */
+                guard let content = self.findContentInCurrentCard(of: button) else {
+                    return false
+                }
+                
+                /* If the card content is equal to "1", the button is hilited */
+                guard case PartContent.string(trueHiliteContent) = content  else {
+                    return false
+                }
             
-            /* If the card content is equal to "1", the button is hilited */
-            guard case PartContent.string(trueHiliteContent) = content  else {
-                return false
-            }
-            
-            return true
+                return true
+            })
         }
         
         /* Usual case: just return hilite */
-        return button.hilite
+        return button.hiliteProperty
         
     }
     
@@ -239,78 +209,6 @@ public class Browser {
         }
         
         return content.partContent
-    }
-    
-    private func buildCheckBoxButtonView(for button: Button) -> CheckBoxButtonView {
-        
-        let view = CheckBoxButtonView()
-        
-        view.name = button.name
-        view.rectangle = button.rectangle
-        view.style = button.style
-        view.font = fontManager.findFont(withIdentifier: button.textFontIdentifier, size: button.textFontSize, style: button.textStyle)
-        view.hilite = retrieveHilite(of: button)
-        view.visible = button.visible
-        view.enabled = button.enabled
-        view.showName = button.showName
-        
-        return view
-    }
-    
-    private func buildPopupButtonView(for button: Button) -> PopupButtonView {
-        
-        let view = PopupButtonView()
-        
-        view.rectangle = button.rectangle
-        view.font = fontManager.findFont(withIdentifier: button.textFontIdentifier, size: button.textFontSize, style: button.textStyle)
-        view.visible = button.visible
-        view.enabled = button.enabled
-        view.selectedIndex = button.selectedItem - 1
-        view.title = button.name
-        view.titleWidth = button.titleWidth
-        view.items = separateStringLines(in: button.content)
-        
-        /* Set the condensed font */
-        var consensedStyle = button.textStyle
-        consensedStyle.condense = true
-        view.condensedFont = fontManager.findFont(withIdentifier: button.textFontIdentifier, size: button.textFontSize, style: consensedStyle)
-        
-        return view
-    }
-    
-    private func separateStringLines(in string: HString) -> [HString] {
-        
-        guard string.length > 0 else {
-            return []
-        }
-        
-        var lines = [HString]()
-        
-        var lineStart = 0
-        let carriageReturn = HChar(13)
-        
-        for i in 0..<string.length {
-            if string[i] == carriageReturn {
-                let line = string[lineStart..<i]
-                lines.append(line)
-                lineStart = i+1
-            }
-        }
-        
-        /* Add the last line */
-        let lastLine = string[lineStart..<string.length]
-        lines.append(lastLine)
-        
-        return lines
-    }
-    
-    private func findIcon(withIdentifier identifier: Int) -> MaskedImage? {
-        
-        if let iconResource = resources.findResource(ofType: ResourceTypes.icon, withIdentifier: identifier) {
-            return maskIcon(iconResource.content)
-        }
-        
-        return nil
     }
     
 }

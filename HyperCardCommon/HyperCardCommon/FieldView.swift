@@ -76,9 +76,7 @@ public class FieldView: View {
         super.init()
         
         /* Listen to content change */
-        contentProperty.startNotifications(for: self, by: {
-            self.richTextProperty.invalidate()
-        })
+        richTextProperty.dependsOn(contentProperty)
         
     }
     
