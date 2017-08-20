@@ -20,12 +20,12 @@ public extension Background {
         super.setupLazyInitialization(layerBlock: backgroundBlock, fileContent: fileContent)
         
         /* name */
-        self.nameProperty.compute = {
+        self.nameProperty.lazyCompute = {
             return backgroundBlock.name
         }
         
         /* script */
-        self.scriptProperty.compute = {
+        self.scriptProperty.lazyCompute = {
             return backgroundBlock.script
         }
         

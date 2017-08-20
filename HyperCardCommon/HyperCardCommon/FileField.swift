@@ -38,7 +38,7 @@ public extension Field {
         
         
         /* content */
-        self.contentProperty.compute = {
+        self.contentProperty.lazyCompute = {
             return Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
         }
         

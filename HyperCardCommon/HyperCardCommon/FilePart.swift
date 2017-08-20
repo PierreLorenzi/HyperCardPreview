@@ -19,12 +19,12 @@ public extension Part {
         self.rectangle = partBlock.rectangle
         
         /* name */
-        self.nameProperty.compute = {
+        self.nameProperty.lazyCompute = {
             return partBlock.name
         }
         
         /* script */
-        self.scriptProperty.compute = {
+        self.scriptProperty.lazyCompute = {
             return partBlock.script
         }
         

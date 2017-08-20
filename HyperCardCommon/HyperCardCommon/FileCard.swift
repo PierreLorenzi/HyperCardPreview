@@ -25,17 +25,17 @@ public extension Card {
         super.setupLazyInitialization(layerBlock: cardBlock, fileContent: fileContent)
         
         /* name */
-        self.nameProperty.compute = {
+        self.nameProperty.lazyCompute = {
             return cardBlock.name
         }
         
         /* backgroundPartContents */
-        self.backgroundPartContentsProperty.compute = {
+        self.backgroundPartContentsProperty.lazyCompute = {
             return Card.loadBackgroundPartContents(cardBlock: cardBlock, fileContent: fileContent)
         }
         
         /* script */
-        self.scriptProperty.compute = {
+        self.scriptProperty.lazyCompute = {
             return cardBlock.script
         }
         

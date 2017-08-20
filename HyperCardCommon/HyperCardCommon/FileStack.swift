@@ -37,13 +37,13 @@ public extension Stack {
         self.scrollPoint = stackBlock.scrollPoint
         
         /* Cards */
-        self.cardsProperty.compute = {
+        self.cardsProperty.lazyCompute = {
             let cardBlocks = fileContent.cards
             return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
         }
         
         /* Backgrounds */
-        self.backgroundsProperty.compute = {
+        self.backgroundsProperty.lazyCompute = {
             let backgroundBlocks = fileContent.backgrounds
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
                 return Background(backgroundBlock: block, fileContent: fileContent)
@@ -51,12 +51,12 @@ public extension Stack {
         }
         
         /* patterns */
-        self.patternsProperty.compute = {
+        self.patternsProperty.lazyCompute = {
             return stackBlock.patterns
         }
         
         /* script */
-        self.scriptProperty.compute = {
+        self.scriptProperty.lazyCompute = {
             return stackBlock.script
         }
 

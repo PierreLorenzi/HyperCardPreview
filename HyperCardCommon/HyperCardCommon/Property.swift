@@ -11,20 +11,31 @@ public class Property<T> {
     
     private var storedValue: T? = nil
     
+    private var _compute: () -> T
+    
     public var observers: [PropertyObserver] = []
     
+    public var isLazy = false
+    
     public init(_ value: T) {
-        self.compute = { return value }
+        _compute = { return value }
     }
     
     public init(compute: @escaping () -> T) {
-        self.compute = compute
+        _compute = compute
     }
     
     public var value: T {
         get {
             guard let someStoredValue = storedValue else {
                 let newValue = compute()
+                
+                /* If the property is lazy, discard the closure to free the captured objects,
+                 that are only necessary for the computation */
+                if isLazy {
+                    _compute = { return newValue }
+                }
+                
                 self.storedValue = newValue
                 return newValue
             }
@@ -36,8 +47,22 @@ public class Property<T> {
     }
     
     public var compute: () -> T {
-        didSet {
+        get {
+            return _compute
+        }
+        set {
+            _compute = newValue
             self.invalidate()
+        }
+    }
+    
+    public var lazyCompute: () -> T {
+        get {
+            return _compute
+        }
+        set {
+            _compute = newValue
+            isLazy = true
         }
     }
     

@@ -20,12 +20,12 @@ public extension Layer {
         /* Enable lazy initialization */
         
         /* image */
-        self.imageProperty.compute = {
+        self.imageProperty.lazyCompute = {
             return Layer.loadImage(layerBlock: layerBlock, fileContent: fileContent)
         }
         
         /* parts */
-        self.partsProperty.compute = {
+        self.partsProperty.lazyCompute = {
             return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
         }
         
