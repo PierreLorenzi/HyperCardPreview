@@ -118,67 +118,40 @@ public class Browser {
     
     private func buildFieldView(for field: Field) -> View {
         
-        let view = FieldView()
-        
-        view.rectangle = field.rectangle
-        view.style = field.style
-        view.visible = field.visible
-        view.dontWrap = field.dontWrap
-        view.showLines = field.showLines
-        view.wideMargins = field.wideMargins
-        view.textHeight = field.textHeight
-        view.fixedLineHeight = field.fixedLineHeight
-        view.alignment = field.textAlign
-        
         /* Content */
         let content = retrieveContent(of: field)
-        view.content = buildRichText(from: content, withDefaultFontIdentifier: field.textFontIdentifier, defaultSize: field.textFontSize, defaultStyle: field.textStyle)
+        
+        let view = FieldView(field: field, contentProperty: content, fontManager: self.fontManager)
         
         return view
         
     }
     
-    private func retrieveContent(of field: Field) -> PartContent {
+    private func retrieveContent(of field: Field) -> Property<PartContent> {
         
         /* Special case: bg buttons with not shared hilite */
         if !field.sharedText && isPartInBackground(field) {
             
-            /* If we're displaying the background, do not display the card contents */
-            if displayOnlyBackground {
+            return Property<PartContent>(compute: {
+                [unowned self, unowned field] in
+            
+                /* If we're displaying the background, do not display the card contents */
+                if self.displayOnlyBackground {
+                    return PartContent.string("")
+                }
+                
+                /* Get the content of the button in the card */
+                if let content = self.findContentInCurrentCard(of: field) {
+                    return content
+                }
+                
                 return PartContent.string("")
-            }
-            
-            /* Get the content of the button in the card */
-            if let content = findContentInCurrentCard(of: field) {
-                return content
-            }
-            
-            return PartContent.string("")
+                
+            })
         }
         
         /* Usual case: just return the content of the parent layer */
-        return field.content
-        
-    }
-    
-    private func buildRichText(from content: PartContent, withDefaultFontIdentifier defaultIdentifier: Int, defaultSize: Int, defaultStyle: TextStyle) -> RichText {
-        
-        switch content {
-        case .string(let string):
-            let font = fontManager.findFont(withIdentifier: defaultIdentifier, size: defaultSize, style: defaultStyle)
-            return RichText(string: string, attributes: [RichText.Attribute(index: 0, font: font)])
-            
-        case .formattedString(let text):
-            let attributes = text.attributes.map({
-                (f: Text.FormattingAssociation) -> RichText.Attribute in
-                let identifier = f.formatting.fontFamilyIdentifier ?? defaultIdentifier
-                let size = f.formatting.size ?? defaultSize
-                let style = f.formatting.style ?? defaultStyle
-                let font = fontManager.findFont(withIdentifier: identifier, size: size, style: style)
-                return RichText.Attribute(index: f.offset, font: font)
-            })
-            return RichText(string: text.string, attributes: attributes)
-        }
+        return field.contentProperty
         
     }
     

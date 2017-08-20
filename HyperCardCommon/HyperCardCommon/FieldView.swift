@@ -44,73 +44,174 @@ private struct LineLayout {
 
 
 
-/// A view of a field
 public class FieldView: View {
     
-    /// The visual style of the view
-    public var style: PartStyle         = .transparent { didSet { needsLayout = true }}
+    private let field: Field
     
-    /// The content text
-    public var content: RichText        = RichText() { didSet { needsLayout = true }}
+    private var richText: RichText {
+        get { return self.richTextProperty.value }
+    }
+    private let richTextProperty: Property<RichText>
     
-    /// The 2D position of the view
-    public var rectangle: Rectangle     = Rectangle(top: 0, left: 0, bottom: 0, right: 0) { didSet { needsLayout = true }}
+    private var lineLayouts: [LineLayout] {
+        get { return self.lineLayoutsProperty.value }
+    }
+    private let lineLayoutsProperty: Property<[LineLayout]>
     
-    /// Whether or not the lines all have the same height
-    public var fixedLineHeight: Bool    = false { didSet { needsLayout = true }}
-    
-    /// Whether or not the text wraps to the next line when it reaches the right of the field
-    public var dontWrap: Bool           = false { didSet { needsLayout = true }}
-    
-    /// If set, the margins are wider, which make a more readable text
-    public var wideMargins: Bool        = false { didSet { needsLayout = true }}
-    
-    /// Whether or not the text lines are marked with gray lines
-    public var showLines: Bool          = false
-    
-    /// Whether or not the view is visible
-    public var visible: Bool            = true
-    
-    /// The alignment of the text
-    public var alignment: TextAlign      = .left
-    
-    /// The height of the lines, if it is fixed
-    public var textHeight: Int          = 16 { didSet { needsLayout = true }}
-    
-    /// The scroll shift, in pixels. Only used in scrolling fields.
-    public var scroll: Int              = 0
-    
-    private var needsLayout: Bool      = false
-    private var lineLayouts: [LineLayout] = []
-    private var contentRectangle: Rectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
-    private var textRectangle: Rectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
-    
-    public override init() {}
-    
-    public override func draw(in drawing: Drawing) {
+    public init(field: Field, contentProperty: Property<PartContent>, fontManager: FontManager) {
         
-        guard visible else {
-            return
-        }
+        self.field = field
         
-        layoutIfNeeded()
+        /* rich text */
+        self.richTextProperty = Property<RichText>(compute: {
+            return FieldView.buildRichText(from: contentProperty.value, withDefaultFontIdentifier: field.textFontIdentifier, defaultSize: field.textFontSize, defaultStyle: field.textStyle, fontManager: fontManager)
+        })
         
-        /* Draw the frame */
-        drawFieldFrame(drawing: drawing)
+        /* line layouts */
+        let richTextProperty = self.richTextProperty
+        self.lineLayoutsProperty = Property<[LineLayout]>(compute: {
+            return FieldView.layout(field: field, content: richTextProperty.value)
+        })
         
-        /* Draw the text */
-        drawText(in: drawing)
+        super.init()
+        
+        /* Listen to content change */
+        contentProperty.startNotifications(for: self, by: {
+            self.richTextProperty.invalidate()
+        })
         
     }
     
-    private func computeContentRectangle() -> Rectangle {
+    private static func buildRichText(from content: PartContent, withDefaultFontIdentifier defaultIdentifier: Int, defaultSize: Int, defaultStyle: TextStyle, fontManager: FontManager) -> RichText {
         
-        let baseRectangle = Rectangle(top: rectangle.top + 1,
-                  left: rectangle.left + 1,
-                  bottom: rectangle.bottom - 1,
-                  right: rectangle.right - 1)
+        switch content {
+        case .string(let string):
+            let font = fontManager.findFont(withIdentifier: defaultIdentifier, size: defaultSize, style: defaultStyle)
+            return RichText(string: string, attributes: [RichText.Attribute(index: 0, font: font)])
+            
+        case .formattedString(let text):
+            let attributes = text.attributes.map({
+                (f: Text.FormattingAssociation) -> RichText.Attribute in
+                let identifier = f.formatting.fontFamilyIdentifier ?? defaultIdentifier
+                let size = f.formatting.size ?? defaultSize
+                let style = f.formatting.style ?? defaultStyle
+                let font = fontManager.findFont(withIdentifier: identifier, size: size, style: style)
+                return RichText.Attribute(index: f.offset, font: font)
+            })
+            return RichText(string: text.string, attributes: attributes)
+        }
         
-        switch style {
+    }
+    
+    private static func layout(field: Field, content: RichText) -> [LineLayout] {
+        
+        /* Init the lines */
+        var lineLayouts: [LineLayout] = []
+        
+        /* Compute the layout rectangles */
+        let textRectangle = FieldView.computeTextRectangle(of: field)
+        
+        /* State */
+        var index = 0
+        var attributeIndex = 0
+        var layout = buildEmptyLayout(atIndex: index, of: content, attributeIndex: attributeIndex)
+        
+        /* Space break monitoring */
+        var layoutAfterLastSpace: LineLayout? = nil
+        var indexAfterLastSpace = 0
+        var attributeIndexAfterLastSpace = 0
+        
+        /* Loop through the characters to find the returns */
+        while index <= content.string.length {
+            
+            /* Check if we must break because of a return or because we have reached the end */
+            if (index > 0 && content.string[index-1] == carriageReturn) || index == content.string.length {
+                
+                /* Break at the current character */
+                layout.textRange = layout.textRange.lowerBound..<index
+                finalizeLayout(&layout, field: field, content: content, previousLayout: lineLayouts.last)
+                lineLayouts.append(layout)
+                
+                if index < content.string.length {
+                    /* Stay to the same character */
+                    layout = buildEmptyLayout(atIndex: index, of: content, attributeIndex: attributeIndex)
+                    layoutAfterLastSpace = nil
+                }
+                else {
+                    break
+                }
+                
+            }
+            
+            /* Get the current character */
+            let character = content.string[index]
+            let width = computeCharacterLength(atIndex: index, of: content, attributeIndex: attributeIndex)
+            
+            /* Monitor spaces (we mustn't do it if we have just break at that space) */
+            if character != space && index > 0 && content.string[index-1] == space && layout.textRange.lowerBound != index {
+                layoutAfterLastSpace = layout
+                indexAfterLastSpace = index
+                attributeIndexAfterLastSpace = attributeIndex
+            }
+            
+            /* Check if we must break because the character is going over the line */
+            if !field.dontWrap && layout.width + width > textRectangle.width && character != space && character != carriageReturn && index != layout.textRange.lowerBound {
+                
+                /* Check if we can go back to the start of the word */
+                if var l = layoutAfterLastSpace {
+                    
+                    /* Append the layout as it was after the last space */
+                    l.textRange = l.textRange.lowerBound..<indexAfterLastSpace
+                    finalizeLayout(&l, field: field, content: content, previousLayout: lineLayouts.last)
+                    lineLayouts.append(l)
+                    
+                    /* Move to last space */
+                    index = indexAfterLastSpace
+                    attributeIndex = attributeIndexAfterLastSpace
+                    layout = buildEmptyLayout(atIndex: index, of: content, attributeIndex: attributeIndex)
+                    layoutAfterLastSpace = nil
+                    continue
+                }
+                
+                /* Break at the current character */
+                layout.textRange = layout.textRange.lowerBound..<index
+                finalizeLayout(&layout, field: field, content: content, previousLayout: lineLayouts.last)
+                lineLayouts.append(layout)
+                
+                /* Stay to the same character */
+                layout = buildEmptyLayout(atIndex: index, of: content, attributeIndex: attributeIndex)
+                layoutAfterLastSpace = nil
+                continue
+                
+            }
+            
+            /* Step to the end of the character */
+            if content.attributes[attributeIndex].index == index {
+                let font = content.attributes[attributeIndex].font
+                layout.ascent = max(layout.ascent, font.maximumAscent)
+                layout.descent = max(layout.descent, font.maximumDescent)
+                layout.leading = min(layout.leading, font.leading)
+            }
+            index += 1
+            if character != carriageReturn {
+                layout.width += width
+            }
+            if index != content.string.length && attributeIndex+1 < content.attributes.count && index == content.attributes[attributeIndex+1].index {
+                attributeIndex += 1
+            }
+        }
+        
+        return lineLayouts
+    }
+    
+    private static func computeContentRectangle(of field: Field) -> Rectangle {
+        
+        let baseRectangle = Rectangle(top: field.rectangle.top + 1,
+                                      left: field.rectangle.left + 1,
+                                      bottom: field.rectangle.bottom - 1,
+                                      right: field.rectangle.right - 1)
+        
+        switch field.style {
             
         case .shadow:
             return Rectangle(top: baseRectangle.top,
@@ -131,41 +232,110 @@ public class FieldView: View {
         
     }
     
-    private func computeTextRectangle() -> Rectangle {
+    private static func computeTextRectangle(of field: Field) -> Rectangle {
         
-        let contentRectangle = self.contentRectangle
+        let contentRectangle = FieldView.computeContentRectangle(of: field)
         
         /* Compute margins */
-        return Rectangle(top: contentRectangle.top + (wideMargins ? 4 : 0),
-                         left: contentRectangle.left + 3 + (wideMargins ? 5 : 0),
+        return Rectangle(top: contentRectangle.top + (field.wideMargins ? 4 : 0),
+                         left: contentRectangle.left + 3 + (field.wideMargins ? 5 : 0),
                          bottom: contentRectangle.bottom,
-                         right: contentRectangle.right - 3 - (wideMargins ? 3 : 0)
+                         right: contentRectangle.right - 3 - (field.wideMargins ? 3 : 0)
         )
+    }
+    
+    private static func buildEmptyLayout(atIndex index: Int, of content: RichText, attributeIndex: Int) -> LineLayout {
+        
+        let font = content.attributes[attributeIndex].font
+        
+        return LineLayout(textRange: index..<(index+1),
+                          width: 0,
+                          baseLineY: 0,
+                          ascent: font.maximumAscent,
+                          descent: font.maximumDescent,
+                          leading: font.leading,
+                          bottom: 0,
+                          initialAttributeIndex: attributeIndex)
+        
+    }
+    
+    private static func computeCharacterLength(atIndex index: Int, of content: RichText, attributeIndex: Int) -> Int {
+        
+        var string = HString(stringLiteral: " ")
+        string[0] = content.string[index]
+        
+        let font = content.attributes[attributeIndex].font
+        return font.computeSizeOfString(string)
+        
+    }
+    
+    private static func finalizeLayout(_ layout: inout LineLayout, field: Field, content: RichText, previousLayout: LineLayout?) {
+        
+        /* Get the current height of the text */
+        let textBottom: Int
+        if let lastLayout = previousLayout {
+            textBottom = lastLayout.bottom
+        }
+        else {
+            textBottom = 0
+        }
+        
+        /* Compute the vertical position of the layout */
+        if field.fixedLineHeight {
+            layout.bottom = textBottom + field.textHeight
+            layout.baseLineY = textBottom + field.textHeight - (layout.leading + layout.descent) * field.textHeight / (layout.ascent + layout.descent + layout.leading)
+        }
+        else {
+            layout.bottom = textBottom + layout.ascent + layout.descent + layout.leading
+            layout.baseLineY = textBottom + layout.ascent
+        }
+        
+        /* Trim final whitespaces */
+        var lastIndex = layout.textRange.upperBound - 1
+        while lastIndex >= layout.textRange.lowerBound && (content.string[lastIndex] == space || content.string[lastIndex] == carriageReturn) {
+            lastIndex -= 1
+        }
+        layout.textRange = layout.textRange.lowerBound..<(lastIndex + 1)
+        
+    }
+    
+    override public func draw(in drawing: Drawing) {
+        
+        guard field.visible else {
+            return
+        }
+        
+        /* Draw the frame */
+        drawFieldFrame(drawing: drawing)
+        
+        /* Draw the text */
+        drawText(in: drawing)
+        
     }
     
     private func drawFieldFrame(drawing: Drawing) {
         
-        switch style {
+        switch field.style {
             
         case .opaque:
-            drawing.drawRectangle(rectangle, composition: Drawing.MaskComposition)
+            drawing.drawRectangle(field.rectangle, composition: Drawing.MaskComposition)
             
         case .rectangle:
-            drawing.drawBorderedRectangle(rectangle)
+            drawing.drawBorderedRectangle(field.rectangle)
             
         case .shadow:
-            drawing.drawShadowedRectangle(rectangle, thickness: FieldShadowThickness, shift: FieldShadowShift)
+            drawing.drawShadowedRectangle(field.rectangle, thickness: FieldShadowThickness, shift: FieldShadowShift)
             
         case .scrolling:
-            self.drawScrollFrame(in: drawing)
+            FieldView.drawScrollFrame(in: drawing, rectangle: field.rectangle)
             
             /* Draw active scroll if necessary */
             let lastLineLayout = lineLayouts[lineLayouts.count-1]
-            let contentHeight = rectangle.height - 2
+            let contentHeight = field.rectangle.height - 2
             let totalTextHeight = lastLineLayout.baseLineY + lastLineLayout.descent
             if totalTextHeight > contentHeight {
-                let scrollFactor: Double = Double(scroll) / Double(totalTextHeight - contentHeight)
-                drawActiveScroll(in: drawing, scrollFactor: scrollFactor)
+                let scrollFactor: Double = Double(field.scroll) / Double(totalTextHeight - contentHeight)
+                FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scrollFactor: scrollFactor)
             }
             
         default:
@@ -175,7 +345,7 @@ public class FieldView: View {
         
     }
     
-    private func drawScrollFrame(in drawing: Drawing) {
+    private static func drawScrollFrame(in drawing: Drawing, rectangle: Rectangle) {
         
         /* Draw the main border */
         drawing.drawBorderedRectangle(rectangle)
@@ -204,7 +374,7 @@ public class FieldView: View {
         
     }
     
-    private func drawActiveScroll(in drawing: Drawing, scrollFactor: Double) {
+    private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scrollFactor: Double) {
         
         /* Draw the background */
         let backgroundRectangle = Rectangle(top: rectangle.top + ScrollButtonHeight + 1, left: rectangle.right - ScrollWidth + 1, bottom: rectangle.bottom - ScrollButtonHeight - 1, right: rectangle.right - 1)
@@ -219,167 +389,11 @@ public class FieldView: View {
         
     }
     
-    private func layoutIfNeeded() {
-        
-        if !needsLayout {
-            return
-        }
-        needsLayout = false
-        
-        /* Compute the layout rectangles */
-        contentRectangle = computeContentRectangle()
-        textRectangle = computeTextRectangle()
-        
-        /* Init the lines */
-        lineLayouts = []
-        
-        /* State */
-        var index = 0
-        var attributeIndex = 0
-        var layout = buildEmptyLayout(atIndex: index, attributeIndex: attributeIndex)
-        
-        /* Space break monitoring */
-        var layoutAfterLastSpace: LineLayout? = nil
-        var indexAfterLastSpace = 0
-        var attributeIndexAfterLastSpace = 0
-        
-        /* Loop through the characters to find the returns */
-        while index <= content.string.length {
-            
-            /* Check if we must break because of a return or because we have reached the end */
-            if (index > 0 && content.string[index-1] == carriageReturn) || index == content.string.length {
-                
-                /* Break at the current character */
-                layout.textRange = layout.textRange.lowerBound..<index
-                finalizeLayout(&layout)
-                lineLayouts.append(layout)
-                
-                if index < content.string.length {
-                    /* Stay to the same character */
-                    layout = buildEmptyLayout(atIndex: index, attributeIndex: attributeIndex)
-                    layoutAfterLastSpace = nil
-                }
-                else {
-                    break
-                }
-                
-            }
-            
-            /* Get the current character */
-            let character = content.string[index]
-            let width = computeCharacterLength(atIndex: index, attributeIndex: attributeIndex)
-            
-            /* Monitor spaces (we mustn't do it if we have just break at that space) */
-            if character != space && index > 0 && content.string[index-1] == space && layout.textRange.lowerBound != index {
-                layoutAfterLastSpace = layout
-                indexAfterLastSpace = index
-                attributeIndexAfterLastSpace = attributeIndex
-            }
-            
-            /* Check if we must break because the character is going over the line */
-            if !dontWrap && layout.width + width > textRectangle.width && character != space && character != carriageReturn && index != layout.textRange.lowerBound {
-                
-                /* Check if we can go back to the start of the word */
-                if var l = layoutAfterLastSpace {
-                    
-                    /* Append the layout as it was after the last space */
-                    l.textRange = l.textRange.lowerBound..<indexAfterLastSpace
-                    finalizeLayout(&l)
-                    lineLayouts.append(l)
-                    
-                    /* Move to last space */
-                    index = indexAfterLastSpace
-                    attributeIndex = attributeIndexAfterLastSpace
-                    layout = buildEmptyLayout(atIndex: index, attributeIndex: attributeIndex)
-                    layoutAfterLastSpace = nil
-                    continue
-                }
-                
-                /* Break at the current character */
-                layout.textRange = layout.textRange.lowerBound..<index
-                finalizeLayout(&layout)
-                lineLayouts.append(layout)
-                
-                /* Stay to the same character */
-                layout = buildEmptyLayout(atIndex: index, attributeIndex: attributeIndex)
-                layoutAfterLastSpace = nil
-                continue
-                
-            }
-            
-            /* Step to the end of the character */
-            if content.attributes[attributeIndex].index == index {
-                let font = content.attributes[attributeIndex].font
-                layout.ascent = max(layout.ascent, font.maximumAscent)
-                layout.descent = max(layout.descent, font.maximumDescent)
-                layout.leading = min(layout.leading, font.leading)
-            }
-            index += 1
-            if character != carriageReturn {
-                layout.width += width
-            }
-            if index != content.string.length && attributeIndex+1 < content.attributes.count && index == content.attributes[attributeIndex+1].index {
-                attributeIndex += 1
-            }
-        }
-    }
-    
-    private func buildEmptyLayout(atIndex index: Int, attributeIndex: Int) -> LineLayout {
-        
-        let font = content.attributes[attributeIndex].font
-        
-        return LineLayout(textRange: index..<(index+1),
-                                       width: 0,
-                                       baseLineY: 0,
-                                       ascent: font.maximumAscent,
-                                       descent: font.maximumDescent,
-                                       leading: font.leading,
-                                       bottom: 0,
-                                       initialAttributeIndex: attributeIndex)
-        
-    }
-    
-    private func computeCharacterLength(atIndex index: Int, attributeIndex: Int) -> Int {
-    
-        var string = HString(stringLiteral: " ")
-        string[0] = content.string[index]
-        
-        let font = content.attributes[attributeIndex].font
-        return font.computeSizeOfString(string)
-    
-    }
-    
-    private func finalizeLayout(_ layout: inout LineLayout) {
-        
-        /* Get the current height of the text */
-        let textBottom: Int
-        if let lastLayout = lineLayouts.last {
-            textBottom = lastLayout.bottom
-        }
-        else {
-            textBottom = 0
-        }
-        
-        /* Compute the vertical position of the layout */
-        if fixedLineHeight {
-            layout.bottom = textBottom + textHeight
-            layout.baseLineY = textBottom + textHeight - (layout.leading + layout.descent) * textHeight / (layout.ascent + layout.descent + layout.leading)
-        }
-        else {
-            layout.bottom = textBottom + layout.ascent + layout.descent + layout.leading
-            layout.baseLineY = textBottom + layout.ascent
-        }
-        
-        /* Trim final whitespaces */
-        var lastIndex = layout.textRange.upperBound - 1
-        while lastIndex >= layout.textRange.lowerBound && (content.string[lastIndex] == space || content.string[lastIndex] == carriageReturn) {
-            lastIndex -= 1
-        }
-        layout.textRange = layout.textRange.lowerBound..<(lastIndex + 1)
-        
-    }
-    
     private func drawText(in drawing: Drawing) {
+        
+        let content = self.richText
+        let textRectangle = FieldView.computeTextRectangle(of: field)
+        let contentRectangle = FieldView.computeContentRectangle(of: field)
         
         if textRectangle.width == 0 || textRectangle.height == 0  {
             return
@@ -395,12 +409,12 @@ public class FieldView: View {
             
             if lineIndex < lineLayouts.count {
                 let layout = lineLayouts[lineIndex]
-                baseLineY = textRectangle.top + layout.baseLineY - scroll
+                baseLineY = textRectangle.top + layout.baseLineY - field.scroll
                 ascent = layout.ascent
-                descent = showLines ? max(layout.descent, 2) : layout.descent
+                descent = field.showLines ? max(layout.descent, 2) : layout.descent
             }
-            else if showLines {
-                baseLineY += textHeight
+            else if field.showLines {
+                baseLineY += field.textHeight
                 descent = 2
                 ascent = 0
             }
@@ -419,13 +433,13 @@ public class FieldView: View {
             }
             
             /* Draw the line */
-            if showLines {
+            if field.showLines {
                 drawing.drawRectangle(Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right), clipRectangle: contentRectangle, composition: FieldLineComposition)
             }
             
             /* Draw the line */
             if lineIndex < lineLayouts.count {
-                drawLine(atIndex: lineIndex, atLineBaseY: baseLineY, in: drawing)
+                drawLine(atIndex: lineIndex, atLineBaseY: baseLineY, in: drawing, contentRectangle: contentRectangle, textRectangle: textRectangle, content: content)
                 lineIndex += 1
             }
             
@@ -433,13 +447,13 @@ public class FieldView: View {
         
     }
     
-    private func drawLine(atIndex lineIndex: Int, atLineBaseY lineY: Int, in drawing: Drawing) {
+    private func drawLine(atIndex lineIndex: Int, atLineBaseY lineY: Int, in drawing: Drawing, contentRectangle: Rectangle, textRectangle: Rectangle, content: RichText) {
         
         /* Get the layout for that line */
         let layout = lineLayouts[lineIndex]
         
         /* Apply alignment */
-        let lineX = computeLineStartX(lineWidth: layout.width)
+        let lineX = computeLineStartX(lineWidth: layout.width, textRectangle: textRectangle)
         var point = Point(x: lineX, y: lineY)
         
         /* Initialize the state */
@@ -465,9 +479,9 @@ public class FieldView: View {
         
     }
     
-    private func computeLineStartX(lineWidth: Int) -> Int {
+    private func computeLineStartX(lineWidth: Int, textRectangle: Rectangle) -> Int {
         
-        switch alignment {
+        switch field.textAlign {
         case .left:
             return textRectangle.left
         case .center:
@@ -479,3 +493,6 @@ public class FieldView: View {
     }
     
 }
+
+
+

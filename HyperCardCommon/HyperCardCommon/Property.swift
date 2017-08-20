@@ -13,9 +13,14 @@ public class Property<T> {
     
     private var _compute: () -> T
     
-    public var observers: [PropertyObserver] = []
+    private var notifications: [Notification] = []
     
     public var isLazy = false
+    
+    private struct Notification {
+        var object: AnyObject
+        var make: () -> ()
+    }
     
     public init(_ value: T) {
         _compute = { return value }
@@ -69,15 +74,18 @@ public class Property<T> {
     public func invalidate() {
         self.storedValue = nil
         
-        for observer in observers {
-            observer.valueDidChange()
+        for notification in notifications {
+            notification.make()
         }
     }
     
-}
-
-public protocol PropertyObserver {
+    public func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
+        let notification = Notification(object: object, make: make)
+        notifications.append(notification)
+    }
     
-    func valueDidChange()
+    public func stopNotifications(for object: AnyObject) {
+        notifications = notifications.filter({ $0.object !== object })
+    }
     
 }
