@@ -165,6 +165,9 @@ public class ButtonView: View {
         condensedFontProperty.dependsOn(button.textFontSizeProperty)
         condensedFontProperty.dependsOn(button.textStyleProperty)
         
+        /* drawing dependencies */
+        self.dependsOn(hiliteProperty)
+        
     }
     
     private static func hasButtonIcon(_ button: Button) -> Bool {
