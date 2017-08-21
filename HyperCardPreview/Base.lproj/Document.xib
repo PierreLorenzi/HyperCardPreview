@@ -8,6 +8,8 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="Document" customModule="HyperCardPreview" customModuleProvider="target">
             <connections>
+                <outlet property="collectionView" destination="f7C-AD-bBg" id="Z3D-ZN-zri"/>
+                <outlet property="collectionViewSuperview" destination="PfQ-D8-KcF" id="os2-wz-AwT"/>
                 <outlet property="view" destination="bJd-nU-ThL" id="Cgk-eE-gw2"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
             </connections>
@@ -27,6 +29,34 @@
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="bJd-nU-ThL" customClass="DocumentView" customModule="HyperCardPreview" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
                     </customView>
+                    <scrollView hidden="YES" wantsLayer="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PfQ-D8-KcF">
+                        <rect key="frame" x="0.0" y="0.0" width="507" height="413"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <clipView key="contentView" ambiguous="YES" drawsBackground="NO" id="vql-Bx-ytQ">
+                            <rect key="frame" x="1" y="1" width="505" height="411"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <collectionView ambiguous="YES" selectable="YES" allowsEmptySelection="NO" id="f7C-AD-bBg">
+                                    <rect key="frame" x="0.0" y="0.0" width="505" height="411"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="br9-VN-GvK">
+                                        <size key="itemSize" width="80" height="80"/>
+                                        <edgeInsets key="sectionInset" left="10" right="10" top="0.0" bottom="0.0"/>
+                                    </collectionViewFlowLayout>
+                                    <color key="primaryBackgroundColor" red="0.0" green="0.47710887922222223" blue="0.95421775844444445" alpha="1" colorSpace="calibratedRGB"/>
+                                </collectionView>
+                            </subviews>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </clipView>
+                        <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="GhL-XB-N4f">
+                            <rect key="frame" x="1" y="144" width="233" height="15"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                        <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="ubg-la-UdZ">
+                            <rect key="frame" x="361" y="1" width="16" height="264"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                        </scroller>
+                    </scrollView>
                 </subviews>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="bJd-nU-ThL" secondAttribute="bottom" id="5Ef-e2-kYm"/>

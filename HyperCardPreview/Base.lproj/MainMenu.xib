@@ -184,6 +184,11 @@
                                     <action selector="displayOnlyBackground:" target="-1" id="HbZ-sT-zlK"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Show All Cards" keyEquivalent="r" id="637-jC-BTc">
+                                <connections>
+                                    <action selector="showCards:" target="-1" id="lmW-Ai-nlp"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="nhW-xF-oDD"/>
                             <menuItem title="Stack Info" keyEquivalent="s" id="QRg-75-rig">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
@@ -299,6 +304,7 @@
                     </menu>
                 </menuItem>
             </items>
+            <point key="canvasLocation" x="20" y="54"/>
         </menu>
     </objects>
 </document>

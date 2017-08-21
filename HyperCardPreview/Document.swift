@@ -23,7 +23,7 @@ let BitsPerPixel = 32
 
 
 
-class Document: NSDocument {
+class Document: NSDocument, NSCollectionViewDelegate {
     
     var file: HyperCardFile!
     var browser: Browser!
@@ -33,6 +33,11 @@ class Document: NSDocument {
     var panels: [InfoPanelController] = []
     
     @IBOutlet weak var view: DocumentView!
+    
+    @IBOutlet weak var collectionView: NSCollectionView!
+    @IBOutlet weak var collectionViewSuperview: NSView!
+    
+    private var collectionViewManager: CollectionViewManager? = nil
     
     override var windowNibName: String? {
         return "Document"
@@ -78,6 +83,26 @@ class Document: NSDocument {
         self.pixels = [RgbColor2](repeating: RgbWhite2, count: width*height*2)
         browser.refresh()
         refresh()
+    }
+    
+    func showCards(_ sender: AnyObject) {
+        
+        guard self.collectionViewSuperview.isHidden else {
+            self.collectionViewSuperview.isHidden = true
+            return
+        }
+        
+        if self.collectionViewManager == nil {
+            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack)
+        }
+        
+        self.collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+        self.collectionViewSuperview.isHidden = false
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        self.browser.cardIndex = indexPaths.first!.item
+        self.collectionViewSuperview.isHidden = true
     }
     
     /// Redraws the HyperCard view
