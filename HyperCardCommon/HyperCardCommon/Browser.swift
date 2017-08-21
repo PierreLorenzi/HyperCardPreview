@@ -55,13 +55,12 @@ public class Browser {
         return self.currentCard.background
     }
     
-    private let stackView: StackView
+    private var views: [View] = []
     
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(stack: Stack, cardIndex: Int = 0) {
         self.stack = stack
         drawing = Drawing(width: stack.size.width, height: stack.size.height)
-        self.stackView = StackView()
         
         var resources = ResourceSystem()
         if let stackResources = stack.resources {
@@ -78,30 +77,36 @@ public class Browser {
     private func refresh() {
         
         /* Build the view hierarchy */
-        displayLayer(self.currentBackground, on: stackView.backgroundView)
-        displayLayer(self.currentCard, on: stackView.cardView)
+        self.views.removeAll()
         
-        drawing.clear()
+        /* Append background views */
+        appendLayerViews(self.currentBackground)
         
-        /* Special case: background view */
-        if displayOnlyBackground {
-            stackView.backgroundView.draw(in: drawing)
-            return
+        /* Append card views */
+        if !displayOnlyBackground {
+            appendLayerViews(self.currentCard)
         }
         
-        /* Draw the stack */
-        stackView.draw(in: drawing)
+        /* Draw the views */
+        drawing.clear()
+        for view in views {
+            view.draw(in: drawing)
+        }
                 
     }
     
-    private func displayLayer(_ layer: Layer, on view: LayerView) {
+    private func appendLayerViews(_ layer: Layer) {
         
         /* Image */
-        view.image = layer.image
-        view.showImage = layer.showPict
+        let layerView = LayerView(layer: layer)
+        self.views.append(layerView)
         
         /* Parts */
-        view.partViews = layer.parts.map(buildPartView)
+        for part in layer.parts {
+            
+            let partView = buildPartView(for: part)
+            self.views.append(partView)
+        }
         
     }
     

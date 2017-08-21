@@ -78,7 +78,6 @@
 		6C9E6B3D1E75BCFA00BBF925 /* Drawing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEB1E75BCFA00BBF925 /* Drawing.swift */; };
 		6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEC1E75BCFA00BBF925 /* Icon Mask.swift */; };
 		6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AED1E75BCFA00BBF925 /* View.swift */; };
-		6C9E6B401E75BCFA00BBF925 /* StackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */; };
 		6C9E6B411E75BCFA00BBF925 /* LayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */; };
 		6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF01E75BCFA00BBF925 /* PartView.swift */; };
 		6C9E6B461E75BCFA00BBF925 /* FieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */; };
@@ -412,7 +411,6 @@
 		6C9E6AEB1E75BCFA00BBF925 /* Drawing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Drawing.swift; sourceTree = "<group>"; };
 		6C9E6AEC1E75BCFA00BBF925 /* Icon Mask.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Icon Mask.swift"; sourceTree = "<group>"; };
 		6C9E6AED1E75BCFA00BBF925 /* View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = View.swift; sourceTree = "<group>"; };
-		6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackView.swift; sourceTree = "<group>"; };
 		6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerView.swift; sourceTree = "<group>"; };
 		6C9E6AF01E75BCFA00BBF925 /* PartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartView.swift; sourceTree = "<group>"; };
 		6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldView.swift; sourceTree = "<group>"; };
@@ -884,7 +882,6 @@
 			isa = PBXGroup;
 			children = (
 				6C9E6AED1E75BCFA00BBF925 /* View.swift */,
-				6C9E6AEE1E75BCFA00BBF925 /* StackView.swift */,
 				6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */,
 				6C9E6AF01E75BCFA00BBF925 /* PartView.swift */,
 				6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */,
@@ -1559,7 +1556,6 @@
 				6C9E6B291E75BCFA00BBF925 /* ContentBlockV1.swift in Sources */,
 				6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
-				6C9E6B401E75BCFA00BBF925 /* StackView.swift in Sources */,
 				6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6C9E6B131E75BCFA00BBF925 /* FileBlock.swift in Sources */,
