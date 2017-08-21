@@ -18,7 +18,7 @@ public class Property<T> {
     public var isLazy = false
     
     private struct Notification {
-        var object: AnyObject
+        unowned var object: AnyObject
         var make: () -> ()
     }
     
@@ -89,7 +89,7 @@ public class Property<T> {
     }
     
     public func dependsOn<T>(_ property: Property<T>) {
-        property.startNotifications(for: self, by: { self.invalidate() })
+        property.startNotifications(for: self, by: { [unowned self] in self.invalidate() })
     }
     
 }

@@ -24,14 +24,14 @@ public class Browser {
     /// The index of the current card. Set it to browse.
     public var cardIndex: Int {
         didSet {
-            refresh()
+            rebuildViews()
         }
     }
     
     /// Activate this flag for the background view: only the background is drawn
     public var displayOnlyBackground = false {
         didSet {
-            refresh()
+            rebuildViews()
         }
     }
     
@@ -57,6 +57,12 @@ public class Browser {
     
     private var views: [View] = []
     
+    public var needsDisplay: Bool {
+        get { return needsDisplayProperty.value }
+        set { needsDisplayProperty.value = newValue }
+    }
+    public let needsDisplayProperty = Property<Bool>(false)
+    
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(stack: Stack, cardIndex: Int = 0) {
         self.stack = stack
@@ -74,7 +80,7 @@ public class Browser {
         self.cardIndex = cardIndex
     }
     
-    private func refresh() {
+    private func rebuildViews() {
         
         /* Build the view hierarchy */
         self.views.removeAll()
@@ -87,12 +93,25 @@ public class Browser {
             appendLayerViews(self.currentCard)
         }
         
+        /* Listen to the views updates */
+        let notification = { [unowned self] in self.needsDisplay = true }
+        for view in views {
+            view.needsDisplayProperty.startNotifications(for: self, by: notification)
+        }
+        
+        /* We must refresh */
+        self.needsDisplay = true
+                
+    }
+    
+    public func refresh() {
+        
         /* Draw the views */
         drawing.clear()
         for view in views {
             view.draw(in: drawing)
         }
-                
+        
     }
     
     private func appendLayerViews(_ layer: Layer) {

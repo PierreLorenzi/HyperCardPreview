@@ -43,6 +43,8 @@ class Document: NSDocument {
         
     }
     
+    private var willRefreshBrowser = false
+    
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
         super.windowControllerDidLoadNib(windowController)
         
@@ -55,9 +57,24 @@ class Document: NSDocument {
         browser = Browser(stack: file.stack)
         browser.cardIndex = 0
         
+        browser.needsDisplayProperty.startNotifications(for: self, by: {
+            [unowned self] in
+            
+            if self.browser.needsDisplay && !self.willRefreshBrowser {
+                self.willRefreshBrowser = true
+                DispatchQueue.main.async {
+                    self.browser.refresh()
+                    self.refresh()
+                    self.willRefreshBrowser = false
+                }
+            }
+            
+        })
+        
         let width = file.stack.size.width;
         let height = file.stack.size.height;
         self.pixels = [RgbColor2](repeating: RgbWhite2, count: width*height*2)
+        browser.refresh()
         refresh()
     }
     
@@ -123,6 +140,12 @@ class Document: NSDocument {
     
     func applyVisualEffect(from image: Image, advance: Bool) {
         
+        /* Stop any current effect */
+        if let visualEffectThread = self.visualEffectThread {
+            visualEffectThread.cancel()
+            self.visualEffectThread = nil
+        }
+        
         /* Get the selected visual effect */
         let appDelegate = NSApp.delegate as! AppDelegate
         let visualEffect = appDelegate.selectedVisualEffect
@@ -157,6 +180,8 @@ class Document: NSDocument {
         
     }
     
+    private var visualEffectThread: Thread? = nil
+    
     func applyDissolveVisualEffect(from image: Image) {
         
         let thread = Thread(block: {
@@ -171,6 +196,11 @@ class Document: NSDocument {
                 /* Wait if we're too fast */
                 Thread.sleep(until: startDate.addingTimeInterval(stepDuration * Double(i)))
                 
+                /* Check cancel */
+                if Thread.current.isCancelled {
+                    break
+                }
+                
                 /* Apply the effect */
                 VisualEffects.dissolve(self.browser.image, on: drawing, at: i)
                 
@@ -183,6 +213,7 @@ class Document: NSDocument {
         })
         
         thread.start()
+        self.visualEffectThread = thread
         
     }
     
@@ -202,6 +233,11 @@ class Document: NSDocument {
                 let step = interval / VisualEffects.duration
                 effect.draw(self.browser.image, on: drawing, step: step)
                 
+                /* Check cancel */
+                if Thread.current.isCancelled {
+                    break
+                }
+                
                 /* Display the intermediary image */
                 DispatchQueue.main.sync {
                     self.displayImage(drawing.image)
@@ -219,14 +255,23 @@ class Document: NSDocument {
         })
         
         thread.start()
+        self.visualEffectThread = thread
         
     }
     
     /// Move to a card with a visual effect
     func goToPage(at index: Int, advance: Bool = true) {
         let oldImage = browser.image
+        
+        /* Stop refresh */
+        self.willRefreshBrowser = true
+        
         browser.cardIndex = index
+        browser.refresh()
         self.applyVisualEffect(from: oldImage, advance: advance)
+        
+        /* Start refresh */
+        self.willRefreshBrowser = false
     }
     
     func goToFirstPage(_ sender: AnyObject) {

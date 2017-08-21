@@ -11,6 +11,12 @@
 /// to handle its position itself, no translation or clipping is applied.
 public class View {
     
+    public var needsDisplay: Bool {
+        get { return needsDisplayProperty.value }
+        set { needsDisplayProperty.value = newValue }
+    }
+    public let needsDisplayProperty = Property<Bool>(false)
+    
     /// Draws the object on the drawing
     public func draw(in drawing: Drawing) {
     }
