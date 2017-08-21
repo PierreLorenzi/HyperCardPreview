@@ -35,9 +35,26 @@ public class FontFamilyResourceBlock: ResourceBlock {
     
     private func readFraction(at offset: Int) -> Double {
         let bits = data.readUInt16(at: offset)
-        let value = bits & 0x7FFF
+        
+        /* Check sign bit */
         let negative = ((bits >> 15) == 1)
-        return Double(value) / Double(1 << 12) * (negative ? -1.0 : 1.0)
+        if negative {
+            
+            /* Negative can be either the positive value with the sign bit, either a negative value. Apple
+             doesn't tell the convention in the spec so people made as they wished. So we infer the convention by looking at the next bit. */
+            
+            let secondBit = ((bits >> 14) & 1 == 1)
+            if secondBit {
+                return Double(bits - Int(UInt16.max) - 1) / Double(1 << 12)
+            }
+            else {
+                return -Double(bits & 0x7FFF) / Double(1 << 12)
+            }
+            
+        }
+        
+        /* No problem, the value is positive */
+        return Double(bits) / Double(1 << 12)
     }
     
     /// Whether the font family contains a glyph-width table
