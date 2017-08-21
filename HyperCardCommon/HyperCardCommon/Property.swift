@@ -74,10 +74,13 @@ public class Property<T> {
     public func invalidate() {
         self.storedValue = nil
         
+        var areThereDeadObjects = false
+        
         /* Send the notifications */
         for notification in notifications {
             
             guard notification.object != nil else {
+                areThereDeadObjects = true
                 continue
             }
             
@@ -85,7 +88,9 @@ public class Property<T> {
         }
         
         /* Forget the dead objects */
-        notifications = notifications.filter({ $0.object != nil })
+        if areThereDeadObjects {
+            notifications = notifications.filter({ $0.object != nil })
+        }
     }
     
     public func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
