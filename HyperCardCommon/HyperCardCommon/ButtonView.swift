@@ -570,6 +570,10 @@ public class ButtonView: View {
         
     }
     
+    public override var rectangle: Rectangle {
+        return button.rectangle
+    }
+    
     public override func respondsToMouseEvent(at position: Point) -> Bool {
         
         guard button.visible else {

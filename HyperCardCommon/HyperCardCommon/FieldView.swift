@@ -81,6 +81,7 @@ public class FieldView: View {
         
         /* Listen to visual changes */
         self.dependsOn(field.scrollProperty)
+        self.dependsOn(richTextProperty)
         
     }
     
@@ -506,6 +507,10 @@ public class FieldView: View {
             return textRectangle.right - lineWidth
         }
         
+    }
+    
+    public override var rectangle: Rectangle {
+        return field.rectangle
     }
     
     public override func respondsToMouseEvent(at position: Point) -> Bool {

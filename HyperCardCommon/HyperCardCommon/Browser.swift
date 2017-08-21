@@ -129,21 +129,24 @@ public class Browser {
     
     private func appendLayerViews(_ layer: Layer) {
         
-        /* Prepare a closure to listen to the view updates */
-        let notification = { [unowned self] in self.needsDisplay = true }
-        
         /* Image */
         let layerView = LayerView(layer: layer)
-        layerView.needsDisplayProperty.startNotifications(for: self, by: notification)
-        self.views.append(layerView)
+        appendView(layerView)
         
         /* Parts */
         for part in layer.parts {
             
             let partView = buildPartView(for: part)
-            partView.needsDisplayProperty.startNotifications(for: self, by: notification)
-            self.views.append(partView)
+            appendView(partView)
         }
+        
+    }
+    
+    private func appendView(_ view: View) {
+        
+        view.needsDisplay = true
+        view.needsDisplayProperty.startNotifications(for: self, by: { [unowned self, unowned view] in self.needsDisplay = self.needsDisplay || view.needsDisplay })
+        self.views.append(view)
         
     }
     

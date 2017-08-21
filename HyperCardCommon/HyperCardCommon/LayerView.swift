@@ -16,6 +16,10 @@ public class LayerView: View {
         self.layer = layer
     }
     
+    public override var rectangle: Rectangle {
+        return Rectangle(top: 0, left: 0, bottom: 10000, right: 10000)
+    }
+    
     public override func draw(in drawing: Drawing) {
         
         /* Image */

@@ -17,6 +17,10 @@ public class View {
     }
     public let needsDisplayProperty = Property<Bool>(false)
     
+    public var rectangle: Rectangle {
+        return Rectangle(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
     /// Draws the object on the drawing
     public func draw(in drawing: Drawing) {
     }
