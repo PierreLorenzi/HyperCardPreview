@@ -93,6 +93,12 @@ public class Browser {
             /* There are one view per background part, plus one for the image */
             let backgroundViewCount = 1 + currentBackground.parts.count
             self.views.removeLast(views.count - backgroundViewCount)
+            
+            /* Set the scrolls of the background fields to zero, to avoid having a field
+             with a scroll higher than maximum */
+            for field in currentBackground.fields {
+                field.scroll = 0
+            }
         }
         else {
             
