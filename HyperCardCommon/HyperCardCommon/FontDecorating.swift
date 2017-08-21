@@ -90,7 +90,7 @@ public enum FontDecorating {
 private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> Int {
     
     if let property = property {
-        return Int(property * Double(size))
+        return Int(round(property * Double(size)))
     }
     
     return byDefault
