@@ -34,3 +34,15 @@ public class View {
     }
     
 }
+
+
+public extension View {
+    
+    public func dependsOn<T>(_ property: Property<T>) {
+        let needsDisplayProperty = self.needsDisplayProperty
+        property.startNotifications(for: self.needsDisplayProperty, by: {
+            [unowned needsDisplayProperty] in needsDisplayProperty.value = true
+        })
+    }
+    
+}

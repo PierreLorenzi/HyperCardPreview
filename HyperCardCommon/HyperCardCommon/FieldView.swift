@@ -79,6 +79,9 @@ public class FieldView: View {
         richTextProperty.dependsOn(contentProperty)
         lineLayoutsProperty.dependsOn(richTextProperty)
         
+        /* Listen to visual changes */
+        self.dependsOn(field.scrollProperty)
+        
     }
     
     private static func buildRichText(from content: PartContent, withDefaultFontIdentifier defaultIdentifier: Int, defaultSize: Int, defaultStyle: TextStyle, fontManager: FontManager) -> RichText {
@@ -333,11 +336,9 @@ public class FieldView: View {
             FieldView.drawScrollFrame(in: drawing, rectangle: field.rectangle)
             
             /* Draw active scroll if necessary */
-            let lastLineLayout = lineLayouts[lineLayouts.count-1]
-            let contentHeight = field.rectangle.height - 2
-            let totalTextHeight = lastLineLayout.baseLineY + lastLineLayout.descent
-            if totalTextHeight > contentHeight {
-                let scrollFactor: Double = Double(field.scroll) / Double(totalTextHeight - contentHeight)
+            let scrollRange = self.scrollRange
+            if scrollRange > 0 {
+                let scrollFactor: Double = Double(field.scroll) / Double(scrollRange)
                 FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scrollFactor: scrollFactor)
             }
             
@@ -345,6 +346,18 @@ public class FieldView: View {
             break
             
         }
+        
+    }
+    
+    private var scrollRange: Int {
+        
+        let textRectangle = FieldView.computeTextRectangle(of: field)
+        
+        let lastLineLayout = lineLayouts[lineLayouts.count-1]
+        let contentHeight = field.rectangle.height - 2
+        let totalTextHeight = textRectangle.top - field.rectangle.top + lastLineLayout.bottom
+        
+        return max(0, totalTextHeight - contentHeight)
         
     }
     
@@ -426,6 +439,7 @@ public class FieldView: View {
             
             /* Check if the lines start being visible */
             if baseLineY + descent <= contentRectangle.top {
+                lineIndex += 1
                 continue
             }
             
@@ -501,6 +515,28 @@ public class FieldView: View {
         }
         
         return field.rectangle.containsPosition(position)
+    }
+    
+    public override func respondToScroll(at position: Point, delta: Double) {
+        
+        /* Only for scroll fields */
+        guard field.style == .scrolling else {
+            return
+        }
+        
+        /* The field must have an active scroll */
+        let scrollRange = self.scrollRange
+        guard scrollRange > 0 else {
+            return
+        }
+        
+        /* Apply the delta */
+        var newScroll = field.scroll - Int(delta)
+        newScroll = max(0, newScroll)
+        newScroll = min(scrollRange, newScroll)
+        
+        field.scroll = newScroll
+        
     }
     
 }
