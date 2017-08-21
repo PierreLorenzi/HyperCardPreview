@@ -267,4 +267,32 @@ public class Browser {
         return content.partContent
     }
     
+    public func respondToClick(at position: Point) {
+        
+        if let view = self.findViewRespondingToMouse(at: position) {
+            
+            view.respondToClick(at: position)
+        }
+    }
+    
+    public func respondToScroll(at position: Point, delta: Double) {
+        
+        if let view = self.findViewRespondingToMouse(at: position) {
+            
+            view.respondToScroll(at: position, delta: delta)
+        }
+    }
+    
+    private func findViewRespondingToMouse(at position: Point) -> View? {
+        
+        for view in views {
+            
+            if view.respondsToMouseEvent(at: position) {
+                return view
+            }
+        }
+        
+        return nil
+    }
+    
 }

@@ -494,6 +494,15 @@ public class FieldView: View {
         
     }
     
+    public override func respondsToMouseEvent(at position: Point) -> Bool {
+        
+        guard field.visible else {
+            return false
+        }
+        
+        return field.rectangle.containsPosition(position)
+    }
+    
 }
 
 

@@ -21,4 +21,16 @@ public class View {
     public func draw(in drawing: Drawing) {
     }
     
+    public func respondsToMouseEvent(at position: Point) -> Bool {
+        return false
+    }
+    
+    public func respondToClick(at position: Point) {
+        
+    }
+    
+    public func respondToScroll(at position: Point, delta: Double) {
+        
+    }
+    
 }

@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import HyperCardCommon
 
 /// The view displaying the HyperCard stack
 class DocumentView: NSView {
@@ -95,6 +96,33 @@ class DocumentView: NSView {
             buttonScriptDisplayed = false
             NSApp.sendAction(#selector(Document.hideScriptBorders(_:)), to: nil, from: nil)
         }
+        
+    }
+    
+    var browser: Browser! = nil
+    
+    override func mouseUp(with event: NSEvent) {
+        
+        let browserPosition = extractPosition(from: event)
+        
+        browser.respondToClick(at: browserPosition)
+        
+    }
+    
+    private func extractPosition(from event: NSEvent) -> Point {
+        
+        let locationInWindow = event.locationInWindow
+        let locationInMe = self.convert(locationInWindow, from: nil)
+        
+        return Point(x: Int(locationInMe.x), y: browser.image.height - Int(locationInMe.y))
+        
+    }
+    
+    override func scrollWheel(with event: NSEvent) {
+        
+        let browserPosition = extractPosition(from: event)
+        
+        browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
         
     }
     

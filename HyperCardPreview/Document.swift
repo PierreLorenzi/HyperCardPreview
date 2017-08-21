@@ -71,6 +71,8 @@ class Document: NSDocument {
             
         })
         
+        view.browser = browser
+        
         let width = file.stack.size.width;
         let height = file.stack.size.height;
         self.pixels = [RgbColor2](repeating: RgbWhite2, count: width*height*2)

@@ -570,5 +570,14 @@ public class ButtonView: View {
         
     }
     
+    public override func respondsToMouseEvent(at position: Point) -> Bool {
+        
+        guard button.visible else {
+            return false
+        }
+        
+        return button.rectangle.containsPosition(position)
+    }
+    
 }
 
