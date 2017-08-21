@@ -44,7 +44,24 @@ class Document: NSDocument, NSCollectionViewDelegate {
     }
     
     override func read(from url: URL, ofType typeName: String) throws {
-        file = HyperCardFile(path: url.path)
+        
+        do {
+            try file = HyperCardFile(path: url.path)
+        }
+        catch HyperCardFile.ParsingError.notStack {
+            let alert = NSAlert(error: HyperCardFile.ParsingError.notStack)
+            alert.messageText = "The file is not a stack"
+            alert.informativeText = "The file can't be opened because it is not recognized as a stack"
+            alert.runModal()
+            throw HyperCardFile.ParsingError.notStack
+        }
+        catch HyperCardFile.ParsingError.privateAccess {
+            let alert = NSAlert(error: HyperCardFile.ParsingError.privateAccess)
+            alert.messageText = "The file is private access"
+            alert.informativeText = "The file can't be opened because it has a private access, which means the header is encrypted. HyperCardPreview doesn't handle passwords."
+            alert.runModal()
+            throw HyperCardFile.ParsingError.privateAccess
+        }
         
     }
     

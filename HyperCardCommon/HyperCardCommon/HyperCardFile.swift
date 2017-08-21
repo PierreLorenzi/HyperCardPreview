@@ -10,14 +10,29 @@
 /// A HyperCard stack, as a parsed file, not as an HyperCard object
 public class HyperCardFile: ClassicFile {
     
-    /// The stack object contained in the file
-    public lazy var stack: Stack = { [unowned self] in
+    public enum ParsingError: Error {
+        case notStack
+        case privateAccess
+    }
+    
+    public init(path: String) throws {
         
-        /* Crash if there is private access, because the header is encrypted */
-        if self.parsedData.stack.privateAccess {
-            fatalError("can't read a stack protected by private access because the header is encrypted")
+        super.init(path: path)
+        
+        /* Check if the file is a stack */
+        if self.version == .notHyperCardStack {
+            throw ParsingError.notStack
         }
         
+        /* Check if the stack header is encrypted (we don't handle that) */
+        if self.parsedData.stack.privateAccess {
+            throw ParsingError.privateAccess
+        }
+        
+    }
+    
+    /// The stack object contained in the file
+    public lazy var stack: Stack = { [unowned self] in
         return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
     }()
     

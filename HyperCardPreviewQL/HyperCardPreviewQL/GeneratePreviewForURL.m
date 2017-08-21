@@ -18,7 +18,11 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 {
     @autoreleasepool{
         
-        StackPreviewer *previewer = [[StackPreviewer alloc] initWithUrl:(__bridge NSURL * _Nonnull)(url)];
+        StackPreviewer *previewer = [[StackPreviewer alloc] initWithUrl:(__bridge NSURL * _Nonnull)(url) error:nil];
+        if (! previewer) {
+            return 1;
+        }
+        
         CGSize size = CGSizeMake(previewer.width, previewer.height);
         
         // Preview will be drawn in a vectorized context

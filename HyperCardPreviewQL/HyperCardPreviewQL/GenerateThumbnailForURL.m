@@ -20,7 +20,11 @@ OSStatus GenerateThumbnailForURL(void *thisInterface, QLThumbnailRequestRef thum
     
     @autoreleasepool{
         
-        StackPreviewer *previewer = [[StackPreviewer alloc] initWithUrl:(__bridge NSURL * _Nonnull)(url)];
+        StackPreviewer *previewer = [[StackPreviewer alloc] initWithUrl:(__bridge NSURL * _Nonnull)(url) error:nil];
+        if (! previewer) {
+            return 1;
+        }
+        
         CGSize requestedSize = QLThumbnailRequestGetMaximumSize(thumbnail);
         double stackRatio = (double)previewer.width / previewer.height;
         double requestedRatio = requestedSize.width / requestedSize.height;

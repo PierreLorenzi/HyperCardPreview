@@ -11,8 +11,8 @@ public class StackPreviewer: NSObject {
     
     private let browser: Browser
     
-    public init(url: URL) {
-        let file = HyperCardFile(path: url.path)
+    public init(url: URL) throws {
+        let file = try HyperCardFile(path: url.path)
         browser = Browser(stack: file.stack)
     }
     
