@@ -8,10 +8,10 @@ You can only visualize the stacks: you can't modify them, you can't execute them
 can inspect the stacks, backgrounds, cards, buttons and fields, see the scripts and
 get the text contents.
 
+Mac OS 10.12 minimum (I haven't tested it in other versions)
+
 Features:
 - can open HyperCard v1 and v2 stacks,
 - uses bitmap fonts, so it feels like the old days,
 - reads the resources of the stacks to get the icons and fonts,
 - programmed in Swift, doesn't use any deprecated API.
-
-**
