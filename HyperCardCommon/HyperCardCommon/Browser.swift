@@ -23,17 +23,17 @@ public class Browser {
     
     /// The index of the current card. Set it to browse.
     public var cardIndex: Int {
-        didSet {
-            rebuildViews()
-        }
+        get { return cardIndexProperty.value }
+        set { cardIndexProperty.value = newValue }
     }
+    public let cardIndexProperty: Property<Int>
     
     /// Activate this flag for the background view: only the background is drawn
-    public var displayOnlyBackground = false {
-        didSet {
-            rebuildViews()
-        }
+    public var displayOnlyBackground: Bool {
+        get { return displayOnlyBackgroundProperty.value }
+        set { displayOnlyBackgroundProperty.value = newValue }
     }
+    public let displayOnlyBackgroundProperty = Property<Bool>(false)
     
     private let drawing: Drawing
     
@@ -63,6 +63,8 @@ public class Browser {
     }
     public let needsDisplayProperty = Property<Bool>(false)
     
+    private var backgroundBefore: Background? = nil
+    
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(stack: Stack, cardIndex: Int = 0) {
         self.stack = stack
@@ -77,16 +79,33 @@ public class Browser {
         
         self.fontManager = FontManager(resources: resources)
         
-        self.cardIndex = cardIndex
+        self.cardIndexProperty = Property<Int>(cardIndex)
+        
+        self.cardIndexProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
+        self.displayOnlyBackgroundProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
     }
     
     private func rebuildViews() {
         
-        /* Build the view hierarchy */
-        self.views.removeAll()
+        /* If we haven't changed background, keep the background parts */
+        if currentBackground === backgroundBefore {
+            
+            /* There are one view per background part, plus one for the image */
+            let backgroundViewCount = 1 + currentBackground.parts.count
+            self.views.removeLast(views.count - backgroundViewCount)
+        }
+        else {
+            
+            /* Build the view hierarchy */
+            self.views.removeAll()
+            
+            /* Append background views */
+            appendLayerViews(self.currentBackground)
+            
+        }
         
-        /* Append background views */
-        appendLayerViews(self.currentBackground)
+        /* Update the background state */
+        backgroundBefore = currentBackground
         
         /* Append card views */
         if !displayOnlyBackground {
@@ -156,7 +175,7 @@ public class Browser {
         /* Special case: bg buttons with not shared hilite */
         if !field.sharedText && isPartInBackground(field) {
             
-            return Property<PartContent>(compute: {
+            let property = Property<PartContent>(compute: {
                 [unowned self, unowned field] in
             
                 /* If we're displaying the background, do not display the card contents */
@@ -172,6 +191,13 @@ public class Browser {
                 return PartContent.string("")
                 
             })
+            
+            /* Dependencies */
+            property.dependsOn(self.cardIndexProperty)
+            property.dependsOn(self.displayOnlyBackgroundProperty)
+            
+            return property
+            
         }
         
         /* Usual case: just return the content of the parent layer */
@@ -191,7 +217,7 @@ public class Browser {
         /* Special case: bg buttons with not shared hilite */
         if !button.sharedHilite && isPartInBackground(button) {
             
-            return Property<Bool>(compute: {
+            let property = Property<Bool>(compute: {
                 [unowned self, unowned button] in
             
                 /* If we're displaying the background, do not display the card contents */
@@ -211,6 +237,12 @@ public class Browser {
             
                 return true
             })
+            
+            /* Dependencies */
+            property.dependsOn(self.cardIndexProperty)
+            property.dependsOn(self.displayOnlyBackgroundProperty)
+            
+            return property
         }
         
         /* Usual case: just return hilite */

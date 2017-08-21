@@ -77,6 +77,7 @@ public class FieldView: View {
         
         /* Listen to content change */
         richTextProperty.dependsOn(contentProperty)
+        lineLayoutsProperty.dependsOn(richTextProperty)
         
     }
     

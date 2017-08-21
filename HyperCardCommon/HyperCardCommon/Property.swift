@@ -18,7 +18,7 @@ public class Property<T> {
     public var isLazy = false
     
     private struct Notification {
-        unowned var object: AnyObject
+        weak var object: AnyObject?
         var make: () -> ()
     }
     
@@ -74,9 +74,18 @@ public class Property<T> {
     public func invalidate() {
         self.storedValue = nil
         
+        /* Send the notifications */
         for notification in notifications {
+            
+            guard notification.object != nil else {
+                continue
+            }
+            
             notification.make()
         }
+        
+        /* Forget the dead objects */
+        notifications = notifications.filter({ $0.object != nil })
     }
     
     public func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
