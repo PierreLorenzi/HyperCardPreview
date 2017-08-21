@@ -400,7 +400,7 @@ class Document: NSDocument, NSCollectionViewDelegate {
     func removeScriptBorders() {
         
         for view in self.windowControllers[0].window!.contentView!.subviews {
-            guard view !== self.view else {
+            guard view !== self.view && view !== self.collectionViewSuperview else {
                 continue
             }
             view.removeFromSuperview()

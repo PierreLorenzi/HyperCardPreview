@@ -293,7 +293,8 @@ public class Browser {
     
     private func findViewRespondingToMouse(at position: Point) -> View? {
         
-        for view in views {
+        /* Ask to the views, from the foremost to the outmost */
+        for view in views.reversed() {
             
             if view.respondsToMouseEvent(at: position) {
                 return view

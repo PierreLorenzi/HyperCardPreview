@@ -28,8 +28,12 @@ public class FontManager {
     /// If no mathing font is found, a font is automatically generated for the descriptor.
     public func findFont(withIdentifier identifier: Int, size: Int, style: TextStyle) -> BitmapFont {
         
+        /* Ignore the 'group' variation, it is only a HyperCard flag to handle links */
+        var visualStyle = style
+        visualStyle.group = false
+        
         /* Look in the cache */
-        let descriptor = FontDescriptor(identifier: identifier, size: size, style: style)
+        let descriptor = FontDescriptor(identifier: identifier, size: size, style: visualStyle)
         if let cachedFont = cachedFonts[descriptor] {
             return cachedFont
         }
