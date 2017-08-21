@@ -112,12 +112,6 @@ public class Browser {
             appendLayerViews(self.currentCard)
         }
         
-        /* Listen to the views updates */
-        let notification = { [unowned self] in self.needsDisplay = true }
-        for view in views {
-            view.needsDisplayProperty.startNotifications(for: self, by: notification)
-        }
-        
         /* We must refresh */
         self.needsDisplay = true
                 
@@ -135,14 +129,19 @@ public class Browser {
     
     private func appendLayerViews(_ layer: Layer) {
         
+        /* Prepare a closure to listen to the view updates */
+        let notification = { [unowned self] in self.needsDisplay = true }
+        
         /* Image */
         let layerView = LayerView(layer: layer)
+        layerView.needsDisplayProperty.startNotifications(for: self, by: notification)
         self.views.append(layerView)
         
         /* Parts */
         for part in layer.parts {
             
             let partView = buildPartView(for: part)
+            partView.needsDisplayProperty.startNotifications(for: self, by: notification)
             self.views.append(partView)
         }
         
