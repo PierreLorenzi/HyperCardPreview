@@ -151,6 +151,13 @@ public class Stack {
     }
     public let scriptProperty = Property<HString>("")
     
+    /// The names of the fonts used in the stack, to help identify them, so there are not only the identifiers
+    public var fontNameReferences: [FontNameReference] {
+        get { return self.fontNameReferencesProperty.value }
+        set { self.fontNameReferencesProperty.value = newValue }
+    }
+    public let fontNameReferencesProperty = Property<[FontNameReference]>([])
+    
 }
 
 

@@ -78,7 +78,7 @@ public class Browser {
         resources.repositories.append(ResourceRepository.mainRepository)
         self.resources = resources
         
-        self.fontManager = FontManager(resources: resources)
+        self.fontManager = FontManager(resources: resources, fontNameReferences: stack.fontNameReferences)
         
         self.cardIndexProperty = Property<Int>(cardIndex)
         

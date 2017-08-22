@@ -59,6 +59,11 @@ public extension Stack {
         self.scriptProperty.lazyCompute = {
             return stackBlock.script
         }
+        
+        /* font names */
+        self.fontNameReferencesProperty.lazyCompute = {
+            return fileContent.fontBlock?.fontReferences ?? []
+        }
 
         
     }

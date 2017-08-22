@@ -461,3 +461,13 @@ public struct FontStyleProperties {
     public var extendedExtraWidth: Double
 }
 
+/// A record of a font name
+public struct FontNameReference {
+    
+    /// ID of the font
+    public var identifier: Int
+    
+    /// Name of the font
+    public var name: HString
+}
+

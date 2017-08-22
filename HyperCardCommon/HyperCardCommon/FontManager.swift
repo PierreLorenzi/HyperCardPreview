@@ -15,11 +15,14 @@ public class FontManager {
     
     private let resources: ResourceSystem
     
+    private let fontNameReferences: [FontNameReference]
+    
     private var cachedFonts: [FontDescriptor: BitmapFont]
     
     /// Builds a manager. A stack of resource forks must be provided, the fonts are searched in it.
-    public init(resources: ResourceSystem) {
+    public init(resources: ResourceSystem, fontNameReferences: [FontNameReference]) {
         self.resources = resources
+        self.fontNameReferences = fontNameReferences
         cachedFonts = [:]
     }
     
@@ -73,6 +76,11 @@ public class FontManager {
             return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(plainVectorFont.font, CGFloat(descriptor.size), nil, nil))
         }
         
+        /* Look for a Mac OS X font */
+        if let macOSXFont = findMacOSXFont(forDescriptor: descriptor) {
+            return macOSXFont
+        }
+        
         /* We can't do anything, just return whatever font */
         NSLog("Unavailable font family: \(descriptor.identifier) for size \(descriptor.size) and style \(descriptor.style)")
         return findAnyFont(forDescriptor: descriptor)
@@ -81,6 +89,33 @@ public class FontManager {
     private func findAnyFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont {
         
         return findFont(withIdentifier: FontIdentifiers.geneva, size: descriptor.size, style: descriptor.style)
+    }
+    
+    private func findMacOSXFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont? {
+        
+        /* We don't handle styled font */
+        guard descriptor.style == PlainTextStyle else {
+            return nil
+        }
+    
+        /* Check if we have the font in the table */
+        guard let fontNameReference = fontNameReferences.first(where: { $0.identifier == descriptor.identifier }) else {
+            return nil
+        }
+        
+        /* Find the font in Mac OS X */
+        let name = fontNameReference.name
+        let stringName = name.description
+        let font = CTFontCreateWithName(stringName as CFString, CGFloat(descriptor.size), nil)
+        
+        /* We must check the name of the font because if the system doesn't find the right font, it returns an other one */
+        let ctFontName = CTFontCopyFamilyName(font) as String
+        guard ctFontName == stringName else {
+            return nil
+        }
+        
+        return VectorFontConverting.convertVectorFont(font)
+    
     }
     
 }

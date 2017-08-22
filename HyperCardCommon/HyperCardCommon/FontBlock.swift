@@ -16,30 +16,20 @@ public class FontBlock: HyperCardFileBlock {
         return NumericName(string: "FTBL")!
     }
     
-    /// A record of a font name
-    public struct FontReference {
-        
-        /// ID of the font
-        public var identifier: Int
-        
-        /// Name of the font
-        public var name: HString
-    }
-    
     /// Number of font names
     public var fontCount: Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// The font names
-    public var fontReferences: [FontReference] {
+    public var fontReferences: [FontNameReference] {
         let count = self.fontCount
         var offset = 0x18
-        var fonts: [FontReference] = []
+        var fonts: [FontNameReference] = []
         for _ in 0..<count {
             let identifier = data.readUInt16(at: offset)
             let name = data.readString(at: offset + 0x2)
-            fonts.append(FontReference(identifier: identifier, name: name))
+            fonts.append(FontNameReference(identifier: identifier, name: name))
             
             /* Advance after the name, 16-bit aligned */
             offset += 2
