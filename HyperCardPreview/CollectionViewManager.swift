@@ -62,21 +62,34 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource {
             self.renderingPriorities[indexPath.item] = currentPriority
             
             self.renderingQueue.async {
-                [unowned self] in
-                let cardIndex = self.renderingPriorities.lazy.enumerated().max(by: { (x0: (Int, Int), x1: (Int, Int)) -> Bool in
+                [weak self] in
+                
+                /* Ensure the document is still around */
+                guard let slf = self else {
+                    return
+                }
+                
+                let cardIndex = slf.renderingPriorities.lazy.enumerated().max(by: { (x0: (Int, Int), x1: (Int, Int)) -> Bool in
                     return x0.1 < x1.1
                 })!.0
                 
-                self.browser.cardIndex = cardIndex
-                self.browser.refresh()
-                self.thumbnails[cardIndex] = self.browser.image.convertToRgb()
+                slf.browser.cardIndex = cardIndex
+                slf.browser.refresh()
+                slf.thumbnails[cardIndex] = slf.browser.image.convertToRgb()
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])
                 
-                self.renderingPriorities[cardIndex] = 0
+                slf.renderingPriorities[cardIndex] = 0
                 
                 DispatchQueue.main.async {
-                    self.collectionView.reloadItems(at: indexSet)
+                    [weak self] in
+                    
+                    /* Ensure the document is still around */
+                    guard let slf = self else {
+                        return
+                    }
+                    
+                    slf.collectionView.reloadItems(at: indexSet)
                 }
             }
         }
