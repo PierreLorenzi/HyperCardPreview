@@ -130,6 +130,7 @@ private let classicFontRepositoryNames: [String] = [
     "London",
     "Los Angeles",
     "Monaco",
+    "New York",
     "Palatino",
     "San Francisco",
     "Symbol",

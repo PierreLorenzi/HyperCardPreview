@@ -28,12 +28,15 @@ public class FontManager {
     /// If no mathing font is found, a font is automatically generated for the descriptor.
     public func findFont(withIdentifier identifier: Int, size: Int, style: TextStyle) -> BitmapFont {
         
+        /* The identifier 3FFF is used for "Chicago", which has the identifier 0 in the resources */
+        let visualIdentifier = (identifier == 0x3FFF) ? 0 : identifier
+        
         /* Ignore the 'group' variation, it is only a HyperCard flag to handle links */
         var visualStyle = style
         visualStyle.group = false
         
         /* Look in the cache */
-        let descriptor = FontDescriptor(identifier: identifier, size: size, style: visualStyle)
+        let descriptor = FontDescriptor(identifier: visualIdentifier, size: size, style: visualStyle)
         if let cachedFont = cachedFonts[descriptor] {
             return cachedFont
         }

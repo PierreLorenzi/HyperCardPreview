@@ -90,7 +90,13 @@ public enum FontDecorating {
 private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> Int {
     
     if let property = property {
-        return Int(round(property * Double(size)))
+        let value = property * Double(size)
+        
+        /* Ths rounding rule was not the same, it caused a glitch in a stack */
+        if value - floor(value) == 0.5 {
+            return Int(value)
+        }
+        return Int(round(value))
     }
     
     return byDefault

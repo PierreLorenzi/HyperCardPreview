@@ -333,6 +333,7 @@
 		6C9E6D3D1E75BEEA00BBF925 /* Symbol.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */; };
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
+		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
 		6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */; };
 /* End PBXBuildFile section */
@@ -666,6 +667,7 @@
 		6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Symbol.dfont; sourceTree = "<group>"; };
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
+		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -1174,6 +1176,7 @@
 				6C9E6C3D1E75BEEA00BBF925 /* London.dfont */,
 				6C9E6C3E1E75BEEA00BBF925 /* Los Angeles.dfont */,
 				6C9E6C3F1E75BEEA00BBF925 /* Monaco.dfont */,
+				6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */,
 				6C9E6C401E75BEEA00BBF925 /* Palatino.dfont */,
 				6C9E6C411E75BEEA00BBF925 /* San Francisco.dfont */,
 				6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */,
@@ -1411,6 +1414,7 @@
 				6C9E6CA61E75BEEA00BBF925 /* icon_3358.tif in Resources */,
 				6C9E6CF11E75BEEA00BBF925 /* icon_19162.tif in Resources */,
 				6C9E6D181E75BEEA00BBF925 /* icon_27009.tif in Resources */,
+				6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */,
 				6C9E6C531E75BEEA00BBF925 /* standard top left.tiff in Resources */,
 				6C9E6CBB1E75BEEA00BBF925 /* icon_8347.tif in Resources */,
 				6C9E6CD31E75BEEA00BBF925 /* icon_12722.tif in Resources */,

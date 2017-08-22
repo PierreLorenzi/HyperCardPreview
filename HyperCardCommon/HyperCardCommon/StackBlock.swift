@@ -76,6 +76,9 @@ public class StackBlock: HyperCardFileBlock {
     /// User Level for this stack
     public var userLevel: UserLevel {
         let userLevelIndex = data.readUInt16(at: 0x48)
+        if userLevelIndex == 0 {
+            return UserLevel.script
+        }
         return UserLevel(rawValue: userLevelIndex)!
     }
     
