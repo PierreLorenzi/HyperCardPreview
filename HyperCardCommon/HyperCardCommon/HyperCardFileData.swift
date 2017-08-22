@@ -21,7 +21,9 @@ public class HyperCardFileData: DataBlock {
     /// The master block
     public var master: MasterBlock {
         let stackLength = data.readUInt32(at: 0x0)
-        let masterLength = data.readUInt32(at: stackLength)
+        
+        /* In the "Stack Templates" stack in 2.4.1, there is a flag in the 2nd higher bit */
+        let masterLength = data.readUInt32(at: stackLength) & 0x0FFF_FFFF
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset + stackLength, length: masterLength)
         return MasterBlock(data: dataRange)
     }
@@ -134,6 +136,11 @@ public class HyperCardFileData: DataBlock {
         /* Find a corresponding entry */
         for entry in masterEntries {
             
+            /* Ignore invalid entries */
+            guard entry.offset > 0 && entry.offset < data.length else {
+                continue
+            }
+            
             /* Check the name */
             let entryNameValue = data.readUInt32(at: entry.offset + 4)
             guard entryNameValue == T.Name.value else {
@@ -170,6 +177,11 @@ public class HyperCardFileData: DataBlock {
         
         /* Find a corresponding entry */
         for entry in masterEntries {
+            
+            /* Ignore invalid entries */
+            guard entry.offset > 0 && entry.offset < data.length else {
+                continue
+            }
             
             /* Check the identifier */
             guard entry.identifierLastByte == identifierLastByte else {

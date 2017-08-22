@@ -63,6 +63,7 @@ public class Browser {
     }
     public let needsDisplayProperty = Property<Bool>(false)
     
+    private var cardBefore: Card? = nil
     private var backgroundBefore: Background? = nil
     
     /// Builds a new browser from the given stack. A starting card index can be given.
@@ -87,6 +88,10 @@ public class Browser {
     
     private func rebuildViews() {
         
+        guard currentCard !== cardBefore else {
+            return
+        }
+        
         /* If we haven't changed background, keep the background parts */
         if currentBackground === backgroundBefore {
             
@@ -110,7 +115,8 @@ public class Browser {
             
         }
         
-        /* Update the background state */
+        /* Update the state */
+        cardBefore = currentCard
         backgroundBefore = currentBackground
         
         /* Append card views */

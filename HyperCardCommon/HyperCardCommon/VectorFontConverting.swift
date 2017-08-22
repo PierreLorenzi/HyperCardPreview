@@ -71,14 +71,14 @@ public class VectorGlyph: Glyph {
         
         self.vectorFont = font
         self.vectorGlyph = glyph
-        self.glyphWidth = Int(ceil(boundingRect.size.width) + 1)
-        self.glyphHeight = Int(ceil(boundingRect.size.height) + 1)
+        self.glyphWidth = Int(round(boundingRect.size.width) + 2)
+        self.glyphHeight = Int(round(boundingRect.size.height) + 2)
         
         super.init()
         
         self.width = Int(round(advance))
-        self.imageOffset = Int(round(boundingRect.origin.x))
-        self.imageTop = Int(round(boundingRect.origin.y + boundingRect.size.height))
+        self.imageOffset = Int(round(boundingRect.origin.x) - 1)
+        self.imageTop = Int(round(boundingRect.origin.y + boundingRect.size.height) + 1)
         
     }
     

@@ -80,14 +80,24 @@ class Document: NSDocument, NSCollectionViewDelegate {
         browser.cardIndex = 0
         
         browser.needsDisplayProperty.startNotifications(for: self, by: {
-            [unowned self] in
+            [weak self] in
             
-            if self.browser.needsDisplay && !self.willRefreshBrowser {
-                self.willRefreshBrowser = true
+            guard let s = self else {
+                return
+            }
+            
+            if s.browser.needsDisplay && !s.willRefreshBrowser {
+                s.willRefreshBrowser = true
                 DispatchQueue.main.async {
-                    self.browser.refresh()
-                    self.refresh()
-                    self.willRefreshBrowser = false
+                    [weak self] in
+                    
+                    guard let s = self else {
+                        return
+                    }
+                    
+                    s.browser.refresh()
+                    s.refresh()
+                    s.willRefreshBrowser = false
                 }
             }
             

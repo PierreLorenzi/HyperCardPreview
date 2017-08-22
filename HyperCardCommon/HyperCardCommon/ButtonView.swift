@@ -259,7 +259,7 @@ public class ButtonView: View {
         if button.showName && self.icon == nil {
             let nameWidth = font.computeSizeOfString(button.name)
             let nameX = computeNameX(nameWidth: nameWidth)
-            let nameY = rectangle.y + (rectangle.height - 1) / 2 + font.maximumAscent / 2 - 1
+            let nameY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - font.maximumAscent / 6
             drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle, composition: titleComposition)
             if !button.enabled {
                 drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: BlackToGrayComposition)
@@ -505,7 +505,11 @@ public class ButtonView: View {
         
         /* Draw the title */
         let baseLineY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - 2
-        drawing.drawString(button.name, index: 0, length: nil, position: Point(x: rectangle.left + 4, y: baseLineY), font: font, clip: rectangle)
+        if button.showName {
+            drawing.drawString(button.name, index: 0, length: nil, position: Point(x: rectangle.left + 4, y: baseLineY), font: font, clip: rectangle)
+        }
+        
+        /* Get the size of the frame */
         let popupRectangle = Rectangle(top: rectangle.top, left: rectangle.left + button.titleWidth, bottom: rectangle.bottom, right: rectangle.right)
         if popupRectangle.width <= 0 {
             return
