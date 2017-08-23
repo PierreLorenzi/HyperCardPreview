@@ -183,13 +183,16 @@ public class StackBlock: HyperCardFileBlock {
             sum = sum &+ UInt32(data.readUInt32(at: i*4))
         }
         
-        /* The checksum is done with the decoded data */
+        /* The checksum is done with the decoded data, so subtract the encoded data and
+         add the decoded one. */
         if let decodedHeader = self.decodedHeader {
             for i in 0..<0xC {
                 sum = sum &+ UInt32(decodedHeader.readUInt32(at: i*4))
                 sum = sum &- UInt32(data.readUInt32(at: 0x18 + i*4))
             }
-            sum = sum &+ UInt32(decodedHeader.readUInt16(at: 0x30) << 16)
+            
+            /* The last integer is half encoded half clear */
+            sum = sum &+ UInt32(decodedHeader.readUInt16(at: 0x30) << 16 | data.readUInt16(at: 0x4A))
             sum = sum &- UInt32(data.readUInt32(at: 0x48))
         }
         
