@@ -45,22 +45,76 @@ class Document: NSDocument, NSCollectionViewDelegate {
     
     override func read(from url: URL, ofType typeName: String) throws {
         
+        try self.readStack(atPath: url.path)
+    }
+    
+    private func readStack(atPath path: String, password: HString? = nil) throws {
+        
         do {
-            try file = HyperCardFile(path: url.path)
+            try file = HyperCardFile(path: path, password: password)
         }
-        catch HyperCardFile.ParsingError.notStack {
-            let alert = NSAlert(error: HyperCardFile.ParsingError.notStack)
+        catch HyperCardFile.StackError.notStack {
+            
+            /* Tell the user we can't open the file */
+            let alert = NSAlert(error: HyperCardFile.StackError.notStack)
             alert.messageText = "The file is not a stack"
             alert.informativeText = "The file can't be opened because it is not recognized as a stack"
             alert.runModal()
-            throw HyperCardFile.ParsingError.notStack
+            throw HyperCardFile.StackError.notStack
+            
         }
-        catch HyperCardFile.ParsingError.privateAccess {
-            let alert = NSAlert(error: HyperCardFile.ParsingError.privateAccess)
-            alert.messageText = "The file is private access"
-            alert.informativeText = "The file can't be opened because it has a private access, which means the header is encrypted. HyperCardPreview doesn't handle passwords."
+        catch HyperCardFile.StackError.corrupted {
+            
+            /* Tell the user we can't open the file */
+            let alert = NSAlert(error: HyperCardFile.StackError.notStack)
+            alert.messageText = "The stack is corrupted"
+            alert.informativeText = "The stack can't be opened because the data is corrupted"
             alert.runModal()
-            throw HyperCardFile.ParsingError.privateAccess
+            throw HyperCardFile.StackError.notStack
+            
+        }
+        catch HyperCardFile.StackError.missingPassword {
+            
+            /* Ask the user for a password */
+            let alert = NSAlert()
+            alert.messageText = "What's the password?"
+            alert.informativeText = "The stack is private access, which means the data is encrypted. A password is needed to read it."
+            alert.addButton(withTitle: "OK")
+            alert.addButton(withTitle: "Cancel")
+            let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 200, height: 22))
+            alert.accessoryView = textField
+            let answer = alert.runModal()
+            
+            /* If cancel, stop */
+            guard answer == NSAlertFirstButtonReturn else {
+                throw HyperCardFile.StackError.wrongPassword
+            }
+            
+            /* Get the password */
+            let passwordString = textField.stringValue
+            guard passwordString != "" else {
+                throw HyperCardFile.StackError.wrongPassword
+            }
+            
+            /* Convert it to Mac OS Roman encoding */
+            guard let password = HString(converting: passwordString) else {
+                
+                /* Tell the user we can't convert */
+                let alert = NSAlert()
+                alert.messageText = "Wrong Password"
+                alert.runModal()
+                throw HyperCardFile.StackError.wrongPassword
+            }
+            
+            /* Try again to open the file, this time with the password */
+            try self.readStack(atPath: path, password: password)
+            
+        }
+        catch HyperCardFile.StackError.wrongPassword {
+            let alert = NSAlert()
+            alert.messageText = "Wrong Password"
+            alert.runModal()
+            throw HyperCardFile.StackError.wrongPassword
         }
         
     }

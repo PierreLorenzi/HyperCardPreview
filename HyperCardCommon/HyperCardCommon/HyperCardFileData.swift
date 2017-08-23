@@ -11,11 +11,19 @@
 /// The parsed data blocks in a stack file
 public class HyperCardFileData: DataBlock {
     
+    public let decodedHeader: Data?
+    
+    public init(data: DataRange, decodedHeader: Data? = nil) {
+        self.decodedHeader = decodedHeader
+        
+        super.init(data: data)
+    }
+    
     /// The stack block
     public var stack: StackBlock {
         let length = data.readUInt32(at: 0x0)
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
-        return StackBlock(data: dataRange)
+        return StackBlock(data: dataRange, decodedHeader: decodedHeader)
     }
     
     /// The master block

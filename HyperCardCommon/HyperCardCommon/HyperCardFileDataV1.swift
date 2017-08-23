@@ -15,7 +15,7 @@ public class HyperCardFileDataV1: HyperCardFileData {
     public override var stack: StackBlock {
         let length = data.readUInt32(at: 0x0)
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
-        return StackBlockV1(data: dataRange)
+        return StackBlockV1(data: dataRange, decodedHeader: self.decodedHeader)
     }
     
     

@@ -10,6 +10,34 @@
 /// The stack block (STAK), containing the global data about the stack
 public class StackBlock: HyperCardFileBlock {
     
+    private let decodedHeader: Data?
+    
+    public init(data: DataRange, decodedHeader: Data? = nil) {
+        self.decodedHeader = decodedHeader
+        
+        super.init(data: data)
+    }
+    
+    private func readDecodedUInt32(at offset: Int) -> Int {
+        
+        /* If the header is encrypted, use the decrypted version */
+        if let decodedHeader = self.decodedHeader {
+            return decodedHeader.readUInt32(at: offset - 0x18)
+        }
+        
+        return data.readUInt32(at: offset)
+    }
+    
+    private func readDecodedUInt16(at offset: Int) -> Int {
+        
+        /* If the header is encrypted, use the decrypted version */
+        if let decodedHeader = self.decodedHeader {
+            return decodedHeader.readUInt16(at: offset - 0x18)
+        }
+        
+        return data.readUInt16(at: offset)
+    }
+    
     override class var Name: NumericName {
         return NumericName(string: "STAK")!
     }
@@ -21,52 +49,52 @@ public class StackBlock: HyperCardFileBlock {
     
     /// Size of the STAK block
     public var stackSize: Int {
-        return data.readUInt32(at: 0x18)
+        return self.readDecodedUInt32(at: 0x18)
     }
     
     /// Number of backgrounds in this stack
     public var backgroundCount: Int {
-        return data.readUInt32(at: 0x24)
+        return self.readDecodedUInt32(at: 0x24)
     }
     
     /// ID of the first background
     public var firstBackgroundIdentifier: Int {
-        return data.readUInt32(at: 0x28)
+        return self.readDecodedUInt32(at: 0x28)
     }
     
     /// Number of cards in this stack
     public var cardCount: Int {
-        return data.readUInt32(at: 0x2C)
+        return self.readDecodedUInt32(at: 0x2C)
     }
     
     /// ID of the first card
     public var firstCardIdentifier: Int {
-        return data.readUInt32(at: 0x30)
+        return self.readDecodedUInt32(at: 0x30)
     }
     
     /// ID of the 'LIST' block in the stack file
     public var listIdentifier: Int {
-        return data.readUInt32(at: 0x34)
+        return self.readDecodedUInt32(at: 0x34)
     }
     
     /// Number of FREE blocks
     public var freeCount: Int {
-        return data.readUInt32(at: 0x38)
+        return self.readDecodedUInt32(at: 0x38)
     }
     
     /// Total size of all FREE blocks (=the free size of this stack)
     public var freeSize: Int {
-        return data.readUInt32(at: 0x3C)
+        return self.readDecodedUInt32(at: 0x3C)
     }
     
     /// ID of the 'PRNT' block in the stack file
     public var printBlockIdentifier: Int {
-        return data.readUInt32(at: 0x40)
+        return self.readDecodedUInt32(at: 0x40)
     }
     
     /// Hash of the password
     public var passwordHash: Int? {
-        let value = data.readUInt32(at: 0x44)
+        let value = self.readDecodedUInt32(at: 0x44)
         guard value != 0 else {
             return nil
         }
@@ -75,7 +103,7 @@ public class StackBlock: HyperCardFileBlock {
     
     /// User Level for this stack
     public var userLevel: UserLevel {
-        let userLevelIndex = data.readUInt16(at: 0x48)
+        let userLevelIndex = self.readDecodedUInt16(at: 0x48)
         if userLevelIndex == 0 {
             return UserLevel.script
         }
@@ -154,6 +182,17 @@ public class StackBlock: HyperCardFileBlock {
         for i in 0..<0x180 {
             sum = sum &+ UInt32(data.readUInt32(at: i*4))
         }
+        
+        /* The checksum is done with the decoded data */
+        if let decodedHeader = self.decodedHeader {
+            for i in 0..<0xC {
+                sum = sum &+ UInt32(decodedHeader.readUInt32(at: i*4))
+                sum = sum &- UInt32(data.readUInt32(at: 0x18 + i*4))
+            }
+            sum = sum &+ UInt32(decodedHeader.readUInt16(at: 0x30) << 16)
+            sum = sum &- UInt32(data.readUInt32(at: 0x48))
+        }
+        
         return sum == 0
     }
     

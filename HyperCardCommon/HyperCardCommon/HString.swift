@@ -22,9 +22,20 @@ public struct HString: Equatable, Hashable, Comparable, ExpressibleByStringLiter
         self.data = data
     }
     
+    /// Conversion from Swift string
+    public init?(converting string: String) {
+        
+        guard let data = string.data(using: .macOSRoman) else {
+            return nil
+        }
+        
+        self.data = data
+    }
+    
     public init(stringLiteral: String) {
-        let data = stringLiteral.data(using: .macOSRoman)
-        self.data = data!
+        
+        /* If the HString is assigned with a string literal, assume it is Mac OS Roman */
+        self.init(converting: stringLiteral)!
     }
     
     public init(extendedGraphemeClusterLiteral: String) {

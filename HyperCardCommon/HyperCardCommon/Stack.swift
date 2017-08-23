@@ -74,7 +74,7 @@ public class Stack {
     }
     public let cantPeekProperty = Property<Bool>(false)
     
-    /// If set, the user must enter the password before opening the stack
+    /// If set, the user must enter the password before opening the stack, and the stack header is encrypted
     public var privateAccess: Bool {
         get { return self.privateAccessProperty.value }
         set { self.privateAccessProperty.value = newValue }
