@@ -83,6 +83,7 @@ class DocumentView: NSView {
             }
             else if partScriptDisplayed {
                 partScriptDisplayed = false
+                buttonScriptDisplayed = true
                 NSApp.sendAction(#selector(Document.displayButtonScriptBorders(_:)), to: nil, from: nil)
             }
             else if !buttonScriptDisplayed {
