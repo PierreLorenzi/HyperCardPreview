@@ -36,8 +36,11 @@ public class HyperCardFile: ClassicFile {
                 throw StackError.missingPassword
             }
             
+            /* Ignore case and accents in the password */
+            let lowerCaseNoAccentPassword = convertStringToLowerCaseWithoutAccent(password)
+            
             /* Decrypt the header with the password */
-            guard let decodedHeader = decryptHeader(withPassword: password) else {
+            guard let decodedHeader = decryptHeader(withPassword: lowerCaseNoAccentPassword) else {
                 throw StackError.wrongPassword
             }
             
