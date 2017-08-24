@@ -9,6 +9,11 @@
 /* Begin PBXBuildFile section */
 		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C30E8D11F4D117A00ACB457 /* CharacterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */; };
+		6C7F7B9C1F4F7A1F00C9D3DC /* TestFieldProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */; };
+		6C7F7B9E1F4F7AF500C9D3DC /* TestFreeSize.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */; };
+		6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */; };
+		6C7F7BA61F4F845900C9D3DC /* TestFormattedContent.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA51F4F845900C9D3DC /* TestFormattedContent.stack */; };
+		6C7F7BA81F4F9C3500C9D3DC /* TestV1.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA71F4F9C3500C9D3DC /* TestV1.stack */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
 		6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */; };
@@ -370,6 +375,11 @@
 /* Begin PBXFileReference section */
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTable.swift; sourceTree = "<group>"; };
+		6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFieldProperties.stack; sourceTree = "<group>"; };
+		6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFreeSize.stack; sourceTree = "<group>"; };
+		6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestContents.stack; sourceTree = "<group>"; };
+		6C7F7BA51F4F845900C9D3DC /* TestFormattedContent.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFormattedContent.stack; sourceTree = "<group>"; };
+		6C7F7BA71F4F9C3500C9D3DC /* TestV1.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestV1.stack; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1271,6 +1281,7 @@
 			isa = PBXGroup;
 			children = (
 				6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */,
+				6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */,
 				6CE0C0FD1F4EF4D2003AA9FC /* Security */,
 				6CE0C1001F4EF716003AA9FC /* TestVersion.stack */,
 				6CC67B741F4F03840070195B /* TestManyCards.stack */,
@@ -1279,6 +1290,10 @@
 				6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */,
 				6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */,
 				6CB51D791F4F640A000C43D3 /* TestButtonProperties.stack */,
+				6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */,
+				6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */,
+				6C7F7BA51F4F845900C9D3DC /* TestFormattedContent.stack */,
+				6C7F7BA71F4F9C3500C9D3DC /* TestV1.stack */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1654,12 +1669,17 @@
 				6CE0C0F51F4EF1D0003AA9FC /* TestCantModify.stack in Resources */,
 				6CC67B751F4F03840070195B /* TestManyCards.stack in Resources */,
 				6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */,
+				6C7F7BA81F4F9C3500C9D3DC /* TestV1.stack in Resources */,
 				6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */,
+				6C7F7B9C1F4F7A1F00C9D3DC /* TestFieldProperties.stack in Resources */,
 				6CB51D7A1F4F640A000C43D3 /* TestButtonProperties.stack in Resources */,
+				6C7F7B9E1F4F7AF500C9D3DC /* TestFreeSize.stack in Resources */,
 				6CB51D6C1F4F5659000C43D3 /* TestBackgroundProperties.stack in Resources */,
+				6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */,
 				6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */,
 				6CEBC0101F4F2E760031BDDC /* TestWindowSize.stack in Resources */,
 				6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */,
+				6C7F7BA61F4F845900C9D3DC /* TestFormattedContent.stack in Resources */,
 				6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */,
 				6CEBC0121F4F337D0031BDDC /* TestStackScript.stack in Resources */,
 				6CE0C0F31F4EF1D0003AA9FC /* TestCantAbort.stack in Resources */,

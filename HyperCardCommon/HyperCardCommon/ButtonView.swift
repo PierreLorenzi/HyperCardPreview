@@ -255,8 +255,8 @@ public class ButtonView: View {
             return
         }
         
-        /* Draw title & icon */
-        if button.showName && self.icon == nil {
+        /* Draw title & icon (if an icon is set but not found, the button is layout as if had an icon) */
+        if button.showName && button.iconIdentifier == 0 {
             let nameWidth = font.computeSizeOfString(button.name)
             let nameX = computeNameX(nameWidth: nameWidth)
             let nameY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - font.maximumAscent / 6
@@ -265,7 +265,7 @@ public class ButtonView: View {
                 drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: BlackToGrayComposition)
             }
         }
-        else if let icon = icon {
+        else {
             let iconAndTitleHeight = (button.showName) ? IconSize + IconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : IconSize + 2
             let iconAndTitleOrigin = rectangle.height / 2 - iconAndTitleHeight / 2 + 1
             if button.showName {
@@ -282,7 +282,9 @@ public class ButtonView: View {
             }
             let iconX = rectangle.width / 2 - IconSize / 2
             let (imageComposition, maskComposition) = findIconComposition()
-            drawing.drawMaskedImage(icon, position: Point(x: rectangle.x + iconX, y: rectangle.y + iconAndTitleOrigin), clipRectangle: rectangle, imageComposition: imageComposition, maskComposition: maskComposition)
+            if let icon = icon {
+                drawing.drawMaskedImage(icon, position: Point(x: rectangle.x + iconX, y: rectangle.y + iconAndTitleOrigin), clipRectangle: rectangle, imageComposition: imageComposition, maskComposition: maskComposition)
+            }
         }
         
     }

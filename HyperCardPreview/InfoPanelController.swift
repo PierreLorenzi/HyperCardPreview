@@ -120,7 +120,7 @@ class InfoPanelController {
     
     func displayScript(_ script: HString) {
         
-        scriptView.string = indent(script).description.replacingOccurrences(of: "\r", with: "\n")
+        scriptView.string = indent(script).description
         
     }
     
@@ -216,11 +216,18 @@ class InfoPanelController {
             }
         }
         
-        func endLine(atIndex index: Int) {
+        func endLine(atIndex index: Int, updateIndentation: Bool) {
             /* Replace the carriage returns by new lines */
             indentedData.append(script[lineStart..<index].data)
             lineStart = index + 1
             indentedData.append(10)
+            
+            /* Check if there is an ending ¬, in that case do not update increment
+             and do not reset the state */
+            if !updateIndentation {
+                indentedData.append(indentation)
+                return
+            }
             
             /* Ending 'then' */
             var incrementedByThen = false
@@ -248,10 +255,8 @@ class InfoPanelController {
             indentedData.append(indentation)
             commentStart = nil
             
-            /* Do not reset the state if the line continues */
-            if !isWordBeforeIndex(index, "¬") {
-                lineStartsWithIfOrThen = false
-            }
+            /* Reset the state */
+            lineStartsWithIfOrThen = false
         }
         
         startLine(atIndex: -1)
@@ -264,14 +269,25 @@ class InfoPanelController {
             
             if char == 13 {
                 
-                endLine(atIndex: index)
+                /* Check for cut line */
+                let lineIsCut = (index > 0 && script[index-1] == 0xC2 && commentStart == nil)
+                
+                /* Fill the line separation and pdate indentation as for current line */
+                endLine(atIndex: index, updateIndentation: !lineIsCut)
+                
+                /* Do not update indentation if it is a cut line */
+                if lineIsCut {
+                    continue
+                }
+                
+                /* Update indentation as for next line */
                 startLine(atIndex: index)
                 continue
             }
             
         }
         
-        endLine(atIndex: script.length)
+        endLine(atIndex: script.length, updateIndentation: false)
         if indentation.count != 0 {
             NSLog("Script parsing issue")
         }
