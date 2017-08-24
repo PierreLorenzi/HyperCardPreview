@@ -336,7 +336,6 @@
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
 		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
-		6CB025541F4EDD4300B57D87 /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */; };
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
 		6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */; };
@@ -349,6 +348,7 @@
 		6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0F21F4EF1D0003AA9FC /* TestUserLevel5.stack */; };
 		6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */; };
 		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
+		6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -694,7 +694,6 @@
 		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
@@ -707,6 +706,7 @@
 		6CE0C0F21F4EF1D0003AA9FC /* TestUserLevel5.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestUserLevel5.stack; sourceTree = "<group>"; };
 		6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPrivateAccess.stack; sourceTree = "<group>"; };
 		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
+		6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1258,7 +1258,7 @@
 		6CB025501F4ED7A700B57D87 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */,
+				6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */,
 				6CE0C0FD1F4EF4D2003AA9FC /* Security */,
 				6CE0C1001F4EF716003AA9FC /* TestVersion.stack */,
 			);
@@ -1631,12 +1631,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6CE0C0F91F4EF1D0003AA9FC /* TestUserLevel1.stack in Resources */,
-				6CB025541F4EDD4300B57D87 /* TestCardsBackgrounds.stack in Resources */,
 				6CE0C0F41F4EF1D0003AA9FC /* TestCantDelete.stack in Resources */,
 				6CE0C0F51F4EF1D0003AA9FC /* TestCantModify.stack in Resources */,
 				6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */,
 				6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */,
 				6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */,
+				6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */,
 				6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */,
 				6CE0C0F31F4EF1D0003AA9FC /* TestCantAbort.stack in Resources */,
 				6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */,
