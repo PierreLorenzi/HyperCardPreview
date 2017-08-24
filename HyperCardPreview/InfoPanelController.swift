@@ -37,6 +37,7 @@ class InfoPanelController {
         displayScript(stack.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
+        let versionAtCreation: String = stack.versionAtCreation?.description ?? "unknown"
         let version: String = stack.versionAtLastModification?.description ?? "unknown"
         
         infoView.string = ["Number of Cards: \(stack.cards.count)",
@@ -49,7 +50,8 @@ class InfoPanelController {
             "Can't Modify: \(stack.cantModify)",
             "Can't Peek: \(stack.cantPeek)",
             "Private Access: \(stack.privateAccess)\n",
-            "HyperCard Version: \(version)\n",
+            "HyperCard Version at creation: \(versionAtCreation)",
+            "HyperCard Version at last edition: \(version)\n",
             "Size: \(stack.size.width) x \(stack.size.height)"].joined(separator: "\n")
     }
     
