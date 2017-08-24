@@ -9,6 +9,9 @@
 import XCTest
 import HyperCardCommon
 
+/// The tests in this class are performed with stacks created with HyperCard 2.4.1 final on emulated Mac OS 8.1
+/// The data is checked against values given by HyperCard itself, not values read directly in the file. The
+/// values can be read in the UI or by HyperTalk scripts.
 class HyperCardCommonTests: XCTestCase {
     
     override func setUp() {
@@ -205,6 +208,32 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(file.stack.versionAtLastCompacting == file.parsedData.stack.versionAtLastCompacting)
         XCTAssert(file.stack.versionAtLastModificationSinceLastCompacting == file.parsedData.stack.versionAtLastModificationSinceLastCompacting)
         XCTAssert(file.stack.versionAtLastModification == file.parsedData.stack.versionAtLastModification)
+        
+        
+        
+    }
+    
+    /// Test a stack with many cards so there are more than one page
+    func testManyCards() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestManyCards", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        let cardIdentifiers: [Int] = [
+            2928,29104,29402,29579,29919,30161,30437,30554,30872,31217,31253,31697,31894,32111,32472,32516,32838,33200,33282,33767,34013,34081,34452,34677,35030,35107,35531,35624,36298,36607,36808,37050,37278,37619,37729,37900,38216,38410,38708,39131,39380,39518,39767,40037,40328,40637,40809,41151,41437,41643,41729,42016,42254,42539,42960,43061,43265,43678,43974,44241,44388,44590,44847,45258,45417,45634,45899,46203,46447,46596,46869,47323,47508,47685,47922,48379,48594,48734,49110,49273,49663,49821,50014,50397,50516,50806,51033,51436,51523,51941,52070,52682,52755,53230,53280,53595,53819,54053,54429,54753,54806,3662,3967,4152,4518,4785,4868,5327,5434,5688,6019,6360,6456,6833,7125,7298,7518,7740,8018,8232,8675,8854,8971,9447,9654,9742,10031,10378,10610,10956,11091,11502,11716,11854,12092,12400,12690,12858,13175,13495,13626,14035,14082,14411,14632,14870,15204,15507,15661,16028,16381,16502,16878,16976,17266,17416,17794,18003,18251,18512,18701,19134,19264,19587,19933,20192,20390,20698,20815,21227,21474,21564,21789,22129,22427,22686,22810,23195,23296,23694,23843,24211,24494,24813,25044,25276,25446,25709,25901,26351,26431,26759,26892,27356,27596,27804,28005,28284,28544,28851
+        ]
+        
+        /* Check number of cards */
+        XCTAssert(file.parsedData.stack.cardCount == cardIdentifiers.count)
+        XCTAssert(file.parsedData.cards.count == cardIdentifiers.count)
+        XCTAssert(file.stack.cards.count == cardIdentifiers.count)
+        
+        /* Check the identifiers of the cards */
+        for i in 0..<file.parsedData.stack.cardCount {
+            
+            XCTAssert(file.parsedData.cards[i].identifier == cardIdentifiers[i])
+            XCTAssert(file.stack.cards[i].identifier == cardIdentifiers[i])
+        }
         
         
         
