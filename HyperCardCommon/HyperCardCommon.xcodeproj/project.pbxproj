@@ -334,10 +334,23 @@
 		6C9E6D3D1E75BEEA00BBF925 /* Symbol.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */; };
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
+		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
+		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
+		6CB025541F4EDD4300B57D87 /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */; };
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
 		6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		6CB0254B1F4ED75700B57D87 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C9E6A821E75BCCD00BBF925 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6C9E6A8A1E75BCCD00BBF925;
+			remoteInfo = HyperCardCommon;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
@@ -669,6 +682,10 @@
 		6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Symbol.dfont; sourceTree = "<group>"; };
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
+		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
+		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
@@ -682,6 +699,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CB025421F4ED75700B57D87 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -690,6 +715,7 @@
 			children = (
 				6C9E6A8D1E75BCCD00BBF925 /* HyperCardCommon */,
 				6C9E6C461E75BEEA00BBF925 /* Resources */,
+				6CB025461F4ED75700B57D87 /* HyperCardCommonTests */,
 				6C9E6A8C1E75BCCD00BBF925 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -698,6 +724,7 @@
 			isa = PBXGroup;
 			children = (
 				6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */,
+				6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1200,6 +1227,24 @@
 			path = HyperCardCommon/Resources;
 			sourceTree = "<group>";
 		};
+		6CB025461F4ED75700B57D87 /* HyperCardCommonTests */ = {
+			isa = PBXGroup;
+			children = (
+				6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */,
+				6CB025501F4ED7A700B57D87 /* Resources */,
+				6CB025491F4ED75700B57D87 /* Info.plist */,
+			);
+			path = HyperCardCommonTests;
+			sourceTree = "<group>";
+		};
+		6CB025501F4ED7A700B57D87 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1232,17 +1277,40 @@
 			productReference = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		6CB025441F4ED75700B57D87 /* HyperCardCommonTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6CB0254F1F4ED75700B57D87 /* Build configuration list for PBXNativeTarget "HyperCardCommonTests" */;
+			buildPhases = (
+				6CB025411F4ED75700B57D87 /* Sources */,
+				6CB025421F4ED75700B57D87 /* Frameworks */,
+				6CB025431F4ED75700B57D87 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6CB0254C1F4ED75700B57D87 /* PBXTargetDependency */,
+			);
+			name = HyperCardCommonTests;
+			productName = HyperCardCommonTests;
+			productReference = 6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		6C9E6A821E75BCCD00BBF925 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0830;
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Pierre Lorenzi";
 				TargetAttributes = {
 					6C9E6A8A1E75BCCD00BBF925 = {
 						CreatedOnToolsVersion = 8.2.1;
+						ProvisioningStyle = Automatic;
+					};
+					6CB025441F4ED75700B57D87 = {
+						CreatedOnToolsVersion = 8.3.3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -1260,6 +1328,7 @@
 			projectRoot = "";
 			targets = (
 				6C9E6A8A1E75BCCD00BBF925 /* HyperCardCommon */,
+				6CB025441F4ED75700B57D87 /* HyperCardCommonTests */,
 			);
 		};
 /* End PBXProject section */
@@ -1522,6 +1591,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CB025431F4ED75700B57D87 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CB025541F4EDD4300B57D87 /* TestCardsBackgrounds.stack in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -1611,7 +1688,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		6CB025411F4ED75700B57D87 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		6CB0254C1F4ED75700B57D87 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6C9E6A8A1E75BCCD00BBF925 /* HyperCardCommon */;
+			targetProxy = 6CB0254B1F4ED75700B57D87 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		6C9E6A911E75BCCD00BBF925 /* Debug */ = {
@@ -1750,6 +1843,32 @@
 			};
 			name = Release;
 		};
+		6CB0254D1F4ED75700B57D87 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = HyperCardCommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Pierre.HyperCardCommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Debug;
+		};
+		6CB0254E1F4ED75700B57D87 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = HyperCardCommonTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Pierre.HyperCardCommonTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 3.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1770,6 +1889,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		6CB0254F1F4ED75700B57D87 /* Build configuration list for PBXNativeTarget "HyperCardCommonTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6CB0254D1F4ED75700B57D87 /* Debug */,
+				6CB0254E1F4ED75700B57D87 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

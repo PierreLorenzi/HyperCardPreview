@@ -120,9 +120,27 @@ public class HyperCardFileData: DataBlock {
         return cards
     }
     
-    /// The background blocks (BKGD), they are not ordered, use the fields nextBackgroundIdentifier and previousBackgroundIdentifier to loop on them */
+    /// The background blocks (BKGD), they are in the expected order of the backgrounds */
     public var backgrounds: [BackgroundBlock] {
-        return self.buildElementList(BackgroundBlock.init)
+        
+        let identifier0 = self.stack.firstBackgroundIdentifier
+        
+        var backgrounds: [BackgroundBlock] = []
+        var identifier = identifier0
+        
+        /* Load the background blocks in the right order, using the nextBackgroundIdentifier property */
+        repeat {
+            
+            /* Load the background */
+            let background = self.loadBlock(identifier: identifier, initializer: BackgroundBlock.init)
+            backgrounds.append(background)
+            
+            /* Move to the next */
+            identifier = background.nextBackgroundIdentifier
+            
+        } while (identifier != identifier0)
+        
+        return backgrounds
     }
     
     /// The bitmap blocks (BMAP), containing the images of the cards and backgrounds. They are not ordered.
