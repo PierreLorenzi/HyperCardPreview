@@ -350,6 +350,8 @@
 		6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */; };
 		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
 		6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */; };
+		6CEBC0101F4F2E760031BDDC /* TestWindowSize.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CEBC00F1F4F2E760031BDDC /* TestWindowSize.stack */; };
+		6CEBC0121F4F337D0031BDDC /* TestStackScript.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -709,6 +711,8 @@
 		6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPrivateAccess.stack; sourceTree = "<group>"; };
 		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
 		6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
+		6CEBC00F1F4F2E760031BDDC /* TestWindowSize.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestWindowSize.stack; sourceTree = "<group>"; };
+		6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestStackScript.stack; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1264,6 +1268,8 @@
 				6CE0C0FD1F4EF4D2003AA9FC /* Security */,
 				6CE0C1001F4EF716003AA9FC /* TestVersion.stack */,
 				6CC67B741F4F03840070195B /* TestManyCards.stack */,
+				6CEBC00F1F4F2E760031BDDC /* TestWindowSize.stack */,
+				6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1640,8 +1646,10 @@
 				6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */,
 				6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */,
 				6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */,
+				6CEBC0101F4F2E760031BDDC /* TestWindowSize.stack in Resources */,
 				6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */,
 				6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */,
+				6CEBC0121F4F337D0031BDDC /* TestStackScript.stack in Resources */,
 				6CE0C0F31F4EF1D0003AA9FC /* TestCantAbort.stack in Resources */,
 				6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */,
 			);

@@ -235,7 +235,47 @@ class HyperCardCommonTests: XCTestCase {
             XCTAssert(file.stack.cards[i].identifier == cardIdentifiers[i])
         }
         
+    }
+    
+    /// Test card window location
+    func testWindowSize() {
         
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestWindowSize", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
+        
+        let cardSize = Size(width: 640, height: 480)
+        let scroll = Point(x: 0, y: 0)
+        let windowRectangle = Rectangle(top: 200, left: 272, bottom: 584, right: 848)
+        let screenRectangle = Rectangle(top: 0, left: 0, bottom: 768, right: 1024)
+        
+        /* Check file */
+        XCTAssert(file.parsedData.stack.size == cardSize)
+        XCTAssert(file.parsedData.stack.scrollPoint == scroll)
+        XCTAssert(file.parsedData.stack.windowRectangle == windowRectangle)
+        XCTAssert(file.parsedData.stack.screenRectangle == screenRectangle)
+        
+        /* Check data */
+        XCTAssert(file.stack.size == cardSize)
+        
+    }
+    
+    /// Test stack script
+    func testStackScript() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestStackScript", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
+        
+        let script = "-- script of stack\r-- with two lines"
+        
+        /* Check file */
+        XCTAssert(file.parsedData.stack.script == script)
+        
+        /* Check data */
+        XCTAssert(file.stack.script == script)
         
     }
     

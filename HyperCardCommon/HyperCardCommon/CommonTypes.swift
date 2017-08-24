@@ -25,13 +25,17 @@ public struct Point: Equatable {
 
 
 /// 2D geometric size, in pixels
-public struct Size {
+public struct Size: Equatable {
     public var width: Int
     public var height: Int
     
     public init(width: Int, height: Int) {
         self.width = width
         self.height = height
+    }
+    
+    public static func ==(s1: Size, s2: Size) -> Bool {
+        return s1.width == s2.width && s1.height == s2.height
     }
 }
 
