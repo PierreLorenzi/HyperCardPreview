@@ -340,6 +340,15 @@
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
 		6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */; };
+		6CE0C0F31F4EF1D0003AA9FC /* TestCantAbort.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0EB1F4EF1D0003AA9FC /* TestCantAbort.stack */; };
+		6CE0C0F41F4EF1D0003AA9FC /* TestCantDelete.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0EC1F4EF1D0003AA9FC /* TestCantDelete.stack */; };
+		6CE0C0F51F4EF1D0003AA9FC /* TestCantModify.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0ED1F4EF1D0003AA9FC /* TestCantModify.stack */; };
+		6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0EE1F4EF1D0003AA9FC /* TestCantPeek.stack */; };
+		6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0EF1F4EF1D0003AA9FC /* TestPassword.stack */; };
+		6CE0C0F91F4EF1D0003AA9FC /* TestUserLevel1.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0F11F4EF1D0003AA9FC /* TestUserLevel1.stack */; };
+		6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0F21F4EF1D0003AA9FC /* TestUserLevel5.stack */; };
+		6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */; };
+		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -689,6 +698,15 @@
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
 		6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
+		6CE0C0EB1F4EF1D0003AA9FC /* TestCantAbort.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCantAbort.stack; sourceTree = "<group>"; };
+		6CE0C0EC1F4EF1D0003AA9FC /* TestCantDelete.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCantDelete.stack; sourceTree = "<group>"; };
+		6CE0C0ED1F4EF1D0003AA9FC /* TestCantModify.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCantModify.stack; sourceTree = "<group>"; };
+		6CE0C0EE1F4EF1D0003AA9FC /* TestCantPeek.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCantPeek.stack; sourceTree = "<group>"; };
+		6CE0C0EF1F4EF1D0003AA9FC /* TestPassword.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPassword.stack; sourceTree = "<group>"; };
+		6CE0C0F11F4EF1D0003AA9FC /* TestUserLevel1.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestUserLevel1.stack; sourceTree = "<group>"; };
+		6CE0C0F21F4EF1D0003AA9FC /* TestUserLevel5.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestUserLevel5.stack; sourceTree = "<group>"; };
+		6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPrivateAccess.stack; sourceTree = "<group>"; };
+		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1241,8 +1259,25 @@
 			isa = PBXGroup;
 			children = (
 				6CB025531F4EDC9A00B57D87 /* TestCardsBackgrounds.stack */,
+				6CE0C0FD1F4EF4D2003AA9FC /* Security */,
+				6CE0C1001F4EF716003AA9FC /* TestVersion.stack */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		6CE0C0FD1F4EF4D2003AA9FC /* Security */ = {
+			isa = PBXGroup;
+			children = (
+				6CE0C0EB1F4EF1D0003AA9FC /* TestCantAbort.stack */,
+				6CE0C0EC1F4EF1D0003AA9FC /* TestCantDelete.stack */,
+				6CE0C0ED1F4EF1D0003AA9FC /* TestCantModify.stack */,
+				6CE0C0EE1F4EF1D0003AA9FC /* TestCantPeek.stack */,
+				6CE0C0EF1F4EF1D0003AA9FC /* TestPassword.stack */,
+				6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */,
+				6CE0C0F11F4EF1D0003AA9FC /* TestUserLevel1.stack */,
+				6CE0C0F21F4EF1D0003AA9FC /* TestUserLevel5.stack */,
+			);
+			name = Security;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1595,7 +1630,16 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CE0C0F91F4EF1D0003AA9FC /* TestUserLevel1.stack in Resources */,
 				6CB025541F4EDD4300B57D87 /* TestCardsBackgrounds.stack in Resources */,
+				6CE0C0F41F4EF1D0003AA9FC /* TestCantDelete.stack in Resources */,
+				6CE0C0F51F4EF1D0003AA9FC /* TestCantModify.stack in Resources */,
+				6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */,
+				6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */,
+				6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */,
+				6CE0C0FA1F4EF1D0003AA9FC /* TestUserLevel5.stack in Resources */,
+				6CE0C0F31F4EF1D0003AA9FC /* TestCantAbort.stack in Resources */,
+				6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1897,6 +1941,7 @@
 				6CB0254E1F4ED75700B57D87 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

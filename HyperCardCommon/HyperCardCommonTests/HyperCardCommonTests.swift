@@ -21,9 +21,8 @@ class HyperCardCommonTests: XCTestCase {
         super.tearDown()
     }
     
+    /// Test interactions between stack, cards and backgrounds
     func testCardsBackgrounds() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
         
         /* Open stack */
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardsBackgrounds", ofType: "stack")!
@@ -103,6 +102,97 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(stack.backgrounds[0].identifier == backgroundIdentifier0)
         XCTAssert(stack.backgrounds[1].identifier == backgroundIdentifier1)
         XCTAssert(stack.backgrounds[2].identifier == backgroundIdentifier2)
+        
+        
+    }
+    
+    /// Test security settings of the stacks
+    func testSecurity() {
+        
+        /* Each time, check the file and the data */
+        var path: String
+        var file: HyperCardFile
+        
+        /* User Level 1 */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel1", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.userLevel == .browse)
+        XCTAssert(file.stack.userLevel == .browse)
+        
+        /* User Level 5 */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel5", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.userLevel == .script)
+        XCTAssert(file.stack.userLevel == .script)
+        
+        /* Can't Abort */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantAbort", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.cantAbort)
+        XCTAssert(file.stack.cantAbort)
+        
+        /* Can't Delete */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantDelete", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.cantDelete)
+        XCTAssert(file.stack.cantDelete)
+        
+        /* Can't Modify */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantModify", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.cantModify)
+        XCTAssert(file.stack.cantModify)
+        
+        /* Can't Peek */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantPeek", ofType: "stack")!
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.cantPeek)
+        XCTAssert(file.stack.cantPeek)
+        
+        /* Private Access */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPrivateAccess", ofType: "stack")!
+        XCTAssertThrowsError(try HyperCardFile(path: path))
+        XCTAssertThrowsError(try HyperCardFile(path: path, password: "false password"))
+        XCTAssertNoThrow(try HyperCardFile(path: path, password: "AA éé 1234 ÀÂä"))
+        XCTAssertNoThrow(try HyperCardFile(path: path, password: "AA ee 1234 AAa"))
+        file = try! HyperCardFile(path: path, password: "AA éé 1234 ÀÂä")
+        XCTAssert(file.parsedData.stack.privateAccess)
+        XCTAssert(file.parsedData.stack.passwordHash != nil)
+        XCTAssert(file.stack.privateAccess)
+        XCTAssert(file.stack.passwordHash == file.parsedData.stack.passwordHash)
+        
+        /* Password without private access */
+        path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPassword", ofType: "stack")!
+        XCTAssertNoThrow(try HyperCardFile(path: path))
+        file = try! HyperCardFile(path: path)
+        XCTAssert(file.parsedData.stack.passwordHash != nil)
+        XCTAssert(file.stack.passwordHash == file.parsedData.stack.passwordHash)
+        
+        
+        
+    }
+    
+    /// Test versions of stacks
+    func testVersion() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestVersion", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* In HyperCard, result of "print the version of this stack":
+         "02374001,02358000,02358000,02418000,<number of ticks since last edition>" */
+        
+        /* Check file */
+        XCTAssert(file.parsedData.stack.versionAtCreation == Version(major: 2, minor1: 3, minor2: 7, state: .alpha, release: 1))
+        XCTAssert(file.parsedData.stack.versionAtLastCompacting == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
+        XCTAssert(file.parsedData.stack.versionAtLastModificationSinceLastCompacting == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
+        XCTAssert(file.parsedData.stack.versionAtLastModification == Version(major: 2, minor1: 4, minor2: 1, state: .final, release: 0))
+        
+        /* Check data */
+        XCTAssert(file.stack.versionAtCreation == file.parsedData.stack.versionAtCreation)
+        XCTAssert(file.stack.versionAtLastCompacting == file.parsedData.stack.versionAtLastCompacting)
+        XCTAssert(file.stack.versionAtLastModificationSinceLastCompacting == file.parsedData.stack.versionAtLastModificationSinceLastCompacting)
+        XCTAssert(file.stack.versionAtLastModification == file.parsedData.stack.versionAtLastModification)
+        
         
         
     }

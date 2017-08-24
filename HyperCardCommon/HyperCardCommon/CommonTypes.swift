@@ -410,13 +410,13 @@ public extension Version {
         
         let stateNumber = (code >> 8) & 0xFF
         switch stateNumber {
-        case 20:
-            self.state = .alpha
-        case 40:
-            self.state = .beta
-        case 60:
+        case 0x20:
             self.state = .development
-        case 80:
+        case 0x40:
+            self.state = .alpha
+        case 0x60:
+            self.state = .beta
+        case 0x80:
             self.state = .final
         default:
             self.state = .final
