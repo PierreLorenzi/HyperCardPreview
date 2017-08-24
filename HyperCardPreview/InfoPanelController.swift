@@ -120,7 +120,7 @@ class InfoPanelController {
     
     func displayScript(_ script: HString) {
         
-        scriptView.string = indent(script).description
+        scriptView.string = indent(script).description.replacingOccurrences(of: "\r", with: "\n")
         
     }
     
