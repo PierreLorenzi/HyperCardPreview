@@ -279,4 +279,64 @@ class HyperCardCommonTests: XCTestCase {
         
     }
     
+    /// Test the properties of cards
+    func testCardProperties() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardProperties", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* Can't Delete */
+        XCTAssert(file.parsedData.cards[0].cantDelete == true)
+        XCTAssert(file.stack.cards[0].cantDelete == true)
+        
+        /* Show Picture */
+        XCTAssert(file.parsedData.cards[1].showPict == false)
+        XCTAssert(file.stack.cards[1].showPict == false)
+        
+        /* Don't Search */
+        XCTAssert(file.parsedData.cards[2].dontSearch == true)
+        XCTAssert(file.stack.cards[2].dontSearch == true)
+        
+        /* Name */
+        let name = "some card name"
+        XCTAssert(file.parsedData.cards[3].name == name)
+        XCTAssert(file.stack.cards[3].name == name)
+        
+        /* Script */
+        let script = "-- card script"
+        XCTAssert(file.parsedData.cards[4].script == script)
+        XCTAssert(file.stack.cards[4].script == script)
+        
+    }
+    
+    /// Test the properties of backgrounds
+    func testBackgroundProperties() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestBackgroundProperties", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* Can't Delete */
+        XCTAssert(file.parsedData.backgrounds[0].cantDelete == true)
+        XCTAssert(file.stack.backgrounds[0].cantDelete == true)
+        
+        /* Show Picture */
+        XCTAssert(file.parsedData.backgrounds[1].showPict == false)
+        XCTAssert(file.stack.backgrounds[1].showPict == false)
+        
+        /* Don't Search */
+        XCTAssert(file.parsedData.backgrounds[2].dontSearch == true)
+        XCTAssert(file.stack.backgrounds[2].dontSearch == true)
+        
+        /* Name */
+        let name = "some background name"
+        XCTAssert(file.parsedData.backgrounds[3].name == name)
+        XCTAssert(file.stack.backgrounds[3].name == name)
+        
+        /* Script */
+        let script = "-- background script"
+        XCTAssert(file.parsedData.backgrounds[4].script == script)
+        XCTAssert(file.stack.backgrounds[4].script == script)
+        
+    }
+    
 }
