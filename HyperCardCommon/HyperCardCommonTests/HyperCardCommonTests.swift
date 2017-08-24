@@ -288,14 +288,20 @@ class HyperCardCommonTests: XCTestCase {
         /* Can't Delete */
         XCTAssert(file.parsedData.cards[0].cantDelete == true)
         XCTAssert(file.stack.cards[0].cantDelete == true)
+        XCTAssert(file.parsedData.cards[1].cantDelete == false)
+        XCTAssert(file.stack.cards[1].cantDelete == false)
         
         /* Show Picture */
         XCTAssert(file.parsedData.cards[1].showPict == false)
         XCTAssert(file.stack.cards[1].showPict == false)
+        XCTAssert(file.parsedData.cards[2].showPict == true)
+        XCTAssert(file.stack.cards[2].showPict == true)
         
         /* Don't Search */
         XCTAssert(file.parsedData.cards[2].dontSearch == true)
         XCTAssert(file.stack.cards[2].dontSearch == true)
+        XCTAssert(file.parsedData.cards[3].dontSearch == false)
+        XCTAssert(file.stack.cards[3].dontSearch == false)
         
         /* Name */
         let name = "some card name"
@@ -318,14 +324,20 @@ class HyperCardCommonTests: XCTestCase {
         /* Can't Delete */
         XCTAssert(file.parsedData.backgrounds[0].cantDelete == true)
         XCTAssert(file.stack.backgrounds[0].cantDelete == true)
+        XCTAssert(file.parsedData.backgrounds[1].cantDelete == false)
+        XCTAssert(file.stack.backgrounds[1].cantDelete == false)
         
         /* Show Picture */
         XCTAssert(file.parsedData.backgrounds[1].showPict == false)
         XCTAssert(file.stack.backgrounds[1].showPict == false)
+        XCTAssert(file.parsedData.backgrounds[2].showPict == true)
+        XCTAssert(file.stack.backgrounds[2].showPict == true)
         
         /* Don't Search */
         XCTAssert(file.parsedData.backgrounds[2].dontSearch == true)
         XCTAssert(file.stack.backgrounds[2].dontSearch == true)
+        XCTAssert(file.parsedData.backgrounds[3].dontSearch == false)
+        XCTAssert(file.stack.backgrounds[3].dontSearch == false)
         
         /* Name */
         let name = "some background name"
@@ -350,14 +362,20 @@ class HyperCardCommonTests: XCTestCase {
         /* Identifier */
         XCTAssert(file.parsedData.backgrounds[0].parts[0].identifier == 1)
         XCTAssert(file.stack.backgrounds[0].buttons[0].identifier == 1)
+        XCTAssert(file.parsedData.backgrounds[0].parts[1].identifier == 2)
+        XCTAssert(file.stack.backgrounds[0].buttons[1].identifier == 2)
         
         /* Enabled */
         XCTAssert(file.parsedData.backgrounds[0].parts[1].enabled == false)
         XCTAssert(file.stack.backgrounds[0].buttons[1].enabled == false)
+        XCTAssert(file.parsedData.backgrounds[0].parts[2].enabled == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[2].enabled == true)
         
         /* Visible */
         XCTAssert(file.parsedData.backgrounds[0].parts[2].visible == false)
         XCTAssert(file.stack.backgrounds[0].buttons[2].visible == false)
+        XCTAssert(file.parsedData.backgrounds[0].parts[3].visible == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[3].visible == true)
         
         /* Rectangle */
         let rectangle = Rectangle(top: 188, left: 44, bottom: 210, right: 139)
@@ -371,18 +389,26 @@ class HyperCardCommonTests: XCTestCase {
         /* Shared Hilite */
         XCTAssert(file.parsedData.backgrounds[0].parts[5].sharedHilite == false)
         XCTAssert(file.stack.backgrounds[0].buttons[5].sharedHilite == false)
+        XCTAssert(file.parsedData.backgrounds[0].parts[6].sharedHilite == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[6].sharedHilite == true)
         
         /* Auto Hilite */
         XCTAssert(file.parsedData.backgrounds[0].parts[6].autoHilite == true)
         XCTAssert(file.stack.backgrounds[0].buttons[6].autoHilite == true)
+        XCTAssert(file.parsedData.backgrounds[0].parts[7].autoHilite == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[7].autoHilite == false)
         
         /* Hilite */
         XCTAssert(file.parsedData.backgrounds[0].parts[7].hilite == true)
         XCTAssert(file.stack.backgrounds[0].buttons[7].hilite == true)
+        XCTAssert(file.parsedData.backgrounds[0].parts[8].hilite == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[8].hilite == false)
         
         /* Show Name */
         XCTAssert(file.parsedData.backgrounds[0].parts[8].showName == false)
         XCTAssert(file.stack.backgrounds[0].buttons[8].showName == false)
+        XCTAssert(file.parsedData.backgrounds[0].parts[9].showName == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[9].showName == true)
         
         /* Icon */
         XCTAssert(file.parsedData.backgrounds[0].parts[9].icon == 30504)
