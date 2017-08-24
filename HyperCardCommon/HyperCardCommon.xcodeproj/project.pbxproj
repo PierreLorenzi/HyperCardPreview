@@ -338,6 +338,7 @@
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
 		6CB51D6C1F4F5659000C43D3 /* TestBackgroundProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */; };
+		6CB51D781F4F6192000C43D3 /* TestButtonProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D771F4F6192000C43D3 /* TestButtonProperties.stack */; };
 		6CC67B751F4F03840070195B /* TestManyCards.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CC67B741F4F03840070195B /* TestManyCards.stack */; };
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
@@ -701,6 +702,7 @@
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardProperties.stack; sourceTree = "<group>"; };
 		6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestBackgroundProperties.stack; sourceTree = "<group>"; };
+		6CB51D771F4F6192000C43D3 /* TestButtonProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestButtonProperties.stack; sourceTree = "<group>"; };
 		6CC67B741F4F03840070195B /* TestManyCards.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestManyCards.stack; sourceTree = "<group>"; };
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
@@ -1276,6 +1278,7 @@
 				6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */,
 				6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */,
 				6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */,
+				6CB51D771F4F6192000C43D3 /* TestButtonProperties.stack */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1652,6 +1655,7 @@
 				6CC67B751F4F03840070195B /* TestManyCards.stack in Resources */,
 				6CE0C0F71F4EF1D0003AA9FC /* TestPassword.stack in Resources */,
 				6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */,
+				6CB51D781F4F6192000C43D3 /* TestButtonProperties.stack in Resources */,
 				6CB51D6C1F4F5659000C43D3 /* TestBackgroundProperties.stack in Resources */,
 				6CE0C0F61F4EF1D0003AA9FC /* TestCantPeek.stack in Resources */,
 				6CEBC0101F4F2E760031BDDC /* TestWindowSize.stack in Resources */,

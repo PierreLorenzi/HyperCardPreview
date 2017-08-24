@@ -147,7 +147,7 @@ public class PartBlock: DataBlock {
     
     /// Line index of the end of the text selection, only for fields
     public var lastSelectedLine: Int {
-        return data.readUInt16(at: 0x10)
+        return data.readUInt16(at: 0x10) - 1
     }
     
     /// Title Width, only for pop-up buttons
@@ -157,7 +157,7 @@ public class PartBlock: DataBlock {
     
     /// Line index of the start of the text selection, only for fields and pop-up buttons
     public var selectedLine: Int {
-        return data.readUInt16(at: 0x12)
+        return data.readUInt16(at: 0x12) - 1
     }
     
     /// Icon, only for buttons

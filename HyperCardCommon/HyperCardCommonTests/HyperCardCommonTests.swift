@@ -339,4 +339,129 @@ class HyperCardCommonTests: XCTestCase {
         
     }
     
+    /// Test the properties of buttons
+    func testButtonProperties() {
+        
+        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestButtonProperties", ofType: "stack")!
+        let file = try! HyperCardFile(path: path)
+        
+        /* General properties */
+        
+        /* Identifier */
+        XCTAssert(file.parsedData.backgrounds[0].parts[0].identifier == 1)
+        XCTAssert(file.stack.backgrounds[0].buttons[0].identifier == 1)
+        
+        /* Enabled */
+        XCTAssert(file.parsedData.backgrounds[0].parts[1].enabled == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[1].enabled == false)
+        
+        /* Visible */
+        XCTAssert(file.parsedData.backgrounds[0].parts[2].visible == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[2].visible == false)
+        
+        /* Rectangle */
+        let rectangle = Rectangle(top: 188, left: 44, bottom: 210, right: 139)
+        XCTAssert(file.parsedData.backgrounds[0].parts[3].rectangle == rectangle)
+        XCTAssert(file.stack.backgrounds[0].buttons[3].rectangle == rectangle)
+        
+        /* Family */
+        XCTAssert(file.parsedData.backgrounds[0].parts[4].family == 6)
+        XCTAssert(file.stack.backgrounds[0].buttons[4].family == 6)
+        
+        /* Shared Hilite */
+        XCTAssert(file.parsedData.backgrounds[0].parts[5].sharedHilite == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[5].sharedHilite == false)
+        
+        /* Auto Hilite */
+        XCTAssert(file.parsedData.backgrounds[0].parts[6].autoHilite == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[6].autoHilite == true)
+        
+        /* Hilite */
+        XCTAssert(file.parsedData.backgrounds[0].parts[7].hilite == true)
+        XCTAssert(file.stack.backgrounds[0].buttons[7].hilite == true)
+        
+        /* Show Name */
+        XCTAssert(file.parsedData.backgrounds[0].parts[8].showName == false)
+        XCTAssert(file.stack.backgrounds[0].buttons[8].showName == false)
+        
+        /* Icon */
+        XCTAssert(file.parsedData.backgrounds[0].parts[9].icon == 30504)
+        XCTAssert(file.stack.backgrounds[0].buttons[9].iconIdentifier == 30504)
+        
+        /* Name */
+        let name = "some button name"
+        XCTAssert(file.parsedData.backgrounds[0].parts[10].name == name)
+        XCTAssert(file.stack.backgrounds[0].buttons[10].name == name)
+        
+        /* Script */
+        let script = "-- some button script"
+        XCTAssert(file.parsedData.backgrounds[0].parts[11].script == script)
+        XCTAssert(file.stack.backgrounds[0].buttons[11].script == script)
+        
+        /* Content */
+        let content = "some button content"
+        XCTAssert(file.parsedData.backgrounds[0].contents[0].string == content)
+        XCTAssert(file.stack.backgrounds[0].buttons[12].content == content)
+        
+        /* Pop-up properties */
+        
+        /* Popup selected item */
+        XCTAssert(file.parsedData.backgrounds[1].parts[0].selectedLine == 3)
+        XCTAssert(file.stack.backgrounds[1].buttons[0].selectedItem == 3)
+        
+        /* Popup selected item */
+        let titleWidth = 23
+        XCTAssert(file.parsedData.backgrounds[1].parts[1].titleWidth == titleWidth)
+        XCTAssert(file.stack.backgrounds[1].buttons[1].titleWidth == titleWidth)
+        
+        /* Style */
+        XCTAssert(file.parsedData.backgrounds[2].parts[0].style == .transparent)
+        XCTAssert(file.stack.backgrounds[2].buttons[0].style == .transparent)
+        XCTAssert(file.parsedData.backgrounds[2].parts[1].style == .opaque)
+        XCTAssert(file.stack.backgrounds[2].buttons[1].style == .opaque)
+        XCTAssert(file.parsedData.backgrounds[2].parts[2].style == .rectangle)
+        XCTAssert(file.stack.backgrounds[2].buttons[2].style == .rectangle)
+        XCTAssert(file.parsedData.backgrounds[2].parts[3].style == .shadow)
+        XCTAssert(file.stack.backgrounds[2].buttons[3].style == .shadow)
+        XCTAssert(file.parsedData.backgrounds[2].parts[4].style == .checkBox)
+        XCTAssert(file.stack.backgrounds[2].buttons[4].style == .checkBox)
+        XCTAssert(file.parsedData.backgrounds[2].parts[5].style == .radio)
+        XCTAssert(file.stack.backgrounds[2].buttons[5].style == .radio)
+        XCTAssert(file.parsedData.backgrounds[2].parts[6].style == .standard)
+        XCTAssert(file.stack.backgrounds[2].buttons[6].style == .standard)
+        XCTAssert(file.parsedData.backgrounds[2].parts[7].style == .`default`)
+        XCTAssert(file.stack.backgrounds[2].buttons[7].style == .`default`)
+        XCTAssert(file.parsedData.backgrounds[2].parts[8].style == .oval)
+        XCTAssert(file.stack.backgrounds[2].buttons[8].style == .oval)
+        XCTAssert(file.parsedData.backgrounds[2].parts[9].style == .popup)
+        XCTAssert(file.stack.backgrounds[2].buttons[9].style == .popup)
+        XCTAssert(file.parsedData.backgrounds[2].parts[10].style == .roundRect)
+        XCTAssert(file.stack.backgrounds[2].buttons[10].style == .roundRect)
+        
+        /* Text properties */
+        
+        /* Style */
+        let textStyle = TextStyle(bold: true, italic: false, underline: true, outline: false, shadow: true, condense: false, extend: true, group: false)
+        XCTAssert(file.parsedData.backgrounds[3].parts[0].textStyle == textStyle)
+        XCTAssert(file.stack.backgrounds[3].buttons[0].textStyle == textStyle)
+        
+        /* Font */
+        XCTAssert(file.parsedData.backgrounds[3].parts[1].textFontIdentifier == FontIdentifiers.geneva)
+        XCTAssert(file.stack.backgrounds[3].buttons[1].textFontIdentifier == FontIdentifiers.geneva)
+        
+        /* Size */
+        XCTAssert(file.parsedData.backgrounds[3].parts[2].textFontSize == 17)
+        XCTAssert(file.stack.backgrounds[3].buttons[2].textFontSize == 17)
+        
+        /* Alignment */
+        XCTAssert(file.parsedData.backgrounds[3].parts[3].textAlign == .left)
+        XCTAssert(file.stack.backgrounds[3].buttons[3].textAlign == .left)
+        XCTAssert(file.parsedData.backgrounds[3].parts[4].textAlign == .center)
+        XCTAssert(file.stack.backgrounds[3].buttons[4].textAlign == .center)
+        XCTAssert(file.parsedData.backgrounds[3].parts[5].textAlign == .right)
+        XCTAssert(file.stack.backgrounds[3].buttons[5].textAlign == .right)
+        
+        
+    }
+    
 }

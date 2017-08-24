@@ -522,11 +522,11 @@ public class ButtonView: View {
         let arrowX = (popupRectangle.width > 22) ? popupRectangle.right - PopupArrowDistanceFromBorder : popupRectangle.left + popupRectangle.width / 2 - PopupArrowImage.width / 2 - 1
         drawing.drawMaskedImage(PopupArrowImage, position: Point(x: arrowX, y: popupRectangle.top + (popupRectangle.height - PopupArrowHeight)/2), clipRectangle: popupRectangle)
         
-        if menuItems.count > button.selectedItem - 1 && button.selectedItem - 1 >= 0 {
+        if menuItems.count > button.selectedItem && button.selectedItem >= 0 {
             /* Draw the text */
             
             /* Get the line */
-            let text = menuItems[button.selectedItem - 1]
+            let text = menuItems[button.selectedItem]
             
             /* Fit it into the button margins */
             let (textToDraw, currentFont) = fitPopupText(text, buttonWidth: popupRectangle.width)
