@@ -80,8 +80,12 @@ public class FieldView: View {
         lineLayoutsProperty.dependsOn(richTextProperty)
         
         /* Listen to visual changes */
-        self.dependsOn(field.scrollProperty)
-        self.dependsOn(richTextProperty)
+        field.scrollProperty.startNotifications(for: self.refreshNeedProperty, by: {
+            [unowned self] in if self.field.style == .scrolling { self.refreshNeedProperty.value = .refresh }
+        })
+        richTextProperty.startNotifications(for: self.refreshNeedProperty, by: {
+            [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
+        })
         
     }
     
@@ -511,6 +515,10 @@ public class FieldView: View {
     
     public override var rectangle: Rectangle {
         return field.rectangle
+    }
+    
+    public override var visible: Bool {
+        return field.visible
     }
     
     public override func respondsToMouseEvent(at position: Point) -> Bool {

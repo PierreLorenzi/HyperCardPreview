@@ -79,6 +79,11 @@ public struct Rectangle: Equatable {
     public func containsPosition(_ position: Point) -> Bool {
         return position.x >= left && position.x < right && position.y >= top && position.y < bottom
     }
+    
+    public func intersects(_ rectangle: Rectangle) -> Bool {
+        let intersection = computeRectangleIntersection(self, rectangle)
+        return intersection.width > 0 && intersection.height > 0
+    }
 }
 
 public func ==(r1: Rectangle, r2: Rectangle) -> Bool {

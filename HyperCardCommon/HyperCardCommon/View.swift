@@ -11,20 +11,37 @@
 /// to handle its position itself, no translation or clipping is applied.
 public class View {
     
-    public var needsDisplay: Bool {
-        get { return needsDisplayProperty.value }
-        set { needsDisplayProperty.value = newValue }
+    /// How the view wants to be refreshed
+    public var refreshNeed: RefreshNeed {
+        get { return refreshNeedProperty.value }
+        set { refreshNeedProperty.value = newValue }
     }
-    public let needsDisplayProperty = Property<Bool>(false)
+    public let refreshNeedProperty = Property<RefreshNeed>(.none)
     
+    /// The position of the view
     public var rectangle: Rectangle {
         return Rectangle(top: 0, left: 0, bottom: 0, right: 0)
+    }
+    
+    /// If the view is visible
+    public var visible: Bool {
+        return true
+    }
+    
+    /// If the view accepts to draw only sub-rectangles of itself.
+    public var canDrawSubrectangle: Bool {
+        return false
     }
     
     /// Draws the object on the drawing
     public func draw(in drawing: Drawing) {
     }
     
+    /// Draws a part of the object on the drawing (called if canDrawSubrectangle returns true)
+    public func draw(in drawing: Drawing, rectangle: Rectangle) {
+    }
+    
+    /// If the view is the one responding to the mouse event at the given position. Can return true even if it does nothing.
     public func respondsToMouseEvent(at position: Point) -> Bool {
         return false
     }
@@ -39,14 +56,17 @@ public class View {
     
 }
 
-
-public extension View {
+/// How a view must be refreshed
+public enum RefreshNeed {
     
-    public func dependsOn<T>(_ property: Property<T>) {
-        let needsDisplayProperty = self.needsDisplayProperty
-        property.startNotifications(for: self.needsDisplayProperty, by: {
-            [unowned needsDisplayProperty] in needsDisplayProperty.value = true
-        })
-    }
+    /// The view doesn't need to be refreshed
+    case none
     
+    /// The view needs to be refreshed.
+    case refresh
+    
+    /// The view needs to be refreshed and has made non opaque pixels, so views behind need to be refreshed.
+    case refreshWithNewShape
 }
+
+

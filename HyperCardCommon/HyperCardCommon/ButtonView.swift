@@ -166,7 +166,9 @@ public class ButtonView: View {
         condensedFontProperty.dependsOn(button.textStyleProperty)
         
         /* drawing dependencies */
-        self.dependsOn(hiliteProperty)
+        hiliteProperty.startNotifications(for: self.refreshNeedProperty, by: {
+            [unowned self] in self.refreshNeedProperty.value = (self.button.style == .transparent || self.button.style == .oval) ? .refreshWithNewShape : .refresh
+        })
         
     }
     
@@ -581,6 +583,10 @@ public class ButtonView: View {
     
     public override var rectangle: Rectangle {
         return button.rectangle
+    }
+    
+    public override var visible: Bool {
+        return button.visible
     }
     
     public override func respondsToMouseEvent(at position: Point) -> Bool {

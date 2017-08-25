@@ -29,4 +29,33 @@ public class LayerView: View {
         
     }
     
+    public override func draw(in drawing: Drawing, rectangle: Rectangle) {
+        
+        /* Image */
+        if let image = layer.image, layer.showPict {
+            drawing.drawMaskedImage(image, position: Point(x: 0, y: 0), clipRectangle: rectangle)
+        }
+    }
+    
+    public override var visible: Bool {
+        
+        if !layer.showPict {
+            return false
+        }
+        
+        guard let image = layer.image else {
+            return false
+        }
+        
+        if case .clear = image.image, case .clear = image.mask {
+            return false
+        }
+        
+        return true
+    }
+    
+    public override var canDrawSubrectangle: Bool {
+        return true
+    }
+    
 }
