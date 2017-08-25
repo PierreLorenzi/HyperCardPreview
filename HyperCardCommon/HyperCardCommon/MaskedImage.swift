@@ -107,48 +107,6 @@ public struct MaskedImage {
     
 }
 
-public extension MaskedImage {
-    
-    fileprivate static func convertToRgb(_ color: MaskedImage.Color) -> RgbColor {
-        switch color {
-        case .white:
-            return RgbWhite
-        case .black:
-            return RgbBlack
-        case .transparent:
-            return RgbTransparent
-        }
-    }
-    
-    /// Converts the HyperCard image to a Cocoa image
-    public func convertToRgb() -> NSImage {
-        
-        var pixels = [RgbColor](repeating: RgbWhite, count: self.width*self.height)
-        for x in 0..<self.width {
-            for y in 0..<self.height {
-                pixels[x + y*self.width] = MaskedImage.convertToRgb(self[x, y])
-            }
-        }
-        let data = NSMutableData(bytes: &pixels, length: pixels.count * MemoryLayout<RgbColor>.size)
-        let providerRef = CGDataProvider(data: data)
-        let cgimage = CGImage(
-            width: width,
-            height: height,
-            bitsPerComponent: BitsPerComponent,
-            bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width * MemoryLayout<RgbColor>.size,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfo,
-            provider: providerRef!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: CGColorRenderingIntent.defaultIntent)
-        
-        return NSImage(cgImage: cgimage!, size: NSZeroSize)
-    }
-    
-}
-
 
 public extension MaskedImage {
     

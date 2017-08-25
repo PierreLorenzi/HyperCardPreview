@@ -72,55 +72,5 @@ public struct Image {
 }
 
 
-struct RgbColor {
-    var a: UInt8
-    var r: UInt8
-    var g: UInt8
-    var b: UInt8
-}
-
-let RgbWhite = RgbColor(a: 255, r: 255, g: 255, b: 255)
-let RgbBlack = RgbColor(a: 255, r: 0, g: 0, b: 0)
-let RgbTransparent = RgbColor(a: 0, r: 255, g: 255, b: 255)
-
-let RgbColorSpace = CGColorSpaceCreateDeviceRGB()
-let BitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)
-let BitmapInfoNotTransparent:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
-let BitsPerComponent = 8
-let BitsPerPixel = 32
-
-
-public extension Image {
-    
-    /// Converts a HyperCard image to a Cocoa image
-    public func convertToRgb() -> NSImage {
-        
-        var pixels = [RgbColor](repeating: RgbWhite, count: self.width*self.height)
-        for x in 0..<self.width {
-            for y in 0..<self.height {
-                pixels[x + y*self.width] = self[x, y] ? RgbBlack : RgbWhite
-            }
-        }
-        let data = NSMutableData(bytes: &pixels, length: pixels.count * MemoryLayout<RgbColor>.size)
-        let providerRef = CGDataProvider(data: data)
-        let cgimage = CGImage(
-            width: width,
-            height: height,
-            bitsPerComponent: BitsPerComponent,
-            bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width * MemoryLayout<RgbColor>.size,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfoNotTransparent,
-            provider: providerRef!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: CGColorRenderingIntent.defaultIntent)
-        
-        return NSImage(cgImage: cgimage!, size: NSZeroSize)
-    }
-    
-}
-
-
 
 
