@@ -28,8 +28,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
     var file: HyperCardFile!
     var browser: Browser!
     
-    var pixels: [RgbColor2] = []
-    
     var panels: [InfoPanelController] = []
     
     @IBOutlet weak var view: DocumentView!
@@ -158,9 +156,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
         
         view.browser = browser
         
-        let width = file.stack.size.width;
-        let height = file.stack.size.height;
-        self.pixels = [RgbColor2](repeating: RgbWhite2, count: width*height*2)
         browser.refresh()
         refresh()
     }
@@ -194,11 +189,13 @@ class Document: NSDocument, NSCollectionViewDelegate {
     /// Redraws the HyperCard view
     func displayImage(_ image: Image) {
         
-        /* Convert the 1-bit image to a Core Graphics image and display it in the HyperCard view */
+        /* Convert the 1-bit image to RGB */
+        let bufferLength = browser.image.width * browser.image.height * 2 * MemoryLayout<RgbColor2>.size
+        let data = NSMutableData(length: bufferLength)!
+        let buffer = data.mutableBytes.assumingMemoryBound(to: RgbColor2.self)
+        self.fillBuffer(buffer, with: image)
         
-        self.fillBuffer(with: image)
-        
-        let data = NSMutableData(bytes: &pixels, length: self.pixels.count * MemoryLayout<RgbColor2>.size)
+        /* Build a CoreGraphics image */
         let providerRef = CGDataProvider(data: data)
         let width = file.stack.size.width;
         let height = file.stack.size.height;
@@ -214,11 +211,13 @@ class Document: NSDocument, NSCollectionViewDelegate {
             decode: nil,
             shouldInterpolate: true,
             intent: CGColorRenderingIntent.defaultIntent)
+        
+        /* Display the image in the layer */
         CATransaction.setDisableActions(true)
         view.layer!.contents = cgimage
     }
     
-    func fillBuffer(with image: Image) {
+    func fillBuffer(_ buffer: UnsafeMutablePointer<RgbColor2>, with image: Image) {
         
         /* As the scale is two, there are two rows to fill at every pixel */
         var offset0 = 0
@@ -234,8 +233,8 @@ class Document: NSDocument, NSCollectionViewDelegate {
                 
                 for i in (UInt32(0)...UInt32(31)).reversed() {
                     let value = ((integer >> i & 1) == 1) ? RgbBlack2 : RgbWhite2
-                    self.pixels[offset0] = value
-                    self.pixels[offset1] = value
+                    buffer[offset0] = value
+                    buffer[offset1] = value
                     offset0 += 1
                     offset1 += 1
                 }
