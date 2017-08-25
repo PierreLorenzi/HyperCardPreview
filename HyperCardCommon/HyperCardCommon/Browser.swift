@@ -24,7 +24,7 @@ public class Browser {
     /// The index of the current card. Set it to browse.
     public var cardIndex: Int {
         get { return cardIndexProperty.value }
-        set { cardIndexProperty.value = newValue }
+        set { if (newValue != cardIndexProperty.value) { cardIndexProperty.value = newValue } }
     }
     public let cardIndexProperty: Property<Int>
     
@@ -63,7 +63,6 @@ public class Browser {
     }
     public let needsDisplayProperty = Property<Bool>(false)
     
-    private var cardBefore: Card? = nil
     private var backgroundBefore: Background? = nil
     
     /// Builds a new browser from the given stack. A starting card index can be given.
@@ -81,16 +80,13 @@ public class Browser {
         self.fontManager = FontManager(resources: resources, fontNameReferences: stack.fontNameReferences)
         
         self.cardIndexProperty = Property<Int>(cardIndex)
+        self.rebuildViews()
         
         self.cardIndexProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
         self.displayOnlyBackgroundProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
     }
     
     private func rebuildViews() {
-        
-        guard currentCard !== cardBefore else {
-            return
-        }
         
         /* If we haven't changed background, keep the background parts */
         if currentBackground === backgroundBefore {
@@ -116,7 +112,6 @@ public class Browser {
         }
         
         /* Update the state */
-        cardBefore = currentCard
         backgroundBefore = currentBackground
         
         /* Append card views */

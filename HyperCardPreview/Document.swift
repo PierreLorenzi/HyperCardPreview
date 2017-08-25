@@ -131,7 +131,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
         view.frame = NSMakeRect(0, 0, CGFloat(file.stack.size.width), CGFloat(file.stack.size.height))
         
         browser = Browser(stack: file.stack)
-        browser.cardIndex = 0
         
         browser.needsDisplayProperty.startNotifications(for: self, by: {
             [weak self] in
@@ -410,6 +409,11 @@ class Document: NSDocument, NSCollectionViewDelegate {
     
     func displayOnlyBackground(_ sender: AnyObject) {
         browser.displayOnlyBackground = !browser.displayOnlyBackground
+        
+        if let menuItem = sender as? NSMenuItem {
+            menuItem.state = browser.displayOnlyBackground ? NSOnState : NSOffState
+        }
+        
         refresh()
     }
     
