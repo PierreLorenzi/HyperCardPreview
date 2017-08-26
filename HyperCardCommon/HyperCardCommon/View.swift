@@ -60,6 +60,7 @@ public enum RefreshNeed {
     case refreshWithNewShape
 }
 
+/// A view that can draw sub-rectangles of itself
 public protocol ClipableView {
     
     /// Draws a part of the object on the drawing
