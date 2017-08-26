@@ -73,11 +73,30 @@ public extension DataRange {
     /// Reads a 2D rectangle in the pointed data
     public func readRectangle(at offset: Int) -> Rectangle {
         /* Sometimes a flag is added to top bit, so remove it */
-        let top = self.readUInt16(at: offset) & 0x7FFF
-        let left = self.readUInt16(at: offset + 2) & 0x7FFF
-        let bottom = self.readUInt16(at: offset + 4) & 0x7FFF
-        let right = self.readUInt16(at: offset + 6) & 0x7FFF
+        let top = self.readCoordinate(at: offset)
+        let left = self.readCoordinate(at: offset + 2)
+        let bottom = self.readCoordinate(at: offset + 4)
+        let right = self.readCoordinate(at: offset + 6)
         return Rectangle(top: top, left: left, bottom: bottom, right: right)
+    }
+    
+    private func readCoordinate(at offset: Int) -> Int {
+        
+        let value = self.readUInt16(at: offset)
+        
+        let topBits = value >> 14
+        
+        /* Correction if there is a flag on top bit (it happened on a window rectangle) */
+        if topBits == 0b10 {
+            return value & 0x7FFF
+        }
+        
+        /* Correction if the value is negative */
+        if topBits == 0b11 {
+            return Int(Int16(bitPattern: UInt16(truncatingBitPattern: value)))
+        }
+        
+        return value
     }
     
     /// Reads a null-terminated Mac OS Roman string in the pointed data

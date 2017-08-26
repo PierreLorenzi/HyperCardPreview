@@ -50,4 +50,7 @@ public enum ResourceTypes {
     
     /// AddColor background colors
     public static let backgroundColor = ResourceType<[AddColorElement]>()
+    
+    /// Pictures
+    public static let picture = ResourceType<NSImage>()
 }

@@ -76,6 +76,11 @@ public class ResourceFork: DataBlock {
         return self.listResources(withType: AddColorResourceBlockBackground.self)
     }
     
+    /// Quick access to the picture resource blocks
+    public var pictures: [PictureResourceBlock] {
+        return self.listResources(withType: PictureResourceBlock.self)
+    }
+    
     private lazy var references: [ResourceReference] = {
         [unowned self] in
         return self.resourceMap.references

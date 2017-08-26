@@ -83,7 +83,7 @@ class InfoPanelController {
     func displayButton(_ button: Button, withContent content: HString) {
         window.title = "Button ID \(button.identifier)"
         displayScript(button.script)
-        contentView.string = content.description
+        contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
         infoView.string = ["Name: \"\(button.name)\"",
             "Style: \(button.style)\n",
@@ -100,7 +100,7 @@ class InfoPanelController {
     func displayField(_ field: Field, withContent content: HString) {
         window.title = "Field ID \(field.identifier)"
         displayScript(field.script)
-        contentView.string = content.description
+        contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
         infoView.string = ["Name: \"\(field.name)\"",
             "Style: \(field.style)\n",

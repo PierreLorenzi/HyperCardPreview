@@ -39,14 +39,14 @@ public class AddColorPainter {
         /* Background */
         let backgroundElements = findAddColorResource(withType: ResourceTypes.backgroundColor, identifier: background.identifier, among: resources)
         if let elements = backgroundElements {
-            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context)
+            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, resources: resources)
         }
         
         /* Card */
         if !excludeCardParts {
             let cardElements = findAddColorResource(withType: ResourceTypes.cardColor, identifier: card.identifier, among: resources)
             if let elements = cardElements {
-                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context)
+                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, resources: resources)
             }
         }
         
@@ -72,7 +72,7 @@ public class AddColorPainter {
         return nil
     }
     
-    private static func paintAddColorElements(_ elements: [AddColorElement], ofLayer layer: Layer, onContext context: CGContext) {
+    private static func paintAddColorElements(_ elements: [AddColorElement], ofLayer layer: Layer, onContext context: CGContext, resources: [Any]) {
         
         for element in elements {
             
@@ -116,6 +116,15 @@ public class AddColorPainter {
                 }
                 
                 paintRectangle(element.rectangle, withBevel: element.bevel, color: element.color, alpha: 1.0, onContext: context)
+                
+            case .pictureResource(let element):
+                
+                /* Do not display the element if it is disabled */
+                guard element.enabled else {
+                    break
+                }
+                
+                paintPicture(name: element.resourceName, rectangle: element.rectangle, transparent: element.transparent, onContext: context, resources: resources)
                 
             default:
                 break
@@ -219,6 +228,42 @@ public class AddColorPainter {
         default:
             break
         }
+    }
+    
+    private static func paintPicture(name: HString, rectangle: Rectangle, transparent: Bool, onContext context: CGContext, resources: [Any]) {
+        
+        /* Find the resource */
+        guard let image = findPictureResource(withName: name, among: resources) else {
+            return
+        }
+        
+        /* Draw the image */
+        let cocoaContext = NSGraphicsContext(cgContext: context, flipped: true)
+        let currentContext = NSGraphicsContext.current()
+        NSGraphicsContext.setCurrent(cocoaContext)
+        image.draw(in: NSRect(x: rectangle.left, y: rectangle.top, width: rectangle.width, height: rectangle.height))
+        NSGraphicsContext.setCurrent(currentContext)
+        
+    }
+    
+    private static func findPictureResource(withName name: HString, among resources: [Any]) -> NSImage? {
+        
+        for resource in resources {
+            
+            /* Check that's a picture resource */
+            guard let pictureResource = resource as? Resource<NSImage> else {
+                continue
+            }
+            
+            /* Check that's the one requested */
+            guard pictureResource.type === ResourceTypes.picture && pictureResource.name == name else {
+                continue
+            }
+            
+            return pictureResource.content
+        }
+        
+        return nil
     }
     
 }

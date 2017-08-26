@@ -116,6 +116,12 @@ public extension ResourceRepository {
             let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, content: resourceBlock.elements)
             self.resources.append(resource)
         }
+        
+        /* Add the pictures */
+        for resourceBlock in fork.pictures {
+            let resource = Resource<NSImage>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.picture, content: resourceBlock.image)
+            self.resources.append(resource)
+        }
     }
     
 }
