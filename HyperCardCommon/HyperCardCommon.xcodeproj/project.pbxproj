@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */; };
 		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C30E8D11F4D117A00ACB457 /* CharacterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */; };
 		6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */; };
@@ -375,6 +376,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhiteView.swift; sourceTree = "<group>"; };
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTable.swift; sourceTree = "<group>"; };
 		6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RgbConversion.swift; sourceTree = "<group>"; };
@@ -960,6 +962,7 @@
 			children = (
 				6C9E6AED1E75BCFA00BBF925 /* View.swift */,
 				6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */,
+				6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */,
 				6C9E6AF01E75BCFA00BBF925 /* PartView.swift */,
 				6CDAC4EC1F4A46CD00DC5DC9 /* ButtonView.swift */,
 				6C9E6AF41E75BCFA00BBF925 /* FieldView.swift */,
@@ -1718,6 +1721,7 @@
 				6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */,
 				6C9E6B231E75BCFA00BBF925 /* StackBlockV1.swift in Sources */,
 				6C9E6B2C1E75BCFA00BBF925 /* ResourceBlock.swift in Sources */,
+				6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */,
 				6C9E6B3D1E75BCFA00BBF925 /* Drawing.swift in Sources */,
 				6C9E6B3C1E75BCFA00BBF925 /* MaskedImage.swift in Sources */,
 				6C9E6B121E75BCFA00BBF925 /* DataBlock.swift in Sources */,

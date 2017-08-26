@@ -95,6 +95,12 @@ public class Browser {
         self.fontManager = FontManager(resources: resources, fontNameReferences: stack.fontNameReferences)
         
         self.cardIndexProperty = Property<Int>(cardIndex)
+        
+        /* Add a background view */
+        let windowBackgroundView = WhiteView()
+        self.appendView(windowBackgroundView)
+        
+        /* Build the views for the current card */
         self.rebuildViews()
         
         self.cardIndexProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
@@ -106,8 +112,8 @@ public class Browser {
         /* If we haven't changed background, keep the background parts */
         if currentBackground === backgroundBefore {
             
-            /* There are one view per background part, plus one for the image */
-            let backgroundViewCount = 1 + currentBackground.parts.count
+            /* There are one view per background part, plus one for the image, plus one for the window background */
+            let backgroundViewCount = 2 + currentBackground.parts.count
             
             /* Check if the card is visible */
             let needsUpdate = viewRecords[backgroundViewCount ..< viewRecords.count].map({$0.view.visible}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
@@ -137,8 +143,8 @@ public class Browser {
         }
         else {
             
-            /* Build the view hierarchy */
-            self.viewRecords.removeAll()
+            /* Remove all the views except the window background */
+            self.viewRecords.removeLast(self.viewRecords.count - 1)
             
             /* Append background views */
             appendLayerViews(self.currentBackground)
