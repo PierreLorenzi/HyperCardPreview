@@ -243,7 +243,7 @@ public class Browser {
         
         /* If the view can draw sub-rectangles, mark the rectangle for refresh. Do not check the other
          views because the rectangle is already dirty */
-        if view.canDrawSubrectangle {
+        if view is ClipableView {
             
             let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, view.rectangle)
             var rectanglesToRefresh: [Rectangle] = viewRecords[index].rectanglesToRefresh ?? []
@@ -268,9 +268,10 @@ public class Browser {
             index += 1
             
             /* The view may be not for refresh but have rectangles to draw */
-            if let rectanglesToRefresh = viewRecord.rectanglesToRefresh, !viewRecord.willRefresh {
+            if let clipableView = view as? ClipableView,
+                let rectanglesToRefresh = viewRecord.rectanglesToRefresh, !viewRecord.willRefresh {
                 for rectangle in rectanglesToRefresh {
-                    view.draw(in: drawing, rectangle: rectangle)
+                    clipableView.draw(in: drawing, rectangle: rectangle)
                 }
                 view.refreshNeed = .none
                 viewRecords[index].rectanglesToRefresh = nil

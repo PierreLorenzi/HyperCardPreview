@@ -8,7 +8,7 @@
 
 
 /// A view of a card or a background
-public class LayerView: View {
+public class LayerView: View, ClipableView {
     
     private let layer: Layer
     
@@ -29,7 +29,7 @@ public class LayerView: View {
         
     }
     
-    public override func draw(in drawing: Drawing, rectangle: Rectangle) {
+    public func draw(in drawing: Drawing, rectangle: Rectangle) {
         
         /* Image */
         if let image = layer.image, layer.showPict {
@@ -51,10 +51,6 @@ public class LayerView: View {
             return false
         }
         
-        return true
-    }
-    
-    public override var canDrawSubrectangle: Bool {
         return true
     }
     

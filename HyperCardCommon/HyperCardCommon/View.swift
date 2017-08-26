@@ -28,17 +28,8 @@ public class View {
         return true
     }
     
-    /// If the view accepts to draw only sub-rectangles of itself.
-    public var canDrawSubrectangle: Bool {
-        return false
-    }
-    
     /// Draws the object on the drawing
     public func draw(in drawing: Drawing) {
-    }
-    
-    /// Draws a part of the object on the drawing (called if canDrawSubrectangle returns true)
-    public func draw(in drawing: Drawing, rectangle: Rectangle) {
     }
     
     /// If the view is the one responding to the mouse event at the given position. Can return true even if it does nothing.
@@ -67,6 +58,13 @@ public enum RefreshNeed {
     
     /// The view needs to be refreshed and has made non opaque pixels, so views behind need to be refreshed.
     case refreshWithNewShape
+}
+
+public protocol ClipableView {
+    
+    /// Draws a part of the object on the drawing
+    func draw(in drawing: Drawing, rectangle: Rectangle)
+    
 }
 
 
