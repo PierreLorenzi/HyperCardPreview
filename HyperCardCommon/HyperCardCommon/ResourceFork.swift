@@ -66,6 +66,16 @@ public class ResourceFork: DataBlock {
         return self.listResources(withType: VectorFontResourceBlock.self)
     }
     
+    /// Quick access to the AddColor card colors resource blocks
+    public var cardColors: [AddColorResourceBlockCard] {
+        return self.listResources(withType: AddColorResourceBlockCard.self)
+    }
+    
+    /// Quick access to the AddColor background colors resource blocks
+    public var backgroundColors: [AddColorResourceBlockBackground] {
+        return self.listResources(withType: AddColorResourceBlockBackground.self)
+    }
+    
     private lazy var references: [ResourceReference] = {
         [unowned self] in
         return self.resourceMap.references

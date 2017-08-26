@@ -44,4 +44,10 @@ public enum ResourceTypes {
     
     /// Fonts
     public static let fontFamily = ResourceType<FontFamily>()
+    
+    /// AddColor card colors
+    public static let cardColor = ResourceType<[AddColorElement]>()
+    
+    /// AddColor background colors
+    public static let backgroundColor = ResourceType<[AddColorElement]>()
 }

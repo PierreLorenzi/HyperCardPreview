@@ -104,6 +104,18 @@ public extension ResourceRepository {
             let fontFamilyResource = FileFontFamilyResource(resource: fontFamilyResourceBlock, fork: fork)
             self.resources.append(fontFamilyResource)
         }
+        
+        /* Add the AddColor elements in cards */
+        for resourceBlock in fork.cardColors {
+            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.cardColor, content: resourceBlock.elements)
+            self.resources.append(resource)
+        }
+        
+        /* Add the AddColor elements in backgrounds */
+        for resourceBlock in fork.backgroundColors {
+            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, content: resourceBlock.elements)
+            self.resources.append(resource)
+        }
     }
     
 }

@@ -10,6 +10,7 @@
 		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C30E8D11F4D117A00ACB457 /* CharacterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */; };
 		6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */; };
+		6C549B201F5112E300836AE2 /* AddColorResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */; };
 		6C7F7B9C1F4F7A1F00C9D3DC /* TestFieldProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */; };
 		6C7F7B9E1F4F7AF500C9D3DC /* TestFreeSize.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */; };
 		6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */; };
@@ -377,6 +378,7 @@
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTable.swift; sourceTree = "<group>"; };
 		6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RgbConversion.swift; sourceTree = "<group>"; };
+		6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColorResourceBlock.swift; sourceTree = "<group>"; };
 		6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFieldProperties.stack; sourceTree = "<group>"; };
 		6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFreeSize.stack; sourceTree = "<group>"; };
 		6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestContents.stack; sourceTree = "<group>"; };
@@ -902,6 +904,7 @@
 				6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */,
 				6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */,
 				6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */,
+				6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1734,6 +1737,7 @@
 				6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6C9E6B131E75BCFA00BBF925 /* FileBlock.swift in Sources */,
+				6C549B201F5112E300836AE2 /* AddColorResourceBlock.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
 				6C9E6B141E75BCFA00BBF925 /* HyperCardFile.swift in Sources */,
 				6C9E6B0E1E75BCFA00BBF925 /* BitmapFont.swift in Sources */,
