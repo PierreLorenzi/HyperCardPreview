@@ -13,13 +13,61 @@ public struct AddColor {
     public var blue: Double
 }
 
+/// The elements are displayed in the order of the resource, not the order of the HyperCard object
 public enum AddColorElement {
     
-    case button(identifier: Int, bevel: Int, color: AddColor)
-    case field(identifier: Int, bevel: Int, color: AddColor)
-    case rectangle(rectangle: Rectangle, bevel: Int, color: AddColor)
-    case pictResource(rectangle: Rectangle, transparent: Bool, name: HString)
-    case pictFile(rectangle: Rectangle, transparent: Bool, name: HString)
+    case button(AddColorButton)
+    case field(AddColorField)
+    case rectangle(AddColorRectangle)
+    case pictureResource(AddColorPictureResource)
+    case pictureFile(AddColorPictureFile)
+}
+
+public struct AddColorButton {
+    
+    public var buttonIdentifier: Int
+    public var bevel: Int
+    public var color: AddColor
+    public var enabled: Bool
+}
+
+public struct AddColorField {
+    
+    public var fieldIdentifier: Int
+    public var bevel: Int
+    public var color: AddColor
+    public var enabled: Bool
+}
+
+public struct AddColorRectangle {
+    
+    public var rectangle: Rectangle
+    public var bevel: Int
+    public var color: AddColor
+    public var enabled: Bool
+}
+
+public struct AddColorPictureResource {
+    
+    public var rectangle: Rectangle
+    
+    /// Transparent means that the white pixels of the image are drawn transparent
+    public var transparent: Bool
+    public var resourceName: HString
+    public var enabled: Bool
+}
+
+public struct AddColorPictureFile {
+    
+    public var rectangle: Rectangle
+    
+    /// Transparent means that the white pixels of the image are drawn transparent
+    public var transparent: Bool
+    
+    /// The file name is just the name of the file, not the path. The file is supposed to be in the same folder
+    ///  as the HyperCard application, the Home stack or the current stack
+    public var fileName: HString
+    public var enabled: Bool
 }
 
 
@@ -42,32 +90,37 @@ public class AddColorResourceBlock: ResourceBlock {
     
     private func readElement(at offset: inout Int) -> AddColorElement {
         
-        let type = data.readUInt8(at: offset)
+        let typeAndFlags = data.readUInt8(at: offset)
+        let type = typeAndFlags & 0x7F
+        let enabled = ((typeAndFlags >> 7) & 1) == 0
         
         switch type {
         
-        case 1:
+        case 1: // button
             let identifier = data.readUInt16(at: offset + 0x1)
             let bevel = data.readUInt16(at: offset + 0x3)
             let color = self.readColor(at: offset + 0x5)
             offset += 11
-            return AddColorElement.button(identifier: identifier, bevel: bevel, color: color)
+            let element = AddColorButton(buttonIdentifier: identifier, bevel: bevel, color: color, enabled: enabled)
+            return AddColorElement.button(element)
             
-        case 2:
+        case 2: // field
             let identifier = data.readUInt16(at: offset + 0x1)
             let bevel = data.readUInt16(at: offset + 0x3)
             let color = self.readColor(at: offset + 0x5)
             offset += 11
-            return AddColorElement.field(identifier: identifier, bevel: bevel, color: color)
+            let element = AddColorField(fieldIdentifier: identifier, bevel: bevel, color: color, enabled: enabled)
+            return AddColorElement.field(element)
             
-        case 3:
+        case 3: // rectangle
             let rectangle = data.readRectangle(at: offset + 0x1)
             let bevel = data.readUInt16(at: offset + 0x9)
             let color = self.readColor(at: offset + 0xB)
             offset += 17
-            return AddColorElement.rectangle(rectangle: rectangle, bevel: bevel, color: color)
+            let element = AddColorRectangle(rectangle: rectangle, bevel: bevel, color: color, enabled: enabled)
+            return AddColorElement.rectangle(element)
             
-        case 4:
+        case 4: // picture resource
             let rectangle = data.readRectangle(at: offset + 0x1)
             let transparentValue = data.readUInt8(at: offset + 0x9)
             let nameLength = data.readUInt8(at: offset + 0xA)
@@ -75,9 +128,10 @@ public class AddColorResourceBlock: ResourceBlock {
             offset += 11 + name.length
             
             let transparent = (transparentValue != 0)
-            return AddColorElement.pictResource(rectangle: rectangle, transparent: transparent, name: name)
+            let element = AddColorPictureResource(rectangle: rectangle, transparent: transparent, resourceName: name, enabled: enabled)
+            return AddColorElement.pictureResource(element)
             
-        case 5:
+        case 5:  // picture file
             let rectangle = data.readRectangle(at: offset + 0x1)
             let transparentValue = data.readUInt8(at: offset + 0x9)
             let nameLength = data.readUInt8(at: offset + 0xA)
@@ -85,7 +139,8 @@ public class AddColorResourceBlock: ResourceBlock {
             offset += 11 + name.length
             
             let transparent = (transparentValue != 0)
-            return AddColorElement.pictFile(rectangle: rectangle, transparent: transparent, name: name)
+            let element = AddColorPictureFile(rectangle: rectangle, transparent: transparent, fileName: name, enabled: enabled)
+            return AddColorElement.pictureFile(element)
             
         default:
             fatalError()

@@ -37,6 +37,8 @@ class Document: NSDocument, NSCollectionViewDelegate {
     
     private var collectionViewManager: CollectionViewManager? = nil
     
+    private var areThereColors = false
+    
     override var windowNibName: String? {
         return "Document"
     }
@@ -156,6 +158,13 @@ class Document: NSDocument, NSCollectionViewDelegate {
         
         view.browser = browser
         
+        /* Check if there are colors in the stack resources */
+        if let resources = browser.stack.resources?.resources {
+            if let _ = resources.index(where: { $0 is Resource<[AddColorElement]> }) {
+                self.areThereColors = true
+            }
+        }
+        
         browser.refresh()
         refresh()
     }
@@ -183,17 +192,24 @@ class Document: NSDocument, NSCollectionViewDelegate {
     /// Redraws the HyperCard view
     func refresh() {
         
-        displayImage(self.browser.image)
+        displayImage(self.browser.image, withColors: self.areThereColors)
     }
     
     /// Redraws the HyperCard view
-    func displayImage(_ image: Image) {
+    func displayImage(_ image: Image, withColors: Bool = false) {
         
         /* Convert the 1-bit image to RGB */
         let bufferLength = browser.image.width * browser.image.height * 2 * MemoryLayout<RgbColor2>.size
         let data = NSMutableData(length: bufferLength)!
         let buffer = data.mutableBytes.assumingMemoryBound(to: RgbColor2.self)
-        self.fillBuffer(buffer, with: image)
+        
+        /* Add the colors if requested. They must be drawn behind the HyperCard image */
+        if withColors {
+            paintColors(onBuffer: buffer)
+        }
+        
+        /* Draw the Hypercard image. Draw only the black pixels if there are colors behind. */
+        self.fillBuffer(buffer, with: image, drawWhitePixels: !withColors)
         
         /* Build a CoreGraphics image */
         let providerRef = CGDataProvider(data: data)
@@ -217,7 +233,7 @@ class Document: NSDocument, NSCollectionViewDelegate {
         view.layer!.contents = cgimage
     }
     
-    func fillBuffer(_ buffer: UnsafeMutablePointer<RgbColor2>, with image: Image) {
+    func fillBuffer(_ buffer: UnsafeMutablePointer<RgbColor2>, with image: Image, drawWhitePixels: Bool) {
         
         /* As the scale is two, there are two rows to fill at every pixel */
         var offset0 = 0
@@ -233,6 +249,13 @@ class Document: NSDocument, NSCollectionViewDelegate {
                 
                 for i in (UInt32(0)...UInt32(31)).reversed() {
                     let value = ((integer >> i & 1) == 1) ? RgbBlack2 : RgbWhite2
+                    
+                    guard drawWhitePixels || value != RgbWhite2 else {
+                        offset0 += 1
+                        offset1 += 1
+                        continue;
+                    }
+                        
                     buffer[offset0] = value
                     buffer[offset1] = value
                     offset0 += 1
@@ -242,6 +265,37 @@ class Document: NSDocument, NSCollectionViewDelegate {
             offset0 += image.width
             offset1 += image.width
         }
+    }
+    
+    func paintColors(onBuffer buffer: UnsafeMutablePointer<RgbColor2>) {
+        
+        /* Create a bitmap context to paint on it */
+        let rawBuffer = UnsafeMutableRawPointer.init(buffer)!
+        let context: CGContext! = CGContext.init(
+            data: rawBuffer,
+            width: browser.image.width * 2,
+            height: browser.image.height * 2,
+            bitsPerComponent: BitsPerComponent,
+            bytesPerRow: 2 * browser.image.width * 4,
+            space: RgbColorSpace,
+            bitmapInfo: BitmapInfo.rawValue)
+        
+        /* Apply scale two */
+        context.scaleBy(x: 2, y: 2)
+        
+        /* Flip the coordinates */
+        context.translateBy(x: 0, y: CGFloat(browser.image.height))
+        context.scaleBy(x: 1, y: -1)
+        
+        /* Draw a white background */
+        context.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        context.fill(CGRect(x: 0, y: 0, width: browser.image.width, height: browser.image.height))
+        
+        /* Draw the color elements */
+        AddColorPainter.paintAddColor(ofStack: browser.stack, atCardIndex: browser.cardIndex, excludeCardParts: browser.displayOnlyBackground, onContext: context)
+        
+        context.flush()
+        
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
@@ -296,8 +350,9 @@ class Document: NSDocument, NSCollectionViewDelegate {
             let startDate = Date()
             let stepDuration: TimeInterval = VisualEffects.duration / Double(VisualEffects.dissolveStepCount)
             
-            /* Apply all the steps of the dissolve */
-            for i in 0..<VisualEffects.dissolveStepCount {
+            /* Apply all the steps of the dissolve, except the last because we draw the final image
+             with refresh */
+            for i in 0..<VisualEffects.dissolveStepCount - 1 {
                 
                 /* Wait if we're too fast */
                 Thread.sleep(until: startDate.addingTimeInterval(stepDuration * Double(i)))
@@ -314,6 +369,11 @@ class Document: NSDocument, NSCollectionViewDelegate {
                 DispatchQueue.main.sync {
                     self.displayImage(drawing.image)
                 }
+            }
+            
+            /* Display the final state */
+            DispatchQueue.main.async {
+                self.refresh()
             }
             
         })
