@@ -63,7 +63,14 @@ public class Browser {
     }
     public let needsDisplayProperty = Property<Bool>(false)
     
+    /// the background before changing card
     private var backgroundBefore: Background? = nil
+    
+    /// the view used to draw a white background on the window
+    private var whiteView = WhiteView()
+    
+    /// if the white view is in the view stack
+    private var isShowingWhiteView = false
     
     private struct ViewRecord {
         
@@ -113,8 +120,8 @@ public class Browser {
         if currentBackground === backgroundBefore {
             
             /* Remove all the views except the background views, there are one view per part,
-             plus one for the image, plus one for the window background */
-            let backgroundViewCount = 2 + currentBackground.parts.count
+             plus one for the image, plus one for the white view */
+            let backgroundViewCount = 1 + currentBackground.parts.count + (isShowingWhiteView ? 1 : 0)
             removeLastViews(count: self.viewRecords.count - backgroundViewCount)
             
             /* Set the scrolls of the background fields to zero, to avoid having a field
@@ -128,7 +135,13 @@ public class Browser {
         else {
             
             /* Remove all the views except the window background */
-            removeLastViews(count: self.viewRecords.count - 1)
+            self.viewRecords.removeAll()
+            
+            /* If the background doesn't draw a white background, add the white view */
+            isShowingWhiteView = !doesBackgroundHaveWhiteMask(self.currentBackground)
+            if isShowingWhiteView {
+                appendView(self.whiteView)
+            }
             
             /* Append background views */
             appendLayerViews(self.currentBackground)
@@ -146,6 +159,20 @@ public class Browser {
         /* We must refresh */
         self.needsDisplay = true
                 
+    }
+    
+    private func doesBackgroundHaveWhiteMask(_ background: Background) -> Bool {
+        
+        /* Check if the background have a rectangular white mask spanning on all the window */
+        if let image = currentBackground.image {
+            if case MaskedImage.Layer.rectangular(rectangle: let rectangle) = image.mask {
+                if rectangle.right == image.width && rectangle.bottom == image.height {
+                    return true
+                }
+            }
+        }
+        
+        return false
     }
     
     private func removeLastViews(count: Int) {
