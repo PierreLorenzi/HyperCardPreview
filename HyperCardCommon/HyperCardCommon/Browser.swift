@@ -112,26 +112,10 @@ public class Browser {
         /* If we haven't changed background, keep the background parts */
         if currentBackground === backgroundBefore {
             
-            /* There are one view per background part, plus one for the image, plus one for the window background */
+            /* Remove all the views except the background views, there are one view per part,
+             plus one for the image, plus one for the window background */
             let backgroundViewCount = 2 + currentBackground.parts.count
-            
-            /* Check if the card is visible */
-            let needsUpdate = viewRecords[backgroundViewCount ..< viewRecords.count].map({$0.view.visible}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
-                return b1 || b2
-            })
-            
-            /* Remove the card views */
-            let cardViewCount = viewRecords.count - backgroundViewCount
-            self.viewRecords.removeLast(cardViewCount)
-            
-            /* If the card was visible, refresh all the background views (don't loose time looping on all the card views) */
-            if needsUpdate {
-                for i in 0..<viewRecords.count {
-                    if !viewRecords[i].willRefresh {
-                        markViewForRefresh(atIndex: i, redrawBehind: true)
-                    }
-                }
-            }
+            removeLastViews(count: self.viewRecords.count - backgroundViewCount)
             
             /* Set the scrolls of the background fields to zero, to avoid having a field
              with a scroll higher than maximum */
@@ -144,7 +128,7 @@ public class Browser {
         else {
             
             /* Remove all the views except the window background */
-            self.viewRecords.removeLast(self.viewRecords.count - 1)
+            removeLastViews(count: self.viewRecords.count - 1)
             
             /* Append background views */
             appendLayerViews(self.currentBackground)
@@ -162,6 +146,28 @@ public class Browser {
         /* We must refresh */
         self.needsDisplay = true
                 
+    }
+    
+    private func removeLastViews(count: Int) {
+        
+        /* Check if the views to remove are visible */
+        let remainingViewCount = viewRecords.count - count
+        let needsUpdate = viewRecords[remainingViewCount ..< viewRecords.count].map({$0.view.visible}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
+            return b1 || b2
+        })
+        
+        /* Remove the views */
+        self.viewRecords.removeLast(count)
+        
+        /* If the card was visible, refresh all the background views (don't loose time looping on all the card views) */
+        if needsUpdate {
+            for i in 0..<viewRecords.count {
+                if !viewRecords[i].willRefresh {
+                    markViewForRefresh(atIndex: i, redrawBehind: true)
+                }
+            }
+        }
+        
     }
     
     private func markViewForRefresh(atIndex index: Int, redrawBehind: Bool) {
