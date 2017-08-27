@@ -24,6 +24,7 @@ class Document: NSDocument {
     
     @IBOutlet weak var collectionView: NSCollectionView!
     @IBOutlet weak var collectionViewSuperview: NSView!
+    @IBOutlet weak var imageView: NSImageView!
     
     private var collectionViewManager: CollectionViewManager? = nil
     
@@ -151,22 +152,109 @@ class Document: NSDocument {
     
     func showCards(_ sender: AnyObject) {
         
+        /* If the card list is already visible, hide it and stay at the same card */
         guard self.collectionViewSuperview.isHidden else {
-            self.collectionViewSuperview.isHidden = true
+            
+            /* Animate the card view appearing */
+            let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
+            let image = NSImage(cgImage: createScreenImage(from: browser.cgimage), size: imageSize)
+            animateCardAppearing(atIndex: browser.cardIndex, withImage: image)
+            
             return
         }
         
+        /* Check if the thumbnails are managed */
         if self.collectionViewManager == nil {
             self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack, didSelectCard: {
-                [unowned self] (index: Int) in
+                [unowned self] (index: Int, thumbnailImage: NSImage?) in
                 
+                /* When a thumbnail is selected, go to the card and hide the card list */
                 self.browser.cardIndex = index
-                self.collectionViewSuperview.isHidden = true
+                
+                /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
+                DispatchQueue.main.async {
+                    [unowned self] in
+                    self.animateCardAppearing(atIndex: index, withImage: thumbnailImage)
+                }
+                
             })
         }
         
+        /* Display the card list */
         self.collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+        
+        /* Hide the card */
+        self.animateCardDisappearing()
+        
+    }
+    
+    private func animateCardAppearing(atIndex cardIndex: Int, withImage image: NSImage?) {
+        
+        let initialFrame = self.computeAnimationFrameInList(ofCardAtIndex: cardIndex)
+        self.animateImageView(fromFrame: initialFrame, toFrame: self.view.frame, withImage: image, onCompletion: {
+            
+            /* At the end, hide the card list */
+            [unowned self] in
+            self.collectionViewSuperview.isHidden = true
+        })
+    }
+    
+    private func animateCardDisappearing() {
+        
+        /* Show the card list */
         self.collectionViewSuperview.isHidden = false
+        
+        /* Animate the image becoming the thumbnail */
+        let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
+        let image = NSImage(cgImage: createScreenImage(from: browser.cgimage), size: imageSize)
+        let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
+        self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {})
+        
+    }
+    
+    private func computeAnimationFrameInList(ofCardAtIndex cardIndex: Int) -> NSRect {
+        
+        /* Check if the thumbnail of the card is still visible */
+        let visibleIndexPaths = self.collectionView.indexPathsForVisibleItems()
+        let isCardVisible = visibleIndexPaths.contains(where: { $0.item == cardIndex })
+        
+        /* If it is visible, start the animation from the thumbnail */
+        if isCardVisible {
+            let thumbnailFrame = self.collectionView.frameForItem(at: cardIndex)
+            return self.collectionView.convert(thumbnailFrame, to: nil)
+        }
+        
+        /* Elsewhere, start the animation from the center of the window */
+        let initialSize = CGFloat(30)
+        return NSRect(x: view.frame.width/2 - initialSize/2, y: view.frame.height/2 - initialSize/2, width: initialSize, height: initialSize)
+        
+    }
+    
+    private func animateImageView(fromFrame initialFrame: NSRect, toFrame finalFrame: NSRect, withImage image: NSImage?, onCompletion: @escaping () -> Void) {
+        
+        /* Show the image view at the initial frame */
+        self.imageView.frame = initialFrame
+        self.imageView.image = image
+        self.imageView.isHidden = false
+        
+        /* Animate the transition to the final frame */
+        DispatchQueue.main.async {
+            [unowned self] in
+            
+            NSAnimationContext.beginGrouping()
+            NSAnimationContext.current().completionHandler = {
+                [unowned self] in
+                
+                /* At the end of the animation, hide the image view */
+                onCompletion()
+                self.imageView.isHidden = true
+            }
+            
+            /* Change the frame */
+            self.imageView.animator().frame = finalFrame
+            NSAnimationContext.endGrouping()
+        }
+        
     }
     
     /// Redraws the HyperCard view

@@ -16,7 +16,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private let browser: Browser
     
-    private let didSelectCard: (Int) -> ()
+    private let didSelectCard: (Int, NSImage?) -> ()
     
     private let thumbnailSize: Size
     
@@ -30,7 +30,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private static let itemIdentifier = "item"
     
-    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int) -> ()) {
+    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int, NSImage?) -> ()) {
         self.collectionView = collectionView
         self.browser = Browser(stack: stack)
         self.didSelectCard = didSelectCard
@@ -76,8 +76,10 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         else {
             item.imageView!.image = nil
             
+            /* Ask to draw the item. If the item is selected, make it draw first because
+             it smoothes the animation when displaying the card list */
             currentPriority += 1
-            self.renderingPriorities[indexPath.item] = currentPriority
+            self.renderingPriorities[indexPath.item] = currentPriority + (item.isSelected ? 10000 : 0)
             
             self.renderingQueue.async {
                 [weak self] in
@@ -132,7 +134,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     public func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         
         let index = indexPaths.first!.item
-        self.didSelectCard(index)
+        self.didSelectCard(index, thumbnails[index])
         
     }
     

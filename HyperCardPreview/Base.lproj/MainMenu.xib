@@ -172,7 +172,7 @@
                                     <action selector="displayOnlyBackground:" target="-1" id="HbZ-sT-zlK"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Show All Cards" keyEquivalent="r" id="637-jC-BTc">
+                            <menuItem title="Card List" keyEquivalent="r" id="637-jC-BTc">
                                 <connections>
                                     <action selector="showCards:" target="-1" id="lmW-Ai-nlp"/>
                                 </connections>
