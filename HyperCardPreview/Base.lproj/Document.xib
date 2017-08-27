@@ -40,20 +40,20 @@
                                     <rect key="frame" x="0.0" y="0.0" width="505" height="411"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="br9-VN-GvK">
-                                        <size key="itemSize" width="80" height="80"/>
-                                        <edgeInsets key="sectionInset" left="10" right="10" top="0.0" bottom="0.0"/>
+                                        <size key="itemSize" width="100" height="100"/>
+                                        <edgeInsets key="sectionInset" left="10" right="10" top="20" bottom="0.0"/>
                                     </collectionViewFlowLayout>
-                                    <color key="primaryBackgroundColor" red="0.54593659785567972" green="0.75007717815006203" blue="0.95421775844444445" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="primaryBackgroundColor" red="0.38590494791666669" green="0.0" blue="0.057542380580195666" alpha="1" colorSpace="calibratedRGB"/>
                                 </collectionView>
                             </subviews>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                         </clipView>
                         <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="GhL-XB-N4f">
-                            <rect key="frame" x="1" y="144" width="233" height="15"/>
+                            <rect key="frame" x="1" y="-15" width="0.0" height="16"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="ubg-la-UdZ">
-                            <rect key="frame" x="361" y="1" width="16" height="264"/>
+                            <rect key="frame" x="-15" y="1" width="16" height="0.0"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
