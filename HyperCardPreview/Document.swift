@@ -13,7 +13,7 @@ import QuickLook
 
 
 
-class Document: NSDocument, NSCollectionViewDelegate {
+class Document: NSDocument {
     
     var file: HyperCardFile!
     var browser: Browser!
@@ -167,11 +167,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
         
         self.collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
         self.collectionViewSuperview.isHidden = false
-    }
-    
-    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
-        self.browser.cardIndex = indexPaths.first!.item
-        self.collectionViewSuperview.isHidden = true
     }
     
     /// Redraws the HyperCard view
