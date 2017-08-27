@@ -10,11 +10,13 @@ import Cocoa
 import HyperCardCommon
 
 
-public class CollectionViewManager: NSObject, NSCollectionViewDataSource {
+public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionViewDelegate {
     
     private let collectionView: NSCollectionView
     
     private let browser: Browser
+    
+    private let didSelectCard: (Int) -> ()
     
     private var thumbnails: [NSImage?]
     
@@ -26,9 +28,10 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource {
     
     private static let itemIdentifier = "item"
     
-    public init(collectionView: NSCollectionView, stack: Stack) {
+    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int) -> ()) {
         self.collectionView = collectionView
         self.browser = Browser(stack: stack)
+        self.didSelectCard = didSelectCard
         self.thumbnails = [NSImage?](repeating: nil, count: stack.cards.count)
         self.renderingQueue = DispatchQueue(label: "CollectionViewManager Rendering Queue")
         self.renderingPriorities = [Int](repeating: 0, count: stack.cards.count)
@@ -39,6 +42,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource {
         let nib = NSNib(nibNamed: "CardItem", bundle: nil)
         collectionView.register(nib, forItemWithIdentifier: CollectionViewManager.itemIdentifier)
         collectionView.dataSource = self
+        collectionView.delegate = self
         
         collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: 0, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
     }
@@ -95,6 +99,13 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource {
         }
         
         return item
+    }
+    
+    public func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        
+        let index = indexPaths.first!.item
+        self.didSelectCard(index)
+        
     }
     
 }

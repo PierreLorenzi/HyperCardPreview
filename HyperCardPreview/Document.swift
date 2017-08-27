@@ -177,7 +177,12 @@ class Document: NSDocument, NSCollectionViewDelegate {
         }
         
         if self.collectionViewManager == nil {
-            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack)
+            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack, didSelectCard: {
+                [unowned self] (index: Int) in
+                
+                self.browser.cardIndex = index
+                self.collectionViewSuperview.isHidden = true
+            })
         }
         
         self.collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
