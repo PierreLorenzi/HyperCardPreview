@@ -10,7 +10,7 @@ import Cocoa
 import HyperCardCommon
 
 /// The view displaying the HyperCard stack
-class DocumentView: NSView {
+class DocumentView: NSView, NSMenuDelegate {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
@@ -100,13 +100,13 @@ class DocumentView: NSView {
         
     }
     
-    var browser: Browser! = nil
+    weak var document: Document!
     
     override func mouseUp(with event: NSEvent) {
         
         let browserPosition = extractPosition(from: event)
         
-        browser.respondToClick(at: browserPosition)
+        document.browser.respondToClick(at: browserPosition)
         
     }
     
@@ -115,7 +115,167 @@ class DocumentView: NSView {
         let locationInWindow = event.locationInWindow
         let locationInMe = self.convert(locationInWindow, from: nil)
         
-        return Point(x: Int(locationInMe.x), y: browser.image.height - Int(locationInMe.y))
+        return Point(x: Int(locationInMe.x), y: document.browser.image.height - Int(locationInMe.y))
+        
+    }
+    
+    private var partsInMenu: [PartInMenu]? = nil
+    
+    private struct PartInMenu {
+        let part: LayerPart
+        let layerType: LayerType
+        let number: Int
+    }
+    
+    override func rightMouseUp(with event: NSEvent) {
+        
+        /* List the parts where the mouse clicks */
+        let position = extractPosition(from: event)
+        let partsAtClickPosition = listParts(atPoint: position)
+        
+        /* Save the parts to handle the menu actions */
+        self.partsInMenu = partsAtClickPosition
+        
+        /* Display a menu with the list of the parts */
+        let menu = buildContextualMenu(forParts: partsAtClickPosition)
+        menu.delegate = self
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
+        
+    }
+    
+    private func listParts(atPoint point: Point) -> [PartInMenu] {
+        
+        /* List the parts from the foremost to the outmost */
+        var parts: [PartInMenu] = []
+        
+        /* Look in the card parts */
+        let cardParts = listParts(atPoint: point, inLayer: document.browser.currentCard, layerType: .card)
+        parts.append(contentsOf: cardParts)
+        
+        /* Look in the background parts */
+        let backgroundParts = listParts(atPoint: point, inLayer: document.browser.currentBackground, layerType: .background)
+        parts.append(contentsOf: backgroundParts)
+        
+        return parts
+    }
+    
+    private func listParts(atPoint point: Point, inLayer layer: Layer, layerType: LayerType) -> [PartInMenu] {
+        
+        var parts: [PartInMenu] = []
+        
+        /* Keep trace of the part numbers */
+        var fieldNumber = 0
+        var buttonNumber = 0
+        
+        for part in layer.parts {
+            
+            var number = 0
+            
+            /* Update the part numbers */
+            switch part {
+            case .button(_):
+                buttonNumber += 1
+                number = buttonNumber
+            case .field(_):
+                fieldNumber += 1
+                number = fieldNumber
+            }
+            
+            /* Check if the part lies at the position */
+            if part.part.rectangle.containsPosition(point) {
+                let partInMenu = PartInMenu(part: part, layerType: layerType, number: number)
+                parts.append(partInMenu)
+            }
+        }
+        
+        return parts.reversed()
+    }
+    
+    private func buildContextualMenu(forParts parts: [PartInMenu]) -> NSMenu {
+        
+        let menu = NSMenu(title: "Parts")
+        
+        /* Menu item explaining the menu */
+        let explanationItem = NSMenuItem(title: "Parts at that point:", action: nil, keyEquivalent: "")
+        explanationItem.isEnabled = false
+        menu.addItem(explanationItem)
+        
+        var index = 0
+        
+        /* Menu item for the parts */
+        for part in parts {
+            
+            /* Create the menu item */
+            let title = findTitle(forPart: part)
+            let menuItem = NSMenuItem(title: title, action: #selector(DocumentView.displayPartInfo), keyEquivalent: "")
+            menuItem.target = self
+            menuItem.tag = index
+            
+            /* Add it to the menu */
+            menu.addItem(menuItem)
+            
+            index += 1
+        }
+        
+        return menu
+    }
+    
+    private func findTitle(forPart part: PartInMenu) -> String {
+        
+        var type = ""
+        switch (part.layerType, part.part) {
+        case (.card, .field(_)):
+            type = "card field"
+        case (.card, .button(_)):
+            type = "button"
+        case (.background, .field(_)):
+            type = "field"
+        case (.background, .button(_)):
+            type = "background button"
+        }
+        
+        let qualifier = (part.part.part.name != "") ? "\"\(part.part.part.name)\"" : "\(part.number)"
+        
+        return "\(type) \(qualifier)"
+        
+    }
+    
+    func menu(_ menu: NSMenu, willHighlight possibleMenuItem: NSMenuItem?) {
+        
+        /* Remove the script borders currently displayed  */
+        document.removeScriptBorders()
+        
+        /* Check if a menu item is selected */
+        guard let menuItem = possibleMenuItem else {
+            return
+        }
+        
+        /* Retrieve the part */
+        let tag = menuItem.tag
+        let part = self.partsInMenu![tag]
+        
+        /* Show the script border of the part */
+        document.createScriptBorder(forPart: part.part, inLayerType: part.layerType)
+    }
+    
+    func menuDidClose(_ menu: NSMenu) {
+        document.removeScriptBorders()
+    }
+    
+    @objc private func displayPartInfo(_ sender: AnyObject) {
+        
+        /* Retrieve the part */
+        let menuItem = sender as! NSMenuItem
+        let tag = menuItem.tag
+        let part = self.partsInMenu![tag]
+        let content = document.retrieveContent(part: part.part, inLayerType: part.layerType)
+        
+        switch part.part {
+        case .field(let field):
+            document.displayInfo().displayField(field, withContent: content)
+        case .button(let button):
+            document.displayInfo().displayButton(button, withContent: content)
+        }
         
     }
     
@@ -123,7 +283,7 @@ class DocumentView: NSView {
         
         let browserPosition = extractPosition(from: event)
         
-        browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
+        document.browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
         
     }
     

@@ -15,7 +15,7 @@ class ScriptBorderView: NSView {
     
     let part: LayerPart
     let content: HString
-    let document: Document
+    unowned let document: Document
     
     init(frame: NSRect, part: LayerPart, content: HString, document: Document) {
         self.part = part
@@ -33,7 +33,6 @@ class ScriptBorderView: NSView {
     }
     
     override func mouseUp(with event: NSEvent) {
-        document.hideScriptBorders(self)
         switch part {
         case .field(let field):
             document.displayInfo().displayField(field, withContent: content)

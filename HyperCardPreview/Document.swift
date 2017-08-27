@@ -156,7 +156,7 @@ class Document: NSDocument, NSCollectionViewDelegate {
             
         })
         
-        view.browser = browser
+        view.document = self
         
         /* Check if there are colors in the stack resources */
         if let resources = browser.stack.resources?.resources {
@@ -491,14 +491,14 @@ class Document: NSDocument, NSCollectionViewDelegate {
     func createScriptBorders(includingFields: Bool) {
         
         removeScriptBorders()
-        createScriptBorders(in: browser.currentBackground, includingFields: includingFields, cardContents: browser.currentCard.backgroundPartContents)
+        createScriptBorders(in: browser.currentBackground, includingFields: includingFields, layerType: .background)
         if !browser.displayOnlyBackground {
-            createScriptBorders(in: browser.currentCard, includingFields: includingFields, cardContents: nil)
+            createScriptBorders(in: browser.currentCard, includingFields: includingFields, layerType: .card)
         }
         
     }
     
-    func createScriptBorders(in layer: Layer, includingFields: Bool, cardContents: [Card.BackgroundPartContent]?) {
+    func createScriptBorders(in layer: Layer, includingFields: Bool, layerType: LayerType) {
         
         for part in layer.parts {
             
@@ -507,26 +507,33 @@ class Document: NSDocument, NSCollectionViewDelegate {
                 continue
             }
             
-            /* Convert the rectangle into current coordinates */
-            let rectangle = part.part.rectangle
-            let frame = NSMakeRect(CGFloat(rectangle.x), CGFloat(file.stack.size.height - rectangle.bottom), CGFloat(rectangle.width), CGFloat(rectangle.height))
-            
-            /* Create a view */
-            let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, cardContents: cardContents), document: self)
-            view.wantsLayer = true
-            view.layer!.borderColor = NSColor.blue.cgColor
-            view.layer!.borderWidth = 1
-            view.layer!.backgroundColor = CGColor(red: 0, green: 0, blue: 1, alpha: 0.03)
-            
-            self.windowControllers[0].window!.contentView!.addSubview(view)
+            createScriptBorder(forPart: part, inLayerType: layerType)
             
         }
         
     }
     
-    func retrieveContent(part: LayerPart, cardContents: [Card.BackgroundPartContent]?) -> HString {
+    func createScriptBorder(forPart part: LayerPart, inLayerType layerType: LayerType) {
         
-        if let contents = cardContents {
+        /* Convert the rectangle into current coordinates */
+        let rectangle = part.part.rectangle
+        let frame = NSMakeRect(CGFloat(rectangle.x), CGFloat(file.stack.size.height - rectangle.bottom), CGFloat(rectangle.width), CGFloat(rectangle.height))
+        
+        /* Create a view */
+        let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, inLayerType: layerType), document: self)
+        view.wantsLayer = true
+        view.layer!.borderColor = NSColor.blue.cgColor
+        view.layer!.borderWidth = 1
+        view.layer!.backgroundColor = CGColor(red: 0, green: 0, blue: 1, alpha: 0.03)
+        
+        self.windowControllers[0].window!.contentView!.addSubview(view)
+        
+    }
+    
+    func retrieveContent(part: LayerPart, inLayerType layerType: LayerType) -> HString {
+        
+        if case LayerPart.field(let field) = part, !field.sharedText, layerType == .background {
+            let contents = browser.currentCard.backgroundPartContents
             if let content = contents.first(where: {$0.partIdentifier == part.part.identifier}) {
                 return content.partContent.string
             }
