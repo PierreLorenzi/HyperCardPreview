@@ -288,7 +288,7 @@ class Document: NSDocument {
         /* Fill the image */
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        return context.makeImage()!
+        return RgbConverter.createImage(owningRgbData: data, width: width, height: height)
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
