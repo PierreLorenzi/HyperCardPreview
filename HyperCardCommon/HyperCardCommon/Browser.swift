@@ -10,10 +10,6 @@
 
 private let trueHiliteContent: HString = "1"
 
-private let iconButtonFontIdentifier = FontIdentifiers.geneva
-private let iconButtonFontSize = 9
-private let iconButtonFontStyle = PlainTextStyle
-
 
 /// Browses through a stack: maintains a current card and current background and draws them.
 public class Browser {
@@ -72,6 +68,12 @@ public class Browser {
     /// if the white view is in the view stack
     private var isShowingWhiteView = false
     
+    public let cgimage: CGImage
+    private let cgdata: UnsafeMutableRawPointer
+    private let cgcontext: CGContext
+    
+    private let areThereColors: Bool
+    
     private struct ViewRecord {
         
         /// the view
@@ -103,6 +105,19 @@ public class Browser {
         
         self.cardIndexProperty = Property<Int>(cardIndex)
         
+        let width = stack.size.width
+        let height = stack.size.height
+        let cgdata = RgbConverter.createRgbData(width: width, height: height)
+        self.cgdata = cgdata
+        self.cgimage = RgbConverter.createImage(owningRgbData: cgdata, width: width, height: height)
+        self.cgcontext = RgbConverter.createContext(forRgbData: cgdata, width: width, height: height)
+        
+        self.areThereColors = Browser.areThereColors(inStack: stack)
+        
+        /* Flip the contect */
+        cgcontext.translateBy(x: 0, y: CGFloat(height))
+        cgcontext.scaleBy(x: 1, y: -1)
+        
         /* Add a background view */
         let windowBackgroundView = WhiteView()
         self.appendView(windowBackgroundView)
@@ -112,6 +127,17 @@ public class Browser {
         
         self.cardIndexProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
         self.displayOnlyBackgroundProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
+    }
+    
+    private static func areThereColors(inStack stack: Stack) -> Bool {
+        
+        if let resources = stack.resources?.resources {
+            if let _ = resources.index(where: { $0 is Resource<[AddColorElement]> }) {
+                return true
+            }
+        }
+        
+        return false
     }
     
     private func rebuildViews() {
@@ -258,6 +284,43 @@ public class Browser {
     }
     
     public func refresh() {
+        
+        /* If there are colors, it is a separate process */
+        guard !self.areThereColors else {
+            
+            self.refreshWithColors()
+            return
+        }
+        
+        /* Refresh the drawing */
+        self.refreshDrawing()
+        
+        /* Refresh the CGImage */
+        RgbConverter.fillRgbData(self.cgdata, withImage: self.image)
+        
+    }
+    
+    private func refreshWithColors() {
+        
+        /* Draw a white background */
+        cgcontext.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
+        cgcontext.fill(CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        
+        /* Draw the colors */
+        AddColorPainter.paintAddColor(ofStack: stack, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: cgcontext)
+        
+        /* Update data */
+        cgcontext.flush()
+        
+        /* Update the black&white image */
+        self.refreshDrawing()
+        
+        /* Draw the black&white image (only the black pixels, to keep the colors behind) */
+        RgbConverter.fillRgbDataWithBlackPixels(self.cgdata, withImage: self.image)
+        
+    }
+    
+    private func refreshDrawing() {
         
         var index = -1
         

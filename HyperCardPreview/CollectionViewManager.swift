@@ -18,6 +18,8 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private let didSelectCard: (Int) -> ()
     
+    private let thumbnailSize: Size
+    
     private var thumbnails: [NSImage?]
     
     private let renderingQueue: DispatchQueue
@@ -32,6 +34,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         self.collectionView = collectionView
         self.browser = Browser(stack: stack)
         self.didSelectCard = didSelectCard
+        self.thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: browser.image.width, cardHeight: browser.image.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
         self.thumbnails = [NSImage?](repeating: nil, count: stack.cards.count)
         self.renderingQueue = DispatchQueue(label: "CollectionViewManager Rendering Queue")
         self.renderingPriorities = [Int](repeating: 0, count: stack.cards.count)
@@ -45,6 +48,17 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         collectionView.delegate = self
         
         collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: 0, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+    }
+    
+    private static func computeThumbnailSize(cardWidth: Int, cardHeight: Int, thumbnailSize: NSSize) -> Size {
+        
+        /* Find the scale that makes the image fit both vertically and horizontally */
+        let scaleX = thumbnailSize.width / CGFloat(cardWidth)
+        let scaleY = thumbnailSize.height / CGFloat(cardHeight)
+        let scale = min(scaleX, scaleY)
+        
+        /* Scale the stack size */
+        return Size(width: Int(round(CGFloat(cardWidth) * scale)), height: Int(round(CGFloat(cardHeight) * scale)))
     }
     
     public func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -79,7 +93,8 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
                 
                 slf.browser.cardIndex = cardIndex
                 slf.browser.refresh()
-                slf.thumbnails[cardIndex] = NSImage(cgImage: RgbConverter.convertImage(slf.browser.image), size: NSZeroSize)
+                let thumbnail = slf.createThumbnail(from: slf.browser.cgimage)
+                slf.thumbnails[cardIndex] = NSImage(cgImage: thumbnail, size: NSZeroSize)
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])
                 
@@ -99,6 +114,19 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         }
         
         return item
+    }
+    
+    private func createThumbnail(from image: CGImage) -> CGImage {
+        
+        let scale = Int(NSScreen.main()!.backingScaleFactor)
+        let width = self.thumbnailSize.width * scale
+        let height = self.thumbnailSize.height  * scale
+        let data = RgbConverter.createRgbData(width: width, height: height)
+        let context = RgbConverter.createContext(forRgbData: data, width: width, height: height)
+        
+        context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+        
+        return context.makeImage()!
     }
     
     public func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {

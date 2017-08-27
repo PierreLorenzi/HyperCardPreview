@@ -10,16 +10,6 @@ import Cocoa
 import HyperCardCommon
 import QuickLook
 
-typealias RgbColor2 = UInt64
-let RgbWhite2: RgbColor2 = 0xFFFF_FFFF_FFFF_FFFF
-let RgbBlack2: RgbColor2 = 0xFF00_0000_FF00_0000
-
-
-let RgbColorSpace = CGColorSpaceCreateDeviceRGB()
-let BitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
-let BitsPerComponent = 8
-let BitsPerPixel = 32
-
 
 
 
@@ -36,8 +26,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
     @IBOutlet weak var collectionViewSuperview: NSView!
     
     private var collectionViewManager: CollectionViewManager? = nil
-    
-    private var areThereColors = false
     
     override var windowNibName: String? {
         return "Document"
@@ -148,7 +136,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
                         return
                     }
                     
-                    s.browser.refresh()
                     s.refresh()
                     s.willRefreshBrowser = false
                 }
@@ -157,13 +144,6 @@ class Document: NSDocument, NSCollectionViewDelegate {
         })
         
         view.document = self
-        
-        /* Check if there are colors in the stack resources */
-        if let resources = browser.stack.resources?.resources {
-            if let _ = resources.index(where: { $0 is Resource<[AddColorElement]> }) {
-                self.areThereColors = true
-            }
-        }
         
         browser.refresh()
         refresh()
@@ -197,110 +177,35 @@ class Document: NSDocument, NSCollectionViewDelegate {
     /// Redraws the HyperCard view
     func refresh() {
         
-        displayImage(self.browser.image, withColors: self.areThereColors)
-    }
-    
-    /// Redraws the HyperCard view
-    func displayImage(_ image: Image, withColors: Bool = false) {
+        /* Update the image */
+        browser.refresh()
         
-        /* Convert the 1-bit image to RGB */
-        let bufferLength = browser.image.width * browser.image.height * 2 * MemoryLayout<RgbColor2>.size
-        let data = NSMutableData(length: bufferLength)!
-        let buffer = data.mutableBytes.assumingMemoryBound(to: RgbColor2.self)
-        
-        /* Add the colors if requested. They must be drawn behind the HyperCard image */
-        if withColors {
-            paintColors(onBuffer: buffer)
-        }
-        
-        /* Draw the Hypercard image. Draw only the black pixels if there are colors behind. */
-        self.fillBuffer(buffer, with: image, drawWhitePixels: !withColors)
-        
-        /* Build a CoreGraphics image */
-        let providerRef = CGDataProvider(data: data)
-        let width = file.stack.size.width;
-        let height = file.stack.size.height;
-        let cgimage = CGImage(
-            width: width*2,
-            height: height*2,
-            bitsPerComponent: BitsPerComponent,
-            bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width * MemoryLayout<RgbColor2>.size,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfo,
-            provider: providerRef!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: CGColorRenderingIntent.defaultIntent)
+        /* Create a copy of the image for the screen */
+        let screenImage = createScreenImage(from: browser.cgimage)
         
         /* Display the image in the layer */
         CATransaction.setDisableActions(true)
-        view.layer!.contents = cgimage
+        view.layer!.contents = screenImage
     }
     
-    func fillBuffer(_ buffer: UnsafeMutablePointer<RgbColor2>, with image: Image, drawWhitePixels: Bool) {
+    private func createScreenImage(from image: CGImage) -> CGImage {
         
-        /* As the scale is two, there are two rows to fill at every pixel */
-        var offset0 = 0
-        var offset1 = image.width
+        /* Create a new bitmap with a context to draw on it. Make it pixel-accurate so we can
+         display a very aliased image */
+        let scale = Int(NSScreen.main()!.backingScaleFactor)
+        let width = image.width * scale
+        let height = image.height  * scale
+        let data = RgbConverter.createRgbData(width: width, height: height)
+        let context = RgbConverter.createContext(forRgbData: data, width: width, height: height)
         
-        var integerIndex = 0
+        /* Make the context aliased */
+        context.setShouldAntialias(false)
+        context.interpolationQuality = .none
         
-        for _ in 0..<image.height {
-            for _ in 0..<image.integerCountInRow {
-                
-                let integer = image.data[integerIndex]
-                integerIndex += 1
-                
-                for i in (UInt32(0)...UInt32(31)).reversed() {
-                    let value = ((integer >> i & 1) == 1) ? RgbBlack2 : RgbWhite2
-                    
-                    guard drawWhitePixels || value != RgbWhite2 else {
-                        offset0 += 1
-                        offset1 += 1
-                        continue;
-                    }
-                        
-                    buffer[offset0] = value
-                    buffer[offset1] = value
-                    offset0 += 1
-                    offset1 += 1
-                }
-            }
-            offset0 += image.width
-            offset1 += image.width
-        }
-    }
-    
-    func paintColors(onBuffer buffer: UnsafeMutablePointer<RgbColor2>) {
+        /* Fill the image */
+        context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        /* Create a bitmap context to paint on it */
-        let rawBuffer = UnsafeMutableRawPointer.init(buffer)!
-        let context: CGContext! = CGContext.init(
-            data: rawBuffer,
-            width: browser.image.width * 2,
-            height: browser.image.height * 2,
-            bitsPerComponent: BitsPerComponent,
-            bytesPerRow: 2 * browser.image.width * 4,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfo.rawValue)
-        
-        /* Apply scale two */
-        context.scaleBy(x: 2, y: 2)
-        
-        /* Flip the coordinates */
-        context.translateBy(x: 0, y: CGFloat(browser.image.height))
-        context.scaleBy(x: 1, y: -1)
-        
-        /* Draw a white background */
-        context.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-        context.fill(CGRect(x: 0, y: 0, width: browser.image.width, height: browser.image.height))
-        
-        /* Draw the color elements */
-        AddColorPainter.paintAddColor(ofStack: browser.stack, atCardIndex: browser.cardIndex, excludeCardParts: browser.displayOnlyBackground, onContext: context)
-        
-        context.flush()
-        
+        return context.makeImage()!
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
@@ -386,6 +291,17 @@ class Document: NSDocument, NSCollectionViewDelegate {
         thread.start()
         self.visualEffectThread = thread
         
+    }
+    
+    private func displayImage(_ image: Image) {
+        
+        /* Convert the image to screen */
+        let rgbImage = RgbConverter.convertImage(image)
+        let screenImage = self.createScreenImage(from: rgbImage)
+        
+        /* Display the image */
+        CATransaction.setDisableActions(true)
+        view.layer!.contents = screenImage
     }
     
     func applyContinuousVisualEffect(_ effect: VisualEffects.ContinuousVisualEffect, from image: Image) {
