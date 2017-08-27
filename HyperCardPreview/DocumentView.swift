@@ -281,27 +281,52 @@ class DocumentView: NSView, NSMenuDelegate {
         
     }
     
+    var hasRespondedToScroll = false
+    var scrollIsVertical = false
+    
     override func scrollWheel(with event: NSEvent) {
         
-        let browserPosition = extractPosition(from: event)
+        /* If the scroll begins, check if it is horizontal or vertical */
+        if event.phase == .began {
+            hasRespondedToScroll = false
+            scrollIsVertical = abs(event.scrollingDeltaX) < 0.1
+            return
+        }
         
-        document.browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
+        /* Vertical scroll are sent to scrolling fields */
+        if scrollIsVertical {
+            let browserPosition = extractPosition(from: event)
+            document.browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
+            hasRespondedToScroll = true
+            return
+        }
+        
+        /* Horizontal scrolls are for changing card */
+        if !scrollIsVertical && !hasRespondedToScroll && abs(event.scrollingDeltaX) > 10.0 {
+            hasRespondedToScroll = true
+            if event.scrollingDeltaX < 0 {
+                document.goToPreviousPage(self)
+            }
+            else {
+                document.goToNextPage(self)
+            }
+        }
         
     }
     
-    var hasDisplayedCardList = false
+    var hasRespondedToMagnify = false
     
     override func magnify(with event: NSEvent) {
         
         if event.phase == .began {
-            hasDisplayedCardList = false
+            hasRespondedToMagnify = false
             return
         }
         
         /* If the user demagnifies the view, show the card list behind */
-        if event.magnification < 0.3 && !hasDisplayedCardList {
+        if event.magnification < -0.05 && !hasRespondedToMagnify {
             document.showCards(self)
-            hasDisplayedCardList = true
+            hasRespondedToMagnify = true
         }
     }
     
