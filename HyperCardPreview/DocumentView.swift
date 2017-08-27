@@ -289,4 +289,20 @@ class DocumentView: NSView, NSMenuDelegate {
         
     }
     
+    var hasDisplayedCardList = false
+    
+    override func magnify(with event: NSEvent) {
+        
+        if event.phase == .began {
+            hasDisplayedCardList = false
+            return
+        }
+        
+        /* If the user demagnifies the view, show the card list behind */
+        if event.magnification < 0.3 && !hasDisplayedCardList {
+            document.showCards(self)
+            hasDisplayedCardList = true
+        }
+    }
+    
 }
