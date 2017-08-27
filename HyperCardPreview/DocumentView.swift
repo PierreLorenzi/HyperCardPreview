@@ -289,7 +289,7 @@ class DocumentView: NSView, NSMenuDelegate {
         /* If the scroll begins, check if it is horizontal or vertical */
         if event.phase == .began {
             hasRespondedToScroll = false
-            scrollIsVertical = abs(event.scrollingDeltaX) < 0.1
+            scrollIsVertical = abs(event.scrollingDeltaX) < abs(event.scrollingDeltaY)
             return
         }
         
@@ -304,7 +304,7 @@ class DocumentView: NSView, NSMenuDelegate {
         /* Horizontal scrolls are for changing card */
         if !scrollIsVertical && !hasRespondedToScroll && abs(event.scrollingDeltaX) > 10.0 {
             hasRespondedToScroll = true
-            if event.scrollingDeltaX < 0 {
+            if event.scrollingDeltaX > 0 {
                 document.goToPreviousPage(self)
             }
             else {

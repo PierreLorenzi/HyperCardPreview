@@ -555,7 +555,7 @@ class Document: NSDocument {
     func removeScriptBorders() {
         
         for view in self.windowControllers[0].window!.contentView!.subviews {
-            guard view !== self.view && view !== self.collectionViewSuperview else {
+            guard view !== self.view && view !== self.collectionViewSuperview && view !== self.imageView else {
                 continue
             }
             view.removeFromSuperview()
