@@ -76,7 +76,7 @@ public class VectorGlyph: Glyph {
         
         super.init()
         
-        self.width = Int(round(advance))
+        self.width = Int(ceil(advance))
         self.imageOffset = Int(round(boundingRect.origin.x) - 1)
         self.imageTop = Int(round(boundingRect.origin.y + boundingRect.size.height) + 1)
         
