@@ -149,8 +149,10 @@ class DocumentView: NSView, NSMenuDelegate {
         var parts: [PartInMenu] = []
         
         /* Look in the card parts */
-        let cardParts = listParts(atPoint: point, inLayer: document.browser.currentCard, layerType: .card)
-        parts.append(contentsOf: cardParts)
+        if !document.browser.displayOnlyBackground {
+            let cardParts = listParts(atPoint: point, inLayer: document.browser.currentCard, layerType: .card)
+            parts.append(contentsOf: cardParts)
+        }
         
         /* Look in the background parts */
         let backgroundParts = listParts(atPoint: point, inLayer: document.browser.currentBackground, layerType: .background)
