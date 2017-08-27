@@ -9,72 +9,64 @@
 import Foundation
 
 
+public class RgbConverter {
 
-/* The representations of the RGB colors in memory */
-private typealias RgbColor = UInt32
-private let RgbWhite = RgbColor(0xFFFF_FFFF)
-private let RgbBlack = RgbColor(0xFF00_0000)
-private let RgbTransparent = RgbColor(0x0000_0000)
-
-/* Parameter to create CoreGraphics images */
-private let RgbColorSpace = CGColorSpaceCreateDeviceRGB()
-private let BitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
-private let BitmapInfoNotTransparent:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
-private let BitsPerComponent = 8
-private let BitsPerPixel = 32
-
-/* Two RGB colors together, so we can copy two pixels at a time */
-private typealias RgbColor2 = UInt64
-private let RgbWhiteWhite: RgbColor2 = 0xFFFF_FFFF_FFFF_FFFF
-private let RgbBlackBlack: RgbColor2 = 0xFF00_0000_FF00_0000
-private let RgbBlackWhite: RgbColor2 = 0xFFFF_FFFF_FF00_0000
-private let RgbWhiteBlack: RgbColor2 = 0xFF00_0000_FFFF_FFFF
-private let rgbColor2Table: [RgbColor2] = [RgbWhiteWhite, RgbWhiteBlack, RgbBlackWhite, RgbBlackBlack]
-
-
-public extension Image {
+    /* The representations of the RGB colors in memory */
+    private typealias RgbColor = UInt32
+    private static let RgbWhite = RgbColor(0xFFFF_FFFF)
+    private static let RgbBlack = RgbColor(0xFF00_0000)
+    private static let RgbTransparent = RgbColor(0x0000_0000)
     
-    /// Converts a HyperCard image to a Cocoa image
-    public func convertToRgb() -> NSImage {
+    /* Parameter to create CoreGraphics images */
+    private static let RgbColorSpace = CGColorSpaceCreateDeviceRGB()
+    private static let BitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue | CGBitmapInfo.byteOrder32Little.rawValue)
+    private static let BitmapInfoNotTransparent:CGBitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipFirst.rawValue)
+    private static let BitsPerComponent = 8
+    private static let BitsPerPixel = 32
+    
+    /* Two RGB colors together, so we can copy two pixels at a time */
+    private typealias RgbColor2 = UInt64
+    private static let RgbWhiteWhite: RgbColor2 = 0xFFFF_FFFF_FFFF_FFFF
+    private static let RgbBlackBlack: RgbColor2 = 0xFF00_0000_FF00_0000
+    private static let RgbBlackWhite: RgbColor2 = 0xFFFF_FFFF_FF00_0000
+    private static let RgbWhiteBlack: RgbColor2 = 0xFF00_0000_FFFF_FFFF
+    private static let RgbBlackTransparent: RgbColor2 = 0x0000_0000_FF00_0000
+    private static let RgbTransparentBlack: RgbColor2 = 0xFF00_0000_0000_0000
+    private static let rgbColor2TableWhite: [RgbColor2] = [RgbWhiteWhite, RgbWhiteBlack, RgbBlackWhite, RgbBlackBlack]
+    private static let rgbColor2TableTransparent: [RgbColor2] = [0x0, RgbTransparentBlack, RgbBlackTransparent, RgbBlackBlack]
+    
+    public static func convertImage(_ image: Image) -> CGImage {
         
-        /* Convert the 1-bit image to RGB */
-        let bufferLength = self.width * self.height * MemoryLayout<RgbColor>.size
-        let data = NSMutableData(length: bufferLength)!
-        let buffer = data.mutableBytes.assumingMemoryBound(to: RgbColor2.self)
-        self.fillBuffer(buffer)
+        /* Allocate a buffer for the image */
+        let data = createRgbData(width: image.width, height: image.height)
         
-        /* Build a CoreGraphics image */
-        let providerRef = CGDataProvider(data: data)
-        let cgimage = CGImage(
-            width: self.width,
-            height: self.height,
-            bitsPerComponent: BitsPerComponent,
-            bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width * MemoryLayout<RgbColor>.size,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfo,
-            provider: providerRef!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: CGColorRenderingIntent.defaultIntent)
+        /* Fill the pixel colors */
+        fillRgbData(data, withImage: image, drawWhitePixels: true)
         
-        return NSImage(cgImage: cgimage!, size: NSZeroSize)
+        /* Build the image */
+        return createImage(owningRgbData: data, width: image.width, height: image.height)
     }
     
-    private func fillBuffer(_ buffer: UnsafeMutablePointer<RgbColor2>) {
+    public static func fillRgbData(_ rawBuffer: UnsafeMutableRawPointer, withImage image: Image, drawWhitePixels: Bool) {
+        
+        /* Read the buffer as RgbColor2, so we can write two pixels at a time */
+        let buffer = rawBuffer.assumingMemoryBound(to: RgbColor2.self)
+        
+        /* Choose a conversion table */
+        let rgbColor2Table = drawWhitePixels ? rgbColor2TableWhite : rgbColor2TableTransparent
         
         var offset = 0
         var integerIndex = 0
         
-        for _ in 0..<self.height {
-            for integerIndexInRow in 0..<self.integerCountInRow {
+        for _ in 0..<image.height {
+            for integerIndexInRow in 0..<image.integerCountInRow {
                 
                 /* Get 32 pixels */
-                let integer = Int(self.data[integerIndex])
+                let integer = Int(image.data[integerIndex])
                 integerIndex += 1
                 
                 /* Do no not copy pixels after the end of the image */
-                let bitCount = min(32, self.width - integerIndexInRow * 32)
+                let bitCount = min(32, image.width - integerIndexInRow * 32)
                 
                 /* Copy the pixels two by two */
                 var i = bitCount - 2
@@ -89,11 +81,75 @@ public extension Image {
         }
     }
     
-}
-
-
-
-public extension MaskedImage {
+    public static func createRgbData(width: Int, height: Int) -> UnsafeMutableRawPointer {
+        
+        let length = width * height * MemoryLayout<RgbColor>.size
+        return UnsafeMutableRawPointer.allocate(bytes: length, alignedTo: 0)
+    }
+    
+    public static func createContext(forRgbData data: UnsafeMutableRawPointer, width: Int, height: Int) -> CGContext {
+        
+        return CGContext(data: data,
+                         width: width,
+                         height: height,
+                         bitsPerComponent: BitsPerComponent,
+                         bytesPerRow: width * MemoryLayout<RgbColor>.size,
+                         space: RgbColorSpace,
+                         bitmapInfo: BitmapInfo.rawValue,
+                         releaseCallback: nil,
+                         releaseInfo: nil)!
+    }
+    
+    public static func createImage(owningRgbData data: UnsafeMutableRawPointer, width: Int, height: Int) -> CGImage {
+        
+        let length = width * height * MemoryLayout<RgbColor>.size
+        let dataProvider = CGDataProvider(dataInfo: nil, data: data, size: length, releaseData: {
+            (_, data: UnsafeRawPointer, length: Int) in
+            data.deallocate(bytes: length, alignedTo: 0)
+        })!
+        
+        let cgimage = CGImage(
+            width: width,
+            height: height,
+            bitsPerComponent: BitsPerComponent,
+            bitsPerPixel: BitsPerPixel,
+            bytesPerRow: width * MemoryLayout<RgbColor>.size,
+            space: RgbColorSpace,
+            bitmapInfo: BitmapInfo,
+            provider: dataProvider,
+            decode: nil,
+            shouldInterpolate: true,
+            intent: CGColorRenderingIntent.defaultIntent)!
+        
+        return cgimage
+    }
+    
+    /// Converts the HyperCard image to a Cocoa image
+    public static func convertMaskedImage(_ image: MaskedImage) -> CGImage {
+        
+        var pixels = [RgbColor](repeating: RgbWhite, count: image.width*image.height)
+        for x in 0..<image.width {
+            for y in 0..<image.height {
+                pixels[x + y*image.width] = convertToRgb(image[x, y])
+            }
+        }
+        let data = NSMutableData(bytes: &pixels, length: pixels.count * MemoryLayout<RgbColor>.size)
+        let providerRef = CGDataProvider(data: data)
+        let cgimage = CGImage(
+            width: image.width,
+            height: image.height,
+            bitsPerComponent: BitsPerComponent,
+            bitsPerPixel: BitsPerPixel,
+            bytesPerRow: image.width * MemoryLayout<RgbColor>.size,
+            space: RgbColorSpace,
+            bitmapInfo: BitmapInfo,
+            provider: providerRef!,
+            decode: nil,
+            shouldInterpolate: true,
+            intent: CGColorRenderingIntent.defaultIntent)
+        
+        return cgimage!
+    }
     
     private static func convertToRgb(_ color: MaskedImage.Color) -> RgbColor {
         switch color {
@@ -106,33 +162,5 @@ public extension MaskedImage {
         }
     }
     
-    /// Converts the HyperCard image to a Cocoa image
-    public func convertToRgb() -> NSImage {
-        
-        var pixels = [RgbColor](repeating: RgbWhite, count: self.width*self.height)
-        for x in 0..<self.width {
-            for y in 0..<self.height {
-                pixels[x + y*self.width] = MaskedImage.convertToRgb(self[x, y])
-            }
-        }
-        let data = NSMutableData(bytes: &pixels, length: pixels.count * MemoryLayout<RgbColor>.size)
-        let providerRef = CGDataProvider(data: data)
-        let cgimage = CGImage(
-            width: width,
-            height: height,
-            bitsPerComponent: BitsPerComponent,
-            bitsPerPixel: BitsPerPixel,
-            bytesPerRow: width * MemoryLayout<RgbColor>.size,
-            space: RgbColorSpace,
-            bitmapInfo: BitmapInfo,
-            provider: providerRef!,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: CGColorRenderingIntent.defaultIntent)
-        
-        return NSImage(cgImage: cgimage!, size: NSZeroSize)
-    }
-    
 }
-
 

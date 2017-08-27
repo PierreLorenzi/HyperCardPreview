@@ -79,7 +79,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
                 
                 slf.browser.cardIndex = cardIndex
                 slf.browser.refresh()
-                slf.thumbnails[cardIndex] = slf.browser.image.convertToRgb()
+                slf.thumbnails[cardIndex] = NSImage(cgImage: RgbConverter.convertImage(slf.browser.image), size: NSZeroSize)
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])
                 
