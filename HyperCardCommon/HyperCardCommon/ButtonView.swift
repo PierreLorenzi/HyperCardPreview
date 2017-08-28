@@ -79,33 +79,33 @@ private let PopupArrowHeight = 6
 
 public class ButtonView: View, MouseResponder {
     
-    let button: Button
+    private let button: Button
     
-    let hiliteProperty: Property<Bool>
+    private let hiliteProperty: Property<Bool>
     
     /// the font for the texts
-    var font: BitmapFont {
+    private var font: BitmapFont {
         return fontProperty.value
     }
-    let fontProperty: Property<BitmapFont>
+    private let fontProperty: Property<BitmapFont>
     
     /// the image of the icon
-    var icon: MaskedImage? {
+    private var icon: MaskedImage? {
         return iconProperty.value
     }
-    let iconProperty: Property<MaskedImage?>
+    private let iconProperty: Property<MaskedImage?>
     
     /// the menu items, used by pop-up buttons
-    var menuItems: [HString] {
+    private var menuItems: [HString] {
         return menuItemsProperty.value
     }
-    let menuItemsProperty: Property<[HString]>
+    private let menuItemsProperty: Property<[HString]>
     
     /// the condensed version of the font, used by pop-up buttons
-    var condensedFont: BitmapFont {
+    private var condensedFont: BitmapFont {
         return condensedFontProperty.value
     }
-    let condensedFontProperty: Property<BitmapFont>
+    private let condensedFontProperty: Property<BitmapFont>
     
     public init(button: Button, hiliteProperty: Property<Bool>, fontManager: FontManager, resources: ResourceSystem) {
         
