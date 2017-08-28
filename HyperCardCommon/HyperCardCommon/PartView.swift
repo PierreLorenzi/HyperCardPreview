@@ -39,16 +39,16 @@ public let ButtonShadowThickness = 1
 public extension Drawing {
     
     /// Draws a rectangle with black borders
-    public func drawBorderedRectangle(_ rectangle: Rectangle, composition: ImageComposition = Drawing.MaskComposition) {
+    public func drawBorderedRectangle(_ rectangle: Rectangle, composition: ImageComposition = Drawing.MaskComposition, borderComposition: ImageComposition = Drawing.DirectComposition) {
         
         /* Draw the background */
         self.drawRectangle(rectangle, composition: composition)
         
         /* Draw the borders */
-        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.top, width: rectangle.width, height: 1))
-        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.top, width: 1, height: rectangle.height))
-        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.bottom-1, width: rectangle.width, height: 1))
-        self.drawRectangle(Rectangle(x: rectangle.right-1, y: rectangle.top, width: 1, height: rectangle.height))
+        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.top, width: rectangle.width, height: 1), composition: borderComposition)
+        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.top + 1, width: 1, height: rectangle.height - 2), composition: borderComposition)
+        self.drawRectangle(Rectangle(x: rectangle.left, y: rectangle.bottom-1, width: rectangle.width, height: 1), composition: borderComposition)
+        self.drawRectangle(Rectangle(x: rectangle.right-1, y: rectangle.top + 1, width: 1, height: rectangle.height - 2), composition: borderComposition)
         
     }
     

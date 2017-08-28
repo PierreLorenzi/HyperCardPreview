@@ -73,6 +73,12 @@ public class FieldView: View, MouseResponder {
     }
     private let isDownArrowClickedProperty = Property<Bool>(false)
     
+    private var ghostKnobOffset: Int? {
+        get { return self.ghostKnobOffsetProperty.value }
+        set { self.ghostKnobOffsetProperty.value = newValue }
+    }
+    private let ghostKnobOffsetProperty = Property<Int?>(nil)
+    
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
     
@@ -108,6 +114,9 @@ public class FieldView: View, MouseResponder {
             [unowned self] in self.refreshNeedProperty.value = .refresh
         })
         isDownArrowClickedProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = .refresh
+        })
+        ghostKnobOffsetProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = .refresh
         })
         
@@ -367,7 +376,7 @@ public class FieldView: View, MouseResponder {
             /* Draw active scroll if necessary */
             let scrollRange = self.scrollRange
             if scrollRange > 0 {
-                FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scroll: field.scroll, scrollRange: scrollRange)
+                FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scroll: field.scroll, scrollRange: scrollRange, ghostKnobOffset: self.ghostKnobOffset)
             }
             
         default:
@@ -442,7 +451,7 @@ public class FieldView: View, MouseResponder {
         return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: ScrollButtonHeight)
     }
     
-    private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scroll: Int, scrollRange: Int) {
+    private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scroll: Int, scrollRange: Int, ghostKnobOffset: Int?) {
         
         /* Check if there is a background */
         let scrollBarRectangle = computeScrollBarRectangle(forRectangle: rectangle)
@@ -456,6 +465,12 @@ public class FieldView: View, MouseResponder {
         /* Draw the knob */
         if let knobRectangle = computeKnobRectangle(forScrollBarRectangle: scrollBarRectangle, scroll: scroll, scrollRange: scrollRange) {
             drawing.drawBorderedRectangle(knobRectangle)
+        }
+        
+        /* Draw the ghost knob if it exists */
+        if let offset = ghostKnobOffset {
+            let ghostKnobRectangle = Rectangle(x: scrollBarRectangle.left, y: scrollBarRectangle.top + offset, width: scrollBarRectangle.width, height: ScrollKnobHeight)
+            drawing.drawBorderedRectangle(ghostKnobRectangle, composition: Drawing.NoComposition, borderComposition: Drawing.XorComposition)
         }
         
     }
@@ -669,6 +684,60 @@ public class FieldView: View, MouseResponder {
             return
         }
         
+        /* Check if the mouse is clicking on the knob */
+        let scrollBarRectangle = FieldView.computeScrollBarRectangle(forRectangle: field.rectangle)
+        let possibleKnobRectangle = FieldView.computeKnobRectangle(forScrollBarRectangle: scrollBarRectangle, scroll: field.scroll, scrollRange: self.scrollRange)
+        if let knobRectangle = possibleKnobRectangle, knobRectangle.containsPosition(position) {
+            
+            let knobOffset = knobRectangle.top - field.rectangle.top - ScrollButtonHeight
+            let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+            self.startMovingGhostKnob(fromOffset: knobOffset, knobRange: knobRange)
+            return
+        }
+        
+        let scrollBarClickDelta = 80
+        
+        /* Check if the mouse is clicking over the knob */
+        if let knobRectangle = possibleKnobRectangle, position.y < knobRectangle.top, scrollBarRectangle.containsPosition(position) {
+            
+            field.scroll = max(0, field.scroll - scrollBarClickDelta)
+        }
+        
+        /* Check if the mouse is clicking under the knob */
+        if let knobRectangle = possibleKnobRectangle, position.y > knobRectangle.bottom, scrollBarRectangle.containsPosition(position) {
+            
+            field.scroll = min(scrollRange, field.scroll + scrollBarClickDelta)
+        }
+        
+    }
+    
+    private func startMovingGhostKnob(fromOffset initialOffset: Int, knobRange: Int) {
+        
+        /* Display the knob */
+        self.ghostKnobOffset = initialOffset
+        
+        /* Register some parameters */
+        let initialMouseLocation = NSEvent.mouseLocation()
+        
+        /* Build a timer to continuously move the ghost knob */
+        let timer = Timer(timeInterval: 0.05, repeats: true, block: {
+            [unowned self](timer: Timer) in
+            
+            /* Compute the vertical distance of the dragging */
+            let mouseLocation = NSEvent.mouseLocation()
+            let offsetDelta = Int(initialMouseLocation.y - mouseLocation.y)
+            
+            /* Apply the vertical offset to the ghost knob, while respecting the bounds */
+            self.ghostKnobOffset = max(0, min(knobRange, initialOffset + offsetDelta))
+            
+        })
+        
+        /* Save it */
+        self.scrollingTimer = timer
+        
+        /* Schedule it */
+        RunLoop.main.add(timer, forMode: .defaultRunLoopMode)
+        
     }
     
     private enum Direction {
@@ -718,6 +787,16 @@ public class FieldView: View, MouseResponder {
         }
         if self.isDownArrowClicked {
             self.isDownArrowClicked = false
+        }
+        if let offset = self.ghostKnobOffset {
+            
+            /* Update the scroll */
+            let scrollBarRectangle = FieldView.computeScrollBarRectangle(forRectangle: field.rectangle)
+            let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+            let scrollRange = self.scrollRange
+            field.scroll = scrollRange * offset / knobRange
+            
+            self.ghostKnobOffset = nil
         }
         if let timer = self.scrollingTimer {
             timer.invalidate()
