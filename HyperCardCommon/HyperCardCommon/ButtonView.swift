@@ -77,7 +77,7 @@ private let PopupArrowHeight = 6
 
 
 
-public class ButtonView: View {
+public class ButtonView: View, MouseResponder {
     
     let button: Button
     
@@ -589,13 +589,17 @@ public class ButtonView: View {
         return button.visible
     }
     
-    public override func respondsToMouseEvent(at position: Point) -> Bool {
+    public func doesRespondToMouseEvent(at position: Point) -> Bool {
         
         guard button.visible else {
             return false
         }
         
         return button.rectangle.containsPosition(position)
+    }
+    
+    public func respondToMouseEvent(_ mouseEvent: MouseEvent, at position: Point) {
+        
     }
     
 }

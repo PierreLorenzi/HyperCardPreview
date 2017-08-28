@@ -101,13 +101,30 @@ class DocumentView: NSView, NSMenuDelegate {
     }
     
     weak var document: Document!
+    var mouseDownResponder: MouseResponder? = nil
+    
+    override func mouseDown(with event: NSEvent) {
+        
+        /* Find the stack part responding to the event */
+        let browserPosition = extractPosition(from: event)
+        let responder = document.browser.findViewRespondingToMouseEvent(at: browserPosition)
+        
+        /* Save it */
+        self.mouseDownResponder = responder
+        
+        /* Call it with the event */
+        responder?.respondToMouseEvent(.mouseDown, at: browserPosition)
+        
+    }
     
     override func mouseUp(with event: NSEvent) {
         
+        /* Send the event to the view that responded to the mouse down event */
         let browserPosition = extractPosition(from: event)
+        self.mouseDownResponder?.respondToMouseEvent(.mouseUp, at: browserPosition)
         
-        document.browser.respondToClick(at: browserPosition)
-        
+        /* Forget that view */
+        self.mouseDownResponder = nil
     }
     
     private func extractPosition(from event: NSEvent) -> Point {
@@ -296,7 +313,8 @@ class DocumentView: NSView, NSMenuDelegate {
         /* Vertical scroll are sent to scrolling fields */
         if scrollIsVertical {
             let browserPosition = extractPosition(from: event)
-            document.browser.respondToScroll(at: browserPosition, delta: Double(event.deltaY))
+            let responder = document.browser.findViewRespondingToMouseEvent(at: browserPosition)
+            responder?.respondToMouseEvent(.verticalScroll(delta: Double(event.deltaY)), at: browserPosition)
             hasRespondedToScroll = true
             return
         }

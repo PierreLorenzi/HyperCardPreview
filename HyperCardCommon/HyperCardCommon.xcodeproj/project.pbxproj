@@ -18,6 +18,9 @@
 		6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */; };
 		6C7F7BA61F4F845900C9D3DC /* TestFormattedContent.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA51F4F845900C9D3DC /* TestFormattedContent.stack */; };
 		6C7F7BA81F4F9C3500C9D3DC /* TestV1.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA71F4F9C3500C9D3DC /* TestV1.stack */; };
+		6C8746241F540007005A41AB /* scroll down arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */; };
+		6C8746251F540007005A41AB /* scroll up arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */; };
+		6C8746271F5402E0005A41AB /* Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8746261F5402E0005A41AB /* Responder.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
 		6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */; };
@@ -389,6 +392,9 @@
 		6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestContents.stack; sourceTree = "<group>"; };
 		6C7F7BA51F4F845900C9D3DC /* TestFormattedContent.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFormattedContent.stack; sourceTree = "<group>"; };
 		6C7F7BA71F4F9C3500C9D3DC /* TestV1.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestV1.stack; sourceTree = "<group>"; };
+		6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll down arrow clicked.tiff"; sourceTree = "<group>"; };
+		6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll up arrow clicked.tiff"; sourceTree = "<group>"; };
+		6C8746261F5402E0005A41AB /* Responder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Responder.swift; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -966,6 +972,7 @@
 			isa = PBXGroup;
 			children = (
 				6C9E6AED1E75BCFA00BBF925 /* View.swift */,
+				6C8746261F5402E0005A41AB /* Responder.swift */,
 				6C9E6AEF1E75BCFA00BBF925 /* LayerView.swift */,
 				6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */,
 				6C9E6AF01E75BCFA00BBF925 /* PartView.swift */,
@@ -1025,7 +1032,9 @@
 				6C9E6B5D1E75BEEA00BBF925 /* popup arrow.tiff */,
 				6C9E6B5E1E75BEEA00BBF925 /* scroll pattern.tiff */,
 				6C9E6B5F1E75BEEA00BBF925 /* scroll up arrow.tiff */,
+				6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */,
 				6C9E6B601E75BEEA00BBF925 /* scroll down arrow.tiff */,
+				6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */,
 			);
 			name = Interface;
 			sourceTree = "<group>";
@@ -1460,6 +1469,7 @@
 				6C9E6D2C1E75BEEA00BBF925 /* icon_32462.tif in Resources */,
 				6C9E6C741E75BEEA00BBF925 /* icon_-16573.tif in Resources */,
 				6C9E6D331E75BEEA00BBF925 /* Chicago.dfont in Resources */,
+				6C8746241F540007005A41AB /* scroll down arrow clicked.tiff in Resources */,
 				6C9E6CB51E75BEEA00BBF925 /* icon_6720.tif in Resources */,
 				6C9E6D351E75BEEA00BBF925 /* Fonts.dfont in Resources */,
 				6C9E6C561E75BEEA00BBF925 /* default top right.tiff in Resources */,
@@ -1493,6 +1503,7 @@
 				6C9E6CC21E75BEEA00BBF925 /* icon_8964.tif in Resources */,
 				6C9E6D191E75BEEA00BBF925 /* icon_27056.tif in Resources */,
 				6C9E6CDE1E75BEEA00BBF925 /* icon_16344.tif in Resources */,
+				6C8746251F540007005A41AB /* scroll up arrow clicked.tiff in Resources */,
 				6C9E6CE71E75BEEA00BBF925 /* icon_17481.tif in Resources */,
 				6C9E6CAF1E75BEEA00BBF925 /* icon_6044.tif in Resources */,
 				6C9E6CBC1E75BEEA00BBF925 /* icon_8348.tif in Resources */,
@@ -1745,6 +1756,7 @@
 				6C9E6B2D1E75BCFA00BBF925 /* IconResourceBlock.swift in Sources */,
 				6C9E6B291E75BCFA00BBF925 /* ContentBlockV1.swift in Sources */,
 				6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */,
+				6C8746271F5402E0005A41AB /* Responder.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
 				6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,

@@ -29,6 +29,9 @@ private let ScrollKnobHeight = 16
 private let ScrollUpButtonImage = MaskedImage(named: "scroll up arrow")!
 private let ScrollDownButtonImage = MaskedImage(named: "scroll down arrow")!
 
+private let ScrollUpButtonClickedImage = MaskedImage(named: "scroll up arrow clicked")!
+private let ScrollDownButtonClickedImage = MaskedImage(named: "scroll down arrow clicked")!
+
 private let ScrollPatternImage = Image(named: "scroll pattern")!
 
 private struct LineLayout {
@@ -44,7 +47,7 @@ private struct LineLayout {
 
 
 
-public class FieldView: View {
+public class FieldView: View, MouseResponder {
     
     private let field: Field
     
@@ -57,6 +60,21 @@ public class FieldView: View {
         get { return self.lineLayoutsProperty.value }
     }
     private let lineLayoutsProperty: Property<[LineLayout]>
+    
+    private var isUpArrowClicked: Bool {
+        get { return self.isUpArrowClickedProperty.value }
+        set { self.isUpArrowClickedProperty.value = newValue }
+    }
+    private let isUpArrowClickedProperty = Property<Bool>(false)
+    
+    private var isDownArrowClicked: Bool {
+        get { return self.isDownArrowClickedProperty.value }
+        set { self.isDownArrowClickedProperty.value = newValue }
+    }
+    private let isDownArrowClickedProperty = Property<Bool>(false)
+    
+    /// The timer sending scroll updates while the user is clicking on an scroll arrow
+    private var scrollingTimer: Timer? = nil
     
     public init(field: Field, contentProperty: Property<PartContent>, fontManager: FontManager) {
         
@@ -83,8 +101,11 @@ public class FieldView: View {
         field.scrollProperty.startNotifications(for: self, by: {
             [unowned self] in if self.field.style == .scrolling { self.refreshNeedProperty.value = .refresh }
         })
-        richTextProperty.startNotifications(for: self, by: {
-            [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
+        isUpArrowClickedProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = .refresh
+        })
+        isDownArrowClickedProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = .refresh
         })
         
     }
@@ -338,7 +359,7 @@ public class FieldView: View {
             drawing.drawShadowedRectangle(field.rectangle, thickness: FieldShadowThickness, shift: FieldShadowShift)
             
         case .scrolling:
-            FieldView.drawScrollFrame(in: drawing, rectangle: field.rectangle)
+            FieldView.drawScrollFrame(in: drawing, rectangle: field.rectangle, isUpArrowClicked: self.isUpArrowClicked, isDownArrowClicked: self.isDownArrowClicked)
             
             /* Draw active scroll if necessary */
             let scrollRange = self.scrollRange
@@ -366,7 +387,7 @@ public class FieldView: View {
         
     }
     
-    private static func drawScrollFrame(in drawing: Drawing, rectangle: Rectangle) {
+    private static func drawScrollFrame(in drawing: Drawing, rectangle: Rectangle, isUpArrowClicked: Bool, isDownArrowClicked: Bool) {
         
         /* Draw the main border */
         drawing.drawBorderedRectangle(rectangle)
@@ -388,11 +409,25 @@ public class FieldView: View {
         }
         
         /* Up arrow */
-        drawing.drawMaskedImage(ScrollUpButtonImage, position: Point(x: rectangle.right - ScrollWidth + 1, y: rectangle.top + 1))
+        let upArrowRectangle = computeUpArrowPosition(inFieldWithRectangle: rectangle)
+        let upArrowImage = isUpArrowClicked ? ScrollUpButtonClickedImage : ScrollUpButtonImage
+        drawing.drawMaskedImage(upArrowImage, position: Point(x: upArrowRectangle.x, y: upArrowRectangle.y))
         
         /* Down arrow */
-        drawing.drawMaskedImage(ScrollDownButtonImage, position: Point(x: rectangle.right - ScrollWidth + 1, y: rectangle.bottom - ScrollButtonHeight))
+        let downArrowRectangle = computeDownArrowPosition(inFieldWithRectangle: rectangle)
+        let downArrowImage = isDownArrowClicked ? ScrollDownButtonClickedImage : ScrollDownButtonImage
+        drawing.drawMaskedImage(downArrowImage, position: Point(x: downArrowRectangle.x, y: downArrowRectangle.y))
         
+    }
+    
+    private static func computeUpArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
+        
+        return Rectangle(x: rectangle.right - ScrollWidth + 1, y: rectangle.top + 1, width: ScrollWidth - 2, height: ScrollButtonHeight)
+    }
+    
+    private static func computeDownArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
+        
+        return Rectangle(x: rectangle.right - ScrollWidth + 1, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth - 2, height: ScrollButtonHeight)
     }
     
     private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scrollFactor: Double) {
@@ -521,7 +556,7 @@ public class FieldView: View {
         return field.visible
     }
     
-    public override func respondsToMouseEvent(at position: Point) -> Bool {
+    public func doesRespondToMouseEvent(at position: Point) -> Bool {
         
         guard field.visible else {
             return false
@@ -530,7 +565,22 @@ public class FieldView: View {
         return field.rectangle.containsPosition(position)
     }
     
-    public override func respondToScroll(at position: Point, delta: Double) {
+    public func respondToMouseEvent(_ mouseEvent: MouseEvent, at position: Point) {
+        
+        switch mouseEvent {
+            
+        case .verticalScroll(delta: let delta):
+            self.respondToScroll(at: position, delta: delta)
+            
+        case .mouseDown:
+            self.respondToMouseDown(at: position)
+            
+        case .mouseUp:
+            self.respondToMouseUp(at: position)
+        }
+    }
+    
+    private func respondToScroll(at position: Point, delta: Double) {
         
         /* Only for scroll fields */
         guard field.style == .scrolling else {
@@ -549,6 +599,87 @@ public class FieldView: View {
         newScroll = min(scrollRange, newScroll)
         
         field.scroll = newScroll
+        
+    }
+    
+    private func respondToMouseDown(at position: Point) {
+        
+        /* The field must have an active scroll */
+        let scrollRange = self.scrollRange
+        guard scrollRange > 0 else {
+            return
+        }
+        
+        /* Check the mouse is clicking on the top scroll button */
+        let upArrowRectangle = FieldView.computeUpArrowPosition(inFieldWithRectangle: field.rectangle)
+        if upArrowRectangle.containsPosition(position) {
+            self.isUpArrowClicked = true
+            self.startScrolling(.up)
+            return
+        }
+        
+        /* Check the mouse is clicking on the bottom scroll button */
+        let downArrowRectangle = FieldView.computeDownArrowPosition(inFieldWithRectangle: field.rectangle)
+        if downArrowRectangle.containsPosition(position) {
+            self.isDownArrowClicked = true
+            self.startScrolling(.down)
+            return
+        }
+        
+    }
+    
+    private enum Direction {
+        case up
+        case down
+    }
+    
+    private func startScrolling(_ direction: Direction) {
+        
+        let scrollDelta = 16
+        
+        let scrollRange = self.scrollRange
+        
+        /* Build a timer to continuously scroll the field */
+        let timer = Timer(timeInterval: 0.05, repeats: true, block: {
+            [unowned self](timer: Timer) in
+            
+            /* Compute the new scroll */
+            let scroll = self.field.scroll
+            let newScroll = (direction == .up) ? max(0, scroll - scrollDelta) : min(scrollRange, scroll + scrollDelta)
+            
+            /* If the scroll is over, stop the timer */
+            guard newScroll != scroll else {
+                timer.invalidate()
+                self.scrollingTimer = nil
+                return
+            }
+            
+            /* Update the scroll */
+            self.field.scroll = newScroll
+            
+        })
+        
+        /* Save it */
+        self.scrollingTimer = timer
+        
+        /* Schedule it */
+        RunLoop.main.add(timer, forMode: .defaultRunLoopMode)
+        
+    }
+    
+    private func respondToMouseUp(at position: Point) {
+        
+        /* Un-click the scroll buttons if necessary */
+        if self.isUpArrowClicked {
+            self.isUpArrowClicked = false
+        }
+        if self.isDownArrowClicked {
+            self.isDownArrowClicked = false
+        }
+        if let timer = self.scrollingTimer {
+            timer.invalidate()
+            self.scrollingTimer = nil
+        }
         
     }
     

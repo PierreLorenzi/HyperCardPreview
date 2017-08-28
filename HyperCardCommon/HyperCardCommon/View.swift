@@ -32,19 +32,6 @@ public class View {
     public func draw(in drawing: Drawing) {
     }
     
-    /// If the view is the one responding to the mouse event at the given position. Can return true even if it does nothing.
-    public func respondsToMouseEvent(at position: Point) -> Bool {
-        return false
-    }
-    
-    public func respondToClick(at position: Point) {
-        
-    }
-    
-    public func respondToScroll(at position: Point, delta: Double) {
-        
-    }
-    
 }
 
 /// How a view must be refreshed

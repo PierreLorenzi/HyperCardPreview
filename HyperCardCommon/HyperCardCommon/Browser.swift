@@ -522,32 +522,24 @@ public class Browser {
         return content.partContent
     }
     
-    public func respondToClick(at position: Point) {
-        
-        if let view = self.findViewRespondingToMouse(at: position) {
-            
-            view.respondToClick(at: position)
-        }
-    }
-    
-    public func respondToScroll(at position: Point, delta: Double) {
-        
-        if let view = self.findViewRespondingToMouse(at: position) {
-            
-            view.respondToScroll(at: position, delta: delta)
-        }
-    }
-    
-    private func findViewRespondingToMouse(at position: Point) -> View? {
+    public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder? {
         
         /* Ask to the views, from the foremost to the outmost */
         for viewRecord in viewRecords.reversed() {
             
             let view = viewRecord.view
             
-            if view.respondsToMouseEvent(at: position) {
-                return view
+            /* Check if the view responds to the mouse */
+            guard let responder = view as? MouseResponder else {
+                continue
             }
+            
+            /* Check if the view responds to that mouse event */
+            guard responder.doesRespondToMouseEvent(at: position) else {
+                continue
+            }
+            
+            return responder
         }
         
         return nil
