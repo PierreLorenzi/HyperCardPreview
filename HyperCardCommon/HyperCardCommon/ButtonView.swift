@@ -169,6 +169,9 @@ public class ButtonView: View, MouseResponder {
         hiliteProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = (self.button.style == .transparent || self.button.style == .oval) ? .refreshWithNewShape : .refresh
         })
+        button.selectedItemProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = .refresh
+        })
         
     }
     
@@ -600,6 +603,24 @@ public class ButtonView: View, MouseResponder {
     
     public func respondToMouseEvent(_ mouseEvent: MouseEvent, at position: Point) {
         
+    }
+    
+    /// Little hack to allow the Cocoa view to display a contextual menu for us
+    public var popupItems: [HString]? {
+        if button.style == .popup {
+            return self.menuItems
+        }
+        return nil
+    }
+    
+    /// Little hack to allow the Cocoa view to display a contextual menu for us
+    public var selectedIndex: Int {
+        get {
+            return self.button.selectedItem
+        }
+        set {
+            self.button.selectedItem = newValue
+        }
     }
     
 }

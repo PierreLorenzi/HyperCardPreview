@@ -101,6 +101,9 @@ public class FieldView: View, MouseResponder {
         field.scrollProperty.startNotifications(for: self, by: {
             [unowned self] in if self.field.style == .scrolling { self.refreshNeedProperty.value = .refresh }
         })
+        richTextProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
+        })
         isUpArrowClickedProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = .refresh
         })

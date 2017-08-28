@@ -109,11 +109,61 @@ class DocumentView: NSView, NSMenuDelegate {
         let browserPosition = extractPosition(from: event)
         let responder = document.browser.findViewRespondingToMouseEvent(at: browserPosition)
         
+        /* Special case for a pop-up button (works with a little hack)  */
+        if let button = responder as? ButtonView, let items = button.popupItems, items.count > 0 {
+            self.displayPopupMenu(withItemNames: items, button: button, event: event)
+            return
+        }
+        
         /* Save it */
         self.mouseDownResponder = responder
         
         /* Call it with the event */
         responder?.respondToMouseEvent(.mouseDown, at: browserPosition)
+        
+    }
+    
+    private var popupButton: ButtonView? = nil
+    
+    private func displayPopupMenu(withItemNames itemNames: [HString], button: ButtonView, event: NSEvent) {
+        
+        /* Create the menu */
+        let menu = NSMenu(title: "Pop Up Menu")
+        
+        var index = 0
+        
+        for itemName in itemNames {
+            
+            /* Create a menu item */
+            let menuItem = NSMenuItem(title: itemName.description, action: #selector(DocumentView.selectPopupItem(_:)), keyEquivalent: "")
+            menuItem.target = self
+            menuItem.tag = index
+            
+            /* Add it to the menu */
+            menu.addItem(menuItem)
+            
+            index += 1
+            
+        }
+        
+        /* Select the right item */
+        menu.item(at: button.selectedIndex)?.state = NSOnState
+        
+        /* Display the menu */
+        self.popupButton = button
+        NSMenu.popUpContextMenu(menu, with: event, for: self)
+        
+    }
+    
+    @objc private func selectPopupItem(_ sender: AnyObject) {
+        
+        /* Select the right item in the button */
+        let menuItem = sender as! NSMenuItem
+        let index = menuItem.tag
+        self.popupButton?.selectedIndex = index
+        
+        /* Forget the button */
+        self.popupButton = nil
         
     }
     
