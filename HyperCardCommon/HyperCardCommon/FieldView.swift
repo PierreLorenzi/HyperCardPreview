@@ -23,7 +23,7 @@ private let FieldLineComposition: ImageComposition = { (a: inout UInt32, b: UInt
 }
 
 private let ScrollWidth = 17
-private let ScrollButtonHeight = 15
+private let ScrollButtonHeight = 16
 private let ScrollKnobHeight = 16
 
 private let ScrollUpButtonImage = MaskedImage(named: "scroll up arrow")!
@@ -367,8 +367,7 @@ public class FieldView: View, MouseResponder {
             /* Draw active scroll if necessary */
             let scrollRange = self.scrollRange
             if scrollRange > 0 {
-                let scrollFactor: Double = Double(field.scroll) / Double(scrollRange)
-                FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scrollFactor: scrollFactor)
+                FieldView.drawActiveScroll(in: drawing, rectangle: field.rectangle, scroll: field.scroll, scrollRange: scrollRange)
             }
             
         default:
@@ -400,52 +399,83 @@ public class FieldView: View, MouseResponder {
         /* Left scroll border */
         drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: 1, height: rectangle.height))
         
-        /* Up scroll border */
-        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top + ScrollButtonHeight, width: ScrollWidth, height: 1))
-        
-        /* Down scroll border */
-        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight - 1, width: ScrollWidth, height: 1))
-        
-        /* Draw the arrow buttons */
-        guard rectangle.height > 2 * ScrollButtonHeight else {
+        /* Don't draw the arrows if the field is too short (minus one because it is until the borders merge) */
+        guard rectangle.height >= 2 * ScrollButtonHeight - 1 else {
             return
         }
         
-        /* Up arrow */
+        /* Up arrow scroll border */
+        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top + ScrollButtonHeight - 1, width: ScrollWidth, height: 1))
+        
+        /* Down arrow scroll border */
+        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: 1))
+        
+        /* Up arrow icon (draw inside the borders of the button) */
         let upArrowRectangle = computeUpArrowPosition(inFieldWithRectangle: rectangle)
         let upArrowImage = isUpArrowClicked ? ScrollUpButtonClickedImage : ScrollUpButtonImage
-        drawing.drawMaskedImage(upArrowImage, position: Point(x: upArrowRectangle.x, y: upArrowRectangle.y))
+        drawing.drawMaskedImage(upArrowImage, position: Point(x: upArrowRectangle.x + 1, y: upArrowRectangle.y + 1))
         
-        /* Down arrow */
+        /* Down arrow icon (draw inside the borders of the button) */
         let downArrowRectangle = computeDownArrowPosition(inFieldWithRectangle: rectangle)
         let downArrowImage = isDownArrowClicked ? ScrollDownButtonClickedImage : ScrollDownButtonImage
-        drawing.drawMaskedImage(downArrowImage, position: Point(x: downArrowRectangle.x, y: downArrowRectangle.y))
+        drawing.drawMaskedImage(downArrowImage, position: Point(x: downArrowRectangle.x + 1, y: downArrowRectangle.y + 1))
         
     }
     
     private static func computeUpArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
         
-        return Rectangle(x: rectangle.right - ScrollWidth + 1, y: rectangle.top + 1, width: ScrollWidth - 2, height: ScrollButtonHeight)
+        /* If the field is too short to draw the arrows, it can still be clicked */
+        guard rectangle.height >= 2 * ScrollButtonHeight else {
+            return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: ScrollWidth, height: (rectangle.height + 1) / 2)
+        }
+        
+        return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: ScrollWidth, height: ScrollButtonHeight)
     }
     
     private static func computeDownArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
         
-        return Rectangle(x: rectangle.right - ScrollWidth + 1, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth - 2, height: ScrollButtonHeight)
-    }
-    
-    private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scrollFactor: Double) {
-        
-        /* Draw the background */
-        let backgroundRectangle = Rectangle(top: rectangle.top + ScrollButtonHeight + 1, left: rectangle.right - ScrollWidth + 1, bottom: rectangle.bottom - ScrollButtonHeight - 1, right: rectangle.right - 1)
-        drawing.drawPattern(ScrollPatternImage, rectangle: backgroundRectangle, offset: Point(x: -(backgroundRectangle.x % 2), y: 0))
-        
-        /* Draw the knob */
-        if backgroundRectangle.height >= ScrollKnobHeight {
-            let scrollRange = backgroundRectangle.height - ScrollKnobHeight
-            let knobOffset = Int(scrollFactor * Double(scrollRange))
-            drawing.drawBorderedRectangle(Rectangle(x: backgroundRectangle.x, y: backgroundRectangle.y + knobOffset, width: backgroundRectangle.width, height: ScrollKnobHeight))
+        /* If the field is too short to draw the arrows, it can still be clicked */
+        guard rectangle.height >= 2 * ScrollButtonHeight else {
+            return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: rectangle.height / 2)
         }
         
+        return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: ScrollButtonHeight)
+    }
+    
+    private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scroll: Int, scrollRange: Int) {
+        
+        /* Check if there is a background */
+        let scrollBarRectangle = computeScrollBarRectangle(forRectangle: rectangle)
+        guard scrollBarRectangle.height > 0 else {
+            return
+        }
+        
+        /* Draw the background */
+        drawing.drawPattern(ScrollPatternImage, rectangle: scrollBarRectangle, offset: Point(x: -(scrollBarRectangle.x % 2), y: 0))
+        
+        /* Draw the knob */
+        if let knobRectangle = computeKnobRectangle(forScrollBarRectangle: scrollBarRectangle, scroll: scroll, scrollRange: scrollRange) {
+            drawing.drawBorderedRectangle(knobRectangle)
+        }
+        
+    }
+    
+    private static func computeScrollBarRectangle(forRectangle rectangle: Rectangle) -> Rectangle {
+        
+        return Rectangle(top: rectangle.top + ScrollButtonHeight, left: rectangle.right - ScrollWidth + 1, bottom: rectangle.bottom - ScrollButtonHeight, right: rectangle.right - 1)
+    }
+    
+    private static func computeKnobRectangle(forScrollBarRectangle scrollBarRectangle: Rectangle, scroll: Int, scrollRange: Int) -> Rectangle? {
+        
+        /* If the knob doesn't fit in the scoll bar, it is not drawn */
+        guard scrollBarRectangle.height >= ScrollKnobHeight else {
+            return nil
+        }
+        
+        /* Compute the position of the knob */
+        let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+        let knobOffset = knobRange * scroll / scrollRange
+        return Rectangle(x: scrollBarRectangle.x, y: scrollBarRectangle.y + knobOffset, width: scrollBarRectangle.width, height: ScrollKnobHeight)
     }
     
     private func drawText(in drawing: Drawing, content: RichText, lineLayouts: [LineLayout]) {
@@ -606,6 +636,16 @@ public class FieldView: View, MouseResponder {
     }
     
     private func respondToMouseDown(at position: Point) {
+        
+        /* The field must be scrolling */
+        guard field.style == .scrolling else {
+            return
+        }
+        
+        /* The position must be in the scroll area */
+        guard position.x > field.rectangle.right - ScrollWidth else {
+            return
+        }
         
         /* The field must have an active scroll */
         let scrollRange = self.scrollRange
