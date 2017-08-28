@@ -166,7 +166,7 @@ public class ButtonView: View {
         condensedFontProperty.dependsOn(button.textStyleProperty)
         
         /* drawing dependencies */
-        hiliteProperty.startNotifications(for: self.refreshNeedProperty, by: {
+        hiliteProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = (self.button.style == .transparent || self.button.style == .oval) ? .refreshWithNewShape : .refresh
         })
         

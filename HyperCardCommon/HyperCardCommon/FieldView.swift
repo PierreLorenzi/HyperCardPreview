@@ -80,10 +80,10 @@ public class FieldView: View {
         lineLayoutsProperty.dependsOn(richTextProperty)
         
         /* Listen to visual changes */
-        field.scrollProperty.startNotifications(for: self.refreshNeedProperty, by: {
+        field.scrollProperty.startNotifications(for: self, by: {
             [unowned self] in if self.field.style == .scrolling { self.refreshNeedProperty.value = .refresh }
         })
-        richTextProperty.startNotifications(for: self.refreshNeedProperty, by: {
+        richTextProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
         })
         
