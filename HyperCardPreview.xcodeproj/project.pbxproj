@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C0A99D31E75CD0F00548D88 /* HyperCardPreviewQL.qlgenerator in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6C9E6D601E75C10800BBF925 /* HyperCardPreviewQL.qlgenerator */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6C0A99D51E75CD5100548D88 /* HyperCardCommon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6C26B8C61E6D7520006C314B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8C51E6D7520006C314B /* AppDelegate.swift */; };
 		6C26B8C81E6D7520006C314B /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8C71E6D7520006C314B /* Document.swift */; };
@@ -27,19 +26,19 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6C6C43021F55BF1700AF579D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6CB025451F4ED75700B57D87;
+			remoteInfo = HyperCardCommonTests;
+		};
 		6C9E6A9A1E75BCCE00BBF925 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6C9E6A8B1E75BCCD00BBF925;
 			remoteInfo = HyperCardCommon;
-		};
-		6C9E6D5F1E75C10800BBF925 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6C9E6D5B1E75C10800BBF925 /* HyperCardPreviewQL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6C9E6D4C1E75C10800BBF925;
-			remoteInfo = HyperCardPreviewQL;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -50,7 +49,6 @@
 			dstPath = ../Library/QuickLook;
 			dstSubfolderSpec = 6;
 			files = (
-				6C0A99D31E75CD0F00548D88 /* HyperCardPreviewQL.qlgenerator in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 1;
 		};
@@ -79,7 +77,6 @@
 		6C4FE2561E75849700E2BF12 /* Stack.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Stack.icns; sourceTree = "<group>"; };
 		6C4FE2661E75A4CE00E2BF12 /* Application.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Application.icns; sourceTree = "<group>"; };
 		6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HyperCardCommon.xcodeproj; path = HyperCardCommon/HyperCardCommon.xcodeproj; sourceTree = "<group>"; };
-		6C9E6D5B1E75C10800BBF925 /* HyperCardPreviewQL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HyperCardPreviewQL.xcodeproj; path = HyperCardPreviewQL/HyperCardPreviewQL.xcodeproj; sourceTree = "<group>"; };
 		6CADCC061F474A3C00B895FB /* VisualEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffects.swift; sourceTree = "<group>"; };
 		6CB8B9861F4B0E4E0070116D /* CollectionViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewManager.swift; sourceTree = "<group>"; };
 		6CB8B98C1F4B16BC0070116D /* CardItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CardItem.xib; sourceTree = "<group>"; };
@@ -102,7 +99,6 @@
 		6C26B8B91E6D7520006C314B = {
 			isa = PBXGroup;
 			children = (
-				6C9E6D5B1E75C10800BBF925 /* HyperCardPreviewQL.xcodeproj */,
 				6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */,
 				6C26B8C41E6D7520006C314B /* HyperCardPreview */,
 				6C26B8C31E6D7520006C314B /* Products */,
@@ -151,14 +147,7 @@
 			isa = PBXGroup;
 			children = (
 				6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		6C9E6D5C1E75C10800BBF925 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				6C9E6D601E75C10800BBF925 /* HyperCardPreviewQL.qlgenerator */,
+				6C6C43031F55BF1700AF579D /* HyperCardCommonTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -217,10 +206,6 @@
 					ProductGroup = 6C9E6A971E75BCCD00BBF925 /* Products */;
 					ProjectRef = 6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */;
 				},
-				{
-					ProductGroup = 6C9E6D5C1E75C10800BBF925 /* Products */;
-					ProjectRef = 6C9E6D5B1E75C10800BBF925 /* HyperCardPreviewQL.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -230,18 +215,18 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		6C6C43031F55BF1700AF579D /* HyperCardCommonTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = HyperCardCommonTests.xctest;
+			remoteRef = 6C6C43021F55BF1700AF579D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = HyperCardCommon.framework;
 			remoteRef = 6C9E6A9A1E75BCCE00BBF925 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		6C9E6D601E75C10800BBF925 /* HyperCardPreviewQL.qlgenerator */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = HyperCardPreviewQL.qlgenerator;
-			remoteRef = 6C9E6D5F1E75C10800BBF925 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
