@@ -146,8 +146,7 @@ class Document: NSDocument {
         
         view.document = self
         
-        browser.refresh()
-        refresh()
+        goToCard(at: 0, transition: .none)
     }
     
     func showCards(_ sender: AnyObject) {
@@ -158,7 +157,7 @@ class Document: NSDocument {
             /* Go to the selected card */
             let selectionIndexes = collectionView.selectionIndexes
             if let index = selectionIndexes.first {
-                goToPage(at: index)
+                goToCard(at: index, transition: .none)
             }
             
             /* Animate the card view appearing */
@@ -187,7 +186,7 @@ class Document: NSDocument {
     func warnCardWasSelected(atIndex index: Int, withImage thumbnailImage: CGImage?) {
         
         /* When a thumbnail is selected, go to the card and hide the card list */
-        self.browser.cardIndex = index
+        goToCard(at: index, transition: .none)
         
         /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
         DispatchQueue.main.async {
@@ -444,27 +443,54 @@ class Document: NSDocument {
         
     }
     
+    enum Transition {
+        case none
+        case forward
+        case backward
+    }
+    
     /// Move to a card with a visual effect
-    func goToPage(at index: Int, advance: Bool = true) {
-        let oldImage = browser.image
+    func goToCard(at index: Int, transition: Transition) {
+        let possibleOldImage = (transition != .none) ? browser.image : nil
         
         /* Stop refresh */
         self.willRefreshBrowser = true
-        
         browser.cardIndex = index
         browser.refresh()
-        self.applyVisualEffect(from: oldImage, advance: advance)
         
-        /* Start refresh */
+        /* Move to the card */
+        if let oldImage = possibleOldImage, transition != .none {
+            self.applyVisualEffect(from: oldImage, advance: transition == .forward)
+        }
+        else {
+            self.refresh()
+        }
+        
+        /* Restart refresh */
         self.willRefreshBrowser = false
+        
+        /* Update the title of the window */
+        self.windowControllers[0].window!.title = self.displayName
+    }
+    
+    override var displayName: String! {
+        get {
+            guard let browser = self.browser else {
+                return super.displayName
+            }
+            return "\(super.displayName!)   \(browser.cardIndex + 1) / \(browser.stack.cards.count)"
+        }
+        set {
+            super.displayName = newValue
+        }
     }
     
     func goToFirstPage(_ sender: AnyObject) {
-        self.goToPage(at: 0, advance: false)
+        self.goToCard(at: 0, transition: .backward)
     }
     
     func goToLastPage(_ sender: AnyObject) {
-        self.goToPage(at: browser.stack.cards.count-1, advance: false)
+        self.goToCard(at: browser.stack.cards.count-1, transition: .forward)
     }
     
     func goToNextPage(_ sender: AnyObject) {
@@ -473,7 +499,7 @@ class Document: NSDocument {
         if cardIndex == browser.stack.cards.count {
             cardIndex = 0
         }
-        self.goToPage(at: cardIndex)
+        self.goToCard(at: cardIndex, transition: .forward)
     }
     
     func goToPreviousPage(_ sender: AnyObject) {
@@ -482,7 +508,7 @@ class Document: NSDocument {
         if cardIndex == -1 {
             cardIndex = browser.stack.cards.count - 1
         }
-        self.goToPage(at: cardIndex, advance: false)
+        self.goToCard(at: cardIndex, transition: .backward)
     }
     
     func displayOnlyBackground(_ sender: AnyObject) {
