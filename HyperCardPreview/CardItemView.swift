@@ -14,6 +14,10 @@ class CardItemView: NSView {
     
     let imageLayer: CALayer
     
+    weak var document: Document!
+    
+    var index = -1
+    
     required init?(coder: NSCoder) {
         
         /* Create the image layer */
@@ -67,6 +71,44 @@ class CardItemView: NSView {
         /* Display the image */
         imageLayer.contents = image
         
+    }
+    
+    func displaySelected(_ selected: Bool) {
+        
+        if selected {
+            self.layer!.backgroundColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8)
+        }
+        else {
+            self.layer!.backgroundColor = nil
+        }
+        
+    }
+    
+    var hasRespondedToMagnify = false
+    
+    override func magnify(with event: NSEvent) {
+        
+        if event.phase == .began {
+            hasRespondedToMagnify = false
+            return
+        }
+        
+        /* If the user demagnifies the view, show the card list behind */
+        if event.magnification > -0.05 && !hasRespondedToMagnify {
+            document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
+            hasRespondedToMagnify = true
+        }
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+        
+        /* Detect double-clicks */
+        if event.clickCount == 2 {
+            document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
+            return
+        }
+        
+        super.mouseUp(with: event)
     }
     
 }

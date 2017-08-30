@@ -165,27 +165,30 @@ class Document: NSDocument {
         
         /* Check if the thumbnails are managed */
         if self.collectionViewManager == nil {
-            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack, didSelectCard: {
-                [unowned self] (index: Int, thumbnailImage: CGImage?) in
-                
-                /* When a thumbnail is selected, go to the card and hide the card list */
-                self.browser.cardIndex = index
-                
-                /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
-                DispatchQueue.main.async {
-                    [unowned self] in
-                    let image = (thumbnailImage == nil) ? nil : NSImage(cgImage: thumbnailImage!, size: NSZeroSize)
-                    self.animateCardAppearing(atIndex: index, withImage: image)
-                }
-                
-            })
+            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack, document: self)
         }
         
         /* Display the card list */
-        self.collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+        let selectionIndexSet = Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)])
+        self.collectionView.selectionIndexPaths = selectionIndexSet
+        self.collectionView.scrollToItems(at: selectionIndexSet, scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
         
         /* Hide the card */
         self.animateCardDisappearing()
+        
+    }
+    
+    func warnCardWasSelected(atIndex index: Int, withImage thumbnailImage: CGImage?) {
+        
+        /* When a thumbnail is selected, go to the card and hide the card list */
+        self.browser.cardIndex = index
+        
+        /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
+        DispatchQueue.main.async {
+            [unowned self] in
+            let image = (thumbnailImage == nil) ? nil : NSImage(cgImage: thumbnailImage!, size: NSZeroSize)
+            self.animateCardAppearing(atIndex: index, withImage: image)
+        }
         
     }
     

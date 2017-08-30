@@ -10,15 +10,15 @@ import Cocoa
 import HyperCardCommon
 
 
-public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionViewDelegate {
+class CollectionViewManager: NSObject, NSCollectionViewDataSource {
     
     private let collectionView: NSCollectionView
     
     private let browser: Browser
     
-    private let didSelectCard: (Int, CGImage?) -> ()
-    
     private let thumbnailSize: Size
+    
+    private weak var document: Document!
     
     private var thumbnails: [CGImage?]
     
@@ -30,11 +30,11 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private static let itemIdentifier = "item"
     
-    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int, CGImage?) -> ()) {
+    init(collectionView: NSCollectionView, stack: Stack, document: Document) {
         self.collectionView = collectionView
         self.browser = Browser(stack: stack)
-        self.didSelectCard = didSelectCard
         self.thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: browser.image.width, cardHeight: browser.image.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
+        self.document = document
         self.thumbnails = [CGImage?](repeating: nil, count: stack.cards.count)
         self.renderingQueue = DispatchQueue(label: "CollectionViewManager Rendering Queue")
         self.renderingPriorities = [Int](repeating: 0, count: stack.cards.count)
@@ -45,9 +45,6 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         let nib = NSNib(nibNamed: "CardItem", bundle: nil)
         collectionView.register(nib, forItemWithIdentifier: CollectionViewManager.itemIdentifier)
         collectionView.dataSource = self
-        collectionView.delegate = self
-        
-        collectionView.selectItems(at: Set<IndexPath>([IndexPath(item: 0, section: 0)]), scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
     }
     
     private static func computeThumbnailSize(cardWidth: Int, cardHeight: Int, thumbnailSize: NSSize) -> Size {
@@ -71,6 +68,10 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         let item = self.collectionView.makeItem(withIdentifier: CollectionViewManager.itemIdentifier, for: indexPath)
         let view = item.view as! CardItemView
         
+        /* Set-up the callback parameters */
+        view.document = document
+        view.index = indexPath.item
+                
         if let image = thumbnails[indexPath.item] {
             view.displayImage(image)
         }
@@ -130,13 +131,6 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         
         return context.makeImage()!
-    }
-    
-    public func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
-        
-        let index = indexPaths.first!.item
-        self.didSelectCard(index, thumbnails[index])
-        
     }
     
 }
