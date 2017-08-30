@@ -73,6 +73,7 @@
             </view>
             <connections>
                 <outlet property="delegate" destination="-2" id="0bl-1N-x8E"/>
+                <outlet property="initialFirstResponder" destination="bJd-nU-ThL" id="4YI-QP-vHr"/>
             </connections>
             <point key="canvasLocation" x="132.5" y="161.5"/>
         </window>
