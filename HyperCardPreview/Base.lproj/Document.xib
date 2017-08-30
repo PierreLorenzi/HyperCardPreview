@@ -42,7 +42,7 @@
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="br9-VN-GvK">
                                         <size key="itemSize" width="100" height="100"/>
-                                        <edgeInsets key="sectionInset" left="10" right="10" top="20" bottom="0.0"/>
+                                        <edgeInsets key="sectionInset" left="15" right="10" top="20" bottom="0.0"/>
                                     </collectionViewFlowLayout>
                                     <color key="primaryBackgroundColor" red="0.7224460244178772" green="0.80964922904968262" blue="0.93857163190841675" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </collectionView>
