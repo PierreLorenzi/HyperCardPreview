@@ -152,8 +152,14 @@ class Document: NSDocument {
     
     func showCards(_ sender: AnyObject) {
         
-        /* If the card list is already visible, hide it and stay at the same card */
+        /* If the card list is already visible, hide it and go to the selected card */
         guard self.collectionViewSuperview.isHidden else {
+            
+            /* Go to the selected card */
+            let selectionIndexes = collectionView.selectionIndexes
+            if let index = selectionIndexes.first {
+                goToPage(at: index)
+            }
             
             /* Animate the card view appearing */
             let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
@@ -200,6 +206,7 @@ class Document: NSDocument {
             /* At the end, hide the card list */
             [unowned self] in
             self.collectionViewSuperview.isHidden = true
+            self.view.window!.makeFirstResponder(self.view)
         })
     }
     
@@ -212,7 +219,10 @@ class Document: NSDocument {
         let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
         let image = NSImage(cgImage: createScreenImage(from: browser.cgimage), size: imageSize)
         let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
-        self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {})
+        self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {
+            [unowned self] in
+            self.collectionView.window!.makeFirstResponder(self.collectionView)
+        })
         
     }
     
