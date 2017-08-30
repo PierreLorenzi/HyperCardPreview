@@ -13,10 +13,15 @@ import Cocoa
 class CardItemView: NSView {
     
     let imageLayer: CALayer
+    var selectionLayer: CALayer? = nil
     
     weak var document: Document!
     
     var index = -1
+    
+    static let selectionMargin: CGFloat = 10.0
+    
+    static let selectionColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8)
     
     required init?(coder: NSCoder) {
         
@@ -59,7 +64,7 @@ class CardItemView: NSView {
         /* Compute the size of the image to fit it proportionaly */
         let pixelImageWidth = CGFloat(image.width)
         let pixelImageHeight = CGFloat(image.height)
-        let factor = min( self.bounds.width / pixelImageWidth, self.bounds.height / pixelImageHeight )
+        let factor = min( (self.bounds.width - 2.0*CardItemView.selectionMargin) / pixelImageWidth, (self.bounds.height - 2.0*CardItemView.selectionMargin) / pixelImageHeight )
         let imageWidth = pixelImageWidth * factor
         let imageHeight = pixelImageHeight * factor
         
@@ -76,12 +81,39 @@ class CardItemView: NSView {
     func displaySelected(_ selected: Bool) {
         
         if selected {
-            self.layer!.backgroundColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8)
+            
+            /* Do not re-create a layer if there is already one */
+            guard self.selectionLayer == nil else {
+                return
+            }
+            
+            let layer = buildSelectionLayer()
+            self.selectionLayer = layer
+            self.layer!.insertSublayer(layer, below: imageLayer)
         }
         else {
-            self.layer!.backgroundColor = nil
+            if let layer = self.selectionLayer {
+                layer.removeFromSuperlayer()
+                self.selectionLayer = nil
+            }
         }
         
+    }
+    
+    func buildSelectionLayer() -> CALayer {
+        
+        /* Create the layer */
+        let layer = CALayer()
+        
+        /* Position it around the image */
+        let imageFrame = imageLayer.frame
+        layer.frame = NSRect(x: imageFrame.origin.x - CardItemView.selectionMargin, y: imageFrame.origin.y - CardItemView.selectionMargin, width: imageFrame.size.width + 2.0 * CardItemView.selectionMargin, height: imageFrame.size.height + 2.0 * CardItemView.selectionMargin)
+        
+        /* Set appearance */
+        layer.backgroundColor = CardItemView.selectionColor
+        layer.cornerRadius = CardItemView.selectionMargin
+        
+        return layer
     }
     
     var hasRespondedToMagnify = false

@@ -50,8 +50,8 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource {
     private static func computeThumbnailSize(cardWidth: Int, cardHeight: Int, thumbnailSize: NSSize) -> Size {
         
         /* Find the scale that makes the image fit both vertically and horizontally */
-        let scaleX = thumbnailSize.width / CGFloat(cardWidth)
-        let scaleY = thumbnailSize.height / CGFloat(cardHeight)
+        let scaleX = (thumbnailSize.width - 2.0 * CardItemView.selectionMargin) / CGFloat(cardWidth)
+        let scaleY = (thumbnailSize.height - 2.0 * CardItemView.selectionMargin) / CGFloat(cardHeight)
         let scale = min(scaleX, scaleY)
         
         /* Scale the stack size */

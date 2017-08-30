@@ -225,7 +225,8 @@ class Document: NSDocument {
         /* If it is visible, start the animation from the thumbnail */
         if isCardVisible {
             let thumbnailFrame = self.collectionView.frameForItem(at: cardIndex)
-            return self.collectionView.convert(thumbnailFrame, to: nil)
+            let imageFrame = NSRect(x: thumbnailFrame.origin.x + CardItemView.selectionMargin, y: thumbnailFrame.origin.y + CardItemView.selectionMargin, width: thumbnailFrame.size.width - 2.0 * CardItemView.selectionMargin, height: thumbnailFrame.size.height - 2.0 * CardItemView.selectionMargin)
+            return self.collectionView.convert(imageFrame, to: nil)
         }
         
         /* Elsewhere, start the animation from the center of the window */
