@@ -13,40 +13,63 @@ import Cocoa
 class CardItemView: NSView {
     
     let imageLayer: CALayer
+    
+    let titleLayer: CATextLayer
+    
     var selectionLayer: CALayer? = nil
     
     weak var document: Document!
     
-    var index = -1
+    var index = -1 {
+        didSet {
+            self.titleLayer.string = "\(index + 1)"
+        }
+    }
     
     static let selectionMargin: CGFloat = 10.0
     
     static let selectionColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8)
     
+    static let titleHeight: CGFloat = 12.0
+    
     required init?(coder: NSCoder) {
         
-        /* Create the image layer */
+        /* Create the layers */
         imageLayer = CALayer()
+        titleLayer = CATextLayer()
         
         /* Init with the requested size */
         super.init(coder: coder)
         
-        /* Set-up us as layer */
+        /* Set-up us self as layer */
         let layer = CALayer()
         layer.isOpaque = true
         self.layer = layer
         self.wantsLayer = true
+        
+        /* Add the sublayers */
         layer.addSublayer(imageLayer)
+        layer.addSublayer(titleLayer)
         
         /* Resize the image */
         imageLayer.frame = self.bounds
         imageLayer.autoresizingMask = [.layerHeightSizable, .layerWidthSizable]
         
-        /* Give the layer a shadow */
+        /* Give the image a shadow */
         imageLayer.shadowOffset = NSSize(width: 1, height: -2)
         imageLayer.shadowRadius = 2
         imageLayer.shadowColor = CGColor(red: CGFloat(0.0), green: CGFloat(0.0), blue: CGFloat(0.0), alpha: CGFloat(1.0))
         imageLayer.shadowOpacity = 0.8
+        
+        /* Resize the title */
+        titleLayer.frame = NSRect(x: self.bounds.origin.x, y: self.bounds.origin.y, width: self.bounds.size.width, height: CardItemView.titleHeight)
+        titleLayer.autoresizingMask = [.layerWidthSizable, .layerMaxYMargin]
+        
+        /* Give the title an appearance */
+        titleLayer.alignmentMode = kCAAlignmentCenter
+        titleLayer.font = NSFont.systemFont(ofSize: 10.0)
+        titleLayer.fontSize = 10.0
+        titleLayer.foregroundColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
         
     }
     
