@@ -44,7 +44,7 @@
                                         <size key="itemSize" width="100" height="100"/>
                                         <edgeInsets key="sectionInset" left="10" right="10" top="20" bottom="0.0"/>
                                     </collectionViewFlowLayout>
-                                    <color key="primaryBackgroundColor" red="0.13328680396080017" green="0.088113255798816681" blue="0.59855324029922485" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="primaryBackgroundColor" red="0.7224460244178772" green="0.80964922904968262" blue="0.93857163190841675" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </collectionView>
                             </subviews>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

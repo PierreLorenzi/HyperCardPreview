@@ -16,11 +16,11 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private let browser: Browser
     
-    private let didSelectCard: (Int, NSImage?) -> ()
+    private let didSelectCard: (Int, CGImage?) -> ()
     
     private let thumbnailSize: Size
     
-    private var thumbnails: [NSImage?]
+    private var thumbnails: [CGImage?]
     
     private let renderingQueue: DispatchQueue
     
@@ -30,12 +30,12 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     
     private static let itemIdentifier = "item"
     
-    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int, NSImage?) -> ()) {
+    public init(collectionView: NSCollectionView, stack: Stack, didSelectCard: @escaping (Int, CGImage?) -> ()) {
         self.collectionView = collectionView
         self.browser = Browser(stack: stack)
         self.didSelectCard = didSelectCard
         self.thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: browser.image.width, cardHeight: browser.image.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
-        self.thumbnails = [NSImage?](repeating: nil, count: stack.cards.count)
+        self.thumbnails = [CGImage?](repeating: nil, count: stack.cards.count)
         self.renderingQueue = DispatchQueue(label: "CollectionViewManager Rendering Queue")
         self.renderingPriorities = [Int](repeating: 0, count: stack.cards.count)
         
@@ -69,12 +69,13 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
     public func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         
         let item = self.collectionView.makeItem(withIdentifier: CollectionViewManager.itemIdentifier, for: indexPath)
+        let view = item.view as! CardItemView
         
         if let image = thumbnails[indexPath.item] {
-            item.imageView!.image = image
+            view.displayImage(image)
         }
         else {
-            item.imageView!.image = nil
+            view.displayImage(nil)
             
             /* Ask to draw the item. If the item is selected, make it draw first because
              it smoothes the animation when displaying the card list */
@@ -96,7 +97,7 @@ public class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSColl
                 slf.browser.cardIndex = cardIndex
                 slf.browser.refresh()
                 let thumbnail = slf.createThumbnail(from: slf.browser.cgimage)
-                slf.thumbnails[cardIndex] = NSImage(cgImage: thumbnail, size: NSZeroSize)
+                slf.thumbnails[cardIndex] = thumbnail
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])
                 

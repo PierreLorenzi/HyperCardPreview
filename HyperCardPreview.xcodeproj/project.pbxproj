@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6C0A99D51E75CD5100548D88 /* HyperCardCommon.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6C1763401F57218C006E72C7 /* CardItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C17633F1F57218C006E72C7 /* CardItemView.swift */; };
 		6C26B8C61E6D7520006C314B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8C51E6D7520006C314B /* AppDelegate.swift */; };
 		6C26B8C81E6D7520006C314B /* Document.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8C71E6D7520006C314B /* Document.swift */; };
 		6C26B8CB1E6D7520006C314B /* Document.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6C26B8C91E6D7520006C314B /* Document.xib */; };
@@ -65,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6C17633F1F57218C006E72C7 /* CardItemView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardItemView.swift; sourceTree = "<group>"; };
 		6C26B8C21E6D7520006C314B /* HyperCardPreview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HyperCardPreview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C26B8C51E6D7520006C314B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6C26B8C71E6D7520006C314B /* Document.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Document.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */,
 				6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */,
 				6CB8B98C1F4B16BC0070116D /* CardItem.xib */,
+				6C17633F1F57218C006E72C7 /* CardItemView.swift */,
 				6C4FE2661E75A4CE00E2BF12 /* Application.icns */,
 				6C4FE2561E75849700E2BF12 /* Stack.icns */,
 				6C26B8D11E6D7520006C314B /* Info.plist */,
@@ -254,6 +257,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6C26B8C81E6D7520006C314B /* Document.swift in Sources */,
+				6C1763401F57218C006E72C7 /* CardItemView.swift in Sources */,
 				6C3682AE1E735EFF00EDF16D /* ScriptBorderView.swift in Sources */,
 				6CADCC071F474A3C00B895FB /* VisualEffects.swift in Sources */,
 				6C26B8DB1E6D7577006C314B /* DocumentView.swift in Sources */,

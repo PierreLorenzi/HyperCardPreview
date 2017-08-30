@@ -166,7 +166,7 @@ class Document: NSDocument {
         /* Check if the thumbnails are managed */
         if self.collectionViewManager == nil {
             self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: file.stack, didSelectCard: {
-                [unowned self] (index: Int, thumbnailImage: NSImage?) in
+                [unowned self] (index: Int, thumbnailImage: CGImage?) in
                 
                 /* When a thumbnail is selected, go to the card and hide the card list */
                 self.browser.cardIndex = index
@@ -174,7 +174,8 @@ class Document: NSDocument {
                 /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
                 DispatchQueue.main.async {
                     [unowned self] in
-                    self.animateCardAppearing(atIndex: index, withImage: thumbnailImage)
+                    let image = (thumbnailImage == nil) ? nil : NSImage(cgImage: thumbnailImage!, size: NSZeroSize)
+                    self.animateCardAppearing(atIndex: index, withImage: image)
                 }
                 
             })

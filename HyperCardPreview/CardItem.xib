@@ -11,14 +11,13 @@
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <viewController id="7Sd-tH-n6N" customClass="NSCollectionViewItem">
             <connections>
-                <outlet property="imageView" destination="ui0-q8-fuK" id="sQN-id-GCa"/>
-                <outlet property="view" destination="ui0-q8-fuK" id="iEx-l3-aRy"/>
+                <outlet property="view" destination="Nu3-vB-7Lf" id="Q25-9v-hAo"/>
             </connections>
         </viewController>
-        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" id="ui0-q8-fuK">
-            <rect key="frame" x="0.0" y="0.0" width="48" height="48"/>
+        <customView id="Nu3-vB-7Lf" customClass="CardItemView" customModule="HyperCardPreview" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="163" height="96"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="1FK-nR-hUO"/>
-        </imageView>
+            <point key="canvasLocation" x="70.5" y="170"/>
+        </customView>
     </objects>
 </document>
