@@ -32,6 +32,12 @@ public class HyperCardFile: ClassicFile {
         if self.parsedData.stack.privateAccess {
             
             /* We must have a password to decrypt the header */
+            if let decodedHeader = hackEncryptedHeader() {
+                self.decodedHeader = decodedHeader
+                return
+            }
+            
+            /* We must have a password to decrypt the header */
             guard let password = possiblePassword else {
                 throw StackError.missingPassword
             }
@@ -53,6 +59,90 @@ public class HyperCardFile: ClassicFile {
             throw StackError.corrupted
         }
         
+    }
+    
+    private func hackEncryptedHeader() -> Data? {
+        
+        /* Find the first integer used to XOR the header */
+        guard var x = hackFirstXor() else {
+            return nil
+        }
+        
+        /* Constants */
+        let encodedDataOffset = 0x18
+        let encodedDataLength = 0x32
+        
+        /* Get the encoded data */
+        let dataSlice = self.dataFork![encodedDataOffset..<(encodedDataOffset + encodedDataLength)]
+        var data = Data(dataSlice)
+        
+        /* XOR the encoded data */
+        for i in stride(from: 0, through: encodedDataLength - 4, by: 2) {
+            
+            /* XOR x with the data */
+            data[i]   ^= UInt8(truncatingBitPattern: x >> 24)
+            data[i+1] ^= UInt8(truncatingBitPattern: x >> 16)
+            data[i+2] ^= UInt8(truncatingBitPattern: x >> 8)
+            data[i+3] ^= UInt8(truncatingBitPattern: x)
+            
+            /* Rehash each time */
+            x = hashNumber(x)
+        }
+        
+        return data
+        
+    }
+    
+    private func hackFirstXor() -> Int? {
+    
+        /* Get the first XORed integer */
+        let xoredInteger = self.dataFork!.readUInt32(at: 0x18)
+        
+        /* The initial value of the integer is the STAK size. XOR it with the STAK size so we have
+         the value used to XOR the integer */
+        let stackBlockSize = self.dataFork!.readUInt32(at: 0x0)
+        let xor = xoredInteger ^ stackBlockSize
+        
+        /* The XOR is equal to a result x = x ^ (hashNumber(x) >> 16). We have to find x. As the
+         second part of the XOR is only on the last 16 bits, the first 16 bits of the integer
+         are the first 16 bits of x. We have to try all possibilities for the last 16 bits. */
+        let first16Bits = xor & 0xFFFF_0000
+        
+        for i in 0..<Int(UInt16.max) {
+            
+            /* Build x */
+            let value = first16Bits | i
+            
+            /* Apply the transform to x */
+            let transformedValue = value ^ (hashNumber(value) >> 16)
+            
+            /* Check if we have found the right value */
+            if transformedValue == xor && isFirstXorGood(value) {
+                return value
+            }
+            
+        }
+        
+        return nil
+    }
+    
+    private func isFirstXorGood(_ value: Int) -> Bool {
+        
+        /* We have to check one field in the decrypted header to see if it is "expected". The
+         most restricted value in the decrypted header is the userLevel. */
+        
+        var hash = value
+        
+        /* Apply the hash as many times as it would be applied for a decryption of the user level */
+        for _ in 0..<23 {
+            hash = hashNumber(hash)
+        }
+        
+        /* Check the user level */
+        let xoredUserLevel = self.dataFork!.readUInt16(at: 0x48)
+        let userLevel = xoredUserLevel ^ (hash & 0xFFFF)
+        
+        return (userLevel >= 0 && userLevel <= 5)
     }
     
     private func decryptHeader(withPassword password: HString) -> Data? {
