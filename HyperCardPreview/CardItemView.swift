@@ -20,9 +20,14 @@ class CardItemView: NSView {
     
     weak var document: Document!
     
-    var index = -1 {
-        didSet {
-            self.titleLayer.string = "\(index + 1)"
+    var index = -1
+    
+    var title: String {
+        get {
+            return (self.titleLayer.string as? String) ?? ""
+        }
+        set {
+            self.titleLayer.string = newValue
         }
     }
     
@@ -70,6 +75,7 @@ class CardItemView: NSView {
         titleLayer.font = NSFont.systemFont(ofSize: 10.0)
         titleLayer.fontSize = 10.0
         titleLayer.foregroundColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1.0)
+        titleLayer.truncationMode = kCATruncationEnd
         
     }
     

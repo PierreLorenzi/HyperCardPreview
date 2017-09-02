@@ -74,6 +74,8 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
         /* Set-up the callback parameters */
         view.document = document
         view.index = indexPath.item
+        let cardName = self.browser.stack.cards[indexPath.item].name
+        view.title = "\(cardName != "" ? cardName.description : "\(indexPath.item + 1)")"
                 
         if let image = thumbnails[indexPath.item] {
             view.displayImage(image)
