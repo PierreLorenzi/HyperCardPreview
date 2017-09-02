@@ -22,7 +22,7 @@ class Document: NSDocument, NSAnimationDelegate {
     
     @IBOutlet weak var view: DocumentView!
     
-    @IBOutlet weak var collectionView: NSCollectionView!
+    @IBOutlet weak var collectionView: CollectionView!
     @IBOutlet weak var collectionViewSuperview: NSView!
     @IBOutlet weak var imageView: NSImageView!
     
@@ -145,6 +145,7 @@ class Document: NSDocument, NSAnimationDelegate {
         })
         
         view.document = self
+        collectionView.document = self
         
         goToCard(at: 0, transition: .none)
     }

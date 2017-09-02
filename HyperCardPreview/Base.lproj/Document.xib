@@ -37,7 +37,7 @@
                             <rect key="frame" x="1" y="1" width="505" height="411"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <collectionView ambiguous="YES" selectable="YES" allowsEmptySelection="NO" id="f7C-AD-bBg">
+                                <collectionView ambiguous="YES" selectable="YES" allowsEmptySelection="NO" id="f7C-AD-bBg" customClass="CollectionView" customModule="HyperCardPreview" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="505" height="411"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" id="br9-VN-GvK">

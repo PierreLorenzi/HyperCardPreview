@@ -39,6 +39,18 @@ class DocumentView: NSView, NSMenuDelegate {
     
     override func keyDown(with event: NSEvent) {
         
+        /* Enter Key / Return Key */
+        if let characters = event.charactersIgnoringModifiers {
+            let character = characters.utf16[characters.utf16.indices.first!]
+            
+            /* Check if the character is return or enter */
+            if (character == 13 || character == 3){
+                
+                document.showCards(self)
+                return
+            }
+        }
+        
         /* Arrow keys */
         if event.modifierFlags.rawValue & NSEventModifierFlags.numericPad.rawValue != 0 {
             
