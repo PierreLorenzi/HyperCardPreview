@@ -20,7 +20,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     
     private weak var document: Document!
     
-    private var thumbnails: [CGImage?]
+    var thumbnails: [CGImage?]
     
     private let renderingQueue: DispatchQueue
     

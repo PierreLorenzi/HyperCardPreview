@@ -173,7 +173,7 @@ class CardItemView: NSView {
         
         /* If the user demagnifies the view, show the card list behind */
         if event.magnification > 0.05 && !hasRespondedToMagnify {
-            document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
+            document.warnCardWasSelected(atIndex: index)
             hasRespondedToMagnify = true
         }
     }
@@ -182,7 +182,7 @@ class CardItemView: NSView {
         
         /* Detect double-clicks */
         if event.clickCount == 2 {
-            document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
+            document.warnCardWasSelected(atIndex: index)
         }
         
         super.mouseUp(with: event)

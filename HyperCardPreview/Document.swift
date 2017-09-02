@@ -185,7 +185,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
     }
     
-    func warnCardWasSelected(atIndex index: Int, withImage thumbnailImage: CGImage?) {
+    func warnCardWasSelected(atIndex index: Int) {
         
         /* When a thumbnail is selected, go to the card and hide the card list */
         goToCard(at: index, transition: .none)
@@ -193,6 +193,7 @@ class Document: NSDocument, NSAnimationDelegate {
         /* Animate the thumbnail becoming the card view. Don't do it now because we're in a callback */
         DispatchQueue.main.async {
             [unowned self] in
+            let thumbnailImage = self.collectionViewManager?.thumbnails[index]
             let image = (thumbnailImage == nil) ? nil : NSImage(cgImage: thumbnailImage!, size: NSZeroSize)
             self.animateCardAppearing(atIndex: index, withImage: image)
         }

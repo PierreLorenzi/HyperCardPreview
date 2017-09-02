@@ -24,10 +24,7 @@ class CollectionView: NSCollectionView {
             if (character == 13 || character == 3){
                 
                 /* Display the selected card */
-                let item = self.item(at: self.selectionIndexPaths.first!)
-                let itemView = item?.view
-                let cardItemView = itemView as! CardItemView
-                self.document.warnCardWasSelected(atIndex: cardItemView.index, withImage: cardItemView.imageLayer.contents as! CGImage?)
+                self.document.warnCardWasSelected(atIndex: self.selectionIndexPaths.first!.item)
                 return
             }
         }
