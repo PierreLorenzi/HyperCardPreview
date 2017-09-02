@@ -183,7 +183,6 @@ class CardItemView: NSView {
         /* Detect double-clicks */
         if event.clickCount == 2 {
             document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
-            return
         }
         
         super.mouseUp(with: event)
