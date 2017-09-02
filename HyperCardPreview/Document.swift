@@ -177,6 +177,7 @@ class Document: NSDocument {
         let selectionIndexSet = Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)])
         self.collectionView.selectionIndexPaths = selectionIndexSet
         self.collectionView.scrollToItems(at: selectionIndexSet, scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+        self.collectionViewManager!.selectedIndex = self.browser.cardIndex
         
         /* Hide the card */
         self.animateCardDisappearing()

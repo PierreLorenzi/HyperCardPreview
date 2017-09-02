@@ -10,7 +10,7 @@ import Cocoa
 import HyperCardCommon
 
 
-class CollectionViewManager: NSObject, NSCollectionViewDataSource {
+class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionViewDelegate {
     
     private let collectionView: NSCollectionView
     
@@ -27,6 +27,8 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource {
     private var renderingPriorities: [Int]
     
     private var currentPriority = 0
+    
+    var selectedIndex = -1
     
     private static let itemIdentifier = "item"
     
@@ -45,6 +47,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource {
         let nib = NSNib(nibNamed: "CardItem", bundle: nil)
         collectionView.register(nib, forItemWithIdentifier: CollectionViewManager.itemIdentifier)
         collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     private static func computeThumbnailSize(cardWidth: Int, cardHeight: Int, thumbnailSize: NSSize) -> Size {
@@ -76,7 +79,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource {
             view.displayImage(image)
         }
         else {
-            view.displayImage(nil)
+            view.displayLoadingThumbnail(forCardWidth: browser.image.width, height: browser.image.height)
             
             /* Ask to draw the item. If the item is selected, make it draw first because
              it smoothes the animation when displaying the card list */
@@ -117,7 +120,20 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource {
             }
         }
         
+        /* Check selection because when the items are reloaded, the selection is lost. */
+        if collectionView.selectionIndexPaths.count == 0 {
+            collectionView.selectionIndexPaths = Set<IndexPath>(arrayLiteral: IndexPath(item: self.selectedIndex, section: 0))
+        }
+        if indexPath.item == self.selectedIndex && !item.isSelected {
+            item.isSelected = true
+        }
+        
         return item
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        
+        selectedIndex = indexPaths.first!.item
     }
     
     private func createThumbnail(from image: CGImage) -> CGImage {

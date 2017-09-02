@@ -73,20 +73,27 @@ class CardItemView: NSView {
         
     }
     
-    func displayImage(_ possibleImage: CGImage?) {
+    func displayImage(_ image: CGImage) {
         
         /* Do not animate */
         CATransaction.setDisableActions(true)
         
-        /* If there is not image, display nothing */
-        guard let image = possibleImage else {
-            imageLayer.contents = nil
-            return
+        /* Layout the image */
+        imageLayer.frame = computeImageFrame(forCardWidth: image.width, height: image.height)
+        if let layer = self.selectionLayer {
+            layer.frame = computeSelectionFrame(forImageFrame: imageLayer.frame)
         }
         
+        /* Display the image */
+        imageLayer.contents = image
+        
+    }
+    
+    private func computeImageFrame(forCardWidth width: Int, height: Int) -> NSRect {
+        
         /* Compute the size of the image to fit it proportionaly */
-        let pixelImageWidth = CGFloat(image.width)
-        let pixelImageHeight = CGFloat(image.height)
+        let pixelImageWidth = CGFloat(width)
+        let pixelImageHeight = CGFloat(height)
         let factor = min( (self.bounds.width - 2.0*CardItemView.selectionMargin) / pixelImageWidth, (self.bounds.height - 2.0*CardItemView.selectionMargin) / pixelImageHeight )
         let imageWidth = pixelImageWidth * factor
         let imageHeight = pixelImageHeight * factor
@@ -94,10 +101,27 @@ class CardItemView: NSView {
         /* Layout the image at the center */
         let imageX = self.bounds.width / 2 - imageWidth / 2
         let imageY = self.bounds.height / 2 - imageHeight / 2
-        imageLayer.frame = NSRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
+        return NSRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
         
-        /* Display the image */
-        imageLayer.contents = image
+    }
+    
+    private func computeSelectionFrame(forImageFrame imageFrame: NSRect) -> NSRect {
+        
+        return NSRect(x: imageFrame.origin.x - CardItemView.selectionMargin, y: imageFrame.origin.y - CardItemView.selectionMargin, width: imageFrame.size.width + 2.0 * CardItemView.selectionMargin, height: imageFrame.size.height + 2.0 * CardItemView.selectionMargin)
+        
+    }
+    
+    func displayLoadingThumbnail(forCardWidth width: Int, height: Int) {
+        
+        /* Layout the image */
+        imageLayer.frame = computeImageFrame(forCardWidth: width, height: height)
+        if let layer = self.selectionLayer {
+            layer.frame = computeSelectionFrame(forImageFrame: imageLayer.frame)
+        }
+        
+        /* Display no image */
+        CATransaction.setDisableActions(true)
+        imageLayer.contents = nil
         
     }
     
@@ -129,8 +153,7 @@ class CardItemView: NSView {
         let layer = CALayer()
         
         /* Position it around the image */
-        let imageFrame = imageLayer.frame
-        layer.frame = NSRect(x: imageFrame.origin.x - CardItemView.selectionMargin, y: imageFrame.origin.y - CardItemView.selectionMargin, width: imageFrame.size.width + 2.0 * CardItemView.selectionMargin, height: imageFrame.size.height + 2.0 * CardItemView.selectionMargin)
+        layer.frame = computeSelectionFrame(forImageFrame: imageLayer.frame)
         
         /* Set appearance */
         layer.backgroundColor = CardItemView.selectionColor
