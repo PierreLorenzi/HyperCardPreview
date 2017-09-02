@@ -13,7 +13,7 @@ import QuickLook
 
 
 
-class Document: NSDocument {
+class Document: NSDocument, NSAnimationDelegate {
     
     var file: HyperCardFile!
     var browser: Browser!
@@ -252,23 +252,31 @@ class Document: NSDocument {
         self.imageView.image = image
         self.imageView.isHidden = false
         
-        /* Animate the transition to the final frame */
-        DispatchQueue.main.async {
-            [unowned self] in
-            
-            NSAnimationContext.beginGrouping()
-            NSAnimationContext.current().completionHandler = {
-                [unowned self] in
-                
-                /* At the end of the animation, hide the image view */
-                onCompletion()
-                self.imageView.isHidden = true
-            }
-            
-            /* Change the frame */
-            self.imageView.animator().frame = finalFrame
-            NSAnimationContext.endGrouping()
+        /* Store the end block */
+        self.actionAfterAnimation = onCompletion
+        
+        /* Launch the animation */
+        let animationInfo: [String: Any] = [
+            NSViewAnimationTargetKey: self.imageView,
+            NSViewAnimationStartFrameKey: NSValue(rect: initialFrame),
+            NSViewAnimationEndFrameKey: NSValue(rect: finalFrame)
+        ]
+        let animation = NSViewAnimation(viewAnimations: [animationInfo])
+        animation.delegate = self
+        animation.duration = 0.2
+        animation.start()
+        
+    }
+    
+    private var actionAfterAnimation: (() -> Void)? = nil
+    
+    func animationDidEnd(_ animation: NSAnimation) {
+        
+        if let onCompletion = self.actionAfterAnimation {
+            onCompletion()
+            self.actionAfterAnimation = nil
         }
+        self.imageView.isHidden = true
         
     }
     

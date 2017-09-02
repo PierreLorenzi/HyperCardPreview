@@ -172,7 +172,7 @@ class CardItemView: NSView {
         }
         
         /* If the user demagnifies the view, show the card list behind */
-        if event.magnification > -0.05 && !hasRespondedToMagnify {
+        if event.magnification > 0.05 && !hasRespondedToMagnify {
             document.warnCardWasSelected(atIndex: index, withImage: self.imageLayer.contents as! CGImage?)
             hasRespondedToMagnify = true
         }
