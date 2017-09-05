@@ -41,12 +41,40 @@ class DocumentView: NSView, NSMenuDelegate {
         
         /* Enter Key / Return Key */
         if let characters = event.charactersIgnoringModifiers {
-            let character = characters.utf16[characters.utf16.indices.first!]
+            let character = Int(characters.utf16[characters.utf16.indices.first!])
             
             /* Check if the character is return or enter */
             if (character == 13 || character == 3){
                 
                 document.showCards(self)
+                return
+            }
+            
+            /* Page Down */
+            if character == NSPageDownFunctionKey {
+                
+                document.goToNextPage(self)
+                return
+            }
+            
+            /* Page Up */
+            if character == NSPageUpFunctionKey {
+                
+                document.goToPreviousPage(self)
+                return
+            }
+            
+            /* Begin */
+            if character == NSBeginFunctionKey || character == NSHomeFunctionKey {
+                
+                document.goToFirstPage(self)
+                return
+            }
+            
+            /* End */
+            if character == NSEndFunctionKey {
+                
+                document.goToLastPage(self)
                 return
             }
         }
