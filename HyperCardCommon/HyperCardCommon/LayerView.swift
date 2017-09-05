@@ -16,8 +16,55 @@ public class LayerView: View, ClipableView {
         self.layer = layer
     }
     
-    public override var rectangle: Rectangle {
-        return Rectangle(top: 0, left: 0, bottom: 10000, right: 10000)
+    public override var rectangle: Rectangle? {
+        
+        /* Check if the layer is visible */
+        guard layer.showPict else {
+            return nil
+        }
+        
+        /* Get the image */
+        guard let image = layer.image else {
+            return nil
+        }
+        
+        /* Get the rectangles of both image layers */
+        let imageRectangle = computeLayerRectangle(image.image)
+        let maskRectangle = computeLayerRectangle(image.mask)
+        
+        /* Merge both rectangles */
+        switch (imageRectangle, maskRectangle) {
+            
+        case (.some(let rectangle1), .some(let rectangle2)):
+            return computeEnclosingRectangle(rectangle1, rectangle2)
+            
+        case (.some(let rectangle), nil):
+            return rectangle
+            
+        case (nil, .some(let rectangle)):
+            return rectangle
+            
+        case (nil, nil):
+            return nil
+            
+        }
+        
+    }
+    
+    private func computeLayerRectangle(_ layer: MaskedImage.Layer) -> Rectangle? {
+        
+        switch layer {
+            
+        case .clear:
+            return nil
+            
+        case .rectangular(rectangle: let rectangle):
+            return rectangle
+            
+        case .bitmap(image: _, imageRectangle: let rectangle, realRectangleInImage: _):
+            return rectangle
+        }
+        
     }
     
     public override func draw(in drawing: Drawing) {
@@ -35,23 +82,6 @@ public class LayerView: View, ClipableView {
         if let image = layer.image, layer.showPict {
             drawing.drawMaskedImage(image, position: Point(x: 0, y: 0), clipRectangle: rectangle)
         }
-    }
-    
-    public override var visible: Bool {
-        
-        if !layer.showPict {
-            return false
-        }
-        
-        guard let image = layer.image else {
-            return false
-        }
-        
-        if case .clear = image.image, case .clear = image.mask {
-            return false
-        }
-        
-        return true
     }
     
 }

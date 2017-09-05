@@ -10,8 +10,14 @@
 /// A view displaying white, used for the window background
 public class WhiteView: View, ClipableView {
     
-    public override var rectangle: Rectangle {
-        return Rectangle(top: 0, left: 0, bottom: 10000, right: 10000)
+    private let cardRectangle: Rectangle
+    
+    public init(cardRectangle: Rectangle) {
+        self.cardRectangle = cardRectangle
+    }
+    
+    public override var rectangle: Rectangle? {
+        return cardRectangle
     }
     
     public override func draw(in drawing: Drawing) {

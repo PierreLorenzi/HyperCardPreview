@@ -63,7 +63,7 @@ public class Browser {
     private var backgroundBefore: Background? = nil
     
     /// the view used to draw a white background on the window
-    private var whiteView = WhiteView()
+    private var whiteView: WhiteView
     
     /// if the white view is in the view stack
     private var isShowingWhiteView = false
@@ -111,6 +111,7 @@ public class Browser {
         self.cgdata = cgdata
         self.cgimage = RgbConverter.createImage(owningRgbData: cgdata, width: width, height: height)
         self.cgcontext = RgbConverter.createContext(forRgbData: cgdata, width: width, height: height)
+        self.whiteView = WhiteView(cardRectangle: Rectangle(x: 0, y: 0, width: width, height: height))
         
         self.areThereColors = Browser.areThereColors(inStack: stack)
         
@@ -119,8 +120,7 @@ public class Browser {
         cgcontext.scaleBy(x: 1, y: -1)
         
         /* Add a background view */
-        let windowBackgroundView = WhiteView()
-        self.appendView(windowBackgroundView)
+        self.appendView(self.whiteView)
         
         /* Build the views for the current card */
         self.rebuildViews()
@@ -205,7 +205,7 @@ public class Browser {
         
         /* Check if the views to remove are visible */
         let remainingViewCount = viewRecords.count - count
-        let needsUpdate = viewRecords[remainingViewCount ..< viewRecords.count].map({$0.view.visible}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
+        let needsUpdate = viewRecords[remainingViewCount ..< viewRecords.count].map({$0.view.rectangle != nil}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
             return b1 || b2
         })
         
@@ -225,12 +225,14 @@ public class Browser {
     
     private func markViewForRefresh(atIndex index: Int, redrawBehind: Bool) {
         
+        /* Get the view rectangle */
+        guard let dirtyRectangle = viewRecords[index].view.rectangle else {
+            return
+        }
+        
         /* Mask the view for refresh */
         viewRecords[index].willRefresh = true
         viewRecords[index].didUpdateBehind = redrawBehind
-        
-        /* Get the rectangle to update in the other views */
-        let dirtyRectangle = viewRecords[index].view.rectangle
         
         /* Refresh all the views in front */
         for i in (index+1) ..< viewRecords.count {
@@ -252,8 +254,13 @@ public class Browser {
         /* Get the view */
         let view = viewRecords[index].view
         
+        /* Get the rectangle */
+        guard let rectangle = view.rectangle else {
+            return
+        }
+        
         /* The view must intersects the dirty rect */
-        guard view.rectangle.intersects(dirtyRectangle) else {
+        guard rectangle.intersects(dirtyRectangle) else {
             return
         }
         
@@ -262,16 +269,11 @@ public class Browser {
             return
         }
         
-        /* Only mark for refresh if it is visible */
-        guard view.visible else {
-            return
-        }
-        
         /* If the view can draw sub-rectangles, mark the rectangle for refresh. Do not check the other
          views because the rectangle is already dirty */
         if view is ClipableView {
             
-            let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, view.rectangle)
+            let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, rectangle)
             var rectanglesToRefresh: [Rectangle] = viewRecords[index].rectanglesToRefresh ?? []
             rectanglesToRefresh.append(rectangleToRefresh)
             viewRecords[index].rectanglesToRefresh = rectanglesToRefresh
@@ -378,7 +380,7 @@ public class Browser {
         view.refreshNeedProperty.startNotifications(for: self, by: { [unowned self, unowned view] in
             
             /* Do not listen to updates with no effect */
-            guard view.refreshNeed != .none && view.visible else {
+            guard view.refreshNeed != .none && view.rectangle != nil else {
                 return
             }
             

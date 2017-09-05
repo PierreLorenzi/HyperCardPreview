@@ -584,12 +584,14 @@ public class ButtonView: View, MouseResponder {
         
     }
     
-    public override var rectangle: Rectangle {
+    public override var rectangle: Rectangle? {
+        
+        /* If the view is invisible, do not reserve a rectangle */
+        guard button.visible else {
+            return nil
+        }
+        
         return button.rectangle
-    }
-    
-    public override var visible: Bool {
-        return button.visible
     }
     
     public func doesRespondToMouseEvent(at position: Point) -> Bool {

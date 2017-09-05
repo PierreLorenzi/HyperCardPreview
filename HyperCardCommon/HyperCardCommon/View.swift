@@ -18,14 +18,9 @@ public class View {
     }
     public let refreshNeedProperty = Property<RefreshNeed>(.none)
     
-    /// The position of the view
-    public var rectangle: Rectangle {
-        return Rectangle(top: 0, left: 0, bottom: 0, right: 0)
-    }
-    
-    /// If the view is visible
-    public var visible: Bool {
-        return true
+    /// The position of the view. If it is absent, the view is not drawn.
+    public var rectangle: Rectangle? {
+        return nil
     }
     
     /// Draws the object on the drawing

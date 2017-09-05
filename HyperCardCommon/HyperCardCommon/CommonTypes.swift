@@ -97,6 +97,11 @@ public func computeRectangleIntersection(_ r1: Rectangle, _ r2: Rectangle) -> Re
     return Rectangle(top: max(r1.top, r2.top), left: max(r1.left, r2.left), bottom: min(r1.bottom, r2.bottom), right: min(r1.right, r2.right))
 }
 
+/// Computes the rectangle directly enclosing two rectangles
+public func computeEnclosingRectangle(_ r1: Rectangle, _ r2: Rectangle) -> Rectangle {
+    return Rectangle(top: min(r1.top, r2.top), left: min(r1.left, r2.left), bottom: max(r1.bottom, r2.bottom), right: max(r1.right, r2.right))
+}
+
 /// The possible user levels in HyperCard, that is, the protection level against edition
 public enum UserLevel: Int {
     

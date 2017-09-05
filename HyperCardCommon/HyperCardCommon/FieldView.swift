@@ -596,12 +596,14 @@ public class FieldView: View, MouseResponder {
         
     }
     
-    public override var rectangle: Rectangle {
+    public override var rectangle: Rectangle? {
+        
+        /* If the view is invisible, do not reserve a rectangle */
+        guard field.visible else {
+            return nil
+        }
+        
         return field.rectangle
-    }
-    
-    public override var visible: Bool {
-        return field.visible
     }
     
     public func doesRespondToMouseEvent(at position: Point) -> Bool {
