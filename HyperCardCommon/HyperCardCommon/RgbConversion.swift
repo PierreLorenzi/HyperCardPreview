@@ -44,27 +44,40 @@ public class RgbConverter {
         return createImage(owningRgbData: data, width: image.width, height: image.height)
     }
     
-    public static func fillRgbData(_ rawBuffer: UnsafeMutableRawPointer, withImage image: Image) {
+    public static func fillRgbData(_ rawBuffer: UnsafeMutableRawPointer, withImage image: Image, rectangle possibleRectangle: Rectangle? = nil) {
         
         /* Read the buffer as RgbColor2, so we can write two pixels at a time */
         let buffer = rawBuffer.assumingMemoryBound(to: RgbColor2.self)
         
-        var offset = 0
-        var integerIndex = 0
+        /* Compute the rectangle to update. It must be at an even pixel number because we update two pixels at a time */
+        let unevenRectangle = possibleRectangle ?? Rectangle(x: 0, y: 0, width: image.width, height: image.height)
+        let rectangle = Rectangle(top: unevenRectangle.top, left: downToMultiple(unevenRectangle.left, 2), bottom: unevenRectangle.bottom, right: upToMultiple(unevenRectangle.right, 2))
         
-        for _ in 0..<image.height {
-            for integerIndexInRow in 0..<image.integerCountInRow {
+        var offset = (rectangle.top * image.width + rectangle.left) / 2
+        var integerIndex = rectangle.top * image.integerCountInRow + rectangle.left / 32
+        
+        /* Compute the bounds of the integers */
+        let startInteger = rectangle.left / 32
+        let endInteger = upToMultiple(rectangle.right, 32) / 32
+        
+        /* Compute horizontal increments between the end of one row and the start of the next */
+        let offsetIncrement = (rectangle.left + image.width - rectangle.right) / 2
+        let integerIndexIncrement = startInteger + image.integerCountInRow - endInteger
+        
+        for _ in rectangle.top..<rectangle.bottom {
+            for integerIndexInRow in startInteger..<endInteger {
                 
                 /* Get 32 pixels */
                 let integer = Int(image.data[integerIndex])
                 integerIndex += 1
                 
                 /* Do no not copy pixels after the end of the image */
-                let bitCount = min(32, image.width - integerIndexInRow * 32)
+                let startBit = 32 - max(0, rectangle.left - integerIndexInRow * 32)
+                let endBit = 32 - min(32, rectangle.right - integerIndexInRow * 32)
                 
                 /* Copy the pixels two by two */
-                var i = bitCount - 2
-                while i >= 0 {
+                var i = startBit - 2
+                while i >= endBit {
                     let twoPixelValue = (integer >> i) & 0b11
                     let twoPixelColor = rgbColor2Table[twoPixelValue]
                     buffer[offset] = twoPixelColor
@@ -72,6 +85,10 @@ public class RgbConverter {
                     i -= 2
                 }
             }
+            
+            /* Go to the next row */
+            offset += offsetIncrement
+            integerIndex += integerIndexIncrement
         }
     }
     

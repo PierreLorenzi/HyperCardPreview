@@ -295,10 +295,11 @@ public class Browser {
         }
         
         /* Refresh the drawing */
-        let _  = self.refreshDrawing()
-        
-        /* Refresh the CGImage */
-        RgbConverter.fillRgbData(self.cgdata, withImage: self.image)
+        if let dirtyRectangle  = self.refreshDrawing() {
+            
+            /* Refresh the CGImage */
+            RgbConverter.fillRgbData(self.cgdata, withImage: self.image, rectangle: dirtyRectangle)
+        }
         
     }
     
