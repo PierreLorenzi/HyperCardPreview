@@ -295,7 +295,7 @@ public class Browser {
         }
         
         /* Refresh the drawing */
-        self.refreshDrawing()
+        let _  = self.refreshDrawing()
         
         /* Refresh the CGImage */
         RgbConverter.fillRgbData(self.cgdata, withImage: self.image)
@@ -315,16 +315,17 @@ public class Browser {
         cgcontext.flush()
         
         /* Update the black&white image */
-        self.refreshDrawing()
+        let _  = self.refreshDrawing()
         
         /* Draw the black&white image (only the black pixels, to keep the colors behind) */
         RgbConverter.fillRgbDataWithBlackPixels(self.cgdata, withImage: self.image)
         
     }
     
-    private func refreshDrawing() {
+    private func refreshDrawing() -> Rectangle? {
         
         var index = -1
+        var dirtyRectangle: Rectangle? = nil
         
         /* Draw the views */
         for viewRecord in viewRecords {
@@ -337,6 +338,7 @@ public class Browser {
                 let rectanglesToRefresh = viewRecord.rectanglesToRefresh, !viewRecord.willRefresh {
                 for rectangle in rectanglesToRefresh {
                     clipableView.draw(in: drawing, rectangle: rectangle)
+                    dirtyRectangle = computeEnclosingRectangle(dirtyRectangle, rectangle)
                 }
                 view.refreshNeed = .none
                 viewRecords[index].rectanglesToRefresh = nil
@@ -355,8 +357,10 @@ public class Browser {
             viewRecords[index].willRefresh = false
             viewRecords[index].didUpdateBehind = false
             viewRecords[index].rectanglesToRefresh = nil
+            dirtyRectangle = computeEnclosingRectangle(dirtyRectangle, view.rectangle)
         }
         
+        return dirtyRectangle
     }
     
     private func appendLayerViews(_ layer: Layer) {

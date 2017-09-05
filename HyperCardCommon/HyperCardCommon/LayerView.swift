@@ -33,21 +33,7 @@ public class LayerView: View, ClipableView {
         let maskRectangle = computeLayerRectangle(image.mask)
         
         /* Merge both rectangles */
-        switch (imageRectangle, maskRectangle) {
-            
-        case (.some(let rectangle1), .some(let rectangle2)):
-            return computeEnclosingRectangle(rectangle1, rectangle2)
-            
-        case (.some(let rectangle), nil):
-            return rectangle
-            
-        case (nil, .some(let rectangle)):
-            return rectangle
-            
-        case (nil, nil):
-            return nil
-            
-        }
+        return computeEnclosingRectangle(imageRectangle, maskRectangle)
         
     }
     
