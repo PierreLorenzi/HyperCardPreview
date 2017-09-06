@@ -161,13 +161,26 @@
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <menu key="submenu" title="Browse" id="Hsq-ld-qQh" userLabel="Browse">
                         <items>
-                            <menuItem title="Go to First Card" id="2eM-F4-Guy">
+                            <menuItem title="Go to Next Card" id="D4W-06-Z3t">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
-                                    <action selector="goToFirstPage:" target="-1" id="3lP-tt-Xw0"/>
+                                    <action selector="goToNextPage:" target="-1" id="tbn-So-epC"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Background" keyEquivalent="b" id="VPV-Jj-xPi">
+                            <menuItem title="Go to Previous Card" id="enL-s7-6Cy">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="goToPreviousPage:" target="-1" id="FRB-Be-tl8"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Show All Cards" id="JJf-ie-Vqi">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="showCards:" target="-1" id="m7V-9J-Qj2"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="tnv-Os-CdT"/>
+                            <menuItem title="Show Background" keyEquivalent="b" id="VPV-Jj-xPi">
                                 <connections>
                                     <action selector="displayOnlyBackground:" target="-1" id="HbZ-sT-zlK"/>
                                 </connections>
