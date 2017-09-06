@@ -361,6 +361,9 @@ public class Browser {
             dirtyRectangle = computeEnclosingRectangle(dirtyRectangle, view.rectangle)
         }
         
+        /* Restrain the rectangle to the card, in case there are parts outside the card rectangle */
+        dirtyRectangle = (dirtyRectangle == nil) ? nil : computeRectangleIntersection(dirtyRectangle!, Rectangle(x: 0, y: 0, width: image.width, height: image.height))
+        
         return dirtyRectangle
     }
     

@@ -135,7 +135,7 @@ public class ButtonView: View, MouseResponder {
         let iconIdentifier = button.iconIdentifier
         iconProperty = Property<MaskedImage?>(compute: {
             
-            guard iconIdentifier > 0 else {
+            guard iconIdentifier != 0 else {
                 return nil
             }
             
