@@ -210,6 +210,13 @@
                                     <action selector="displayPartScriptBorders:" target="-1" id="YMo-u9-j6B"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="iLd-Ao-gzD"/>
+                            <menuItem title="Browsing Shortcuts" id="yiB-9Y-W9y">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayShortcuts:" target="Voe-Tx-rLC" id="Yf9-zB-EOt"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
@@ -299,7 +306,7 @@
                         <items>
                             <menuItem title="HyperCardPreview Help" keyEquivalent="?" id="FKE-Sm-Kum">
                                 <connections>
-                                    <action selector="showHelp:" target="-1" id="y7X-2Q-9no"/>
+                                    <action selector="displayShortcuts:" target="Voe-Tx-rLC" id="hBd-g4-ddR"/>
                                 </connections>
                             </menuItem>
                         </items>

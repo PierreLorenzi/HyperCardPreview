@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import WebKit
 
 enum VisualEffect: Int {
     case none
@@ -24,6 +25,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @IBOutlet weak var visualEffectMenu: NSMenu!
     var selectedVisualEffect: VisualEffect = .none
+    
+    @IBOutlet var helpPanel: NSPanel!
+    @IBOutlet weak var helpView: WKWebView!
     
     @IBAction func selectVisualEffect(_ sender: Any?) {
         
@@ -43,6 +47,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let item = self.visualEffectMenu.item(at: i)!
             item.state = (item === menuItem) ? 1 : 0
         }
+        
+    }
+    
+    @IBAction func displayShortcuts(_ sender: Any) {
+        
+        /* Load the panel if necessary */
+        if helpPanel == nil {
+            
+            /* Load the nib */
+            let nib = NSNib(nibNamed: "Help", bundle: nil)
+            nib!.instantiate(withOwner: self, topLevelObjects: nil)
+            
+            /* Load the HTML content into the WebView */
+            let helpUrl = Bundle.main.url(forResource: "Shortcuts", withExtension: "html")
+            self.helpView.loadFileURL(helpUrl!, allowingReadAccessTo: helpUrl!)
+        }
+        
+        /* Open the panel */
+        helpPanel.makeKeyAndOrderFront(self)
         
     }
 
