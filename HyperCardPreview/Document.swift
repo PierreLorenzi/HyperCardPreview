@@ -181,6 +181,7 @@ class Document: NSDocument, NSAnimationDelegate {
         self.collectionViewManager!.selectedIndex = self.browser.cardIndex
         
         /* Hide the card */
+        removeScriptBorders()
         self.animateCardDisappearing()
         
     }
@@ -284,6 +285,7 @@ class Document: NSDocument, NSAnimationDelegate {
     
     /// Redraws the HyperCard view
     func refresh() {
+        removeScriptBorders()
         
         /* Update the image */
         browser.refresh()

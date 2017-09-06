@@ -204,6 +204,12 @@
                                     <action selector="displayCardInfo:" target="-1" id="PuH-tl-cFQ"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Button/Field Info" id="eGK-IE-rgd">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="displayPartScriptBorders:" target="-1" id="YMo-u9-j6B"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
