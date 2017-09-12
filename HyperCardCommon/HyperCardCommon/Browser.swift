@@ -192,7 +192,7 @@ public class Browser {
         /* Check if the background have a rectangular white mask spanning on all the window */
         if let image = currentBackground.image {
             if case MaskedImage.Layer.rectangular(rectangle: let rectangle) = image.mask {
-                if rectangle.right == image.width && rectangle.bottom == image.height {
+                if rectangle.right == self.image.width && rectangle.bottom == self.image.height {
                     return true
                 }
             }
