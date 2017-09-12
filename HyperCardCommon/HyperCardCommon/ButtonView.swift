@@ -207,9 +207,11 @@ public class ButtonView: View, MouseResponder {
             }
         }
         
-        /* Add the last line */
-        let lastLine = string[lineStart..<string.length]
-        lines.append(lastLine)
+        /* Add the last line (except if it is empty, to stick to HyperCard behavior) */
+        if lineStart != string.length {
+            let lastLine = string[lineStart..<string.length]
+            lines.append(lastLine)
+        }
         
         return lines
     }

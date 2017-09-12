@@ -187,7 +187,9 @@ class DocumentView: NSView, NSMenuDelegate {
         }
         
         /* Select the right item */
-        menu.item(at: button.selectedIndex)?.state = NSOnState
+        if button.selectedIndex >= 0 && button.selectedIndex < itemNames.count {
+            menu.item(at: button.selectedIndex)?.state = NSOnState
+        }
         
         /* Display the menu */
         self.popupButton = button
