@@ -189,6 +189,13 @@ public class Browser {
     
     private func doesBackgroundHaveWhiteMask(_ background: Background) -> Bool {
         
+        /* This function is a bad optimization, we should implement a opaque properties in views */
+        
+        /* Check if the background is visible */
+        guard background.showPict else {
+            return false
+        }
+        
         /* Check if the background have a rectangular white mask spanning on all the window */
         if let image = currentBackground.image {
             if case MaskedImage.Layer.rectangular(rectangle: let rectangle) = image.mask {
