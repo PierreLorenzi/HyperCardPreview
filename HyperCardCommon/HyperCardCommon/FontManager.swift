@@ -54,26 +54,26 @@ public class FontManager {
     private func retrieveFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont {
         
         /* Look for the font family */
-        guard let familyResource = resources.findResource(ofType: ResourceTypes.fontFamily, withIdentifier: descriptor.identifier) else {
-            return findAnyFont(forDescriptor: descriptor)
-        }
+        let familyResource = resources.findResource(ofType: ResourceTypes.fontFamily, withIdentifier: descriptor.identifier)
         
-        /* Check if a bitmap font with the right parameters is available */
-        let family = familyResource.content
-        if let existingFamilyFont = family.bitmapFonts.first(where: { $0.size == descriptor.size && $0.style == descriptor.style }) {
-            return existingFamilyFont.font
-        }
-        
-        /* If the style is not plain, look for a plain version on which to apply the style */
-        if descriptor.style != PlainTextStyle {
-            let plainDescriptor = FontDescriptor(identifier: descriptor.identifier, size: descriptor.size, style: PlainTextStyle)
-            let plainFont = retrieveFont(forDescriptor: plainDescriptor)
-            return FontDecorating.decorateFont(from: plainFont, with: descriptor.style, in: family, size: descriptor.size)
-        }
-        
-        /* Look for a vector font */
-        if let plainVectorFont = family.vectorFonts.first(where: { $0.style == PlainTextStyle }) {
-            return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(plainVectorFont.font, CGFloat(descriptor.size), nil, nil))
+        if let family = familyResource?.content {
+            
+            /* Check if a bitmap font with the right parameters is available */
+            if let existingFamilyFont = family.bitmapFonts.first(where: { $0.size == descriptor.size && $0.style == descriptor.style }) {
+                return existingFamilyFont.font
+            }
+            
+            /* Look for a vector font */
+            if let plainVectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
+                return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(plainVectorFont.font, CGFloat(descriptor.size), nil, nil))
+            }
+            
+            /* If the style is not plain, look for a plain version on which to apply the style */
+            if descriptor.style != PlainTextStyle {
+                let plainDescriptor = FontDescriptor(identifier: descriptor.identifier, size: descriptor.size, style: PlainTextStyle)
+                let plainFont = retrieveFont(forDescriptor: plainDescriptor)
+                return FontDecorating.decorateFont(from: plainFont, with: descriptor.style, in: family, size: descriptor.size)
+            }
         }
         
         /* Look for a Mac OS X font */
