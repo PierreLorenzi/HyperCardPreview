@@ -549,7 +549,9 @@ public class ButtonView: View, MouseResponder {
         
         /* Enabled / disabled */
         if !button.enabled {
-            drawing.drawRectangle(titleBackgroundRectangle, composition: BlackToGrayComposition)
+            if button.showName {
+                drawing.drawRectangle(titleBackgroundRectangle, composition: BlackToGrayComposition)
+            }
             drawing.drawRectangle(popupRectangle, composition: BlackToGrayComposition)
         }
         
