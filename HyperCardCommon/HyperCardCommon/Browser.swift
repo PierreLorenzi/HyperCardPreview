@@ -288,7 +288,7 @@ public class Browser {
         }
         
         /* Mask the view for refresh. Do not draw behind because it still has the same shape */
-        self.markViewForRefresh(atIndex: index, redrawBehind: false)
+        self.markViewForRefresh(atIndex: index, redrawBehind: view.usesXorComposition)
         
     }
     

@@ -596,6 +596,13 @@ public class ButtonView: View, MouseResponder {
         return button.rectangle
     }
     
+    public override var usesXorComposition: Bool {
+        
+        return (button.style == .transparent || button.style == .oval) &&
+        button.iconIdentifier == 0 && button.hilite
+        
+    }
+    
     public func doesRespondToMouseEvent(at position: Point) -> Bool {
         
         guard button.visible else {

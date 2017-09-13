@@ -27,6 +27,11 @@ public class View {
     public func draw(in drawing: Drawing) {
     }
     
+    /// Whether the view uses XOR composition in some pixels
+    public var usesXorComposition: Bool {
+        return false
+    }
+    
 }
 
 /// How a view must be refreshed
