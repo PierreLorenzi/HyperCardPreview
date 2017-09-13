@@ -514,7 +514,9 @@ public class ButtonView: View, MouseResponder {
         
         /* Draw the title */
         let baseLineY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - 2
+        let titleBackgroundRectangle = Rectangle(top: baseLineY - font.maximumAscent, left: rectangle.left, bottom: baseLineY + font.maximumDescent + 1, right: rectangle.left + button.titleWidth)
         if button.showName {
+            drawing.drawRectangle(titleBackgroundRectangle, composition: Drawing.MaskComposition)
             drawing.drawString(button.name, index: 0, length: nil, position: Point(x: rectangle.left + 4, y: baseLineY), font: font, clip: rectangle)
         }
         
@@ -547,6 +549,7 @@ public class ButtonView: View, MouseResponder {
         
         /* Enabled / disabled */
         if !button.enabled {
+            drawing.drawRectangle(titleBackgroundRectangle, composition: BlackToGrayComposition)
             drawing.drawRectangle(popupRectangle, composition: BlackToGrayComposition)
         }
         
