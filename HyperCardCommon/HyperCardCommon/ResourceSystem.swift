@@ -19,11 +19,23 @@ public struct ResourceSystem {
     /// Main constructor, declared to be public
     public init() {}
     
-    /// Finds a resource in the forks, respecting the order of precedence
+    /// Finds a resource by identifier in the forks, respecting the order of precedence
     public func findResource<T>(ofType type: ResourceType<T>, withIdentifier identifier: Int) -> Resource<T>? {
         for repository in repositories {
             for resource in repository.resources {
                 if let r = resource as? Resource<T>, r.type === type, r.identifier == identifier {
+                    return r
+                }
+            }
+        }
+        return nil
+    }
+    
+    /// Finds a resource by name in the forks, respecting the order of precedence
+    public func findResource<T>(ofType type: ResourceType<T>, withName name: HString) -> Resource<T>? {
+        for repository in repositories {
+            for resource in repository.resources {
+                if let r = resource as? Resource<T>, r.type === type, r.name == name {
                     return r
                 }
             }
