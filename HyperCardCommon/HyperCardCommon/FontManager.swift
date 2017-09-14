@@ -62,8 +62,8 @@ public class FontManager {
             }
             
             /* Look for a vector font */
-            if let plainVectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
-                return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(plainVectorFont.font, CGFloat(descriptor.size), nil, nil))
+            if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
+                return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(vectorFont.font, CGFloat(descriptor.size), nil, nil))
             }
         }
         
