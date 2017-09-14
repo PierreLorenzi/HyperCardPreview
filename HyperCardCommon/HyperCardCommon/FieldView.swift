@@ -497,6 +497,7 @@ public class FieldView: View, MouseResponder {
         
         let textRectangle = FieldView.computeTextRectangle(of: field)
         let contentRectangle = FieldView.computeContentRectangle(of: field)
+        let showLines = field.showLines && field.style != .scrolling
         
         if textRectangle.width == 0 || textRectangle.height == 0  {
             return
@@ -514,9 +515,9 @@ public class FieldView: View, MouseResponder {
                 let layout = lineLayouts[lineIndex]
                 baseLineY = textRectangle.top + layout.baseLineY - field.scroll
                 ascent = layout.ascent
-                descent = field.showLines ? max(layout.descent, 2) : layout.descent
+                descent = showLines ? max(layout.descent, 2) : layout.descent
             }
-            else if field.showLines {
+            else if showLines {
                 baseLineY += field.textHeight
                 descent = 2
                 ascent = 0
@@ -537,7 +538,7 @@ public class FieldView: View, MouseResponder {
             }
             
             /* Draw the line */
-            if field.showLines {
+            if showLines {
                 drawing.drawRectangle(Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right), clipRectangle: contentRectangle, composition: FieldLineComposition)
             }
             
