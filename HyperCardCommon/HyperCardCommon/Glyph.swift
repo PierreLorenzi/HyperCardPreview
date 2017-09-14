@@ -25,4 +25,20 @@ public class Glyph {
     /// The image of the character
     public var image: MaskedImage? = nil
     
+    
+    /// Not necessary, designed for lazy-loading
+    public var imageWidth: Int {
+        return image?.width ?? 0
+    }
+    
+    /// Not necessary, designed for lazy-loading
+    public var imageHeight: Int {
+        return image?.height ?? 0
+    }
+    
+    /// Not necessary, designed for lazy-loading
+    public var isThereImage: Bool {
+        return image != nil
+    }
+    
 }

@@ -46,8 +46,7 @@ public class FileGlyph: Glyph {
     private func loadImage() -> MaskedImage? {
         
         /* Get the position of the image in the resource bitmap */
-        let startOffset = font.bitmapLocationTable[index]
-        let endOffset = font.bitmapLocationTable[index+1]
+        let (startOffset, endOffset) = retrieveImageOffsets()
         
         /* If the image has a null width, there is no image */
         guard endOffset > startOffset else {
@@ -60,6 +59,28 @@ public class FileGlyph: Glyph {
         
         return MaskedImage(image: drawing.image)
         
+    }
+    
+    private func retrieveImageOffsets() -> (Int, Int) {
+        
+        let startOffset = font.bitmapLocationTable[index]
+        let endOffset = font.bitmapLocationTable[index+1]
+        
+        return (startOffset, endOffset)
+    }
+    
+    public override var imageWidth: Int {
+        let (startOffset, endOffset) = retrieveImageOffsets()
+        return endOffset - startOffset
+    }
+    
+    public override var imageHeight: Int {
+        return font.fontRectangleHeight
+    }
+    
+    public override var isThereImage: Bool {
+        let (startOffset, endOffset) = retrieveImageOffsets()
+        return endOffset > startOffset
     }
     
 }

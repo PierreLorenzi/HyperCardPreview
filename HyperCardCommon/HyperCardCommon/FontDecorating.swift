@@ -112,8 +112,8 @@ public class DecoratedGlyph: Glyph {
     private let size: Int
     private let maximumDescent: Int
     
-    private var imageWidth: Int
-    private var imageHeight: Int
+    private var decoratedImageWidth: Int
+    private var decoretedImageHeight: Int
     
     public init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
         self.baseGlyph = baseGlyph
@@ -122,8 +122,8 @@ public class DecoratedGlyph: Glyph {
         self.size = size
         self.maximumDescent = maximumDescent
         
-        self.imageWidth = baseGlyph.image?.width ?? 0
-        self.imageHeight = baseGlyph.image?.height ?? 0
+        self.decoratedImageWidth = baseGlyph.imageWidth
+        self.decoretedImageHeight = baseGlyph.imageHeight
         
         super.init()
         
@@ -139,7 +139,7 @@ public class DecoratedGlyph: Glyph {
     private func readjustMeasures() {
         
         /* Underline: if there is no image, make an image of the line under */
-        if style.underline && baseGlyph.image == nil {
+        if style.underline && !baseGlyph.isThereImage {
             self.imageOffset = 0
             self.imageTop = -1
             self.imageWidth = baseGlyph.width
@@ -204,6 +204,24 @@ public class DecoratedGlyph: Glyph {
             }
         }
         
+    }
+    
+    public override var imageWidth: Int {
+        get {
+            return decoratedImageWidth
+        }
+        set {
+            decoratedImageWidth = newValue
+        }
+    }
+    
+    public override var imageHeight: Int {
+        get {
+            return decoretedImageHeight
+        }
+        set {
+            decoretedImageHeight = newValue
+        }
     }
     
     private var imageLoaded = false
