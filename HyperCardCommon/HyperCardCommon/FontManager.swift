@@ -61,9 +61,11 @@ public class FontManager {
                 return existingFamilyFont.font
             }
             
-            /* Look for a vector font */
-            if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
-                return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(vectorFont.font, CGFloat(descriptor.size), nil, nil))
+            /* Look for a vector font (during tests, it appeared that it is only loaded for plain fonts) */
+            if descriptor.style == PlainTextStyle {
+                if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
+                    return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(vectorFont.font, CGFloat(descriptor.size), nil, nil))
+                }
             }
         }
         
