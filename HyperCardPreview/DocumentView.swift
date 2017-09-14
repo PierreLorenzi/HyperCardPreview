@@ -398,7 +398,7 @@ class DocumentView: NSView, NSMenuDelegate {
         /* If the scroll begins, check if it is horizontal or vertical */
         if event.phase == .began {
             hasRespondedToScroll = false
-            scrollIsVertical = abs(event.scrollingDeltaX) < abs(event.scrollingDeltaY)
+            scrollIsVertical = abs(event.scrollingDeltaX) / 2.0 < abs(event.scrollingDeltaY)
             return
         }
         
