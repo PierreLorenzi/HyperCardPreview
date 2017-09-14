@@ -45,9 +45,10 @@ public class BitmapFont {
     
     /// Compute the width of a string in that font, in pixels, from the origin of the first
     /// glyph to the origin of the glyph after the last glyph
-    public func computeSizeOfString(_ string: HString) -> Int {
+    public func computeSizeOfString(_ string: HString, index: Int = 0, length possibleLength: Int? = nil) -> Int {
         var size = 0
-        for i in 0..<string.length {
+        let length = possibleLength ?? string.length - index
+        for i in index..<(index + length) {
             let characterIndex = Int(string[i])
             let glyph = glyphs[characterIndex]
             size += glyph.width

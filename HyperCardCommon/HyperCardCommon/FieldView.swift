@@ -569,11 +569,10 @@ public class FieldView: View, MouseResponder {
             
             /* Get the extent of the current run */
             let runCharacterEndIndex = (attributeIndex == content.attributes.count-1) ? layout.textRange.upperBound : min(layout.textRange.upperBound,content.attributes[attributeIndex+1].index)
-            let runString = content.string[characterIndex..<runCharacterEndIndex]
             let runFont = content.attributes[attributeIndex].font
-            let runWidth = runFont.computeSizeOfString(runString)
+            let runWidth = runFont.computeSizeOfString(content.string, index: characterIndex, length: runCharacterEndIndex - characterIndex)
             
-            drawing.drawString(runString, position: point, font: runFont, clip: contentRectangle)
+            drawing.drawString(content.string, index: characterIndex, length: runCharacterEndIndex - characterIndex, position: point, font: runFont, clip: contentRectangle)
             
             characterIndex = runCharacterEndIndex
             point.x += runWidth
