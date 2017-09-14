@@ -1,6 +1,8 @@
 **[Screenshot](http://www.hostingpics.net/viewer.php?id=554516HyperCardPreview.png)**
 
-**[Download latest version](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.1.0/HyperCardPreview.app.zip)**
+**[Download v1.1](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.1.0/HyperCardPreview.app.zip)**
+
+Mac OS 10.12 minimum
 
 This application displays HyperCard stacks in Mac OS X.
 
@@ -8,16 +10,13 @@ The binary format of HyperCard stacks has been retro-engineered by numerous peop
 
 HyperCardPreview only displays the stacks, it does not edit them, it does not execute them. To do that you have to use a emulator: SheepShaver, Basilisk or vMac.
 
-But it makes the seeing the stacks an experience of the old days. The look is very close to the original one, with bitmap fonts, old-style scrollers, aliasing. In the Home stacks the look is accurate to the pixel, as in most Apple stacks, but less so if there are colors, and not at all if there are XCMDs.
-
+It makes the seeing the stacks an experience of the old days. The look is very close to the original one, with bitmap fonts, old-style scrollers, aliasing. In the Home stacks the look is accurate to the pixel, as in most Apple stacks, but less so if there are colors, and not at all if there are XCMDs.
 
 Features:
 - very accurate display,
 - declares the stacks as its own files, so they have an icon again in the Finder.
 - can open stacks from both HyperCard v 2.x and v 1.x.
 - can open stacks with private access by hacking the encryption.
-
-Mac OS 10.12 minimum
 
 
 ## How does it work?
