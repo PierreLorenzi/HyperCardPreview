@@ -80,7 +80,7 @@ class DocumentView: NSView, NSMenuDelegate {
         }
         
         /* Arrow keys */
-        if event.modifierFlags.rawValue & NSEventModifierFlags.numericPad.rawValue != 0 {
+        if event.modifierFlags.rawValue & NSEvent.ModifierFlags.numericPad.rawValue != 0 {
             
             guard let characters = event.charactersIgnoringModifiers else {
                 return
@@ -91,7 +91,7 @@ class DocumentView: NSView, NSMenuDelegate {
                 return
             }
             
-            let character = Int(characters.utf16[String.UTF16View.Index(0)])
+            let character = Int(characters.utf16[String.UTF16View.Index(encodedOffset: 0)])
             
             switch character {
             case NSRightArrowFunctionKey:
@@ -113,9 +113,9 @@ class DocumentView: NSView, NSMenuDelegate {
     
     override func flagsChanged(with event: NSEvent) {
         
-        if event.modifierFlags.contains(NSEventModifierFlags.command) && event.modifierFlags.contains(NSEventModifierFlags.option) {
+        if event.modifierFlags.contains(NSEvent.ModifierFlags.command) && event.modifierFlags.contains(NSEvent.ModifierFlags.option) {
             
-            if event.modifierFlags.contains(NSEventModifierFlags.shift) {
+            if event.modifierFlags.contains(NSEvent.ModifierFlags.shift) {
                 if !partScriptDisplayed {
                     partScriptDisplayed = true
                     NSApp.sendAction(#selector(Document.displayPartScriptBorders(_:)), to: nil, from: nil)
@@ -188,7 +188,7 @@ class DocumentView: NSView, NSMenuDelegate {
         
         /* Select the right item */
         if button.selectedIndex >= 0 && button.selectedIndex < itemNames.count {
-            menu.item(at: button.selectedIndex)?.state = NSOnState
+            menu.item(at: button.selectedIndex)?.state = NSControl.StateValue.on
         }
         
         /* Display the menu */
@@ -396,7 +396,7 @@ class DocumentView: NSView, NSMenuDelegate {
     override func scrollWheel(with event: NSEvent) {
         
         /* If the scroll begins, check if it is horizontal or vertical */
-        if event.phase == .began {
+        if event.phase == NSEvent.Phase.began {
             hasRespondedToScroll = false
             scrollIsVertical = abs(event.scrollingDeltaX) / 2.0 < abs(event.scrollingDeltaY)
             return
@@ -428,7 +428,7 @@ class DocumentView: NSView, NSMenuDelegate {
     
     override func magnify(with event: NSEvent) {
         
-        if event.phase == .began {
+        if event.phase == NSEvent.Phase.began {
             hasRespondedToMagnify = false
             return
         }
@@ -449,4 +449,4 @@ class DocumentView: NSView, NSMenuDelegate {
             }        
     }
     
-}
+} 

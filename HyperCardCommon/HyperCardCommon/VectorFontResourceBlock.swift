@@ -27,7 +27,7 @@ public class VectorFontResourceBlock: ResourceBlock {
         let nsdata = NSData(data: data)
         let dataProvider = CGDataProvider(data: nsdata)
         
-        return CGFont(dataProvider!)
+        return CGFont(dataProvider!)!
     }
     
 }

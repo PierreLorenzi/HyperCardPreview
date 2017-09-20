@@ -80,10 +80,10 @@ public class HyperCardFile: ClassicFile {
         for i in stride(from: 0, through: encodedDataLength - 4, by: 2) {
             
             /* XOR x with the data */
-            data[i]   ^= UInt8(truncatingBitPattern: x >> 24)
-            data[i+1] ^= UInt8(truncatingBitPattern: x >> 16)
-            data[i+2] ^= UInt8(truncatingBitPattern: x >> 8)
-            data[i+3] ^= UInt8(truncatingBitPattern: x)
+            data[i]   ^= UInt8(truncatingIfNeeded: x >> 24)
+            data[i+1] ^= UInt8(truncatingIfNeeded: x >> 16)
+            data[i+2] ^= UInt8(truncatingIfNeeded: x >> 8)
+            data[i+3] ^= UInt8(truncatingIfNeeded: x)
             
             /* Rehash each time */
             x = hashNumber(x)
@@ -191,10 +191,10 @@ public class HyperCardFile: ClassicFile {
             x = hashNumber(x)
             
             /* XOR x with the data */
-            data[i]   ^= UInt8(truncatingBitPattern: x >> 24)
-            data[i+1] ^= UInt8(truncatingBitPattern: x >> 16)
-            data[i+2] ^= UInt8(truncatingBitPattern: x >> 8)
-            data[i+3] ^= UInt8(truncatingBitPattern: x)
+            data[i]   ^= UInt8(truncatingIfNeeded: x >> 24)
+            data[i+1] ^= UInt8(truncatingIfNeeded: x >> 16)
+            data[i+2] ^= UInt8(truncatingIfNeeded: x >> 8)
+            data[i+3] ^= UInt8(truncatingIfNeeded: x)
         }
         
         return data
@@ -249,10 +249,10 @@ public class HyperCardFile: ClassicFile {
         var string: HString = "    "
         
         /* Write the characters */
-        string[0] = HChar(truncatingBitPattern: x >> 24)
-        string[1] = HChar(truncatingBitPattern: x >> 16)
-        string[2] = HChar(truncatingBitPattern: x >> 8)
-        string[3] = HChar(truncatingBitPattern: x)
+        string[0] = HChar(truncatingIfNeeded: x >> 24)
+        string[1] = HChar(truncatingIfNeeded: x >> 16)
+        string[2] = HChar(truncatingIfNeeded: x >> 8)
+        string[3] = HChar(truncatingIfNeeded: x)
         
         return string
     }

@@ -44,8 +44,8 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
         super.init()
         
         /* Register as data source */
-        let nib = NSNib(nibNamed: "CardItem", bundle: nil)
-        collectionView.register(nib, forItemWithIdentifier: CollectionViewManager.itemIdentifier)
+        let nib = NSNib(nibNamed: NSNib.Name(rawValue: "CardItem"), bundle: nil)
+        collectionView.register(nib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: CollectionViewManager.itemIdentifier))
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -68,7 +68,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     
     public func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         
-        let item = self.collectionView.makeItem(withIdentifier: CollectionViewManager.itemIdentifier, for: indexPath)
+        let item = self.collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: CollectionViewManager.itemIdentifier), for: indexPath)
         let view = item.view as! CardItemView
         
         /* Set-up the callback parameters */
@@ -140,7 +140,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     
     private func createThumbnail(from image: CGImage) -> CGImage {
         
-        let scale = Int(NSScreen.main()!.backingScaleFactor)
+        let scale = Int(NSScreen.main!.backingScaleFactor)
         let width = self.thumbnailSize.width * scale
         let height = self.thumbnailSize.height  * scale
         let data = RgbConverter.createRgbData(width: width, height: height)

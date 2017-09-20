@@ -126,7 +126,7 @@ public struct SearchHash {
         /* Check the following values */
         for i in 3..<code.count {
             
-            guard isValuePresent(code[i] + code[i-1]<<5 + code[i-2]<<10 + code[i-3]<<15) else {
+            guard isValuePresent(code[i] + code[i-1]*32 + code[i-2]*1024 + code[i-3]*32768) else {
                 return false
             }
         }

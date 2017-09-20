@@ -172,7 +172,7 @@ class CardItemView: NSView {
     
     override func magnify(with event: NSEvent) {
         
-        if event.phase == .began {
+        if event.phase == NSEvent.Phase.began {
             hasRespondedToMagnify = false
             return
         }

@@ -112,7 +112,7 @@ public extension SearchHash {
         var ints = [UInt32]()
         let count = length / 4
         for i in 0..<count {
-            ints.append(UInt32(truncatingBitPattern: data.readUInt32(at: i*4)))
+            ints.append(UInt32(truncatingIfNeeded: data.readUInt32(at: i*4)))
         }
         self.init(ints: ints, valueCount: valueCount)
     }

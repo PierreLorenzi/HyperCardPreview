@@ -23,7 +23,7 @@ class InfoPanelController {
         /* Don't wrap in script */
         scriptView.enclosingScrollView!.hasHorizontalScroller = true
         scriptView.isHorizontallyResizable = true
-        scriptView.autoresizingMask = NSAutoresizingMaskOptions(rawValue: NSAutoresizingMaskOptions.viewWidthSizable.rawValue | NSAutoresizingMaskOptions.viewHeightSizable.rawValue)
+        scriptView.autoresizingMask = NSView.AutoresizingMask(rawValue: NSView.AutoresizingMask.width.rawValue | NSView.AutoresizingMask.height.rawValue)
         scriptView.textContainer?.containerSize = NSSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude)
         scriptView.textContainer?.widthTracksTextView = false
         

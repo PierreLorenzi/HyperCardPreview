@@ -28,8 +28,8 @@ class Document: NSDocument, NSAnimationDelegate {
     
     private var collectionViewManager: CollectionViewManager? = nil
     
-    override var windowNibName: String? {
-        return "Document"
+    override var windowNibName: NSNib.Name? {
+        return NSNib.Name(rawValue: "Document")
     }
     
     override func read(from url: URL, ofType typeName: String) throws {
@@ -75,7 +75,7 @@ class Document: NSDocument, NSAnimationDelegate {
             let answer = alert.runModal()
             
             /* If cancel, stop */
-            guard answer == NSAlertFirstButtonReturn else {
+            guard answer == NSApplication.ModalResponse.alertFirstButtonReturn else {
                 throw HyperCardFile.StackError.wrongPassword
             }
             
@@ -150,7 +150,7 @@ class Document: NSDocument, NSAnimationDelegate {
         goToCard(at: 0, transition: .none)
     }
     
-    func showCards(_ sender: AnyObject) {
+    @objc func showCards(_ sender: AnyObject) {
         
         /* If the card list is already visible, hide it and go to the selected card */
         guard self.collectionViewSuperview.isHidden else {
@@ -177,7 +177,7 @@ class Document: NSDocument, NSAnimationDelegate {
         /* Display the card list */
         let selectionIndexSet = Set<IndexPath>([IndexPath(item: self.browser.cardIndex, section: 0)])
         self.collectionView.selectionIndexPaths = selectionIndexSet
-        self.collectionView.scrollToItems(at: selectionIndexSet, scrollPosition: NSCollectionViewScrollPosition.centeredVertically)
+        self.collectionView.scrollToItems(at: selectionIndexSet, scrollPosition: NSCollectionView.ScrollPosition.centeredVertically)
         self.collectionViewManager!.selectedIndex = self.browser.cardIndex
         
         /* Hide the card */
@@ -259,10 +259,10 @@ class Document: NSDocument, NSAnimationDelegate {
         self.actionAfterAnimation = onCompletion
         
         /* Launch the animation */
-        let animationInfo: [String: Any] = [
-            NSViewAnimationTargetKey: self.imageView,
-            NSViewAnimationStartFrameKey: NSValue(rect: initialFrame),
-            NSViewAnimationEndFrameKey: NSValue(rect: finalFrame)
+        let animationInfo: [NSViewAnimation.Key: Any] = [
+            NSViewAnimation.Key.target: self.imageView,
+            NSViewAnimation.Key.startFrame: NSValue(rect: initialFrame),
+            NSViewAnimation.Key.endFrame: NSValue(rect: finalFrame)
         ]
         let animation = NSViewAnimation(viewAnimations: [animationInfo])
         animation.delegate = self
@@ -302,7 +302,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Create a new bitmap with a context to draw on it. Make it pixel-accurate so we can
          display a very aliased image */
-        let scale = Int(NSScreen.main()!.backingScaleFactor)
+        let scale = Int(NSScreen.main!.backingScaleFactor)
         let width = image.width * scale
         let height = image.height  * scale
         let data = RgbConverter.createRgbData(width: width, height: height)
@@ -498,15 +498,15 @@ class Document: NSDocument, NSAnimationDelegate {
         }
     }
     
-    func goToFirstPage(_ sender: AnyObject) {
+    @objc func goToFirstPage(_ sender: AnyObject) {
         self.goToCard(at: 0, transition: .backward)
     }
     
-    func goToLastPage(_ sender: AnyObject) {
+    @objc func goToLastPage(_ sender: AnyObject) {
         self.goToCard(at: browser.stack.cards.count-1, transition: .forward)
     }
     
-    func goToNextPage(_ sender: AnyObject) {
+    @objc func goToNextPage(_ sender: AnyObject) {
         var cardIndex = browser.cardIndex
         cardIndex += 1
         if cardIndex == browser.stack.cards.count {
@@ -515,7 +515,7 @@ class Document: NSDocument, NSAnimationDelegate {
         self.goToCard(at: cardIndex, transition: .forward)
     }
     
-    func goToPreviousPage(_ sender: AnyObject) {
+    @objc func goToPreviousPage(_ sender: AnyObject) {
         var cardIndex = browser.cardIndex
         cardIndex -= 1
         if cardIndex == -1 {
@@ -524,25 +524,25 @@ class Document: NSDocument, NSAnimationDelegate {
         self.goToCard(at: cardIndex, transition: .backward)
     }
     
-    func displayOnlyBackground(_ sender: AnyObject) {
+    @objc func displayOnlyBackground(_ sender: AnyObject) {
         browser.displayOnlyBackground = !browser.displayOnlyBackground
         
         if let menuItem = sender as? NSMenuItem {
-            menuItem.state = browser.displayOnlyBackground ? NSOnState : NSOffState
+            menuItem.state = browser.displayOnlyBackground ? NSControl.StateValue.on : NSControl.StateValue.off
         }
         
         refresh()
     }
     
-    func displayButtonScriptBorders(_ sender: AnyObject) {
+    @objc func displayButtonScriptBorders(_ sender: AnyObject) {
         createScriptBorders(includingFields: false)
     }
     
-    func displayPartScriptBorders(_ sender: AnyObject) {
+    @objc func displayPartScriptBorders(_ sender: AnyObject) {
         createScriptBorders(includingFields: true)
     }
     
-    func hideScriptBorders(_ sender: AnyObject) {
+    @objc func hideScriptBorders(_ sender: AnyObject) {
         removeScriptBorders()
     }
     
@@ -616,15 +616,15 @@ class Document: NSDocument, NSAnimationDelegate {
         }
     }
     
-    func displayStackInfo(_ sender: AnyObject) {
+    @objc func displayStackInfo(_ sender: AnyObject) {
         displayInfo().displayStack(browser.stack)
     }
     
-    func displayBackgroundInfo(_ sender: AnyObject) {
+    @objc func displayBackgroundInfo(_ sender: AnyObject) {
         displayInfo().displayBackground(browser.currentBackground)
     }
     
-    func displayCardInfo(_ sender: AnyObject) {
+    @objc func displayCardInfo(_ sender: AnyObject) {
         displayInfo().displayCard(browser.currentCard)
     }
     
@@ -632,7 +632,7 @@ class Document: NSDocument, NSAnimationDelegate {
         removeScriptBorders()
         
         let controller = InfoPanelController()
-        Bundle.main.loadNibNamed("InfoPanel", owner: controller, topLevelObjects: nil)
+        Bundle.main.loadNibNamed(NSNib.Name(rawValue: "InfoPanel"), owner: controller, topLevelObjects: nil)
         controller.setup()
         controller.window.makeKeyAndOrderFront(nil)
         panels.append(controller)

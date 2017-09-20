@@ -719,14 +719,14 @@ public class FieldView: View, MouseResponder {
         self.ghostKnobOffset = initialOffset
         
         /* Register some parameters */
-        let initialMouseLocation = NSEvent.mouseLocation()
+        let initialMouseLocation = NSEvent.mouseLocation
         
         /* Build a timer to continuously move the ghost knob */
         let timer = Timer(timeInterval: 0.05, repeats: true, block: {
             [unowned self](timer: Timer) in
             
             /* Compute the vertical distance of the dragging */
-            let mouseLocation = NSEvent.mouseLocation()
+            let mouseLocation = NSEvent.mouseLocation
             let offsetDelta = Int(initialMouseLocation.y - mouseLocation.y)
             
             /* Apply the vertical offset to the ghost knob, while respecting the bounds */

@@ -45,7 +45,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         for i in 0..<self.visualEffectMenu.numberOfItems {
             
             let item = self.visualEffectMenu.item(at: i)!
-            item.state = (item === menuItem) ? 1 : 0
+            item.state = (item === menuItem) ? NSControl.StateValue.on : NSControl.StateValue.off
         }
         
     }
@@ -56,7 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if helpPanel == nil {
             
             /* Load the nib */
-            let nib = NSNib(nibNamed: "Help", bundle: nil)
+            let nib = NSNib(nibNamed: NSNib.Name(rawValue: "Help"), bundle: nil)
             nib!.instantiate(withOwner: self, topLevelObjects: nil)
             
             /* Load the HTML content into the WebView */

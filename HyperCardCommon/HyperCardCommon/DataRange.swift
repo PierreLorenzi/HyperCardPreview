@@ -93,7 +93,7 @@ public extension DataRange {
         
         /* Correction if the value is negative */
         if topBits == 0b11 {
-            return Int(Int16(bitPattern: UInt16(truncatingBitPattern: value)))
+            return Int(Int16(bitPattern: UInt16(truncatingIfNeeded: value)))
         }
         
         return value
@@ -143,7 +143,8 @@ public extension Data {
     
     /// Reads a big-endian unsigned 4-byte integer
     public func readUInt32(at offset: Int) -> Int {
-        return Int(self[offset]) << 24 | Int(self[offset+1]) << 16 | Int(self[offset+2]) << 8 | Int(self[offset+3])
+        /* If use multiplications because Swift tells "Expression too complex" when I use bit shifts */
+        return Int(self[offset])*16777216 | Int(self[offset+1])*65536 | Int(self[offset+2])*256 | Int(self[offset+3])
     }
     
     /// Reads a big-endian signed 4-byte integer

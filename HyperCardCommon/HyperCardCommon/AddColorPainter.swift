@@ -239,10 +239,10 @@ public class AddColorPainter {
         
         /* Draw the image */
         let cocoaContext = NSGraphicsContext(cgContext: context, flipped: true)
-        let currentContext = NSGraphicsContext.current()
-        NSGraphicsContext.setCurrent(cocoaContext)
+        let currentContext = NSGraphicsContext.current
+        NSGraphicsContext.current = cocoaContext
         image.draw(in: NSRect(x: rectangle.left, y: rectangle.top, width: rectangle.width, height: rectangle.height))
-        NSGraphicsContext.setCurrent(currentContext)
+        NSGraphicsContext.current = currentContext
         
     }
     

@@ -76,7 +76,7 @@ public class Drawing {
     /// Makes the whole drawing white
     public func clear() {
         for i in 0..<image.data.count {
-            image.data[i] = UInt32.allZeros
+            image.data[i] = UInt32(0)
         }
     }
     
@@ -201,7 +201,7 @@ public class Drawing {
     /// Fills the internal temporary buffer of the drawing with a row of a mask
     public func fillRowWithMask(_ index: Int, length: Int) {
         
-        let allOnes = ~UInt32.allZeros
+        let allOnes = ~UInt32(0)
         
         /* Check which integers are involved */
         let integerStartIndex = index / 32
