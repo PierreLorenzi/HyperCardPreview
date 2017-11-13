@@ -68,7 +68,6 @@ public class Browser {
     /// if the white view is in the view stack
     private var isShowingWhiteView = false
     
-    public let cgimage: CGImage
     private let cgdata: UnsafeMutableRawPointer
     private let cgcontext: CGContext
     
@@ -109,7 +108,6 @@ public class Browser {
         let height = stack.size.height
         let cgdata = RgbConverter.createRgbData(width: width, height: height)
         self.cgdata = cgdata
-        self.cgimage = RgbConverter.createImage(owningRgbData: cgdata, width: width, height: height)
         self.cgcontext = RgbConverter.createContext(forRgbData: cgdata, width: width, height: height)
         self.whiteView = WhiteView(cardRectangle: Rectangle(x: 0, y: 0, width: width, height: height))
         
@@ -537,6 +535,11 @@ public class Browser {
         }
         
         return content.partContent
+    }
+    
+    public func buildImage() -> CGImage {
+        
+        return RgbConverter.createImage(forRgbData: cgdata, isOwner: false, width: self.image.width, height: self.image.height)
     }
     
     public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder? {

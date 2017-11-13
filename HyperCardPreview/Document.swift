@@ -163,7 +163,7 @@ class Document: NSDocument, NSAnimationDelegate {
             
             /* Animate the card view appearing */
             let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
-            let image = NSImage(cgImage: createScreenImage(from: browser.cgimage), size: imageSize)
+            let image = NSImage(cgImage: createScreenImage(from: browser.buildImage()), size: imageSize)
             animateCardAppearing(atIndex: browser.cardIndex, withImage: image)
             
             return
@@ -220,7 +220,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Animate the image becoming the thumbnail */
         let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
-        let image = NSImage(cgImage: createScreenImage(from: browser.cgimage), size: imageSize)
+        let image = NSImage(cgImage: createScreenImage(from: browser.buildImage()), size: imageSize)
         let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
         self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {
             [unowned self] in
@@ -291,7 +291,7 @@ class Document: NSDocument, NSAnimationDelegate {
         browser.refresh()
         
         /* Create a copy of the image for the screen */
-        let screenImage = createScreenImage(from: browser.cgimage)
+        let screenImage = createScreenImage(from: browser.buildImage())
         
         /* Display the image in the layer */
         CATransaction.setDisableActions(true)
@@ -315,7 +315,7 @@ class Document: NSDocument, NSAnimationDelegate {
         /* Fill the image */
         context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
         
-        return RgbConverter.createImage(owningRgbData: data, width: width, height: height)
+        return RgbConverter.createImage(forRgbData: data, isOwner: true, width: width, height: height)
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {

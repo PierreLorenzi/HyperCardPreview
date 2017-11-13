@@ -41,7 +41,7 @@ public class RgbConverter {
         fillRgbData(data, withImage: image)
         
         /* Build the image */
-        return createImage(owningRgbData: data, width: image.width, height: image.height)
+        return createImage(forRgbData: data, isOwner: true, width: image.width, height: image.height)
     }
     
     public static func fillRgbData(_ rawBuffer: UnsafeMutableRawPointer, withImage image: Image, rectangle possibleRectangle: Rectangle? = nil) {
@@ -141,12 +141,14 @@ public class RgbConverter {
                          bitmapInfo: BitmapInfo.rawValue)!
     }
     
-    public static func createImage(owningRgbData data: UnsafeMutableRawPointer, width: Int, height: Int) -> CGImage {
+    public static func createImage(forRgbData data: UnsafeMutableRawPointer, isOwner: Bool, width: Int, height: Int) -> CGImage {
         
         let length = width * height * MemoryLayout<RgbColor>.size
-        let dataProvider = CGDataProvider(dataInfo: nil, data: data, size: length, releaseData: {
-            (_, data: UnsafeRawPointer, length: Int) in
-            data.deallocate(bytes: length, alignedTo: 0)
+        let dataProvider = CGDataProvider(dataInfo: isOwner ? data : nil, data: data, size: length, releaseData: {
+            (dataInfo: UnsafeMutableRawPointer?, data: UnsafeRawPointer, length: Int) in
+            if dataInfo != nil {
+                data.deallocate(bytes: length, alignedTo: 0)
+            }
         })!
         
         let cgimage = CGImage(

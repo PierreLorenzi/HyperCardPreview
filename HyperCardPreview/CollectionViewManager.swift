@@ -102,7 +102,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
                 
                 slf.browser.cardIndex = cardIndex
                 slf.browser.refresh()
-                let thumbnail = slf.createThumbnail(from: slf.browser.cgimage)
+                let thumbnail = slf.createThumbnail(from: slf.browser.buildImage())
                 slf.thumbnails[cardIndex] = thumbnail
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])
