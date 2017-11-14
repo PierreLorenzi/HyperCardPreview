@@ -1,6 +1,6 @@
 **[Screenshot](http://www.hostingpics.net/viewer.php?id=554516HyperCardPreview.png)**
 
-**[Download v1.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.2.0/HyperCardPreview.app.zip)**
+**[Download v1.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.2.0/HyperCardPreview.app.zip)** (November 14, 2017)
 
 Mac OS 10.12 minimum
 
