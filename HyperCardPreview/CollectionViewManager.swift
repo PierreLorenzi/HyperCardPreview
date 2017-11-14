@@ -86,7 +86,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
             /* Ask to draw the item. If the item is selected, make it draw first because
              it smoothes the animation when displaying the card list */
             currentPriority += 1
-            self.renderingPriorities[indexPath.item] = currentPriority + (item.isSelected ? 10000 : 0)
+            self.renderingPriorities[indexPath.item] = currentPriority
             
             self.renderingQueue.async {
                 [weak self] in
@@ -96,7 +96,35 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
                     return
                 }
                 
-                let cardIndex = slf.renderingPriorities.lazy.enumerated().max(by: { (x0: (Int, Int), x1: (Int, Int)) -> Bool in
+                var visibleCardIndex: Int? = nil
+                DispatchQueue.main.sync {
+                    [weak self] in
+                    
+                    guard let slf = self else {
+                        return
+                    }
+                    
+                    /* First priority: selected thumbnails */
+                    let selectedIndexPaths = slf.collectionView.selectionIndexPaths
+                    for path in selectedIndexPaths {
+                        if slf.renderingPriorities[path.item] != 0 {
+                            visibleCardIndex = path.item
+                            return
+                        }
+                    }
+                    
+                    /* Second priority: visible thumbnails */
+                    let visibleIndexPaths = slf.collectionView.indexPathsForVisibleItems()
+                    for path in visibleIndexPaths {
+                        if slf.collectionView.frameForItem(at: path.item).intersects(slf.collectionView.visibleRect) && slf.renderingPriorities[path.item] != 0 {
+                            visibleCardIndex = path.item
+                            return
+                        }
+                    }
+                    
+                }
+                
+                let cardIndex = visibleCardIndex ?? slf.renderingPriorities.lazy.enumerated().max(by: { (x0: (Int, Int), x1: (Int, Int)) -> Bool in
                     return x0.1 < x1.1
                 })!.0
                 
