@@ -1,6 +1,6 @@
 **[Screenshot](http://www.hostingpics.net/viewer.php?id=554516HyperCardPreview.png)**
 
-**[Download v1.1](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.1.0/HyperCardPreview.app.zip)**
+**[Download v1.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.2.0/HyperCardPreview.app.zip)** (November 14, 2017)
 
 Mac OS 10.12 minimum
 
@@ -43,6 +43,14 @@ Get Info of a Covered Button or Field: right-click somewhere on the card, the li
 
 
 ## Changes since version 1.0
+
+**Changes in v1.2**
+
+The application is now signed.
+
+Bug fixes in the card list.
+
+**Changes in v1.1**
 
 Now the scroll fields can be scrolled, and the pop-up buttons can be popped up.
 
