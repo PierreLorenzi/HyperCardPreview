@@ -91,7 +91,7 @@ private func listIconIdentifiers() -> [Int] {
     
     /* Find the icon identifiers */
     let iconFileNames = fileNames.filter({$0.hasPrefix(IconFilePrefix)})
-    let iconIdentifiers = iconFileNames.flatMap({ (s: String) -> Int? in
+    let iconIdentifiers = iconFileNames.compactMap({ (s: String) -> Int? in
         let scanner = Scanner(string: s)
         guard scanner.scanString(IconFilePrefix, into: nil) else {
             return nil
@@ -142,7 +142,7 @@ private let classicFontRepositoryNames: [String] = [
 
 private func loadClassicFontResources() -> [Any] {
     
-    return classicFontRepositoryNames.flatMap(loadClassicFontResources).reduce([], { (a: [Any], b: [Any]) in a+b })
+    return classicFontRepositoryNames.compactMap(loadClassicFontResources).reduce([], { (a: [Any], b: [Any]) in a+b })
     
 }
 

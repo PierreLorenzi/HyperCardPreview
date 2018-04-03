@@ -127,7 +127,7 @@ public class RgbConverter {
     public static func createRgbData(width: Int, height: Int) -> UnsafeMutableRawPointer {
         
         let length = width * height * MemoryLayout<RgbColor>.size
-        return UnsafeMutableRawPointer.allocate(bytes: length, alignedTo: 0)
+        return UnsafeMutableRawPointer.allocate(byteCount: length, alignment: 0)
     }
     
     public static func createContext(forRgbData data: UnsafeMutableRawPointer, width: Int, height: Int) -> CGContext {
@@ -147,7 +147,7 @@ public class RgbConverter {
         let dataProvider = CGDataProvider(dataInfo: isOwner ? data : nil, data: data, size: length, releaseData: {
             (dataInfo: UnsafeMutableRawPointer?, data: UnsafeRawPointer, length: Int) in
             if dataInfo != nil {
-                data.deallocate(bytes: length, alignedTo: 0)
+                data.deallocate()
             }
         })!
         

@@ -48,11 +48,11 @@ public class FileFontFamilyResource : Resource<FontFamily> {
         
         /* Load the bitmap fonts */
         let bitmapAssociations = associations.filter({ $0.size != 0 })
-        let bitmapFonts = bitmapAssociations.flatMap(self.convertAssociationToBitmapReference)
+        let bitmapFonts = bitmapAssociations.compactMap(self.convertAssociationToBitmapReference)
         
         /* Load the vector fonts */
         let vectorAssociations = associations.filter({ $0.size == 0 })
-        let vectorFonts = vectorAssociations.flatMap(self.convertAssociationToVectorReference)
+        let vectorFonts = vectorAssociations.compactMap(self.convertAssociationToVectorReference)
         
         /* Build the family */
         var family = FontFamily()

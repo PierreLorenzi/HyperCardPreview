@@ -48,7 +48,7 @@ public struct ResourceSystem {
         var list = [Resource<T>]()
         var identifiers = Set<Int>()
         for repository in repositories {
-            let repositoryList = repository.resources.flatMap( {
+            let repositoryList = repository.resources.compactMap( {
                 (resource: Any) -> Resource<T>? in
                 if let r = resource as? Resource<T>, r.type === type, !identifiers.contains(r.identifier) {
                     identifiers.insert(r.identifier)

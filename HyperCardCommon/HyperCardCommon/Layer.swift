@@ -58,7 +58,7 @@ public class Layer {
     /// A filter on the parts to access the fields. This list is necessary because fields have
     /// indexes of their own, in a script there can be "field 3".
     public var fields: [Field] {
-        return parts.flatMap({
+        return parts.compactMap({
             if case LayerPart.field(let field) = $0 {
                 return field
             }
@@ -69,7 +69,7 @@ public class Layer {
     /// A filter on the parts to access the buttons This list is necessary because buttons have
     /// indexes of their own, in a script there can be "button 3".
     public var buttons: [Button] {
-        return parts.flatMap({
+        return parts.compactMap({
             if case LayerPart.button(let button) = $0 {
                 return button
             }
