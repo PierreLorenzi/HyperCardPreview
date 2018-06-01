@@ -26,11 +26,11 @@ class DataTests: XCTestCase {
         let file = try! HyperCardFile(path: path)
         
         /* Check window rectangle */
-        let stackBlock = file.parsedData.stack
-        XCTAssert(stackBlock.windowRectangle == Rectangle(top: 0, left: 0, bottom: 0x156, right: 0x200))
+        let stackBlock = file.extractParsedData().extractStack()
+        XCTAssert(stackBlock.readWindowRectangle() == Rectangle(top: 0, left: 0, bottom: 0x156, right: 0x200))
         
         /* Check Master Block length */
-        let masterBlock = file.parsedData.master
+        let masterBlock = file.extractParsedData().extractMaster()
         XCTAssert(masterBlock.data.length == 0x400)
         
     }

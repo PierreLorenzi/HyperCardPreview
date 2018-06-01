@@ -43,57 +43,57 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Total size of the stack data fork
-    public var totalSize: Int {
+    public func readTotalSize() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
     /// Size of the STAK block
-    public var stackSize: Int {
+    public func readStackSize() -> Int {
         return self.readDecodedUInt32(at: 0x18)
     }
     
     /// Number of backgrounds in this stack
-    public var backgroundCount: Int {
+    public func readBackgroundCount() -> Int {
         return self.readDecodedUInt32(at: 0x24)
     }
     
     /// ID of the first background
-    public var firstBackgroundIdentifier: Int {
+    public func readFirstBackgroundIdentifier() -> Int {
         return self.readDecodedUInt32(at: 0x28)
     }
     
     /// Number of cards in this stack
-    public var cardCount: Int {
+    public func readCardCount() -> Int {
         return self.readDecodedUInt32(at: 0x2C)
     }
     
     /// ID of the first card
-    public var firstCardIdentifier: Int {
+    public func readFirstCardIdentifier() -> Int {
         return self.readDecodedUInt32(at: 0x30)
     }
     
     /// ID of the 'LIST' block in the stack file
-    public var listIdentifier: Int {
+    public func readListIdentifier() -> Int {
         return self.readDecodedUInt32(at: 0x34)
     }
     
     /// Number of FREE blocks
-    public var freeCount: Int {
+    public func readFreeCount() -> Int {
         return self.readDecodedUInt32(at: 0x38)
     }
     
     /// Total size of all FREE blocks (=the free size of this stack)
-    public var freeSize: Int {
+    public func readFreeSize() -> Int {
         return self.readDecodedUInt32(at: 0x3C)
     }
     
     /// ID of the 'PRNT' block in the stack file
-    public var printBlockIdentifier: Int {
+    public func readPrintBlockIdentifier() -> Int {
         return self.readDecodedUInt32(at: 0x40)
     }
     
     /// Hash of the password
-    public var passwordHash: Int? {
+    public func readPasswordHash() -> Int? {
         let value = self.readDecodedUInt32(at: 0x44)
         guard value != 0 else {
             return nil
@@ -102,7 +102,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// User Level for this stack
-    public var userLevel: UserLevel {
+    public func readUserLevel() -> UserLevel {
         let userLevelIndex = self.readDecodedUInt16(at: 0x48)
         if userLevelIndex == 0 {
             return UserLevel.script
@@ -111,32 +111,32 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Can't Abort
-    public var cantAbort: Bool {
+    public func readCantAbort() -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 11)
     }
     
     /// Can't Delete
-    public var cantDelete: Bool {
+    public func readCantDelete() -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 14)
     }
     
     /// Can't Modify
-    public var cantModify: Bool {
+    public func readCantModify() -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 15)
     }
     
     /// Can't Peek
-    public var cantPeek: Bool {
+    public func readCantPeek() -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 10)
     }
     
     /// Private Access
-    public var privateAccess: Bool {
+    public func readPrivateAccess() -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 13)
     }
     
     /// HyperCard Version at creation
-    public var versionAtCreation: Version? {
+    public func readVersionAtCreation() -> Version? {
         let code = data.readUInt32(at: 0x60)
         guard code != 0 else {
             return nil
@@ -145,7 +145,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// HyperCard Version at last compacting
-    public var versionAtLastCompacting: Version? {
+    public func readVersionAtLastCompacting() -> Version? {
         let code = data.readUInt32(at: 0x64)
         guard code != 0 else {
             return nil
@@ -154,7 +154,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// HyperCard Version at last modification since last compacting
-    public var versionAtLastModificationSinceLastCompacting: Version? {
+    public func readVersionAtLastModificationSinceLastCompacting() -> Version? {
         let code = data.readUInt32(at: 0x68)
         guard code != 0 else {
             return nil
@@ -163,7 +163,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// HyperCard Version at last modification
-    public var versionAtLastModification: Version? {
+    public func readVersionAtLastModification() -> Version? {
         let code = data.readUInt32(at: 0x6C)
         guard code != 0 else {
             return nil
@@ -172,7 +172,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Checksum of the STAK block
-    public var checkSum: Int {
+    public func readCheckSum() -> Int {
         return data.readUInt32(at: 0x70)
     }
     
@@ -200,29 +200,29 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Number of marked cards in this stack
-    public var markedCardCount: Int {
+    public func readMarkedCardCount() -> Int {
         return data.readUInt32(at: 0x74)
     }
     
     /// Rectangle of the card window in the screen
-    public var windowRectangle: Rectangle {
+    public func readWindowRectangle() -> Rectangle {
         return data.readRectangle(at: 0x78)
     }
     
     /// Screen resolution for the window rectangle
-    public var screenRectangle: Rectangle {
+    public func readScreenRectangle() -> Rectangle {
         return data.readRectangle(at: 0x80)
     }
     
     /// Origin of scroll
-    public var scrollPoint: Point {
+    public func readScrollPoint() -> Point {
         let y = data.readUInt32(at: 0x88)
         let x = data.readUInt32(at: 0x8A)
         return Point(x: x, y: y)
     }
     
     /// ID of the FTBL (font table) block
-    public var fontBlockIdentifier: Int? {
+    public func readFontBlockIdentifier() -> Int? {
         let value = data.readUInt32(at: 0x1B0)
         guard value != 0 else {
             return nil
@@ -231,7 +231,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// ID of the STBL (style table) block
-    public var styleBlockIdentifier: Int? {
+    public func readStyleBlockIdentifier() -> Int? {
         let value = data.readUInt32(at: 0x1B4)
         guard value != 0 else {
             return nil
@@ -243,7 +243,7 @@ public class StackBlock: HyperCardFileBlock {
     public static let defaultHeight = 342
     
     /// 2D size of the cards in this stack
-    public var size: Size {
+    public func readSize() -> Size {
         let dataWidth = data.readUInt16(at: 0x1BA)
         let dataHeight = data.readUInt16(at: 0x1B8)
         let width = (dataWidth == 0) ? StackBlock.defaultWidth : dataWidth
@@ -252,7 +252,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Table of patterns
-    public var patterns: [Image] {
+    public func readPatterns() -> [Image] {
         var offset = 0x2C0
         var patterns = [Image]()
         for _ in 0..<40 {
@@ -275,10 +275,10 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Table of the FREE blocks
-    public var freeLocations: [FreeLocation] {
+    public func readFreeLocations() -> [FreeLocation] {
         var locations = [FreeLocation]()
         var offset = 0x400
-        let count = self.freeCount
+        let count = self.readFreeCount()
         for _ in 0..<count {
             let freeOffset = data.readUInt32(at: offset)
             let freeSize = data.readUInt32(at: offset + 4)
@@ -289,7 +289,7 @@ public class StackBlock: HyperCardFileBlock {
     }
     
     /// Stack script
-    public var script: HString {
+    public func readScript() -> HString {
         guard self.data.length > 0x600 else {
             return ""
         }

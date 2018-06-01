@@ -17,7 +17,7 @@ public extension Card {
         self.init(background: background)
         
         /* Read now the scalar fields */
-        self.identifier = cardBlock.identifier
+        self.identifier = cardBlock.readIdentifier()
         self.marked = cardBlock.marked
         self.searchHash = cardBlock.searchHash
         

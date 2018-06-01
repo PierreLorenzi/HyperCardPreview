@@ -20,14 +20,14 @@ public class HyperCardFileData: DataBlock {
     }
     
     /// The stack block
-    public var stack: StackBlock {
+    public func extractStack() -> StackBlock {
         let length = data.readUInt32(at: 0x0)
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
         return StackBlock(data: dataRange, decodedHeader: decodedHeader)
     }
     
     /// The master block
-    public var master: MasterBlock {
+    public func extractMaster() -> MasterBlock {
         let stackLength = data.readUInt32(at: 0x0)
         
         /* In the "Stack Templates" stack in 2.4.1, there is a flag in the 2nd higher bit */
@@ -38,34 +38,38 @@ public class HyperCardFileData: DataBlock {
     
     
     /// The list block
-    public var list: ListBlock {
-        let identifier = self.stack.listIdentifier
+    public func extractList() -> ListBlock {
+        let stack = self.extractStack()
+        let identifier = stack.readListIdentifier()
         return self.loadBlock(identifier: identifier, initializer: ListBlock.init)
     }
     
     /// The Style Block
-    public var styleBlock: StyleBlock? {
-        guard let identifier = self.stack.styleBlockIdentifier else {
+    public func extractStyleBlock() -> StyleBlock? {
+        let stack = self.extractStack()
+        guard let identifier = stack.readStyleBlockIdentifier() else {
             return nil
         }
         return self.loadBlock(identifier: identifier, initializer: StyleBlock.init)
     }
     
     /// The Font Block
-    public var fontBlock: FontBlock? {
-        guard let identifier = self.stack.fontBlockIdentifier else {
+    public func extractFontBlock() -> FontBlock? {
+        let stack = self.extractStack()
+        guard let identifier = stack.readFontBlockIdentifier() else {
             return nil
         }
         return self.loadBlock(identifier: identifier, initializer: FontBlock.init)
     }
     
     /// The page blocks (PAGE), containing sections of the card list
-    public var pages: [PageBlock] {
+    public func extractPages() -> [PageBlock] {
         
         var pages = [PageBlock]()
         
         /* Get the identifier list from the list */
-        let pageReferences = self.list.pageReferences
+        let list = self.extractList()
+        let pageReferences = list.pageReferences
         
         /* Get info shared among the pages */
         let cardReferenceSize = list.cardReferenceSize
@@ -91,9 +95,11 @@ public class HyperCardFileData: DataBlock {
     }
     
     /// The card blocks (CARD), contaning the data about the cards. They are in the order of the cards.
-    public var cards: [CardBlock] {
+    public func extractCards() -> [CardBlock] {
         
         var cards = [CardBlock]()
+        
+        let pages = self.extractPages()
 
         /* Loop on the pages, that are the sections of the card list */
         for page in pages {
@@ -121,9 +127,10 @@ public class HyperCardFileData: DataBlock {
     }
     
     /// The background blocks (BKGD), they are in the expected order of the backgrounds */
-    public var backgrounds: [BackgroundBlock] {
+    public func extractBackgrounds() -> [BackgroundBlock] {
         
-        let identifier0 = self.stack.firstBackgroundIdentifier
+        let stack = self.extractStack()
+        let identifier0 = stack.readFirstBackgroundIdentifier()
         
         var backgrounds: [BackgroundBlock] = []
         var identifier = identifier0
@@ -144,18 +151,19 @@ public class HyperCardFileData: DataBlock {
     }
     
     /// The bitmap blocks (BMAP), containing the images of the cards and backgrounds. They are not ordered.
-    public var bitmaps: [BitmapBlock] {
-        return self.buildElementList(BitmapBlock.init)
+    public func extractBitmaps() -> [BitmapBlock] {
+        return self.listBlocks(BitmapBlock.init)
     }
     
     /// Cache of the block offsets in the file
     private lazy var masterEntries: [MasterBlock.Entry] = {
         [unowned self] in
-        return self.master.entries
+        let master = self.extractMaster()
+        return master.entries
         }()
     
     /// List the data blocks of a certain kind in the file, in the order where they appear in the data.
-    public func buildElementList<T: HyperCardFileBlock>(_ initializer: (DataRange) -> T) -> [T] {
+    func listBlocks<T: HyperCardFileBlock>(_ initializer: (DataRange) -> T) -> [T] {
         
         var elements = [T]()
         

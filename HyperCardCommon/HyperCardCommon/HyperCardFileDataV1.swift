@@ -12,7 +12,7 @@
 public class HyperCardFileDataV1: HyperCardFileData {
     
     /* Stack */
-    public override var stack: StackBlock {
+    public override func extractStack() -> StackBlock {
         let length = data.readUInt32(at: 0x0)
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
         return StackBlockV1(data: dataRange, decodedHeader: self.decodedHeader)
@@ -20,27 +20,30 @@ public class HyperCardFileDataV1: HyperCardFileData {
     
     
     /* List */
-    public override var list: ListBlock {
-        let identifier = self.stack.listIdentifier
+    public override func extractList() -> ListBlock {
+        let stack = self.extractStack()
+        let identifier = stack.readListIdentifier()
         return self.loadBlock(identifier: identifier, initializer: ListBlockV1.init)
     }
     
     /* Style Block */
-    public override var styleBlock: StyleBlock? {
+    public override func extractStyleBlock() -> StyleBlock? {
         return nil
     }
     
     /* Font Block */
-    public override var fontBlock: FontBlock? {
+    public override func extractFontBlock() -> FontBlock? {
         return nil
     }
     
-    public override var pages: [PageBlock] {
+    public override func extractPages() -> [PageBlock] {
         
         var pages = [PageBlock]()
         
+        let list = self.extractList()
+        
         /* Get the identifier list from the list */
-        let pageReferences = self.list.pageReferences
+        let pageReferences = list.pageReferences
         
         /* Get info shared among the pages */
         let cardReferenceSize = list.cardReferenceSize
@@ -65,9 +68,11 @@ public class HyperCardFileDataV1: HyperCardFileData {
         return pages
     }
     
-    public override var cards: [CardBlock] {
+    public override func extractCards() -> [CardBlock] {
         
         var cards = [CardBlock]()
+        
+        let pages = self.extractPages()
 
         /* Loop on the pages, that are the sections of the card list */
         for page in pages {
@@ -95,13 +100,13 @@ public class HyperCardFileDataV1: HyperCardFileData {
     }
     
     /* Access to backgrounds, BEWARE: they are not ordered, use the fields nextBackgroundIdentifier and previousBackgroundIdentifier */
-    public override var backgrounds: [BackgroundBlock] {
-        return self.buildElementList(BackgroundBlockV1.init)
+    public override func extractBackgrounds() -> [BackgroundBlock] {
+        return self.listBlocks(BackgroundBlockV1.init)
     }
     
     /* Access to bitmaps */
-    public override var bitmaps: [BitmapBlock] {
-        return self.buildElementList(BitmapBlockV1.init)
+    public override func extractBitmaps() -> [BitmapBlock] {
+        return self.listBlocks(BitmapBlockV1.init)
     }
     
 }

@@ -24,12 +24,16 @@ public class HyperCardFile: ClassicFile {
         super.init(path: path)
         
         /* Check if the file is a stack */
-        if self.version == .notHyperCardStack {
+        if self.readVersion() == .notHyperCardStack {
             throw StackError.notStack
         }
         
+        /* Read the data one first time */
+        let parsedData = self.extractParsedData()
+        let parsedStack = parsedData.extractStack()
+        
         /* Check if the stack header is encrypted */
-        if self.parsedData.stack.privateAccess {
+        if parsedStack.readPrivateAccess() {
             
             /* We must have a password to decrypt the header */
             if let decodedHeader = hackEncryptedHeader() {
@@ -55,7 +59,7 @@ public class HyperCardFile: ClassicFile {
         }
         
         /* Check the checksum (must be after decryption) */
-        guard self.parsedData.stack.isChecksumValid() else {
+        guard parsedStack.isChecksumValid() else {
             throw StackError.corrupted
         }
         
@@ -259,15 +263,15 @@ public class HyperCardFile: ClassicFile {
     
     /// The stack object contained in the file
     public lazy var stack: Stack = { [unowned self] in
-        return Stack(fileContent: self.parsedData, resources: self.resourceRepository)
+        return Stack(fileContent: self.extractParsedData(), resources: self.resourceRepository)
     }()
     
     /// The data blocks contained in the file
-    public var parsedData: HyperCardFileData {
+    public func extractParsedData() -> HyperCardFileData {
         let data = self.dataFork!
         let dataRange = DataRange(sharedData: data, offset: 0, length: data.count)
         
-        switch version {
+        switch self.readVersion() {
         case .preReleaseV2, .v2:
             return HyperCardFileData(data: dataRange, decodedHeader: self.decodedHeader)
             
@@ -283,7 +287,7 @@ public class HyperCardFile: ClassicFile {
     
     /// The version of the stack format: V1 or V2. Parsed here because it must be read before
     /// parsing the file.
-    public var version: Version {
+    public func readVersion() -> Version {
         let format = self.dataFork![0x13]
         switch format {
         case 1...7:

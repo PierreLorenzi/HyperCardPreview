@@ -17,34 +17,34 @@ public extension Stack {
         self.resources = resources
         
         /* Enable lazy initialization */
-        let stackBlock = fileContent.stack
+        let stackBlock = fileContent.extractStack()
         
         /* Read now the scalar fields */
-        self.passwordHash = stackBlock.passwordHash
-        self.userLevel = stackBlock.userLevel
-        self.cantAbort = stackBlock.cantAbort
-        self.cantDelete = stackBlock.cantDelete
-        self.cantModify = stackBlock.cantModify
-        self.cantPeek = stackBlock.cantPeek
-        self.privateAccess = stackBlock.privateAccess
-        self.versionAtCreation = stackBlock.versionAtCreation
-        self.versionAtLastCompacting = stackBlock.versionAtLastCompacting
-        self.versionAtLastModificationSinceLastCompacting = stackBlock.versionAtLastModificationSinceLastCompacting
-        self.versionAtLastModification = stackBlock.versionAtLastModification
-        self.size = stackBlock.size
-        self.windowRectangle = stackBlock.windowRectangle
-        self.screenRectangle = stackBlock.screenRectangle
-        self.scrollPoint = stackBlock.scrollPoint
+        self.passwordHash = stackBlock.readPasswordHash()
+        self.userLevel = stackBlock.readUserLevel()
+        self.cantAbort = stackBlock.readCantAbort()
+        self.cantDelete = stackBlock.readCantDelete()
+        self.cantModify = stackBlock.readCantModify()
+        self.cantPeek = stackBlock.readCantPeek()
+        self.privateAccess = stackBlock.readPrivateAccess()
+        self.versionAtCreation = stackBlock.readVersionAtCreation()
+        self.versionAtLastCompacting = stackBlock.readVersionAtLastCompacting()
+        self.versionAtLastModificationSinceLastCompacting = stackBlock.readVersionAtLastModificationSinceLastCompacting()
+        self.versionAtLastModification = stackBlock.readVersionAtLastModification()
+        self.size = stackBlock.readSize()
+        self.windowRectangle = stackBlock.readWindowRectangle()
+        self.screenRectangle = stackBlock.readScreenRectangle()
+        self.scrollPoint = stackBlock.readScrollPoint()
         
         /* Cards */
         self.cardsProperty.lazyCompute = {
-            let cardBlocks = fileContent.cards
+            let cardBlocks = fileContent.extractCards()
             return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
         }
         
         /* Backgrounds */
         self.backgroundsProperty.lazyCompute = {
-            let backgroundBlocks = fileContent.backgrounds
+            let backgroundBlocks = fileContent.extractBackgrounds()
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
                 return Background(backgroundBlock: block, fileContent: fileContent)
             })
@@ -52,17 +52,17 @@ public extension Stack {
         
         /* patterns */
         self.patternsProperty.lazyCompute = {
-            return stackBlock.patterns
+            return stackBlock.readPatterns()
         }
         
         /* script */
         self.scriptProperty.lazyCompute = {
-            return stackBlock.script
+            return stackBlock.readScript()
         }
         
         /* font names */
         self.fontNameReferencesProperty.lazyCompute = {
-            return fileContent.fontBlock?.fontReferences ?? []
+            return fileContent.extractFontBlock()?.fontReferences ?? []
         }
 
         

@@ -14,7 +14,7 @@ public extension Background {
         self.init()
         
         /* Read now the scalar fields */
-        self.identifier = backgroundBlock.identifier
+        self.identifier = backgroundBlock.readIdentifier()
         
         /* Enable lazy initialization */
         super.setupLazyInitialization(layerBlock: backgroundBlock, fileContent: fileContent)

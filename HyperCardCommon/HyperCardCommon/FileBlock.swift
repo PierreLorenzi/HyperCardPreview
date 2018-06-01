@@ -19,7 +19,7 @@ open class HyperCardFileBlock: DataBlock {
     }
     
     /// The identifier of the data block
-    public var identifier: Int {
+    public func readIdentifier() -> Int {
         return data.readSInt32(at: 0x8)
     }
     

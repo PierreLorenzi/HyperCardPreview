@@ -11,31 +11,31 @@
 public class StackBlockV1: StackBlock {
 
     /* Checksum is moved */
-    public override var checkSum: Int {
+    public override func readCheckSum() -> Int {
         return data.readUInt32(at: 0xC)
     }
     
     /* Window size is absent */
-    public override var windowRectangle: Rectangle {
+    public override func readWindowRectangle() -> Rectangle {
         return Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     }
-    public override var screenRectangle: Rectangle {
+    public override func readScreenRectangle() -> Rectangle {
         return Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     }
-    public override var scrollPoint: Point {
+    public override func readScrollPoint() -> Point {
         return Point(x: 0, y: 0)
     }
     
     /* Size is always default */
-    public override var size: Size {
+    public override func readSize() -> Size {
         return Size(width: StackBlock.defaultWidth, height: StackBlock.defaultHeight)
     }
     
     /* Text fonts and styles are absent */
-    public override var fontBlockIdentifier: Int? {
+    public override func readFontBlockIdentifier() -> Int? {
         return nil
     }
-    public override var styleBlockIdentifier: Int? {
+    public override func readStyleBlockIdentifier() -> Int? {
         return nil
     }
     

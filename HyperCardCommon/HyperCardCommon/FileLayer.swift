@@ -39,8 +39,8 @@ public extension Layer {
         }
         
         /* Look for the bitmap */
-        let bitmaps = fileContent.bitmaps
-        let bitmapIndex = bitmaps.index(where: {$0.identifier == bitmapIdentifier})!
+        let bitmaps = fileContent.extractBitmaps()
+        let bitmapIndex = bitmaps.index(where: {$0.readIdentifier() == bitmapIdentifier})!
         let bitmap = bitmaps[bitmapIndex]
         
         return bitmap.image
@@ -97,7 +97,7 @@ public extension Layer {
         }
         
         /* Get the text styles of the stack (there must be a style block) */
-        let styleBlock = fileContent.styleBlock!
+        let styleBlock = fileContent.extractStyleBlock()!
         let styles = styleBlock.styles
         
         /* Load the attributes */
