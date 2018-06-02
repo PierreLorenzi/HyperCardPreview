@@ -26,7 +26,7 @@ public class MasterBlock: HyperCardFileBlock {
     }
     
     /// Records of the data blocks in the stack file
-    public var entries: [Entry] {
+    public func readEntries() -> [Entry] {
         var entries: [Entry] = []
         let blockLength = self.data.length
         for offset in stride(from: 0x20, to: blockLength, by: 4) {

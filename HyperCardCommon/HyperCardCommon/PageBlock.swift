@@ -63,26 +63,28 @@ public class PageBlock: HyperCardFileBlock {
     }
     
     /// ID of the list
-    public var listIdentifier: Int {
+    public func readListIdentifier() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// Checksum of the PAGE block
-    public var checksum: Int {
+    public func readChecksum() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
     /// Checks the checksum
     public func isChecksumValid() -> Bool {
         var c: UInt32 = 0
-        for r in self.cardReferences {
+        let cardReferences: [CardReference] = self.readCardReferences()
+        for r in cardReferences {
             c = rotateRight3Bits(c &+ UInt32(r.identifier))
         }
-        return c == UInt32(self.checksum)
+        let expectedChecksum: Int = self.readChecksum()
+        return c == UInt32(expectedChecksum)
     }
     
     /// The records of the cards
-    public var cardReferences: [CardReference] {
+    public func readCardReferences() -> [CardReference] {
         
         /* Read the references */
         var references = [CardReference]()

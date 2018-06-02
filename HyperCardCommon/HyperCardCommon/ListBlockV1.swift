@@ -13,35 +13,35 @@
 public class ListBlockV1: ListBlock {
     
     /* All the values are shifted but the card references are at the same offset */
-    public override var pageCount: Int {
+    public override func readPageCount() -> Int {
         return data.readUInt32(at: 0xC)
     }
     
-    public override var pageSize: Int {
+    public override func readPageSize() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
-    public override var cardCount: Int {
+    public override func readCardCount() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
-    public override var cardReferenceSize: Int {
+    public override func readCardReferenceSize() -> Int {
         return data.readUInt16(at: 0x18)
     }
     
-    public override var hashCountInCardReference: Int {
+    public override func readHashCountInCardReference() -> Int {
         return data.readUInt16(at: 0x1C)
     }
     
-    public override var hashValueCount: Int {
+    public override func readHashValueCount() -> Int {
         return data.readUInt16(at: 0x1E)
     }
     
-    public override var checksum: Int {
+    public override func readChecksum() -> Int {
         return data.readUInt32(at: 0x20)
     }
     
-    public override var totalPageEntryCount: Int {
+    public override func readTotalPageEntryCount() -> Int {
         return data.readUInt32(at: 0x24)
     }
     

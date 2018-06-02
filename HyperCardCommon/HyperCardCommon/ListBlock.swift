@@ -27,58 +27,60 @@ public class ListBlock: HyperCardFileBlock {
     }
     
     /// Number of pages
-    public var pageCount: Int {
+    public func readPageCount() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// Size of a page (always 0x800)
-    public var pageSize: Int {
+    public func readPageSize() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
     /// Total number of card entries in all the pages, should be equal to the number of cards
-    public var cardCount: Int {
+    public func readCardCount() -> Int {
         return data.readUInt32(at: 0x18)
     }
     
     /// Size of a card entry in the pages
-    public var cardReferenceSize: Int {
+    public func readCardReferenceSize() -> Int {
         return data.readUInt16(at: 0x1C)
     }
     
     /// Number of hash integers in a card entry in the pages, equal to (entry size - 4)/4
     /// (it is a parameter of the search hashes of the cards)
-    public var hashCountInCardReference: Int {
+    public func readHashCountInCardReference() -> Int {
         return data.readUInt16(at: 0x20)
     }
     
     /// Search hash value count (a parameter of the search hashes of the cards)
-    public var hashValueCount: Int {
+    public func readHashValueCount() -> Int {
         return data.readUInt16(at: 0x22)
     }
     
     /// Checksum of the LIST block
-    public var checksum: Int {
+    public func readChecksum() -> Int {
         return data.readUInt32(at: 0x24)
     }
     
     /// Checks the checksum
     public func isChecksumValid() -> Bool {
         var c: UInt32 = 0
-        for reference in self.pageReferences {
+        let pageReferences = self.readPageReferences()
+        for reference in pageReferences {
             c = rotateRight3Bits(c + UInt32(reference.identifier)) + UInt32(reference.cardCount)
         }
-        return c == UInt32(self.checksum)
+        let expectedChecksum = self.readChecksum()
+        return c == UInt32(expectedChecksum)
     }
     
     /// Total number of entries in all the pages, should be equal to the number of cards
-    public var totalPageEntryCount: Int {
+    public func readTotalPageEntryCount() -> Int {
         return data.readUInt32(at: 0x28)
     }
     
     /// Page References, ordered by index
-    public var pageReferences: [PageReference] {
-        let count = self.pageCount
+    public func readPageReferences() -> [PageReference] {
+        let count = self.readPageCount()
         var references = [PageReference]()
         var offset = 0x30
         for _ in 0..<count {

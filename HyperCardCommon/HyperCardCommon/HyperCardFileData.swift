@@ -69,11 +69,11 @@ public class HyperCardFileData: DataBlock {
         
         /* Get the identifier list from the list */
         let list = self.extractList()
-        let pageReferences = list.pageReferences
+        let pageReferences = list.readPageReferences()
         
         /* Get info shared among the pages */
-        let cardReferenceSize = list.cardReferenceSize
-        let hashValueCount = list.hashValueCount
+        let cardReferenceSize = list.readCardReferenceSize()
+        let hashValueCount = list.readHashValueCount()
         
         /* Add all the pages */
         for pageReference in pageReferences {
@@ -105,7 +105,9 @@ public class HyperCardFileData: DataBlock {
         for page in pages {
             
             /* Every page has card references */
-            for reference in page.cardReferences {
+            let cardReferences: [CardReference] = page.readCardReferences()
+            
+            for reference in cardReferences {
                 
                 /* Build the card */
                 let initializer = { (data: DataRange) -> CardBlock in
@@ -159,7 +161,7 @@ public class HyperCardFileData: DataBlock {
     private lazy var masterEntries: [MasterBlock.Entry] = {
         [unowned self] in
         let master = self.extractMaster()
-        return master.entries
+        return master.readEntries()
         }()
     
     /// List the data blocks of a certain kind in the file, in the order where they appear in the data.

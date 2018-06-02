@@ -13,10 +13,10 @@
 public class PageBlockV1: PageBlock {
     
     /* The values are shifted */
-    public override var listIdentifier: Int {
+    public override func readListIdentifier() -> Int {
         return data.readUInt32(at: 0xC)
     }
-    public override var checksum: Int {
+    public override func readChecksum() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
