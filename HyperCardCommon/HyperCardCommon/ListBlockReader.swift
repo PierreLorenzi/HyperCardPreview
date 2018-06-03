@@ -1,55 +1,60 @@
 //
-//  CardList.swift
-//  HyperCard
+//  ListBlockReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 12/02/2016.
-//  Copyright © 2016 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 03/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
-
 
 /// The list block (LIST), containing the card list. To make insertions and deletions faster,
 /// it is divided in sections called pages.
-public class ListBlock: HyperCardFileBlock {
+public struct ListBlockReader {
     
-    override class var Name: NumericName {
-        return NumericName(string: "LIST")!
+    private let data: DataRange
+    
+    private let versionOffset: Int
+    
+    private static let version1Offset = -4
+    
+    public init(data: DataRange, version: FileVersion) {
+        self.data = data
+        self.versionOffset = version.isTwo() ? 0 : ListBlockReader.version1Offset
     }
     
     /// Number of pages
     public func readPageCount() -> Int {
-        return data.readUInt32(at: 0x10)
+        return data.readUInt32(at: 0x10 + self.versionOffset)
     }
     
     /// Size of a page (always 0x800)
     public func readPageSize() -> Int {
-        return data.readUInt32(at: 0x14)
+        return data.readUInt32(at: 0x14 + self.versionOffset)
     }
     
     /// Total number of card entries in all the pages, should be equal to the number of cards
     public func readCardCount() -> Int {
-        return data.readUInt32(at: 0x18)
+        return data.readUInt32(at: 0x18 + self.versionOffset)
     }
     
     /// Size of a card entry in the pages
     public func readCardReferenceSize() -> Int {
-        return data.readUInt16(at: 0x1C)
+        return data.readUInt16(at: 0x1C + self.versionOffset)
     }
     
     /// Number of hash integers in a card entry in the pages, equal to (entry size - 4)/4
     /// (it is a parameter of the search hashes of the cards)
     public func readHashCountInCardReference() -> Int {
-        return data.readUInt16(at: 0x20)
+        return data.readUInt16(at: 0x20 + self.versionOffset)
     }
     
     /// Search hash value count (a parameter of the search hashes of the cards)
     public func readHashValueCount() -> Int {
-        return data.readUInt16(at: 0x22)
+        return data.readUInt16(at: 0x22 + self.versionOffset)
     }
     
     /// Checksum of the LIST block
     public func readChecksum() -> Int {
-        return data.readUInt32(at: 0x24)
+        return data.readUInt32(at: 0x24 + self.versionOffset)
     }
     
     /// Checks the checksum
@@ -65,7 +70,7 @@ public class ListBlock: HyperCardFileBlock {
     
     /// Total number of entries in all the pages, should be equal to the number of cards
     public func readTotalPageEntryCount() -> Int {
-        return data.readUInt32(at: 0x28)
+        return data.readUInt32(at: 0x28 + self.versionOffset)
     }
     
     /// Page References, ordered by index
@@ -83,7 +88,4 @@ public class ListBlock: HyperCardFileBlock {
     }
     
 }
-
-
-
 

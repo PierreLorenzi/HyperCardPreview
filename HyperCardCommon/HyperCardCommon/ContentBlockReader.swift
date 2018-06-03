@@ -1,13 +1,10 @@
 //
-//  ContentBlock.swift
-//  HyperCard
+//  ContentBlockReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 26/02/2017.
-//  Copyright © 2017 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 03/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
-
-
 
 
 /// Content of a part
@@ -15,24 +12,42 @@
 /// Part contents are separated from parts because it makes text search easier, because
 /// background fields have text contents in the card, because background buttons have hilite
 /// contents in the card
-public class ContentBlock: DataBlock {
+public struct ContentBlockReader {
     
-    /// The identifier of the part, this parameter is read separately
-    public let identifier: Int
+    private let data: DataRange
     
-    /// Whether the part is in the background or the card, this parameter is read separately
-    public let layerType: LayerType
+    private let version: FileVersion
     
-    /// Main constructor
-    public init(data: DataRange, identifier: Int, layerType: LayerType) {
+    /* this parameter is read separately */
+    private let identifier: Int
+    
+    /* this parameter is read separately */
+    private let layerType: LayerType
+    
+    public init(data: DataRange, version: FileVersion, identifier: Int, layerType: LayerType) {
+        self.data = data
+        self.version = version
         self.identifier = identifier
         self.layerType = layerType
-        
-        super.init(data: data)
+    }
+    
+    /// The identifier of the part
+    public func readIdentifier() -> Int {
+        return self.identifier
+    }
+    
+    /// Whether the part is in the background or the card
+    public func readLayerType() -> LayerType {
+        return self.layerType
     }
     
     /// The string content
     public func readString() -> HString {
+        
+        /* Handle version 1 */
+        guard self.version.isTwo() else {
+            return data.readString(at: 2, length: data.length - 3)
+        }
         
         /* Check if we're a raw string or a formatted text */
         let plainTextMarker = data.readUInt8(at: 4)
@@ -49,19 +64,13 @@ public class ContentBlock: DataBlock {
         }
     }
     
-    
-    /// A style record of a styled content
-    public struct TextFormatting {
-        
-        /// Offset of the style in the string content
-        public let offset: Int
-        
-        /// ID of the style in the style table
-        public let styleIdentifier: Int
-    }
-    
     /// The style records. They are sorted by offset. If nil, the string has no associated style.
-    public func readFormattingChanges() -> [TextFormatting]? {
+    public func readFormattingChanges() -> [IndexedTextFormatting]? {
+        
+        /* Handle version 1 */
+        guard self.version.isTwo() else {
+            return nil
+        }
         
         /* Check if we're a raw string or a formatted text */
         let plainTextMarker = data.readUInt8(at: 4)
@@ -70,7 +79,7 @@ public class ContentBlock: DataBlock {
         }
         
         /* Plain text */
-        var changes: [TextFormatting] = []
+        var changes: [IndexedTextFormatting] = []
         let formattingLengthValue = data.readUInt16(at: 4)
         let formattingLength = formattingLengthValue ^ 0x8000
         let formattingCount = (formattingLength - 2) / 4
@@ -78,10 +87,11 @@ public class ContentBlock: DataBlock {
         for _ in 0..<formattingCount {
             let changeOffset = data.readUInt16(at: offset)
             let styleIdentifier = data.readUInt16(at: offset + 2)
-            changes.append(TextFormatting(offset: changeOffset, styleIdentifier: styleIdentifier))
+            changes.append(IndexedTextFormatting(offset: changeOffset, styleIdentifier: styleIdentifier))
             offset += 4
         }
         return changes
     }
     
 }
+

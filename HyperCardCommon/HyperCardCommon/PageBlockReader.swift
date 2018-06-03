@@ -1,52 +1,44 @@
 //
-//  PageBlock.swift
-//  HyperCard
+//  PageBlockReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 26/02/2017.
-//  Copyright © 2017 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 03/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
 
 /// A page block contains a section of the card list
-public class PageBlock: HyperCardFileBlock {
+public struct PageBlockReader {
     
-    override class var Name: NumericName {
-        return NumericName(string: "PAGE")!
-    }
+    private let data: DataRange
     
-    /// Number of cards in the page
-    /// <p>
-    /// This parameter is needed to read a page but it is only present in the list
-    public let cardCount: Int
+    private let versionOffset: Int
     
-    /// Size of a card entry
-    /// <p>
-    /// This parameter is needed to read a page but it is only present in the list
-    public let cardReferenceSize: Int
+    private let cardCount: Int
     
-    /// Number of hash integers in a card entry
-    /// <p>
-    /// This parameter is needed to read a page but it is only present in the list
-    public let hashValueCount: Int
+    private let cardReferenceSize: Int
     
-    /// To build a new page, some parameters only present in the LIST block must be provided
-    public init(data: DataRange, cardCount: Int, cardReferenceSize: Int, hashValueCount: Int) {
+    private let hashValueCount: Int
+    
+    private static let version1Offset = -4
+    
+    public init(data: DataRange, version: FileVersion, cardCount: Int, cardReferenceSize: Int, hashValueCount: Int) {
+        self.data = data
+        self.versionOffset = version.isTwo() ? 0 : PageBlockReader.version1Offset
         self.cardCount = cardCount
         self.cardReferenceSize = cardReferenceSize
         self.hashValueCount = hashValueCount
-        
-        super.init(data: data)
     }
     
     /// ID of the list
     public func readListIdentifier() -> Int {
-        return data.readUInt32(at: 0x10)
+        return data.readUInt32(at: 0x10 + self.versionOffset)
     }
     
     /// Checksum of the PAGE block
     public func readChecksum() -> Int {
-        return data.readUInt32(at: 0x14)
+        return data.readUInt32(at: 0x14 + self.versionOffset)
     }
+    
     
     /// Checks the checksum
     public func isChecksumValid() -> Bool {

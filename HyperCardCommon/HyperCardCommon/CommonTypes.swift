@@ -288,6 +288,12 @@ public enum PartContent {
     }
 }
 
+/// A layer can be either a card or a background
+public enum LayerType {
+    case card
+    case background
+}
+
 /// Type of a card or background part
 public enum PartType {
     case field
@@ -498,5 +504,15 @@ public struct FontNameReference {
     
     /// Name of the font
     public var name: HString
+}
+
+/// The version of a HyperCard file
+public enum FileVersion {
+    case v1
+    case v2
+    
+    public func isTwo() -> Bool {
+        return self == FileVersion.v2
+    }
 }
 
