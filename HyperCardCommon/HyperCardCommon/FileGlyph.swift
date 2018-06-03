@@ -14,18 +14,22 @@
 /// lazy in swift.
 public class FileGlyph: Glyph {
     
-    private let font: BitmapFontResourceBlock
+    private let bitImage: Image
+    private let bitmapLocationTable: [Int]
+    private let fontRectangleHeight: Int
     private let index: Int
     
-    public init(font: BitmapFontResourceBlock, index: Int) {
-        self.font = font
+    public init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, widthTable: [Int], offsetTable: [Int], bitmapLocationTable: [Int], bitImage: Image, index: Int) {
+        self.bitImage = bitImage
+        self.bitmapLocationTable = bitmapLocationTable
+        self.fontRectangleHeight = fontRectangleHeight
         self.index = index
         
         super.init()
         
-        self.width = font.widthTable[index]
-        self.imageOffset = font.maximumKerning + font.offsetTable[index]
-        self.imageTop = font.maximumAscent
+        self.width = widthTable[index]
+        self.imageOffset = maximumKerning + offsetTable[index]
+        self.imageTop = maximumAscent
     }
     
     private var imageLoaded = false
@@ -54,8 +58,8 @@ public class FileGlyph: Glyph {
         }
         
         /* Load the image */
-        let drawing = Drawing(width: endOffset - startOffset, height: font.bitImage.height)
-        drawing.drawImage(font.bitImage, position: Point(x: 0, y: 0), rectangleToDraw: Rectangle(top: 0, left: startOffset, bottom: font.bitImage.height, right: endOffset))
+        let drawing = Drawing(width: endOffset - startOffset, height: bitImage.height)
+        drawing.drawImage(bitImage, position: Point(x: 0, y: 0), rectangleToDraw: Rectangle(top: 0, left: startOffset, bottom: bitImage.height, right: endOffset))
         
         return MaskedImage(image: drawing.image)
         
@@ -63,8 +67,8 @@ public class FileGlyph: Glyph {
     
     private func retrieveImageOffsets() -> (Int, Int) {
         
-        let startOffset = font.bitmapLocationTable[index]
-        let endOffset = font.bitmapLocationTable[index+1]
+        let startOffset = bitmapLocationTable[index]
+        let endOffset = bitmapLocationTable[index+1]
         
         return (startOffset, endOffset)
     }
@@ -75,7 +79,7 @@ public class FileGlyph: Glyph {
     }
     
     public override var imageHeight: Int {
-        return font.fontRectangleHeight
+        return fontRectangleHeight
     }
     
     public override var isThereImage: Bool {

@@ -17,7 +17,7 @@ public class VectorFontResourceBlock: ResourceBlock {
     }
     
     /// The resource contains a vector font file, that can be read with Core Graphics
-    public var cgfont: CGFont {
+    public func readCGFont() -> CGFont {
         
         /* Copy the data */
         let slice = self.data.sharedData[self.data.offset..<self.data.offset + self.data.length]

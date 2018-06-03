@@ -46,7 +46,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
     private func loadContent() -> FontFamily {
         
         /* Get the references from the resource */
-        let associations = resource.fontAssociationTable
+        let associations = resource.readFontAssociationTable()
         
         /* Load the bitmap fonts */
         let bitmapAssociations = associations.filter({ $0.size != 0 })
@@ -60,7 +60,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
         var family = FontFamily()
         family.bitmapFonts = bitmapFonts
         family.vectorFonts = vectorFonts
-        family.styleProperties = (resource.useIntegerExtraWidth) ? nil : resource.styleProperties
+        family.styleProperties = (resource.readUseIntegerExtraWidth()) ? nil : resource.readStyleProperties()
         return family
         
     }
@@ -90,7 +90,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
         
         /* Load the font */
         let fontResource = self.vectorFonts[index]
-        let font = fontResource.cgfont
+        let font = fontResource.readCGFont()
         
         /* Build the reference */
         return FontFamily.FamilyVectorFont(style: association.style, font: font)

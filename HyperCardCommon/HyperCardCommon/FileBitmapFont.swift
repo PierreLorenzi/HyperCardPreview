@@ -21,13 +21,13 @@ public class FileBitmapFont: BitmapFont {
         super.init()
         
         /* Read now the scalar fields */
-        self.maximumWidth = block.maximumWidth
-        self.maximumKerning = block.maximumKerning
-        self.fontRectangleWidth = block.fontRectangleWidth
-        self.fontRectangleHeight = block.fontRectangleHeight
-        self.maximumAscent = block.maximumAscent
-        self.maximumDescent = block.maximumDescent
-        self.leading = block.leading
+        self.maximumWidth = block.readMaximumWidth()
+        self.maximumKerning = block.readMaximumKerning()
+        self.fontRectangleWidth = block.readFontRectangleWidth()
+        self.fontRectangleHeight = block.readFontRectangleHeight()
+        self.maximumAscent = block.readMaximumAscent()
+        self.maximumDescent = block.readMaximumDescent()
+        self.leading = block.readLeading()
     }
     
     private var glyphsLoaded = false
@@ -49,19 +49,31 @@ public class FileBitmapFont: BitmapFont {
         
         var glyphs = [Glyph]()
         
+        /* Gather some data */
+        let lastCharacterCode = block.readLastCharacterCode()
+        let firstCharacterCode = block.readFirstCharacterCode()
+        let maximumAscent = block.readMaximumAscent()
+        let maximumKerning = block.readMaximumKerning()
+        let fontRectangleHeight = block.readFontRectangleHeight()
+        let widthTable = block.readWidthTable()
+        let offsetTable = block.readOffsetTable()
+        let bitmapLocationTable = block.readBitmapLocationTable()
+        let bitImage = block.readBitImage()
+        
         /* The special glyph is used outside the character bounds. It is the last in the font */
-        let specialGlyph = FileGlyph(font: block, index: block.lastCharacterCode - block.firstCharacterCode + 1)
+        let specialGlyphIndex = lastCharacterCode - firstCharacterCode + 1
+        let specialGlyph = FileGlyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, widthTable: widthTable, offsetTable: offsetTable, bitmapLocationTable: bitmapLocationTable, bitImage: bitImage, index: specialGlyphIndex)
         
         for index in 0..<256 {
             
             /* Outside of the bounds, use the special glyph */
-            guard index >= block.firstCharacterCode && index <= block.lastCharacterCode else {
+            guard index >= firstCharacterCode && index <= lastCharacterCode else {
                 glyphs.append(specialGlyph)
                 continue
             }
             
             /* Build the glyph */
-            let glyph = FileGlyph(font: block, index: index)
+            let glyph = FileGlyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, widthTable: widthTable, offsetTable: offsetTable, bitmapLocationTable: bitmapLocationTable, bitImage: bitImage, index: index)
             glyphs.append(glyph)
             
         }

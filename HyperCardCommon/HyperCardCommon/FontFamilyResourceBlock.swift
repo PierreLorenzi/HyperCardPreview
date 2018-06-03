@@ -58,73 +58,73 @@ public class FontFamilyResourceBlock: ResourceBlock {
     }
     
     /// Whether the font family contains a glyph-width table
-    public var containsGlyphWidthTable: Bool {
+    public func readContainsGlyphWidthTable() -> Bool {
         return data.readFlag(at: 0, bitOffset: 1)
     }
     
     ///This bit is set to 1 if the font family should use integer extra width for stylistic variations. If not set, the font family should compute the fixed-point extra width from the family style-mapping table, but only if the FractEnable global variable has a value of TRUE.
-    public var useIntegerExtraWidth: Bool {
+    public func readUseIntegerExtraWidth() -> Bool {
         return data.readFlag(at: 0, bitOffset: 13)
     }
     
     
     /// Whether the fonts are fixed-width
-    public var isFixedWidth: Bool {
+    public func readIsFixedWidth() -> Bool {
         return data.readFlag(at: 0, bitOffset: 15)
     }
     
     /// ID of the font family
-    public var fontIdentifier: Int {
+    public func readFontIdentifier() -> Int {
         return data.readUInt16(at: 0x2)
     }
     
     /// The ASCII character code of the first glyph in the font family
-    public var firstCharacterCode: Int {
+    public func readFirstCharacterCode() -> Int {
         return data.readUInt16(at: 0x4)
     }
     
     /// The ASCII character code of the last glyph in the font family
-    public var lastCharacterCode: Int {
+    public func readLastCharacterCode() -> Int {
         return data.readUInt16(at: 0x6)
     }
     
     /// The maximum ascent measurement for a one-point font of the font family
-    public var maximumAscent: Double {
+    public func readMaximumAscent() -> Double {
         return self.readFraction(at: 0x8)
     }
     
     /// The maximum descent measurement for a one-point font of the font family
-    public var maximumDescent: Double {
+    public func readMaximumDescent() -> Double {
         return self.readFraction(at: 0xA)
     }
     
     /// The maximum leading for a 1-point font of the font family
-    public var maximumLeading: Double {
+    public func readMaximumLeading() -> Double {
         return self.readFraction(at: 0xC)
     }
     
     /// The maximum glyph width of any glyph in a one-point font of the font family
-    public var maximumGlyphWidth: Double {
+    public func readMaximumGlyphWidth() -> Double {
         return self.readFraction(at: 0xE)
     }
     
     /// The offset to the family glyph-width table from the beginning of the font family resource to the beginning of the table, in bytes
-    public var glyphWidthTableOffset: Int {
+    public func readGlyphWidthTableOffset() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// The offset to the beginning of the kerning table from the beginning of the 'FOND' resource, in bytes
-    public var kerningTableOffset: Int {
+    public func readKerningTableOffset() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
     /// The offset to the style-mapping table from the beginning of the font family resource to the beginning of the table, in bytes
-    public var styleMappingTableOffset: Int {
+    public func readStyleMappingTableOffset() -> Int {
         return data.readUInt32(at: 0x18)
     }
     
     /// Each value indicates the extra width, in pixels, that would be added to the glyphs of a 1-point font in this font family after a stylistic variation has been applied
-    public var styleProperties: FontStyleProperties {
+    public func readStyleProperties() -> FontStyleProperties {
         
         let plainExtraWidth = self.readFraction(at: 0x1C)
         let boldExtraWidth = self.readFraction(at: 0x1E)
@@ -149,12 +149,12 @@ public class FontFamilyResourceBlock: ResourceBlock {
     /// 2	This record may contain the offset and bounding-box tables.
     /// <p>
     /// 3	This record definitely contains the offset and bounding-box tables.
-    public var version: Int {
+    public func readVersion() -> Int {
         return data.readUInt16(at: 0x32)
     }
     
     /// The font records
-    public var fontAssociationTable: [FontAssociation] {
+    public func readFontAssociationTable() -> [FontAssociation] {
         var offset = 0x34
         let countMinusOne = data.readUInt16(at: offset)
         offset += 2
