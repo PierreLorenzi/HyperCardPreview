@@ -62,7 +62,7 @@ public extension Stack {
         
         /* font names */
         self.fontNameReferencesProperty.lazyCompute = {
-            return fileContent.extractFontBlock()?.fontReferences ?? []
+            return fileContent.extractFontBlock()?.readFontReferences() ?? []
         }
 
         

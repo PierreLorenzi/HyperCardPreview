@@ -28,18 +28,18 @@ public class StyleBlock: HyperCardFileBlock {
     }
     
     /// Number of text styles
-    public var styleCount: Int {
+    public func readStyleCount() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// Style ID to use for next style
-    public var nextAvailableStyleNumber: Int {
+    public func readNextAvailableStyleNumber() -> Int {
         return data.readUInt32(at: 0x14)
     }
     
     /// The text styles
-    public var styles: [Style] {
-        let count = self.styleCount
+    public func readStyles() -> [Style] {
+        let count = self.readStyleCount()
         var offset = 0x18
         var styles: [Style] = []
         for _ in 0..<count {

@@ -98,7 +98,7 @@ public extension Layer {
         
         /* Get the text styles of the stack (there must be a style block) */
         let styleBlock = fileContent.extractStyleBlock()!
-        let styles = styleBlock.styles
+        let styles = styleBlock.readStyles()
         
         /* Load the attributes */
         var attributes = Array<Text.FormattingAssociation>()

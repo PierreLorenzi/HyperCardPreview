@@ -17,13 +17,13 @@ public class FontBlock: HyperCardFileBlock {
     }
     
     /// Number of font names
-    public var fontCount: Int {
+    public func readFontCount() -> Int {
         return data.readUInt32(at: 0x10)
     }
     
     /// The font names
-    public var fontReferences: [FontNameReference] {
-        let count = self.fontCount
+    public func readFontReferences() -> [FontNameReference] {
+        let count = self.readFontCount()
         var offset = 0x18
         var fonts: [FontNameReference] = []
         for _ in 0..<count {
