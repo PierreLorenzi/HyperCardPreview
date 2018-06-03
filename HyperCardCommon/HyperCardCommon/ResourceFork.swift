@@ -11,49 +11,49 @@
 public class ResourceFork: DataBlock {
     
     /// Offset from beginning of resource file to resource data
-    public var dataOffset: Int {
+    public func readDataOffset() -> Int {
         return data.readUInt32(at: 0x0)
     }
     
     /// Offset from beginning of resource file to resource map
-    public var mapOffset: Int {
+    public func readMapOffset() -> Int {
         return data.readUInt32(at: 0x4)
     }
     
     /// Length of resource data
-    public var dataLength: Int {
+    public func readDataLength() -> Int {
         return data.readUInt32(at: 0x8)
     }
     
     /// Length of resource map
-    public var mapLength: Int {
+    public func readMapLength() -> Int {
         return data.readUInt32(at: 0xC)
     }
     
     /// The resource map
-    public var resourceMap: ResourceMap {
-        let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset + self.mapOffset, length: self.mapLength)
+    public func extractResourceMap() -> ResourceMap {
+        let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset + self.readMapOffset(), length: self.readMapLength())
         return ResourceMap(data: dataRange)
     }
     
     /// Quick access to the icon resource blocks
-    public var icons: [IconResourceBlock] {
-        return self.listResources(withType: IconResourceBlock.self)
+    public func extractIcons() -> [IconResourceBlock] {
+        return self.extractResources(withType: IconResourceBlock.self)
     }
     
     /// Quick access to the font family resource blocks
-    public var fontFamilies: [FontFamilyResourceBlock] {
-        return self.listResources(withType: FontFamilyResourceBlock.self)
+    public func extractFontFamilies() -> [FontFamilyResourceBlock] {
+        return self.extractResources(withType: FontFamilyResourceBlock.self)
     }
     
     /// Quick access to the bitmap font resource blocks
-    public var bitmapFonts: [BitmapFontResourceBlock] {
+    public func extractBitmapFonts() -> [BitmapFontResourceBlock] {
         
         /* Append the 'NFNT' resources */
-        var fonts = self.listResources(withType: BitmapFontResourceBlock.self)
+        var fonts = self.extractResources(withType: BitmapFontResourceBlock.self)
         
         /* Append the 'FONT' resources */
-        let oldFonts = self.listResources(withType: BitmapFontResourceBlockOld.self)
+        let oldFonts = self.extractResources(withType: BitmapFontResourceBlockOld.self)
         for oldFont in oldFonts {
             fonts.append(oldFont)
         }
@@ -62,43 +62,45 @@ public class ResourceFork: DataBlock {
     }
     
     /// Quick access to the vector font resource blocks
-    public var vectorFonts: [VectorFontResourceBlock] {
-        return self.listResources(withType: VectorFontResourceBlock.self)
+    public func extractVectorFonts() -> [VectorFontResourceBlock] {
+        return self.extractResources(withType: VectorFontResourceBlock.self)
     }
     
     /// Quick access to the AddColor card colors resource blocks
-    public var cardColors: [AddColorResourceBlockCard] {
-        return self.listResources(withType: AddColorResourceBlockCard.self)
+    public func extractCardColors() -> [AddColorResourceBlockCard] {
+        return self.extractResources(withType: AddColorResourceBlockCard.self)
     }
     
     /// Quick access to the AddColor background colors resource blocks
-    public var backgroundColors: [AddColorResourceBlockBackground] {
-        return self.listResources(withType: AddColorResourceBlockBackground.self)
+    public func extractBackgroundColors() -> [AddColorResourceBlockBackground] {
+        return self.extractResources(withType: AddColorResourceBlockBackground.self)
     }
     
     /// Quick access to the picture resource blocks
-    public var pictures: [PictureResourceBlock] {
-        return self.listResources(withType: PictureResourceBlock.self)
+    public func extractPictures() -> [PictureResourceBlock] {
+        return self.extractResources(withType: PictureResourceBlock.self)
     }
     
     private lazy var references: [ResourceReference] = {
         [unowned self] in
-        return self.resourceMap.references
+        return self.extractResourceMap().readReferences()
     }()
     
     /// Lists the resource blocks for a certain type
-    public func listResources<T: ResourceBlock>(withType type: T.Type) -> [T] {
+    public func extractResources<T: ResourceBlock>(withType type: T.Type) -> [T] {
         
         var resources = [T]()
         
         /* Get the references for that type */
         let references = self.references.filter({$0.type == T.Name})
         
+        let dataOffset = self.readDataOffset()
+        
         /* Build the resource objets */
         for reference in references {
             
             /* Read the size of the data block */
-            let offset = self.dataOffset + reference.dataOffset
+            let offset = dataOffset + reference.dataOffset
             let length = data.readUInt32(at: offset)
             
             /* Create the resource */
@@ -121,18 +123,18 @@ public class ResourceMap: DataBlock {
     private static let ReferenceLength = 12
     
     /// Offset from beginning of resource map to resource name list
-    public var nameListOffset: Int {
+    public func readNameListOffset() -> Int {
         return data.readUInt16(at: 0x1A)
     }
     
     /// Number of resource types in the map
-    public var typeCount: Int {
+    public func readTypeCount() -> Int {
         let countMinusOne = data.readSInt16(at: 0x1C)
         return countMinusOne + 1
     }
     
     /// The resource records in the map
-    public var references: [ResourceReference] {
+    public func readReferences() -> [ResourceReference] {
         
         /* Define the list to return */
         var references = [ResourceReference]()
@@ -140,8 +142,11 @@ public class ResourceMap: DataBlock {
         /* Define the offset in the type list */
         var typeOffset = ResourceMap.HeaderLength
         
+        let typeCount = self.readTypeCount()
+        let nameListOffset = self.readNameListOffset()
+        
         /* Loop on the types */
-        for _ in 0..<self.typeCount {
+        for _ in 0..<typeCount {
             
             /* Read the type */
             let type = data.readUInt32(at: typeOffset)
@@ -161,7 +166,7 @@ public class ResourceMap: DataBlock {
                 let dataOffset = dataOffsetWithFlags & 0xFF_FFFF
                 
                 /* Read the name */
-                let name = (nameOffsetInList == -1) ? "" : self.readName(nameListOffset: self.nameListOffset, nameOffsetInList: nameOffsetInList)
+                let name = (nameOffsetInList == -1) ? "" : self.readName(nameListOffset: nameListOffset, nameOffsetInList: nameOffsetInList)
                 
                 /* Build the reference */
                 let reference = ResourceReference(type: NumericName(value: type), identifier: identifier, name: name, dataOffset: dataOffset)

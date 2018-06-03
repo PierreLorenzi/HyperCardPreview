@@ -94,31 +94,33 @@ public extension ResourceRepository {
         self.init()
         
         /* Add the icons */
-        for iconResourceBlock in fork.icons {
+        for iconResourceBlock in fork.extractIcons() {
             let iconResource = FileIconResource(resource: iconResourceBlock)
             self.resources.append(iconResource)
         }
         
         /* Add the font families */
-        for fontFamilyResourceBlock in fork.fontFamilies {
-            let fontFamilyResource = FileFontFamilyResource(resource: fontFamilyResourceBlock, fork: fork)
+        let bitmapFonts = fork.extractBitmapFonts()
+        let vectorFonts = fork.extractVectorFonts()
+        for fontFamilyResourceBlock in fork.extractFontFamilies() {
+            let fontFamilyResource = FileFontFamilyResource(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
             self.resources.append(fontFamilyResource)
         }
         
         /* Add the AddColor elements in cards */
-        for resourceBlock in fork.cardColors {
+        for resourceBlock in fork.extractCardColors() {
             let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.cardColor, content: resourceBlock.elements)
             self.resources.append(resource)
         }
         
         /* Add the AddColor elements in backgrounds */
-        for resourceBlock in fork.backgroundColors {
+        for resourceBlock in fork.extractBackgroundColors() {
             let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, content: resourceBlock.elements)
             self.resources.append(resource)
         }
         
         /* Add the pictures */
-        for resourceBlock in fork.pictures {
+        for resourceBlock in fork.extractPictures() {
             let resource = Resource<NSImage>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.picture, content: resourceBlock.image)
             self.resources.append(resource)
         }
