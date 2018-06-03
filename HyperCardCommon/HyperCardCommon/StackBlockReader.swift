@@ -269,8 +269,8 @@ public struct StackBlockReader {
     public func readSize() -> Size {
         let dataWidth = data.readUInt16(at: 0x1BA)
         let dataHeight = data.readUInt16(at: 0x1B8)
-        let width = (dataWidth == 0) ? StackBlock.defaultWidth : dataWidth
-        let height = (dataHeight == 0) ? StackBlock.defaultHeight : dataHeight
+        let width = (dataWidth == 0) ? StackBlockReader.defaultWidth : dataWidth
+        let height = (dataHeight == 0) ? StackBlockReader.defaultHeight : dataHeight
         return Size(width: width, height: height)
     }
     

@@ -31,27 +31,3 @@ public extension Part {
     }
     
 }
-
-public extension Part {
-    
-    func setupLazyInitialization(partBlock: PartBlock) {
-        
-        /* Read now the scalar fields */
-        self.identifier = partBlock.readIdentifier()
-        self.style = partBlock.readStyle()
-        self.visible = partBlock.readVisible()
-        self.rectangle = partBlock.readRectangle()
-        
-        /* name */
-        self.nameProperty.lazyCompute = {
-            return partBlock.readName()
-        }
-        
-        /* script */
-        self.scriptProperty.lazyCompute = {
-            return partBlock.readScript()
-        }
-        
-    }
-    
-}

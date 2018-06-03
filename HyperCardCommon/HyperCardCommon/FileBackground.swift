@@ -33,29 +33,3 @@ public extension Background {
     
 }
 
-public extension Background {
-    
-    public convenience init(backgroundBlock: BackgroundBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style]) {
-        
-        self.init()
-        
-        /* Read now the scalar fields */
-        self.identifier = backgroundBlock.readIdentifier()
-        
-        /* Enable lazy initialization */
-        super.setupLazyInitialization(layerBlock: backgroundBlock, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles)
-        
-        /* name */
-        self.nameProperty.lazyCompute = {
-            return backgroundBlock.readName()
-        }
-        
-        /* script */
-        self.scriptProperty.lazyCompute = {
-            return backgroundBlock.readScript()
-        }
-        
-    }
-    
-}
-
