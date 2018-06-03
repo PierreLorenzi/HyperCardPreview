@@ -26,6 +26,12 @@ public class HyperCardFileData: DataBlock {
         return StackBlock(data: dataRange, decodedHeader: decodedHeader)
     }
     
+    /// Cache of the block offsets in the file
+    private lazy var stack: StackBlock = {
+        [unowned self] in
+        return self.extractStack()
+        }()
+    
     /// The master block
     public func extractMaster() -> MasterBlock {
         let stackLength = data.readUInt32(at: 0x0)
@@ -39,15 +45,13 @@ public class HyperCardFileData: DataBlock {
     
     /// The list block
     public func extractList() -> ListBlock {
-        let stack = self.extractStack()
-        let identifier = stack.readListIdentifier()
+        let identifier = self.stack.readListIdentifier()
         return self.loadBlock(identifier: identifier, initializer: ListBlock.init)
     }
     
     /// The Style Block
     public func extractStyleBlock() -> StyleBlock? {
-        let stack = self.extractStack()
-        guard let identifier = stack.readStyleBlockIdentifier() else {
+        guard let identifier = self.stack.readStyleBlockIdentifier() else {
             return nil
         }
         return self.loadBlock(identifier: identifier, initializer: StyleBlock.init)
@@ -55,8 +59,7 @@ public class HyperCardFileData: DataBlock {
     
     /// The Font Block
     public func extractFontBlock() -> FontBlock? {
-        let stack = self.extractStack()
-        guard let identifier = stack.readFontBlockIdentifier() else {
+        guard let identifier = self.stack.readFontBlockIdentifier() else {
             return nil
         }
         return self.loadBlock(identifier: identifier, initializer: FontBlock.init)
