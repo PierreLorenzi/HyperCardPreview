@@ -16,27 +16,27 @@ public extension Button {
         self.init()
         
         /* Read now the scalar fields */
-        self.enabled = partBlock.enabled
-        self.hilite = partBlock.hilite
-        self.autoHilite = partBlock.autoHilite
-        self.sharedHilite = partBlock.sharedHilite
-        self.showName = partBlock.showName
-        self.iconIdentifier = partBlock.icon
-        self.selectedItem = partBlock.selectedLine
-        self.family = partBlock.family
-        self.titleWidth = partBlock.titleWidth
-        self.textAlign = partBlock.textAlign
-        self.textFontIdentifier = partBlock.textFontIdentifier
-        self.textFontSize = partBlock.textFontSize
-        self.textStyle = partBlock.textStyle
-        self.textHeight = partBlock.textHeight
+        self.enabled = partBlock.readEnabled()
+        self.hilite = partBlock.readHilite()
+        self.autoHilite = partBlock.readAutoHilite()
+        self.sharedHilite = partBlock.readSharedHilite()
+        self.showName = partBlock.readShowName()
+        self.iconIdentifier = partBlock.readIconIdentifier()
+        self.selectedItem = partBlock.readSelectedLine()
+        self.family = partBlock.readFamily()
+        self.titleWidth = partBlock.readTitleWidth()
+        self.textAlign = partBlock.readTextAlign()
+        self.textFontIdentifier = partBlock.readTextFontIdentifier()
+        self.textFontSize = partBlock.readTextFontSize()
+        self.textStyle = partBlock.readTextStyle()
+        self.textHeight = partBlock.readTextHeight()
         
         /* Enable lazy initialization */
         super.setupLazyInitialization(partBlock: partBlock)
         
         /* content */
         self.contentProperty.lazyCompute = {
-            let partContent = Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
+            let partContent = Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, fileContent: fileContent)
             return partContent.string
         }
         

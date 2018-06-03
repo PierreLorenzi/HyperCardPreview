@@ -13,19 +13,19 @@ public extension Part {
     func setupLazyInitialization(partBlock: PartBlock) {
         
         /* Read now the scalar fields */
-        self.identifier = partBlock.identifier
-        self.style = partBlock.style
-        self.visible = partBlock.visible
-        self.rectangle = partBlock.rectangle
+        self.identifier = partBlock.readIdentifier()
+        self.style = partBlock.readStyle()
+        self.visible = partBlock.readVisible()
+        self.rectangle = partBlock.readRectangle()
         
         /* name */
         self.nameProperty.lazyCompute = {
-            return partBlock.name
+            return partBlock.readName()
         }
         
         /* script */
         self.scriptProperty.lazyCompute = {
-            return partBlock.script
+            return partBlock.readScript()
         }
         
     }

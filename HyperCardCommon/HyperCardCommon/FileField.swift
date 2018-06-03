@@ -15,23 +15,23 @@ public extension Field {
         self.init()
         
         /* Read now the scalar fields */
-        self.lockText = partBlock.lockText
-        self.autoTab = partBlock.autoTab
-        self.fixedLineHeight = partBlock.fixedLineHeight
-        self.sharedText = partBlock.sharedText
-        self.dontSearch = partBlock.dontSearch
-        self.dontWrap = partBlock.dontWrap
-        self.multipleLines = partBlock.multipleLines
-        self.wideMargins = partBlock.wideMargins
-        self.showLines = partBlock.showLines
-        self.autoSelect = partBlock.autoSelect
-        self.selectedLine = partBlock.selectedLine
-        self.lastSelectedLine = partBlock.lastSelectedLine
-        self.textAlign = partBlock.textAlign
-        self.textFontIdentifier = partBlock.textFontIdentifier
-        self.textFontSize = partBlock.textFontSize
-        self.textStyle = partBlock.textStyle
-        self.textHeight = partBlock.textHeight
+        self.lockText = partBlock.readLockText()
+        self.autoTab = partBlock.readAutoTab()
+        self.fixedLineHeight = partBlock.readFixedLineHeight()
+        self.sharedText = partBlock.readSharedText()
+        self.dontSearch = partBlock.readDontSearch()
+        self.dontWrap = partBlock.readDontWrap()
+        self.multipleLines = partBlock.readMultipleLines()
+        self.wideMargins = partBlock.readWideMargins()
+        self.showLines = partBlock.readShowLines()
+        self.autoSelect = partBlock.readAutoSelect()
+        self.selectedLine = partBlock.readSelectedLine()
+        self.lastSelectedLine = partBlock.readLastSelectedLine()
+        self.textAlign = partBlock.readTextAlign()
+        self.textFontIdentifier = partBlock.readTextFontIdentifier()
+        self.textFontSize = partBlock.readTextFontSize()
+        self.textStyle = partBlock.readTextStyle()
+        self.textHeight = partBlock.readTextHeight()
         
         /* Enable lazy initialization */
         super.setupLazyInitialization(partBlock: partBlock)
@@ -39,7 +39,7 @@ public extension Field {
         
         /* content */
         self.contentProperty.lazyCompute = {
-            return Layer.loadContent(identifier: partBlock.identifier, layerBlock: layerBlock, fileContent: fileContent)
+            return Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, fileContent: fileContent)
         }
         
     }
