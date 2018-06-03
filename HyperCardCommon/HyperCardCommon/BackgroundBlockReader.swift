@@ -40,6 +40,10 @@ public struct BackgroundBlockReader: LayerBlockReader {
         return data.readSInt32(at: 0x20 + self.versionOffset)
     }
     
+    public func readIdentifier() -> Int {
+        return layerReader.readIdentifier()
+    }
+    
     public func readBitmapIdentifier() -> Int? {
         return layerReader.readBitmapIdentifier()
     }

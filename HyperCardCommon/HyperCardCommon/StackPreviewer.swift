@@ -12,8 +12,9 @@ public class StackPreviewer: NSObject {
     private let browser: Browser
     
     public init(url: URL) throws {
-        let file = try HyperCardFile(path: url.path)
-        browser = Browser(stack: file.stack)
+        let file = ClassicFile(path: url.path)
+        let stack = try Stack(file: file)
+        browser = Browser(stack: stack)
     }
     
     public func moveToCard(_ index: Int) {

@@ -29,6 +29,11 @@ public struct PageBlockReader {
         self.hashValueCount = hashValueCount
     }
     
+    /// Identifier
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     /// ID of the list
     public func readListIdentifier() -> Int {
         return data.readUInt32(at: 0x10 + self.versionOffset)

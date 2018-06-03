@@ -16,6 +16,11 @@ public struct StyleBlockReader {
         self.data = data
     }
     
+    /// Identifier
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     public func readStyleCount() -> Int {
         return data.readUInt32(at: 0x10)
     }

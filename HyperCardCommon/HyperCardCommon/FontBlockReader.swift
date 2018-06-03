@@ -18,6 +18,11 @@ public struct FontBlockReader {
         self.data = data
     }
     
+    /// Identifier
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     /// Number of font names
     public func readFontCount() -> Int {
         return data.readUInt32(at: 0x10)

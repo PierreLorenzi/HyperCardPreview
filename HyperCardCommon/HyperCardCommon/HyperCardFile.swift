@@ -7,68 +7,68 @@
 //
 
 
-/// A HyperCard stack, as a parsed file, not as an HyperCard object
-public class HyperCardFile: ClassicFile {
+public extension Stack {
     
-    public enum StackError: Error {
+    public enum OpeningError: Error {
         case notStack
         case corrupted
         case missingPassword
         case wrongPassword
     }
     
-    private var decodedHeader: Data? = nil
-    
-    public init(path: String, password possiblePassword: HString? = nil) throws {
+    public convenience init(file: ClassicFile, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
         
-        super.init(path: path)
-        
-        /* Check if the file is a stack */
-        if self.readVersion() == .notHyperCardStack {
-            throw StackError.notStack
-        }
-        
-        /* Read the data one first time */
-        let parsedData = self.extractParsedData()
-        let parsedStack = parsedData.extractStack()
-        
-        /* Check if the stack header is encrypted */
-        if parsedStack.readPrivateAccess() {
-            
-            /* We must have a password to decrypt the header */
-            if let decodedHeader = hackEncryptedHeader() {
-                self.decodedHeader = decodedHeader
-                return
-            }
-            
-            /* We must have a password to decrypt the header */
-            guard let password = possiblePassword else {
-                throw StackError.missingPassword
-            }
-            
-            /* Ignore case and accents in the password */
-            let lowerCaseNoAccentPassword = convertStringToLowerCaseWithoutAccent(password)
-            
-            /* Decrypt the header with the password */
-            guard let decodedHeader = decryptHeader(withPassword: lowerCaseNoAccentPassword) else {
-                throw StackError.wrongPassword
-            }
-            
-            /* Register the decoded data */
-            self.decodedHeader = decodedHeader
-        }
+        /* Decrypt the header if necessary */
+        let dataFork = file.dataFork!
+        let decodedHeader: Data? = try Stack.computeDecodedHeader(in: dataFork, possiblePassword: possiblePassword, hackEncryption: hackEncryption)
         
         /* Check the checksum (must be after decryption) */
-        guard parsedStack.isChecksumValid() else {
-            throw StackError.corrupted
+        let dataRange = DataRange(sharedData: dataFork, offset: 0, length: dataFork.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: decodedHeader)
+        guard fileReader.extractStackReader().isChecksumValid() else {
+            throw OpeningError.corrupted
         }
+        
+        /* Build the stack */
+        self.init(fileReader: fileReader, resources: file.resourceRepository)
         
     }
     
-    private func hackEncryptedHeader() -> Data? {
+    private static func computeDecodedHeader(in dataFork: Data, possiblePassword: HString?, hackEncryption: Bool) throws -> Data? {
+        
+        /* Check if the stack header is encrypted by making a fake header reader */
+        let dataRange = DataRange(sharedData: dataFork, offset: 0, length: dataFork.count)
+        let stackReader = StackBlockReader(data: dataRange, decodedHeader: nil)
+        guard stackReader.readPrivateAccess() else {
+            return nil
+        }
+        
+        /* We must have a password to decrypt the header */
+        if hackEncryption, let decodedHeader = Stack.hackEncryptedHeader(in: dataFork) {
+            return decodedHeader
+        }
+        
+        /* We must have a password to decrypt the header */
+        guard let password = possiblePassword else {
+            throw OpeningError.missingPassword
+        }
+        
+        /* Ignore case and accents in the password */
+        let lowerCaseNoAccentPassword = convertStringToLowerCaseWithoutAccent(password)
+        
+        /* Decrypt the header with the password */
+        guard let decodedHeader = Stack.decryptHeader(withPassword: lowerCaseNoAccentPassword, in: dataFork) else {
+            throw OpeningError.wrongPassword
+        }
+        
+        /* Register the decoded data */
+        return decodedHeader
+    }
+    
+    private static func hackEncryptedHeader(in dataFork: Data) -> Data? {
         
         /* Find the first integer used to XOR the header */
-        guard var x = hackFirstXor() else {
+        guard var x = hackFirstXor(in: dataFork) else {
             return nil
         }
         
@@ -77,7 +77,7 @@ public class HyperCardFile: ClassicFile {
         let encodedDataLength = 0x32
         
         /* Get the encoded data */
-        let dataSlice = self.dataFork![encodedDataOffset..<(encodedDataOffset + encodedDataLength)]
+        let dataSlice = dataFork[encodedDataOffset..<(encodedDataOffset + encodedDataLength)]
         var data = Data(dataSlice)
         
         /* XOR the encoded data */
@@ -97,14 +97,14 @@ public class HyperCardFile: ClassicFile {
         
     }
     
-    private func hackFirstXor() -> Int? {
-    
+    private static func hackFirstXor(in dataFork: Data) -> Int? {
+        
         /* Get the first XORed integer */
-        let xoredInteger = self.dataFork!.readUInt32(at: 0x18)
+        let xoredInteger = dataFork.readUInt32(at: 0x18)
         
         /* The initial value of the integer is the STAK size. XOR it with the STAK size so we have
          the value used to XOR the integer */
-        let stackBlockSize = self.dataFork!.readUInt32(at: 0x0)
+        let stackBlockSize = dataFork.readUInt32(at: 0x0)
         let xor = xoredInteger ^ stackBlockSize
         
         /* The XOR is equal to a result x = x ^ (hashNumber(x) >> 16). We have to find x. As the
@@ -121,7 +121,7 @@ public class HyperCardFile: ClassicFile {
             let transformedValue = value ^ (hashNumber(value) >> 16)
             
             /* Check if we have found the right value */
-            if transformedValue == xor && isFirstXorGood(value) {
+            if transformedValue == xor && isFirstXorGood(value, in: dataFork) {
                 return value
             }
             
@@ -130,7 +130,7 @@ public class HyperCardFile: ClassicFile {
         return nil
     }
     
-    private func isFirstXorGood(_ value: Int) -> Bool {
+    private static func isFirstXorGood(_ value: Int, in dataFork: Data) -> Bool {
         
         /* We have to check one field in the decrypted header to see if it is "expected". The
          most restricted value in the decrypted header is the userLevel. */
@@ -143,19 +143,19 @@ public class HyperCardFile: ClassicFile {
         }
         
         /* Check the user level */
-        let xoredUserLevel = self.dataFork!.readUInt16(at: 0x48)
+        let xoredUserLevel = dataFork.readUInt16(at: 0x48)
         let userLevel = xoredUserLevel ^ (hash & 0xFFFF)
         
         return (userLevel >= 0 && userLevel <= 5)
     }
     
-    private func decryptHeader(withPassword password: HString) -> Data? {
+    private static func decryptHeader(withPassword password: HString, in dataFork: Data) -> Data? {
         
         /* Hash the password a first time */
         let firstHash = hashPassword(password)
         
         /* Decode the header with that hash */
-        let decodedHeader = decodeHeader(withHash: firstHash)
+        let decodedHeader = decodeHeader(withHash: firstHash, in: dataFork)
         
         /* To get the password, hash the first hash as is it was a 4-char string */
         let firstHashString = convertIntegerTo4CharString(firstHash)
@@ -170,7 +170,7 @@ public class HyperCardFile: ClassicFile {
         return decodedHeader
     }
     
-    private func decodeHeader(withHash hash: Int) -> Data {
+    private static func decodeHeader(withHash hash: Int, in dataFork: Data) -> Data {
         
         /* Constants */
         let encodedDataOffset = 0x18
@@ -185,7 +185,7 @@ public class HyperCardFile: ClassicFile {
         }
         
         /* Get the encoded data */
-        let dataSlice = self.dataFork![encodedDataOffset..<(encodedDataOffset + encodedDataLength)]
+        let dataSlice = dataFork[encodedDataOffset..<(encodedDataOffset + encodedDataLength)]
         var data = Data(dataSlice)
         
         /* XOR the encoded data */
@@ -205,40 +205,40 @@ public class HyperCardFile: ClassicFile {
         
     }
     
-    private func hashPassword(_ password: HString) -> Int {
+    private static func hashPassword(_ password: HString) -> Int {
         
-            var x = 0
+        var x = 0
+        
+        let character0 = password.length > 0 ? Int(password[0]) : 0
+        
+        var s = character0 + password.length
+        if s > 0xff {
+            s &= 0xff
+        }
+        else if character0 > 0x80 {
+            s |= 0xffff_ff00
+        }
+        
+        for i in 0..<password.length {
             
-            let character0 = Int(password[0])
+            let character = password[i]
             
-            var s = character0 + password.length
-            if s > 0xff {
-                s &= 0xff
-            }
-            else if character0 > 0x80 {
-                s |= 0xffff_ff00
-            }
-            
-            for i in 0..<password.length {
-                
-                let character = password[i]
-                
-                for i in 0..<8 {
-                    s = hashNumber(s)
-                    if (character >> UInt8(7-i)) & 1 != 0 {
-                        x += s
-                    }
+            for i in 0..<8 {
+                s = hashNumber(s)
+                if (character >> UInt8(7-i)) & 1 != 0 {
+                    x += s
                 }
             }
-            
-            if x == 0 {
-                return 0x42696c6c // 'Bill'
-            }
-            
-            return x & 0xFFFF_FFFF
+        }
+        
+        if x == 0 {
+            return 0x42696c6c // 'Bill'
+        }
+        
+        return x & 0xFFFF_FFFF
     }
     
-    private func hashNumber(_ x: Int) -> Int {
+    private static func hashNumber(_ x: Int) -> Int {
         
         /* This function replicates the Random function of old Mac OS. It was used to make hashes. */
         var result = x * 0x41A7
@@ -247,7 +247,7 @@ public class HyperCardFile: ClassicFile {
         return result
     }
     
-    private func convertIntegerTo4CharString(_ x: Int) -> HString {
+    private static func convertIntegerTo4CharString(_ x: Int) -> HString {
         
         /* Init a 4-char string */
         var string: HString = "    "
@@ -259,57 +259,6 @@ public class HyperCardFile: ClassicFile {
         string[3] = HChar(truncatingIfNeeded: x)
         
         return string
-    }
-    
-    /// The stack object contained in the file
-    public lazy var stack: Stack = { [unowned self] in
-        return Stack(fileContent: self.extractParsedData(), resources: self.resourceRepository)
-    }()
-    
-    /// The data blocks contained in the file
-    public func extractParsedData() -> HyperCardFileData {
-        let data = self.dataFork!
-        let dataRange = DataRange(sharedData: data, offset: 0, length: data.count)
-        
-        switch self.readVersion() {
-        case .preReleaseV2, .v2:
-            return HyperCardFileData(data: dataRange, decodedHeader: self.decodedHeader)
-            
-        case .preReleaseV1, .v1:
-            return HyperCardFileDataV1(data: dataRange, decodedHeader: self.decodedHeader)
-            
-        case .notHyperCardStack:
-            fatalError("the data is not a HyperCard Stack")
-            
-        }
-        
-    }
-    
-    /// The version of the stack format: V1 or V2. Parsed here because it must be read before
-    /// parsing the file.
-    public func readVersion() -> Version {
-        let format = self.dataFork![0x13]
-        switch format {
-        case 1...7:
-            return .preReleaseV1
-        case 8:
-            return .v1
-        case 9:
-            return .preReleaseV2
-        case 10:
-            return .v2
-        default:
-            return .notHyperCardStack
-        }
-    }
-    
-    /// The possible versions of the stack format.
-    public enum Version: Int {
-        case notHyperCardStack
-        case preReleaseV1
-        case v1
-        case preReleaseV2
-        case v2
     }
     
 }

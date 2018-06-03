@@ -26,6 +26,11 @@ public struct BitmapBlockReader {
     private static let ZeroRectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     private static let version1Offset = -4
     
+    /// Identifier
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     /// The size of the card, as a rectangle
     public func readCardRectangle() -> Rectangle {
         return data.readRectangle(at: 0x18 + self.versionOffset)

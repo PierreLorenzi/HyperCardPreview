@@ -26,6 +26,10 @@ public struct LayerBlockCommonReader: LayerBlockReader {
         self.partOffset = partOffset
     }
     
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     public func readBitmapIdentifier() -> Int? {
         let value = data.readSInt32(at: 0x10 + self.computeVersionOffset())
         guard value != 0 else {

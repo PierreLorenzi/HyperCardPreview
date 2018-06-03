@@ -35,6 +35,10 @@ public struct CardBlockReader: LayerBlockReader {
         return data.readUInt32(at: 0x24 + self.versionOffset)
     }
     
+    public func readIdentifier() -> Int {
+        return layerReader.readIdentifier()
+    }
+    
     public func readBitmapIdentifier() -> Int? {
         return layerReader.readBitmapIdentifier()
     }

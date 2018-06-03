@@ -29,10 +29,12 @@ class HyperCardCommonTests: XCTestCase {
         
         /* Open stack */
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardsBackgrounds", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
         /* Check cards and backgrounds */
-        let stackBlock = file.extractParsedData().extractStack()
+        let stackBlock = fileReader.extractStackReader()
         
         let cardIdentifier0 = 2842
         let cardIdentifier1 = 3767
@@ -52,49 +54,35 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(stackBlock.readMarkedCardCount() == 2)
         
         /* Check CARD blocks */
-        XCTAssert(file.extractParsedData().extractCards().count == 6)
-        XCTAssert(file.extractParsedData().extractCards()[0].readIdentifier() == cardIdentifier0)
-        XCTAssert(file.extractParsedData().extractCards()[0].readBackgroundIdentifier() == backgroundIdentifier0)
-        XCTAssert(file.extractParsedData().extractCards()[0].isStartOfBackground == true)
-        XCTAssert(file.extractParsedData().extractCards()[0].marked == false)
-        XCTAssert(file.extractParsedData().extractCards()[1].readIdentifier() == cardIdentifier1)
-        XCTAssert(file.extractParsedData().extractCards()[1].readBackgroundIdentifier() == backgroundIdentifier0)
-        XCTAssert(file.extractParsedData().extractCards()[1].isStartOfBackground == false)
-        XCTAssert(file.extractParsedData().extractCards()[1].marked == true)
-        XCTAssert(file.extractParsedData().extractCards()[2].readIdentifier() == cardIdentifier2)
-        XCTAssert(file.extractParsedData().extractCards()[2].readBackgroundIdentifier() == backgroundIdentifier1)
-        XCTAssert(file.extractParsedData().extractCards()[2].isStartOfBackground == true)
-        XCTAssert(file.extractParsedData().extractCards()[2].marked == false)
-        XCTAssert(file.extractParsedData().extractCards()[3].readIdentifier() == cardIdentifier3)
-        XCTAssert(file.extractParsedData().extractCards()[3].readBackgroundIdentifier() == backgroundIdentifier1)
-        XCTAssert(file.extractParsedData().extractCards()[3].isStartOfBackground == false)
-        XCTAssert(file.extractParsedData().extractCards()[3].marked == true)
-        XCTAssert(file.extractParsedData().extractCards()[4].readIdentifier() == cardIdentifier4)
-        XCTAssert(file.extractParsedData().extractCards()[4].readBackgroundIdentifier() == backgroundIdentifier1)
-        XCTAssert(file.extractParsedData().extractCards()[4].isStartOfBackground == false)
-        XCTAssert(file.extractParsedData().extractCards()[4].marked == false)
-        XCTAssert(file.extractParsedData().extractCards()[5].readIdentifier() == cardIdentifier5)
-        XCTAssert(file.extractParsedData().extractCards()[5].readBackgroundIdentifier() == backgroundIdentifier2)
-        XCTAssert(file.extractParsedData().extractCards()[5].isStartOfBackground == true)
-        XCTAssert(file.extractParsedData().extractCards()[5].marked == false)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier0).readIdentifier() == cardIdentifier0)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier0).readBackgroundIdentifier() == backgroundIdentifier0)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier1).readIdentifier() == cardIdentifier1)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier1).readBackgroundIdentifier() == backgroundIdentifier0)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier2).readIdentifier() == cardIdentifier2)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier2).readBackgroundIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier3).readIdentifier() == cardIdentifier3)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier3).readBackgroundIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier4).readIdentifier() == cardIdentifier4)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier4).readBackgroundIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier5).readIdentifier() == cardIdentifier5)
+        XCTAssert(fileReader.extractCardReader(withIdentifier: cardIdentifier5).readBackgroundIdentifier() == backgroundIdentifier2)
         
         /* Check BKGD blocks */
-        XCTAssert(file.extractParsedData().extractBackgrounds().count == 3)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readIdentifier() == backgroundIdentifier0)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readCardCount() == 2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readNextBackgroundIdentifier() == backgroundIdentifier1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readPreviousBackgroundIdentifier() == backgroundIdentifier2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readIdentifier() == backgroundIdentifier1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readCardCount() == 3)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readNextBackgroundIdentifier() == backgroundIdentifier2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readPreviousBackgroundIdentifier() == backgroundIdentifier0)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readIdentifier() == backgroundIdentifier2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readCardCount() == 1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readNextBackgroundIdentifier() == backgroundIdentifier0)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readPreviousBackgroundIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier0).readIdentifier() == backgroundIdentifier0)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier0).readCardCount() == 2)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier0).readNextBackgroundIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier0).readPreviousBackgroundIdentifier() == backgroundIdentifier2)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier1).readIdentifier() == backgroundIdentifier1)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier1).readCardCount() == 3)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier1).readNextBackgroundIdentifier() == backgroundIdentifier2)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier1).readPreviousBackgroundIdentifier() == backgroundIdentifier0)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier2).readIdentifier() == backgroundIdentifier2)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier2).readCardCount() == 1)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier2).readNextBackgroundIdentifier() == backgroundIdentifier0)
+        XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier2).readPreviousBackgroundIdentifier() == backgroundIdentifier1)
         
         /* Check in data */
-        let stack = file.stack
+        let stack = try! Stack(file: file)
         XCTAssert(stack.cards.count == 6)
         XCTAssert(stack.cards[0].identifier == cardIdentifier0)
         XCTAssert(stack.cards[0].background === stack.backgrounds[0])
@@ -126,9 +114,11 @@ class HyperCardCommonTests: XCTestCase {
     func testFreeSize() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFreeSize", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
-        XCTAssert(file.extractParsedData().extractStack().readFreeSize() == 3232)
+        XCTAssert(fileReader.extractStackReader().readFreeSize() == 3232)
         
     }
     
@@ -137,62 +127,76 @@ class HyperCardCommonTests: XCTestCase {
         
         /* Each time, check the file and the data */
         var path: String
-        var file: HyperCardFile
+        var file: ClassicFile
+        var dataRange: DataRange
+        var fileReader: HyperCardFileReader
         
         /* User Level 1 */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel1", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readUserLevel() == .browse)
-        XCTAssert(file.stack.userLevel == .browse)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readUserLevel() == .browse)
+        try! XCTAssert(Stack(file: file).userLevel == .browse)
         
         /* User Level 5 */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel5", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readUserLevel() == .script)
-        XCTAssert(file.stack.userLevel == .script)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readUserLevel() == .script)
+        try! XCTAssert(Stack(file: file).userLevel == .script)
         
         /* Can't Abort */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantAbort", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readCantAbort())
-        XCTAssert(file.stack.cantAbort)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readCantAbort())
+        try! XCTAssert(Stack(file: file).cantAbort)
         
         /* Can't Delete */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantDelete", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readCantDelete())
-        XCTAssert(file.stack.cantDelete)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readCantDelete())
+        try! XCTAssert(Stack(file: file).cantDelete)
         
         /* Can't Modify */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantModify", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readCantModify())
-        XCTAssert(file.stack.cantModify)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readCantModify())
+        try! XCTAssert(Stack(file: file).cantModify)
         
         /* Can't Peek */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantPeek", ofType: "stack")!
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readCantPeek())
-        XCTAssert(file.stack.cantPeek)
+        file = ClassicFile(path: path)
+        dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        XCTAssert(fileReader.extractStackReader().readCantPeek())
+        try! XCTAssert(Stack(file: file).cantPeek)
         
         /* Private Access */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPrivateAccess", ofType: "stack")!
-        XCTAssertNoThrow(try HyperCardFile(path: path, password: "AA éé 1234 ÀÂä"))
-        XCTAssertNoThrow(try HyperCardFile(path: path, password: "AA ee 1234 AAa"))
-        file = try! HyperCardFile(path: path, password: "AA éé 1234 ÀÂä")
-        XCTAssert(file.extractParsedData().extractStack().readPrivateAccess())
-        XCTAssert(file.extractParsedData().extractStack().readPasswordHash() != nil)
-        XCTAssert(file.stack.privateAccess)
-        XCTAssert(file.stack.passwordHash == file.extractParsedData().extractStack().readPasswordHash())
+        file = ClassicFile(path: path)
+        XCTAssertThrowsError(try Stack(file: file, password: "", hackEncryption: false))
+        XCTAssertThrowsError(try Stack(file: file, password: "coucou", hackEncryption: false))
+        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
+        XCTAssertNoThrow(try Stack(file: file, password: "AA ee 1234 AAa"))
+        XCTAssertNoThrow(try Stack(file: file, hackEncryption: true))
+        try! XCTAssert(Stack(file: file, hackEncryption: true).privateAccess)
+        try! XCTAssert(Stack(file: file, hackEncryption: true).passwordHash == 0xCA922FEB)
         
         /* Password without private access */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPassword", ofType: "stack")!
-        XCTAssertNoThrow(try HyperCardFile(path: path))
-        file = try! HyperCardFile(path: path)
-        XCTAssert(file.extractParsedData().extractStack().readPasswordHash() != nil)
-        XCTAssert(file.stack.passwordHash == file.extractParsedData().extractStack().readPasswordHash())
-        
-        
+        file = ClassicFile(path: path)
+        XCTAssertNoThrow(try Stack(file: file, hackEncryption: true))
+        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
+        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: true))
+        try! XCTAssert(Stack(file: file).passwordHash == 0xCA922FEB)
         
     }
     
@@ -200,22 +204,25 @@ class HyperCardCommonTests: XCTestCase {
     func testVersion() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestVersion", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
         /* In HyperCard, result of "print the version of this stack":
          "02374001,02358000,02358000,02418000,<number of ticks since last edition>" */
         
         /* Check file */
-        XCTAssert(file.extractParsedData().extractStack().readVersionAtCreation() == Version(major: 2, minor1: 3, minor2: 7, state: .alpha, release: 1))
-        XCTAssert(file.extractParsedData().extractStack().readVersionAtLastCompacting() == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
-        XCTAssert(file.extractParsedData().extractStack().readVersionAtLastModificationSinceLastCompacting() == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
-        XCTAssert(file.extractParsedData().extractStack().readVersionAtLastModification() == Version(major: 2, minor1: 4, minor2: 1, state: .final, release: 0))
+        XCTAssert(fileReader.extractStackReader().readVersionAtCreation() == Version(major: 2, minor1: 3, minor2: 7, state: .alpha, release: 1))
+        XCTAssert(fileReader.extractStackReader().readVersionAtLastCompacting() == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
+        XCTAssert(fileReader.extractStackReader().readVersionAtLastModificationSinceLastCompacting() == Version(major: 2, minor1: 3, minor2: 5, state: .final, release: 0))
+        XCTAssert(fileReader.extractStackReader().readVersionAtLastModification() == Version(major: 2, minor1: 4, minor2: 1, state: .final, release: 0))
         
         /* Check data */
-        XCTAssert(file.stack.versionAtCreation == file.extractParsedData().extractStack().readVersionAtCreation())
-        XCTAssert(file.stack.versionAtLastCompacting == file.extractParsedData().extractStack().readVersionAtLastCompacting())
-        XCTAssert(file.stack.versionAtLastModificationSinceLastCompacting == file.extractParsedData().extractStack().readVersionAtLastModificationSinceLastCompacting())
-        XCTAssert(file.stack.versionAtLastModification == file.extractParsedData().extractStack().readVersionAtLastModification())
+        let stack = try! Stack(file: file)
+        XCTAssert(stack.versionAtCreation == fileReader.extractStackReader().readVersionAtCreation())
+        XCTAssert(stack.versionAtLastCompacting == fileReader.extractStackReader().readVersionAtLastCompacting())
+        XCTAssert(stack.versionAtLastModificationSinceLastCompacting == fileReader.extractStackReader().readVersionAtLastModificationSinceLastCompacting())
+        XCTAssert(stack.versionAtLastModification == fileReader.extractStackReader().readVersionAtLastModification())
         
         
         
@@ -225,22 +232,23 @@ class HyperCardCommonTests: XCTestCase {
     func testManyCards() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestManyCards", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
         let cardIdentifiers: [Int] = [
             2928,29104,29402,29579,29919,30161,30437,30554,30872,31217,31253,31697,31894,32111,32472,32516,32838,33200,33282,33767,34013,34081,34452,34677,35030,35107,35531,35624,36298,36607,36808,37050,37278,37619,37729,37900,38216,38410,38708,39131,39380,39518,39767,40037,40328,40637,40809,41151,41437,41643,41729,42016,42254,42539,42960,43061,43265,43678,43974,44241,44388,44590,44847,45258,45417,45634,45899,46203,46447,46596,46869,47323,47508,47685,47922,48379,48594,48734,49110,49273,49663,49821,50014,50397,50516,50806,51033,51436,51523,51941,52070,52682,52755,53230,53280,53595,53819,54053,54429,54753,54806,3662,3967,4152,4518,4785,4868,5327,5434,5688,6019,6360,6456,6833,7125,7298,7518,7740,8018,8232,8675,8854,8971,9447,9654,9742,10031,10378,10610,10956,11091,11502,11716,11854,12092,12400,12690,12858,13175,13495,13626,14035,14082,14411,14632,14870,15204,15507,15661,16028,16381,16502,16878,16976,17266,17416,17794,18003,18251,18512,18701,19134,19264,19587,19933,20192,20390,20698,20815,21227,21474,21564,21789,22129,22427,22686,22810,23195,23296,23694,23843,24211,24494,24813,25044,25276,25446,25709,25901,26351,26431,26759,26892,27356,27596,27804,28005,28284,28544,28851
         ]
         
         /* Check number of cards */
-        XCTAssert(file.extractParsedData().extractStack().readCardCount() == cardIdentifiers.count)
-        XCTAssert(file.extractParsedData().extractCards().count == cardIdentifiers.count)
-        XCTAssert(file.stack.cards.count == cardIdentifiers.count)
+        XCTAssert(fileReader.extractStackReader().readCardCount() == cardIdentifiers.count)
+        let stack = try! Stack(file: file)
+        XCTAssert(stack.cards.count == cardIdentifiers.count)
         
         /* Check the identifiers of the cards */
-        for i in 0..<file.extractParsedData().extractStack().readCardCount() {
+        for i in 0..<fileReader.extractStackReader().readCardCount() {
             
-            XCTAssert(file.extractParsedData().extractCards()[i].readIdentifier() == cardIdentifiers[i])
-            XCTAssert(file.stack.cards[i].identifier == cardIdentifiers[i])
+            XCTAssert(stack.cards[i].identifier == cardIdentifiers[i])
         }
         
     }
@@ -249,7 +257,9 @@ class HyperCardCommonTests: XCTestCase {
     func testWindowSize() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestWindowSize", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
         /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
         
@@ -259,13 +269,14 @@ class HyperCardCommonTests: XCTestCase {
         let screenRectangle = Rectangle(top: 0, left: 0, bottom: 768, right: 1024)
         
         /* Check file */
-        XCTAssert(file.extractParsedData().extractStack().readSize() == cardSize)
-        XCTAssert(file.extractParsedData().extractStack().readScrollPoint() == scroll)
-        XCTAssert(file.extractParsedData().extractStack().readWindowRectangle() == windowRectangle)
-        XCTAssert(file.extractParsedData().extractStack().readScreenRectangle() == screenRectangle)
+        XCTAssert(fileReader.extractStackReader().readSize() == cardSize)
+        XCTAssert(fileReader.extractStackReader().readScrollPoint() == scroll)
+        XCTAssert(fileReader.extractStackReader().readWindowRectangle() == windowRectangle)
+        XCTAssert(fileReader.extractStackReader().readScreenRectangle() == screenRectangle)
         
         /* Check data */
-        XCTAssert(file.stack.size == cardSize)
+        let stack = try! Stack(file: file)
+        XCTAssert(stack.size == cardSize)
         
     }
     
@@ -273,17 +284,20 @@ class HyperCardCommonTests: XCTestCase {
     func testStackScript() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestStackScript", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
+        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         
         /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
         
         let script = "-- script of stack\r-- with two lines"
         
         /* Check file */
-        XCTAssert(file.extractParsedData().extractStack().readScript() == script)
+        XCTAssert(fileReader.extractStackReader().readScript() == script)
         
         /* Check data */
-        XCTAssert(file.stack.script == script)
+        let stack = try! Stack(file: file)
+        XCTAssert(stack.script == script)
         
     }
     
@@ -291,35 +305,28 @@ class HyperCardCommonTests: XCTestCase {
     func testCardProperties() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardProperties", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
         /* Can't Delete */
-        XCTAssert(file.extractParsedData().extractCards()[0].readCantDelete() == true)
-        XCTAssert(file.stack.cards[0].cantDelete == true)
-        XCTAssert(file.extractParsedData().extractCards()[1].readCantDelete() == false)
-        XCTAssert(file.stack.cards[1].cantDelete == false)
+        XCTAssert(stack.cards[0].cantDelete == true)
+        XCTAssert(stack.cards[1].cantDelete == false)
         
         /* Show Picture */
-        XCTAssert(file.extractParsedData().extractCards()[1].readShowPict() == false)
-        XCTAssert(file.stack.cards[1].showPict == false)
-        XCTAssert(file.extractParsedData().extractCards()[2].readShowPict() == true)
-        XCTAssert(file.stack.cards[2].showPict == true)
+        XCTAssert(stack.cards[1].showPict == false)
+        XCTAssert(stack.cards[2].showPict == true)
         
         /* Don't Search */
-        XCTAssert(file.extractParsedData().extractCards()[2].readDontSearch() == true)
-        XCTAssert(file.stack.cards[2].dontSearch == true)
-        XCTAssert(file.extractParsedData().extractCards()[3].readDontSearch() == false)
-        XCTAssert(file.stack.cards[3].dontSearch == false)
+        XCTAssert(stack.cards[2].dontSearch == true)
+        XCTAssert(stack.cards[3].dontSearch == false)
         
         /* Name */
         let name = "some card name"
-        XCTAssert(file.extractParsedData().extractCards()[3].readName() == name)
-        XCTAssert(file.stack.cards[3].name == name)
+        XCTAssert(stack.cards[3].name == name)
         
         /* Script */
         let script = "-- card script"
-        XCTAssert(file.extractParsedData().extractCards()[4].readScript() == script)
-        XCTAssert(file.stack.cards[4].script == script)
+        XCTAssert(stack.cards[4].script == script)
         
     }
     
@@ -327,35 +334,28 @@ class HyperCardCommonTests: XCTestCase {
     func testBackgroundProperties() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestBackgroundProperties", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
         /* Can't Delete */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readCantDelete() == true)
-        XCTAssert(file.stack.backgrounds[0].cantDelete == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readCantDelete() == false)
-        XCTAssert(file.stack.backgrounds[1].cantDelete == false)
+        XCTAssert(stack.backgrounds[0].cantDelete == true)
+        XCTAssert(stack.backgrounds[1].cantDelete == false)
         
         /* Show Picture */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].readShowPict() == false)
-        XCTAssert(file.stack.backgrounds[1].showPict == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readShowPict() == true)
-        XCTAssert(file.stack.backgrounds[2].showPict == true)
+        XCTAssert(stack.backgrounds[1].showPict == false)
+        XCTAssert(stack.backgrounds[2].showPict == true)
         
         /* Don't Search */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].readDontSearch() == true)
-        XCTAssert(file.stack.backgrounds[2].dontSearch == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].readDontSearch() == false)
-        XCTAssert(file.stack.backgrounds[3].dontSearch == false)
+        XCTAssert(stack.backgrounds[2].dontSearch == true)
+        XCTAssert(stack.backgrounds[3].dontSearch == false)
         
         /* Name */
         let name = "some background name"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].readName() == name)
-        XCTAssert(file.stack.backgrounds[3].name == name)
+        XCTAssert(stack.backgrounds[3].name == name)
         
         /* Script */
         let script = "-- background script"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[4].readScript() == script)
-        XCTAssert(file.stack.backgrounds[4].script == script)
+        XCTAssert(stack.backgrounds[4].script == script)
         
     }
     
@@ -363,137 +363,99 @@ class HyperCardCommonTests: XCTestCase {
     func testButtonProperties() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestButtonProperties", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
         /* General properties */
         
         /* Identifier */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[0].readIdentifier() == 1)
-        XCTAssert(file.stack.backgrounds[0].buttons[0].identifier == 1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[1].readIdentifier() == 2)
-        XCTAssert(file.stack.backgrounds[0].buttons[1].identifier == 2)
+        XCTAssert(stack.backgrounds[0].buttons[0].identifier == 1)
+        XCTAssert(stack.backgrounds[0].buttons[1].identifier == 2)
         
         /* Enabled */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[1].readEnabled() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[1].enabled == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readEnabled() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[2].enabled == true)
+        XCTAssert(stack.backgrounds[0].buttons[1].enabled == false)
+        XCTAssert(stack.backgrounds[0].buttons[2].enabled == true)
         
         /* Visible */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readVisible() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[2].visible == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readVisible() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[3].visible == true)
+        XCTAssert(stack.backgrounds[0].buttons[2].visible == false)
+        XCTAssert(stack.backgrounds[0].buttons[3].visible == true)
         
         /* Rectangle */
         let rectangle = Rectangle(top: 188, left: 44, bottom: 210, right: 139)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readRectangle() == rectangle)
-        XCTAssert(file.stack.backgrounds[0].buttons[3].rectangle == rectangle)
+        XCTAssert(stack.backgrounds[0].buttons[3].rectangle == rectangle)
         
         /* Family */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[4].readFamily() == 6)
-        XCTAssert(file.stack.backgrounds[0].buttons[4].family == 6)
+        XCTAssert(stack.backgrounds[0].buttons[4].family == 6)
         
         /* Shared Hilite */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[5].readSharedHilite() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[5].sharedHilite == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[6].readSharedHilite() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[6].sharedHilite == true)
+        XCTAssert(stack.backgrounds[0].buttons[5].sharedHilite == false)
+        XCTAssert(stack.backgrounds[0].buttons[6].sharedHilite == true)
         
         /* Auto Hilite */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[6].readAutoHilite() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[6].autoHilite == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[7].readAutoHilite() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[7].autoHilite == false)
+        XCTAssert(stack.backgrounds[0].buttons[6].autoHilite == true)
+        XCTAssert(stack.backgrounds[0].buttons[7].autoHilite == false)
         
         /* Hilite */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[7].readHilite() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[7].hilite == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[8].readHilite() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[8].hilite == false)
+        XCTAssert(stack.backgrounds[0].buttons[7].hilite == true)
+        XCTAssert(stack.backgrounds[0].buttons[8].hilite == false)
         
         /* Show Name */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[8].readShowName() == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[8].showName == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[9].readShowName() == true)
-        XCTAssert(file.stack.backgrounds[0].buttons[9].showName == true)
+        XCTAssert(stack.backgrounds[0].buttons[8].showName == false)
+        XCTAssert(stack.backgrounds[0].buttons[9].showName == true)
         
         /* Icon */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[9].readIconIdentifier() == 30504)
-        XCTAssert(file.stack.backgrounds[0].buttons[9].iconIdentifier == 30504)
+        XCTAssert(stack.backgrounds[0].buttons[9].iconIdentifier == 30504)
         
         /* Name */
         let name = "some button name"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[10].readName() == name)
-        XCTAssert(file.stack.backgrounds[0].buttons[10].name == name)
+        XCTAssert(stack.backgrounds[0].buttons[10].name == name)
         
         /* Script */
         let script = "-- some button script"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[11].readScript() == script)
-        XCTAssert(file.stack.backgrounds[0].buttons[11].script == script)
+        XCTAssert(stack.backgrounds[0].buttons[11].script == script)
         
         /* Content */
         let content = "some button content"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].readString() == content)
-        XCTAssert(file.stack.backgrounds[0].buttons[12].content == content)
+        XCTAssert(stack.backgrounds[0].buttons[12].content == content)
         
         /* Pop-up properties */
         
         /* Popup selected item */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[0].readSelectedLine() == 3)
-        XCTAssert(file.stack.backgrounds[1].buttons[0].selectedItem == 3)
+        XCTAssert(stack.backgrounds[1].buttons[0].selectedItem == 3)
         
         /* Popup selected item */
         let titleWidth = 23
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[1].readTitleWidth() == titleWidth)
-        XCTAssert(file.stack.backgrounds[1].buttons[1].titleWidth == titleWidth)
+        XCTAssert(stack.backgrounds[1].buttons[1].titleWidth == titleWidth)
         
         /* Style */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[0].readStyle() == .transparent)
-        XCTAssert(file.stack.backgrounds[2].buttons[0].style == .transparent)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[1].readStyle() == .opaque)
-        XCTAssert(file.stack.backgrounds[2].buttons[1].style == .opaque)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[2].readStyle() == .rectangle)
-        XCTAssert(file.stack.backgrounds[2].buttons[2].style == .rectangle)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[3].readStyle() == .shadow)
-        XCTAssert(file.stack.backgrounds[2].buttons[3].style == .shadow)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[4].readStyle() == .checkBox)
-        XCTAssert(file.stack.backgrounds[2].buttons[4].style == .checkBox)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[5].readStyle() == .radio)
-        XCTAssert(file.stack.backgrounds[2].buttons[5].style == .radio)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[6].readStyle() == .standard)
-        XCTAssert(file.stack.backgrounds[2].buttons[6].style == .standard)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[7].readStyle() == .`default`)
-        XCTAssert(file.stack.backgrounds[2].buttons[7].style == .`default`)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[8].readStyle() == .oval)
-        XCTAssert(file.stack.backgrounds[2].buttons[8].style == .oval)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[9].readStyle() == .popup)
-        XCTAssert(file.stack.backgrounds[2].buttons[9].style == .popup)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[10].readStyle() == .roundRect)
-        XCTAssert(file.stack.backgrounds[2].buttons[10].style == .roundRect)
+        XCTAssert(stack.backgrounds[2].buttons[0].style == .transparent)
+        XCTAssert(stack.backgrounds[2].buttons[1].style == .opaque)
+        XCTAssert(stack.backgrounds[2].buttons[2].style == .rectangle)
+        XCTAssert(stack.backgrounds[2].buttons[3].style == .shadow)
+        XCTAssert(stack.backgrounds[2].buttons[4].style == .checkBox)
+        XCTAssert(stack.backgrounds[2].buttons[5].style == .radio)
+        XCTAssert(stack.backgrounds[2].buttons[6].style == .standard)
+        XCTAssert(stack.backgrounds[2].buttons[7].style == .`default`)
+        XCTAssert(stack.backgrounds[2].buttons[8].style == .oval)
+        XCTAssert(stack.backgrounds[2].buttons[9].style == .popup)
+        XCTAssert(stack.backgrounds[2].buttons[10].style == .roundRect)
         
         /* Text properties */
         
         /* Style */
         let textStyle = TextStyle(bold: true, italic: false, underline: true, outline: false, shadow: true, condense: false, extend: true, group: false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[0].readTextStyle() == textStyle)
-        XCTAssert(file.stack.backgrounds[3].buttons[0].textStyle == textStyle)
+        XCTAssert(stack.backgrounds[3].buttons[0].textStyle == textStyle)
         
         /* Font */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[1].readTextFontIdentifier() == FontIdentifiers.geneva)
-        XCTAssert(file.stack.backgrounds[3].buttons[1].textFontIdentifier == FontIdentifiers.geneva)
+        XCTAssert(stack.backgrounds[3].buttons[1].textFontIdentifier == FontIdentifiers.geneva)
         
         /* Size */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[2].readTextFontSize() == 17)
-        XCTAssert(file.stack.backgrounds[3].buttons[2].textFontSize == 17)
+        XCTAssert(stack.backgrounds[3].buttons[2].textFontSize == 17)
         
         /* Alignment */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[3].readTextAlign() == .left)
-        XCTAssert(file.stack.backgrounds[3].buttons[3].textAlign == .left)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[4].readTextAlign() == .center)
-        XCTAssert(file.stack.backgrounds[3].buttons[4].textAlign == .center)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[5].readTextAlign() == .right)
-        XCTAssert(file.stack.backgrounds[3].buttons[5].textAlign == .right)
+        XCTAssert(stack.backgrounds[3].buttons[3].textAlign == .left)
+        XCTAssert(stack.backgrounds[3].buttons[4].textAlign == .center)
+        XCTAssert(stack.backgrounds[3].buttons[5].textAlign == .right)
         
         
     }
@@ -502,141 +464,101 @@ class HyperCardCommonTests: XCTestCase {
     func testFieldProperties() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFieldProperties", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
         /* General properties */
         
         /* Identifier */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[0].readIdentifier() == 5)
-        XCTAssert(file.stack.backgrounds[0].fields[0].identifier == 5)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[1].readIdentifier() == 6)
-        XCTAssert(file.stack.backgrounds[0].fields[1].identifier == 6)
+        XCTAssert(stack.backgrounds[0].fields[0].identifier == 5)
+        XCTAssert(stack.backgrounds[0].fields[1].identifier == 6)
         
         /* Lock Text */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[1].readLockText() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[1].lockText == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readLockText() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[2].lockText == false)
+        XCTAssert(stack.backgrounds[0].fields[1].lockText == true)
+        XCTAssert(stack.backgrounds[0].fields[2].lockText == false)
         
         /* Auto Tab */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readAutoTab() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[2].autoTab == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readAutoTab() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[3].autoTab == false)
+        XCTAssert(stack.backgrounds[0].fields[2].autoTab == true)
+        XCTAssert(stack.backgrounds[0].fields[3].autoTab == false)
         
         /* Fixed Line Height */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readFixedLineHeight() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[3].fixedLineHeight == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[4].readFixedLineHeight() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[4].fixedLineHeight == false)
+        XCTAssert(stack.backgrounds[0].fields[3].fixedLineHeight == true)
+        XCTAssert(stack.backgrounds[0].fields[4].fixedLineHeight == false)
         
         /* Shared Text */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[4].readSharedText() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[4].sharedText == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[5].readSharedText() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[5].sharedText == false)
+        XCTAssert(stack.backgrounds[0].fields[4].sharedText == true)
+        XCTAssert(stack.backgrounds[0].fields[5].sharedText == false)
         
         /* Don't Search */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[5].readDontSearch() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[5].dontSearch == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[6].readDontSearch() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[6].dontSearch == false)
+        XCTAssert(stack.backgrounds[0].fields[5].dontSearch == true)
+        XCTAssert(stack.backgrounds[0].fields[6].dontSearch == false)
         
         /* Don't Wrap */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[6].readDontWrap() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[6].dontWrap == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[7].readDontWrap() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[7].dontWrap == false)
+        XCTAssert(stack.backgrounds[0].fields[6].dontWrap == true)
+        XCTAssert(stack.backgrounds[0].fields[7].dontWrap == false)
         
         /* Visible */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[7].readVisible() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[7].visible == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[8].readVisible() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[8].visible == true)
+        XCTAssert(stack.backgrounds[0].fields[7].visible == false)
+        XCTAssert(stack.backgrounds[0].fields[8].visible == true)
         
         /* Rectangle */
         let rectangle = Rectangle(top: 210, left: 271, bottom: 238, right: 446)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[8].readRectangle() == rectangle)
-        XCTAssert(file.stack.backgrounds[0].fields[8].rectangle == rectangle)
+        XCTAssert(stack.backgrounds[0].fields[8].rectangle == rectangle)
         
         /* Multiple Lines */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[9].readMultipleLines() == true)
-        XCTAssert(file.stack.backgrounds[0].fields[9].multipleLines == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[8].readMultipleLines() == false)
-        XCTAssert(file.stack.backgrounds[0].fields[8].multipleLines == false)
+        XCTAssert(stack.backgrounds[0].fields[9].multipleLines == true)
+        XCTAssert(stack.backgrounds[0].fields[8].multipleLines == false)
         
         /* Wide Margins */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[0].readWideMargins() == true)
-        XCTAssert(file.stack.backgrounds[1].fields[0].wideMargins == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[1].readWideMargins() == false)
-        XCTAssert(file.stack.backgrounds[1].fields[1].wideMargins == false)
+        XCTAssert(stack.backgrounds[1].fields[0].wideMargins == true)
+        XCTAssert(stack.backgrounds[1].fields[1].wideMargins == false)
         
         /* Show Lines */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[1].readShowLines() == true)
-        XCTAssert(file.stack.backgrounds[1].fields[1].showLines == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[2].readShowLines() == false)
-        XCTAssert(file.stack.backgrounds[1].fields[2].showLines == false)
+        XCTAssert(stack.backgrounds[1].fields[1].showLines == true)
+        XCTAssert(stack.backgrounds[1].fields[2].showLines == false)
         
         /* Auto Select */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[2].readAutoSelect() == true)
-        XCTAssert(file.stack.backgrounds[1].fields[2].autoSelect == true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[1].readAutoSelect() == false)
-        XCTAssert(file.stack.backgrounds[1].fields[1].autoSelect == false)
+        XCTAssert(stack.backgrounds[1].fields[2].autoSelect == true)
+        XCTAssert(stack.backgrounds[1].fields[1].autoSelect == false)
         
         /* Selected Lines */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[3].readSelectedLine() == 2)
-        XCTAssert(file.stack.backgrounds[1].fields[3].selectedLine == 2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[3].readLastSelectedLine() == 5)
-        XCTAssert(file.stack.backgrounds[1].fields[3].lastSelectedLine == 5)
+        XCTAssert(stack.backgrounds[1].fields[3].selectedLine == 2)
+        XCTAssert(stack.backgrounds[1].fields[3].lastSelectedLine == 5)
         
         /* Name */
         let name = "some field name"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[4].readName() == name)
-        XCTAssert(file.stack.backgrounds[1].fields[4].name == name)
+        XCTAssert(stack.backgrounds[1].fields[4].name == name)
         
         /* Script */
         let script = "-- some field script"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[1].extractParts()[5].readScript() == script)
-        XCTAssert(file.stack.backgrounds[1].fields[5].script == script)
+        XCTAssert(stack.backgrounds[1].fields[5].script == script)
         
         /* Text properties */
         
         /* Style */
         let textStyle = TextStyle(bold: false, italic: true, underline: false, outline: true, shadow: false, condense: true, extend: false, group: true)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[0].readTextStyle() == textStyle)
-        XCTAssert(file.stack.backgrounds[2].fields[0].textStyle == textStyle)
+        XCTAssert(stack.backgrounds[2].fields[0].textStyle == textStyle)
         
         /* Font */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[1].readTextFontIdentifier() == FontIdentifiers.palatino)
-        XCTAssert(file.stack.backgrounds[2].fields[1].textFontIdentifier == FontIdentifiers.palatino)
+        XCTAssert(stack.backgrounds[2].fields[1].textFontIdentifier == FontIdentifiers.palatino)
         
         /* Size */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[2].readTextFontSize() == 17)
-        XCTAssert(file.stack.backgrounds[2].fields[2].textFontSize == 17)
+        XCTAssert(stack.backgrounds[2].fields[2].textFontSize == 17)
         
         /* Alignment */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[3].readTextAlign() == .left)
-        XCTAssert(file.stack.backgrounds[2].fields[3].textAlign == .left)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[4].readTextAlign() == .center)
-        XCTAssert(file.stack.backgrounds[2].fields[4].textAlign == .center)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[5].readTextAlign() == .right)
-        XCTAssert(file.stack.backgrounds[2].fields[5].textAlign == .right)
+        XCTAssert(stack.backgrounds[2].fields[3].textAlign == .left)
+        XCTAssert(stack.backgrounds[2].fields[4].textAlign == .center)
+        XCTAssert(stack.backgrounds[2].fields[5].textAlign == .right)
         
         /* Line Height */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[2].extractParts()[6].readTextHeight() == 21)
-        XCTAssert(file.stack.backgrounds[2].fields[6].textHeight == 21)
+        XCTAssert(stack.backgrounds[2].fields[6].textHeight == 21)
         
         /* Styles */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[0].readStyle() == .transparent)
-        XCTAssert(file.stack.backgrounds[3].fields[0].style == .transparent)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[1].readStyle() == .opaque)
-        XCTAssert(file.stack.backgrounds[3].fields[1].style == .opaque)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[2].readStyle() == .rectangle)
-        XCTAssert(file.stack.backgrounds[3].fields[2].style == .rectangle)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[3].readStyle() == .shadow)
-        XCTAssert(file.stack.backgrounds[3].fields[3].style == .shadow)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[3].extractParts()[4].readStyle() == .scrolling)
-        XCTAssert(file.stack.backgrounds[3].fields[4].style == .scrolling)
+        XCTAssert(stack.backgrounds[3].fields[0].style == .transparent)
+        XCTAssert(stack.backgrounds[3].fields[1].style == .opaque)
+        XCTAssert(stack.backgrounds[3].fields[2].style == .rectangle)
+        XCTAssert(stack.backgrounds[3].fields[3].style == .shadow)
+        XCTAssert(stack.backgrounds[3].fields[4].style == .scrolling)
         
         
     }
@@ -645,47 +567,36 @@ class HyperCardCommonTests: XCTestCase {
     func testContents() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestContents", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
-        /* Shared contents in file */
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].readContentCount() == 1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents().count == 1)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].identifier == 2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].readString() == "shared content")
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readHilite() == false)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readHilite() == true)
-        
-        /* Shared contents in data */
-        if case let PartContent.string(string) = file.stack.backgrounds[0].fields[0].content, string == "" {
+        /* Shared contents */
+        if case let PartContent.string(string) = stack.backgrounds[0].fields[0].content, string == "" {
         }
         else {
             XCTFail()
         }
-        if case let PartContent.string(string) = file.stack.backgrounds[0].fields[1].content, string == "shared content" {
+        if case let PartContent.string(string) = stack.backgrounds[0].fields[1].content, string == "shared content" {
         }
         else {
             XCTFail()
         }
-        XCTAssert(file.stack.backgrounds[0].buttons[0].hilite == false)
-        XCTAssert(file.stack.backgrounds[0].buttons[1].hilite == true)
+        XCTAssert(stack.backgrounds[0].buttons[0].hilite == false)
+        XCTAssert(stack.backgrounds[0].buttons[1].hilite == true)
         
         /* Card contents */
-        XCTAssert(file.extractParsedData().extractCards()[0].readContentCount() == 3)
-        XCTAssert(file.extractParsedData().extractCards()[0].extractContents().count == 3)
-        for content in file.extractParsedData().extractCards()[0].extractContents() {
-            switch (content.identifier, content.layerType) {
-            case (1, .background):
-                XCTAssert(content.readString() == "card content in bg field")
-            case (3, .background):
-                XCTAssert(content.readString() == "1")
-            case (1, .card):
-                XCTAssert(content.readString() == "card content")
+        for content in stack.cards[0].backgroundPartContents {
+            switch content.partIdentifier {
+            case 1:
+                XCTAssert(content.partContent.string == "card content in bg field")
+            case 3:
+                XCTAssert(content.partContent.string == "1")
             default:
                 XCTFail()
             }
         }
-        XCTAssert(file.extractParsedData().extractCards()[0].extractParts()[1].readHilite() == true)
-        XCTAssert(file.stack.cards[0].buttons[0].hilite == true)
+        XCTAssert(stack.cards[0].fields[0].content.string == "card content")
+        XCTAssert(stack.cards[0].buttons[0].hilite == true)
         
     }
     
@@ -693,34 +604,19 @@ class HyperCardCommonTests: XCTestCase {
     func testFormattedContent() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFormattedContent", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
         let textUnformatted = "unformatted content"
         let textFormatted = "formatted content: fontsizestyleall"
         
-        /* Formatted content in file */
-        XCTAssert(file.extractParsedData().extractCards()[0].readContentCount() == 2)
-        XCTAssert(file.extractParsedData().extractCards()[0].extractContents().count == 2)
-        for content in file.extractParsedData().extractCards()[0].extractContents() {
-            switch (content.identifier, content.layerType) {
-            case (1, .card):
-                XCTAssert(content.readString() == textUnformatted)
-                XCTAssert(content.readFormattingChanges() == nil)
-            case (2, .card):
-                XCTAssert(content.readString() == textFormatted)
-                XCTAssert(content.readFormattingChanges() != nil)
-            default:
-                XCTFail()
-            }
-        }
-        
-        /* Formatted content in data */
-        if case let PartContent.string(string) = file.stack.cards[0].fields[0].content, string == textUnformatted {
+        /* Formatted content */
+        if case let PartContent.string(string) = stack.cards[0].fields[0].content, string == textUnformatted {
         }
         else {
             XCTFail()
         }
-        if case let PartContent.formattedString(text) = file.stack.cards[0].fields[1].content {
+        if case let PartContent.formattedString(text) = stack.cards[0].fields[1].content {
             XCTAssert(text.string == textFormatted)
             XCTAssert(text.attributes.count == 5)
             
@@ -759,16 +655,17 @@ class HyperCardCommonTests: XCTestCase {
     func testV1() {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestV1", ofType: "stack")!
-        let file = try! HyperCardFile(path: path)
+        let file = ClassicFile(path: path)
+        let stack = try! Stack(file: file)
         
-        XCTAssert(file.stack.cards.count == 9)
-        XCTAssert(file.stack.backgrounds.count == 3)
-        XCTAssert(file.stack.cards[0].buttons.count == 7)
-        XCTAssert(file.stack.cards[0].fields.count == 0)
-        XCTAssert(file.stack.cards[0].background.buttons.count == 3)
-        XCTAssert(file.stack.cards[0].background.fields.count == 0)
-        XCTAssert(file.stack.cards[1].backgroundPartContents.count == 1)
-        if case let PartContent.string(string) = file.stack.cards[1].backgroundPartContents[0].partContent, string == "First, Previous, Next, Last, Return" {
+        XCTAssert(stack.cards.count == 9)
+        XCTAssert(stack.backgrounds.count == 3)
+        XCTAssert(stack.cards[0].buttons.count == 7)
+        XCTAssert(stack.cards[0].fields.count == 0)
+        XCTAssert(stack.cards[0].background.buttons.count == 3)
+        XCTAssert(stack.cards[0].background.fields.count == 0)
+        XCTAssert(stack.cards[1].backgroundPartContents.count == 1)
+        if case let PartContent.string(string) = stack.cards[1].backgroundPartContents[0].partContent, string == "First, Previous, Next, Last, Return" {
         }
         else {
             XCTFail()

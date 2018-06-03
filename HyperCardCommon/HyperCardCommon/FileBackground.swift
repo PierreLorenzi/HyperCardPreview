@@ -9,6 +9,32 @@
 
 public extension Background {
     
+    public convenience init(backgroundReader: BackgroundBlockReader, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle]) {
+        
+        self.init()
+        
+        /* Read now the scalar fields */
+        self.identifier = backgroundReader.readIdentifier()
+        
+        /* Enable lazy initialization */
+        self.initLayerProperties(layerReader: backgroundReader, loadBitmap: loadBitmap, styles: styles)
+        
+        /* name */
+        self.nameProperty.lazyCompute = {
+            return backgroundReader.readName()
+        }
+        
+        /* script */
+        self.scriptProperty.lazyCompute = {
+            return backgroundReader.readScript()
+        }
+        
+    }
+    
+}
+
+public extension Background {
+    
     public convenience init(backgroundBlock: BackgroundBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style]) {
         
         self.init()

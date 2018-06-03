@@ -10,6 +10,44 @@
 
 public extension Field {
     
+    public convenience init(partReader: PartBlockReader, layerReader: LayerBlockReader, styles: [IndexedStyle]) {
+        
+        self.init()
+        
+        /* Read now the scalar fields */
+        self.lockText = partReader.readLockText()
+        self.autoTab = partReader.readAutoTab()
+        self.fixedLineHeight = partReader.readFixedLineHeight()
+        self.sharedText = partReader.readSharedText()
+        self.dontSearch = partReader.readDontSearch()
+        self.dontWrap = partReader.readDontWrap()
+        self.multipleLines = partReader.readMultipleLines()
+        self.wideMargins = partReader.readWideMargins()
+        self.showLines = partReader.readShowLines()
+        self.autoSelect = partReader.readAutoSelect()
+        self.selectedLine = partReader.readSelectedLine()
+        self.lastSelectedLine = partReader.readLastSelectedLine()
+        self.textAlign = partReader.readTextAlign()
+        self.textFontIdentifier = partReader.readTextFontIdentifier()
+        self.textFontSize = partReader.readTextFontSize()
+        self.textStyle = partReader.readTextStyle()
+        self.textHeight = partReader.readTextHeight()
+        
+        /* Enable lazy initialization */
+        self.initPartProperties(partReader: partReader)
+        
+        
+        /* content */
+        self.contentProperty.lazyCompute = {
+            return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
+        }
+        
+    }
+    
+}
+
+public extension Field {
+    
     public convenience init(partBlock: PartBlock, layerBlock: LayerBlock, styles: [StyleBlock.Style]) {
         
         self.init()

@@ -9,6 +9,9 @@
 /// Super-protocol for card and background blocks. They share a lot of fields.
 public protocol LayerBlockReader {
     
+    /// Identifier
+    func readIdentifier() -> Int
+    
     /// ID of bitmap block storing the picture of the layer. Nil if there is no picture.
     func readBitmapIdentifier() -> Int?
     

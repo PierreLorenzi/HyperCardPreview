@@ -21,6 +21,11 @@ public struct ListBlockReader {
         self.versionOffset = version.isTwo() ? 0 : ListBlockReader.version1Offset
     }
     
+    /// Identifier
+    public func readIdentifier() -> Int {
+        return data.readUInt32(at: 0x8)
+    }
+    
     /// Number of pages
     public func readPageCount() -> Int {
         return data.readUInt32(at: 0x10 + self.versionOffset)
