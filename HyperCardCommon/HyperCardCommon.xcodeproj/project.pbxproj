@@ -49,14 +49,13 @@
 		6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */; };
 		6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */; };
 		6C9E6B121E75BCFA00BBF925 /* DataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB71E75BCFA00BBF925 /* DataBlock.swift */; };
-		6C9E6B141E75BCFA00BBF925 /* HyperCardFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ABA1E75BCFA00BBF925 /* HyperCardFile.swift */; };
+		6C9E6B141E75BCFA00BBF925 /* FileStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */; };
 		6C9E6B2B1E75BCFA00BBF925 /* ResourceFork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */; };
 		6C9E6B2C1E75BCFA00BBF925 /* ResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD51E75BCFA00BBF925 /* ResourceBlock.swift */; };
 		6C9E6B2D1E75BCFA00BBF925 /* IconResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD61E75BCFA00BBF925 /* IconResourceBlock.swift */; };
 		6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */; };
 		6C9E6B2F1E75BCFA00BBF925 /* BitmapFontResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */; };
 		6C9E6B301E75BCFA00BBF925 /* VectorFontResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */; };
-		6C9E6B311E75BCFA00BBF925 /* FileStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADB1E75BCFA00BBF925 /* FileStack.swift */; };
 		6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */; };
 		6C9E6B331E75BCFA00BBF925 /* FileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */; };
 		6C9E6B341E75BCFA00BBF925 /* FileBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */; };
@@ -425,14 +424,13 @@
 		6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFile.swift; sourceTree = "<group>"; };
 		6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRange.swift; sourceTree = "<group>"; };
 		6C9E6AB71E75BCFA00BBF925 /* DataBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBlock.swift; sourceTree = "<group>"; };
-		6C9E6ABA1E75BCFA00BBF925 /* HyperCardFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardFile.swift; sourceTree = "<group>"; };
+		6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStack.swift; sourceTree = "<group>"; };
 		6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceFork.swift; sourceTree = "<group>"; };
 		6C9E6AD51E75BCFA00BBF925 /* ResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceBlock.swift; sourceTree = "<group>"; };
 		6C9E6AD61E75BCFA00BBF925 /* IconResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconResourceBlock.swift; sourceTree = "<group>"; };
 		6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamilyResourceBlock.swift; sourceTree = "<group>"; };
 		6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFontResourceBlock.swift; sourceTree = "<group>"; };
 		6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorFontResourceBlock.swift; sourceTree = "<group>"; };
-		6C9E6ADB1E75BCFA00BBF925 /* FileStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStack.swift; sourceTree = "<group>"; };
 		6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLayer.swift; sourceTree = "<group>"; };
 		6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCard.swift; sourceTree = "<group>"; };
 		6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileBackground.swift; sourceTree = "<group>"; };
@@ -866,7 +864,7 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
-		6C9E6ADA1E75BCFA00BBF925 /* Resources */ = {
+		6C9E6ADA1E75BCFA00BBF925 /* Resource Reading */ = {
 			isa = PBXGroup;
 			children = (
 				6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */,
@@ -878,13 +876,12 @@
 				6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */,
 				6CADFE861F520A6600465A00 /* PictureResourceBlock.swift */,
 			);
-			name = Resources;
+			name = "Resource Reading";
 			sourceTree = "<group>";
 		};
 		6C9E6AE11E75BCFA00BBF925 /* Stack */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6ADB1E75BCFA00BBF925 /* FileStack.swift */,
 				6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */,
 				6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */,
 				6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */,
@@ -906,24 +903,24 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		6C9E6AE71E75BCFA00BBF925 /* Lazy Model */ = {
+		6C9E6AE71E75BCFA00BBF925 /* Content */ = {
 			isa = PBXGroup;
 			children = (
 				6C9E6AE11E75BCFA00BBF925 /* Stack */,
 				6C9E6AE61E75BCFA00BBF925 /* Resources */,
 			);
-			name = "Lazy Model";
+			name = Content;
 			sourceTree = "<group>";
 		};
 		6C9E6AE81E75BCFA00BBF925 /* File */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6ABA1E75BCFA00BBF925 /* HyperCardFile.swift */,
+				6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */,
 				6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */,
+				6C9E6AE71E75BCFA00BBF925 /* Content */,
 				6C9E6AB91E75BCFA00BBF925 /* Common */,
-				6CE8F5BA20C428F400B99E39 /* Data */,
-				6C9E6ADA1E75BCFA00BBF925 /* Resources */,
-				6C9E6AE71E75BCFA00BBF925 /* Lazy Model */,
+				6CE8F5BA20C428F400B99E39 /* Data Reading */,
+				6C9E6ADA1E75BCFA00BBF925 /* Resource Reading */,
 			);
 			name = File;
 			sourceTree = "<group>";
@@ -1300,7 +1297,7 @@
 			name = Security;
 			sourceTree = "<group>";
 		};
-		6CE8F5BA20C428F400B99E39 /* Data */ = {
+		6CE8F5BA20C428F400B99E39 /* Data Reading */ = {
 			isa = PBXGroup;
 			children = (
 				6CE8F5BC20C4296600B99E39 /* HyperCardFileReader.swift */,
@@ -1318,7 +1315,7 @@
 				6CE8F5DB20C42DEA00B99E39 /* StyleBlockReader.swift */,
 				6CE8F5DF20C42E4500B99E39 /* FontBlockReader.swift */,
 			);
-			name = Data;
+			name = "Data Reading";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1751,11 +1748,10 @@
 				6CE8F5DA20C42D1900B99E39 /* BitmapBlockReader.swift in Sources */,
 				6C549B201F5112E300836AE2 /* AddColorResourceBlock.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
-				6C9E6B141E75BCFA00BBF925 /* HyperCardFile.swift in Sources */,
+				6C9E6B141E75BCFA00BBF925 /* FileStack.swift in Sources */,
 				6CE8F5CC20C42A0900B99E39 /* FreeLocation.swift in Sources */,
 				6CE8F5C820C429CB00B99E39 /* PageReference.swift in Sources */,
 				6C9E6B0E1E75BCFA00BBF925 /* BitmapFont.swift in Sources */,
-				6C9E6B311E75BCFA00BBF925 /* FileStack.swift in Sources */,
 				6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */,
 				6CE8F5C020C4296600B99E39 /* HyperCardFileReader.swift in Sources */,
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
