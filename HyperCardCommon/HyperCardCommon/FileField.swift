@@ -10,7 +10,7 @@
 
 public extension Field {
     
-    public convenience init(partBlock: PartBlock, layerBlock: LayerBlock, fileContent: HyperCardFileData) {
+    public convenience init(partBlock: PartBlock, layerBlock: LayerBlock, styles: [StyleBlock.Style]) {
         
         self.init()
         
@@ -39,7 +39,7 @@ public extension Field {
         
         /* content */
         self.contentProperty.lazyCompute = {
-            return Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, fileContent: fileContent)
+            return Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, styles: styles)
         }
         
     }

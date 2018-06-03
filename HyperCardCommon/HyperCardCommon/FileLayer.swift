@@ -9,7 +9,7 @@
 
 public extension Layer {
     
-    func setupLazyInitialization(layerBlock: LayerBlock, fileContent: HyperCardFileData) {
+    func setupLazyInitialization(layerBlock: LayerBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style]) {
         
         /* Read now the scalar fields */
         self.cantDelete = layerBlock.readCantDelete()
@@ -21,17 +21,17 @@ public extension Layer {
         
         /* image */
         self.imageProperty.lazyCompute = {
-            return Layer.loadImage(layerBlock: layerBlock, fileContent: fileContent)
+            return Layer.loadImage(layerBlock: layerBlock, bitmaps: bitmaps)
         }
         
         /* parts */
         self.partsProperty.lazyCompute = {
-            return Layer.loadParts(layerBlock: layerBlock, fileContent: fileContent)
+            return Layer.loadParts(layerBlock: layerBlock, styles: styles)
         }
         
     }
     
-    static func loadImage(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> MaskedImage? {
+    static func loadImage(layerBlock: LayerBlock, bitmaps: [BitmapBlock]) -> MaskedImage? {
         
         /* Get the identifier of the bitmap in the file */
         guard let bitmapIdentifier = layerBlock.readBitmapIdentifier() else {
@@ -39,14 +39,13 @@ public extension Layer {
         }
         
         /* Look for the bitmap */
-        let bitmaps = fileContent.extractBitmaps()
         let bitmapIndex = bitmaps.index(where: {$0.readIdentifier() == bitmapIdentifier})!
         let bitmap = bitmaps[bitmapIndex]
         
         return bitmap.readImage()
     }
     
-    static func loadParts(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> [LayerPart] {
+    static func loadParts(layerBlock: LayerBlock, styles: [StyleBlock.Style]) -> [LayerPart] {
         
         var parts = [LayerPart]()
         
@@ -59,10 +58,10 @@ public extension Layer {
             /* Check if the part is a field or a button */
             switch (partBlock.readType()) {
             case .button:
-                let button = Button(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let button = Button(partBlock: partBlock, layerBlock: layerBlock, styles: styles)
                 parts.append(LayerPart.button(button))
             case .field:
-                let field = Field(partBlock: partBlock, layerBlock: layerBlock, fileContent: fileContent)
+                let field = Field(partBlock: partBlock, layerBlock: layerBlock, styles: styles)
                 parts.append(LayerPart.field(field))
             }
             
@@ -71,7 +70,7 @@ public extension Layer {
         return parts
     }
     
-    static func loadContent(identifier: Int, layerBlock: LayerBlock, fileContent: HyperCardFileData) -> PartContent {
+    static func loadContent(identifier: Int, layerBlock: LayerBlock, styles: [StyleBlock.Style]) -> PartContent {
         
         /* Look for the content block */
         let contents = layerBlock.extractContents()
@@ -82,11 +81,11 @@ public extension Layer {
         
         let content = contents[contentIndex]
         
-        return loadContentFromBlock(content: content, layerBlock: layerBlock, fileContent: fileContent)
+        return loadContentFromBlock(content: content, layerBlock: layerBlock, styles: styles)
         
     }
     
-    static func loadContentFromBlock(content: ContentBlock, layerBlock: LayerBlock, fileContent: HyperCardFileData) -> PartContent {
+    static func loadContentFromBlock(content: ContentBlock, layerBlock: LayerBlock, styles: [StyleBlock.Style]) -> PartContent {
         
         /* Extract the string */
         let string = content.readString()
@@ -95,10 +94,6 @@ public extension Layer {
         guard let formattingChanges = content.readFormattingChanges() else {
             return PartContent.string(string)
         }
-        
-        /* Get the text styles of the stack (there must be a style block) */
-        let styleBlock = fileContent.extractStyleBlock()!
-        let styles = styleBlock.readStyles()
         
         /* Load the attributes */
         var attributes = Array<Text.FormattingAssociation>()

@@ -36,17 +36,22 @@ public extension Stack {
         self.screenRectangle = stackBlock.readScreenRectangle()
         self.scrollPoint = stackBlock.readScrollPoint()
         
+        /* Load some data to load the cards and backgrounds */
+        let styleBlock = fileContent.extractStyleBlock()
+        let styles = styleBlock?.readStyles() ?? []
+        let bitmaps = fileContent.extractBitmaps()
+        
         /* Cards */
         self.cardsProperty.lazyCompute = {
             let cardBlocks = fileContent.extractCards()
-            return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, fileContent: fileContent) })
+            return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, bitmaps: bitmaps, styles: styles) })
         }
         
         /* Backgrounds */
         self.backgroundsProperty.lazyCompute = {
             let backgroundBlocks = fileContent.extractBackgrounds()
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
-                return Background(backgroundBlock: block, fileContent: fileContent)
+                return Background(backgroundBlock: block, bitmaps: bitmaps, styles: styles)
             })
         }
         
@@ -68,7 +73,7 @@ public extension Stack {
         
     }
     
-    private func wrapCardBlock(cardBlock: CardBlock, fileContent: HyperCardFileData) -> Card {
+    private func wrapCardBlock(cardBlock: CardBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style]) -> Card {
         
         /* Find the card background */
         let backgroundIdentifer = cardBlock.readBackgroundIdentifier()
@@ -76,7 +81,7 @@ public extension Stack {
         let background = self.backgrounds[backgroundIndex]
         
         /* Build the card */
-        return Card(cardBlock: cardBlock, fileContent: fileContent, background: background)
+        return Card(cardBlock: cardBlock, bitmaps: bitmaps, styles: styles, background: background)
     }
     
 }

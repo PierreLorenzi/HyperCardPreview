@@ -11,7 +11,7 @@
 
 public extension Button {
     
-    public convenience init(partBlock: PartBlock, layerBlock: LayerBlock, fileContent: HyperCardFileData) {
+    public convenience init(partBlock: PartBlock, layerBlock: LayerBlock, styles: [StyleBlock.Style]) {
         
         self.init()
         
@@ -36,7 +36,7 @@ public extension Button {
         
         /* content */
         self.contentProperty.lazyCompute = {
-            let partContent = Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, fileContent: fileContent)
+            let partContent = Layer.loadContent(identifier: partBlock.readIdentifier(), layerBlock: layerBlock, styles: styles)
             return partContent.string
         }
         

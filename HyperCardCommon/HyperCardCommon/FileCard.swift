@@ -12,7 +12,7 @@
 
 public extension Card {
     
-    public convenience init(cardBlock: CardBlock, fileContent: HyperCardFileData, background: Background) {
+    public convenience init(cardBlock: CardBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style], background: Background) {
         
         self.init(background: background)
         
@@ -22,7 +22,7 @@ public extension Card {
         self.searchHash = cardBlock.searchHash
         
         /* Enable lazy initialization */
-        super.setupLazyInitialization(layerBlock: cardBlock, fileContent: fileContent)
+        super.setupLazyInitialization(layerBlock: cardBlock, bitmaps: bitmaps, styles: styles)
         
         /* name */
         self.nameProperty.lazyCompute = {
@@ -31,7 +31,7 @@ public extension Card {
         
         /* backgroundPartContents */
         self.backgroundPartContentsProperty.lazyCompute = {
-            return Card.loadBackgroundPartContents(cardBlock: cardBlock, fileContent: fileContent)
+            return Card.loadBackgroundPartContents(cardBlock: cardBlock, styles: styles)
         }
         
         /* script */
@@ -41,7 +41,7 @@ public extension Card {
         
     }
     
-    private static func loadBackgroundPartContents(cardBlock: CardBlock, fileContent: HyperCardFileData) -> [BackgroundPartContent] {
+    private static func loadBackgroundPartContents(cardBlock: CardBlock, styles: [StyleBlock.Style]) -> [BackgroundPartContent] {
         
         /* Get the contents */
         let contents = cardBlock.extractContents()
@@ -53,7 +53,7 @@ public extension Card {
         let result = backgroundContents.map({
             (block: ContentBlock) -> Card.BackgroundPartContent in
             let identifier = block.identifier
-            let content = Layer.loadContentFromBlock(content: block, layerBlock: cardBlock, fileContent: fileContent)
+            let content = Layer.loadContentFromBlock(content: block, layerBlock: cardBlock, styles: styles)
             return BackgroundPartContent(partIdentifier: identifier, partContent: content)
         })
         
