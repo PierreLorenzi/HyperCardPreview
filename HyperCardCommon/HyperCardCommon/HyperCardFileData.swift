@@ -13,6 +13,19 @@ public class HyperCardFileData: DataBlock {
     
     public let decodedHeader: Data?
     
+    /// Cache of the stack block
+    private lazy var stack: StackBlock = {
+        [unowned self] in
+        return self.extractStack()
+        }()
+    
+    /// Cache of the block offsets in the file
+    private lazy var masterEntries: [MasterBlock.Entry] = {
+        [unowned self] in
+        let master = self.extractMaster()
+        return master.readEntries()
+        }()
+    
     public init(data: DataRange, decodedHeader: Data? = nil) {
         self.decodedHeader = decodedHeader
         
@@ -25,12 +38,6 @@ public class HyperCardFileData: DataBlock {
         let dataRange = DataRange(sharedData: data.sharedData, offset: data.offset, length: length)
         return StackBlock(data: dataRange, decodedHeader: decodedHeader)
     }
-    
-    /// Cache of the block offsets in the file
-    private lazy var stack: StackBlock = {
-        [unowned self] in
-        return self.extractStack()
-        }()
     
     /// The master block
     public func extractMaster() -> MasterBlock {
@@ -159,13 +166,6 @@ public class HyperCardFileData: DataBlock {
     public func extractBitmaps() -> [BitmapBlock] {
         return self.listBlocks(BitmapBlock.init)
     }
-    
-    /// Cache of the block offsets in the file
-    private lazy var masterEntries: [MasterBlock.Entry] = {
-        [unowned self] in
-        let master = self.extractMaster()
-        return master.readEntries()
-        }()
     
     /// List the data blocks of a certain kind in the file, in the order where they appear in the data.
     func listBlocks<T: HyperCardFileBlock>(_ initializer: (DataRange) -> T) -> [T] {
