@@ -9,7 +9,7 @@
 
 public extension Layer {
     
-    func setupLazyInitialization(layerBlock: LayerBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style]) {
+    func setupLazyInitialization(layerBlock: LayerBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style]) {
         
         /* Read now the scalar fields */
         self.cantDelete = layerBlock.readCantDelete()
@@ -21,7 +21,7 @@ public extension Layer {
         
         /* image */
         self.imageProperty.lazyCompute = {
-            return Layer.loadImage(layerBlock: layerBlock, bitmaps: bitmaps)
+            return Layer.loadImage(layerBlock: layerBlock, bitmapsByIdentifiers: bitmapsByIdentifiers)
         }
         
         /* parts */
@@ -31,7 +31,7 @@ public extension Layer {
         
     }
     
-    static func loadImage(layerBlock: LayerBlock, bitmaps: [BitmapBlock]) -> MaskedImage? {
+    static func loadImage(layerBlock: LayerBlock, bitmapsByIdentifiers: [Int: BitmapBlock]) -> MaskedImage? {
         
         /* Get the identifier of the bitmap in the file */
         guard let bitmapIdentifier = layerBlock.readBitmapIdentifier() else {
@@ -39,8 +39,7 @@ public extension Layer {
         }
         
         /* Look for the bitmap */
-        let bitmapIndex = bitmaps.index(where: {$0.readIdentifier() == bitmapIdentifier})!
-        let bitmap = bitmaps[bitmapIndex]
+        let bitmap = bitmapsByIdentifiers[bitmapIdentifier]!
         
         return bitmap.readImage()
     }

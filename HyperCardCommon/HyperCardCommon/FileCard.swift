@@ -12,7 +12,7 @@
 
 public extension Card {
     
-    public convenience init(cardBlock: CardBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style], background: Background) {
+    public convenience init(cardBlock: CardBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style], background: Background) {
         
         self.init(background: background)
         
@@ -22,7 +22,7 @@ public extension Card {
         self.searchHash = cardBlock.searchHash
         
         /* Enable lazy initialization */
-        super.setupLazyInitialization(layerBlock: cardBlock, bitmaps: bitmaps, styles: styles)
+        super.setupLazyInitialization(layerBlock: cardBlock, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles)
         
         /* name */
         self.nameProperty.lazyCompute = {

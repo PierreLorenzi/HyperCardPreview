@@ -40,18 +40,19 @@ public extension Stack {
         let styleBlock = fileContent.extractStyleBlock()
         let styles = styleBlock?.readStyles() ?? []
         let bitmaps = fileContent.extractBitmaps()
+        let bitmapsByIdentifiers = self.indexBitmapsByIdentifier(bitmaps)
         
         /* Cards */
         self.cardsProperty.lazyCompute = {
             let cardBlocks = fileContent.extractCards()
-            return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, bitmaps: bitmaps, styles: styles) })
+            return cardBlocks.map({ [unowned self] in return self.wrapCardBlock(cardBlock: $0, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles) })
         }
         
         /* Backgrounds */
         self.backgroundsProperty.lazyCompute = {
             let backgroundBlocks = fileContent.extractBackgrounds()
             return backgroundBlocks.map({ (block: BackgroundBlock) -> Background in
-                return Background(backgroundBlock: block, bitmaps: bitmaps, styles: styles)
+                return Background(backgroundBlock: block, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles)
             })
         }
         
@@ -73,7 +74,19 @@ public extension Stack {
         
     }
     
-    private func wrapCardBlock(cardBlock: CardBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style]) -> Card {
+    private func indexBitmapsByIdentifier(_ bitmaps: [BitmapBlock]) -> [Int: BitmapBlock] {
+        
+        var bitmapsByIdentifiers = [Int: BitmapBlock](minimumCapacity: bitmaps.count)
+        
+        for bitmap in bitmaps {
+            let identifier = bitmap.readIdentifier()
+            bitmapsByIdentifiers[identifier] = bitmap
+        }
+        
+        return bitmapsByIdentifiers
+    }
+    
+    private func wrapCardBlock(cardBlock: CardBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style]) -> Card {
         
         /* Find the card background */
         let backgroundIdentifer = cardBlock.readBackgroundIdentifier()
@@ -81,7 +94,7 @@ public extension Stack {
         let background = self.backgrounds[backgroundIndex]
         
         /* Build the card */
-        return Card(cardBlock: cardBlock, bitmaps: bitmaps, styles: styles, background: background)
+        return Card(cardBlock: cardBlock, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles, background: background)
     }
     
 }

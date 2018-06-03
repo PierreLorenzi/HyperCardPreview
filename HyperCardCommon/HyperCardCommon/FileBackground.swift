@@ -9,7 +9,7 @@
 
 public extension Background {
     
-    public convenience init(backgroundBlock: BackgroundBlock, bitmaps: [BitmapBlock], styles: [StyleBlock.Style]) {
+    public convenience init(backgroundBlock: BackgroundBlock, bitmapsByIdentifiers: [Int: BitmapBlock], styles: [StyleBlock.Style]) {
         
         self.init()
         
@@ -17,7 +17,7 @@ public extension Background {
         self.identifier = backgroundBlock.readIdentifier()
         
         /* Enable lazy initialization */
-        super.setupLazyInitialization(layerBlock: backgroundBlock, bitmaps: bitmaps, styles: styles)
+        super.setupLazyInitialization(layerBlock: backgroundBlock, bitmapsByIdentifiers: bitmapsByIdentifiers, styles: styles)
         
         /* name */
         self.nameProperty.lazyCompute = {
