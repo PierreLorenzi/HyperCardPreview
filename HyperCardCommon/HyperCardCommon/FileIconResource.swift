@@ -29,7 +29,7 @@ public class FileIconResource: Resource<Image> {
     override public var content: Image {
         get {
             if !contentLoaded {
-                super.content = resource.image
+                super.content = resource.readImage()
                 contentLoaded = true
             }
             return super.content
