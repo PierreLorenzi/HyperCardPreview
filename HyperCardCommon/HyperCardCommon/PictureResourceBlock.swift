@@ -17,7 +17,7 @@ public class PictureResourceBlock: ResourceBlock {
         return NumericName(string: "PICT")!
     }
     
-    public var image: NSImage {
+    public func readImage() -> NSImage {
         
         /* Copy the data */
         let slice = self.data.sharedData[self.data.offset..<self.data.offset + self.data.length]

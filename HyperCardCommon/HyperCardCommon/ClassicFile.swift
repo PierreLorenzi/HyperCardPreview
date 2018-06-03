@@ -109,19 +109,19 @@ public extension ResourceRepository {
         
         /* Add the AddColor elements in cards */
         for resourceBlock in fork.extractCardColors() {
-            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.cardColor, content: resourceBlock.elements)
+            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.cardColor, content: resourceBlock.readElements())
             self.resources.append(resource)
         }
         
         /* Add the AddColor elements in backgrounds */
         for resourceBlock in fork.extractBackgroundColors() {
-            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, content: resourceBlock.elements)
+            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, content: resourceBlock.readElements())
             self.resources.append(resource)
         }
         
         /* Add the pictures */
         for resourceBlock in fork.extractPictures() {
-            let resource = Resource<NSImage>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.picture, content: resourceBlock.image)
+            let resource = Resource<NSImage>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.picture, content: resourceBlock.readImage())
             self.resources.append(resource)
         }
     }

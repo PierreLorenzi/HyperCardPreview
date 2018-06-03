@@ -74,7 +74,7 @@ public struct AddColorPictureFile {
 
 public class AddColorResourceBlock: ResourceBlock {
     
-    public var elements: [AddColorElement] {
+    public func readElements() -> [AddColorElement] {
         
         var offset = 0
         var elements: [AddColorElement] = []
