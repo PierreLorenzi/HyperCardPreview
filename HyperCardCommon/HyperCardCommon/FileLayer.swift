@@ -12,10 +12,10 @@ public extension Layer {
     func setupLazyInitialization(layerBlock: LayerBlock, fileContent: HyperCardFileData) {
         
         /* Read now the scalar fields */
-        self.cantDelete = layerBlock.cantDelete
-        self.showPict = layerBlock.showPict
-        self.dontSearch = layerBlock.dontSearch
-        self.nextAvailablePartIdentifier = layerBlock.nextAvailableIdentifier
+        self.cantDelete = layerBlock.readCantDelete()
+        self.showPict = layerBlock.readShowPict()
+        self.dontSearch = layerBlock.readDontSearch()
+        self.nextAvailablePartIdentifier = layerBlock.readNextAvailableIdentifier()
         
         /* Enable lazy initialization */
         
@@ -34,7 +34,7 @@ public extension Layer {
     static func loadImage(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> MaskedImage? {
         
         /* Get the identifier of the bitmap in the file */
-        guard let bitmapIdentifier = layerBlock.bitmapIdentifier else {
+        guard let bitmapIdentifier = layerBlock.readBitmapIdentifier() else {
             return nil
         }
         
@@ -51,7 +51,7 @@ public extension Layer {
         var parts = [LayerPart]()
         
         /* Load the part blocks */
-        let partBlocks = layerBlock.parts
+        let partBlocks = layerBlock.extractParts()
         
         /* Convert them to parts */
         for partBlock in partBlocks {
@@ -74,7 +74,7 @@ public extension Layer {
     static func loadContent(identifier: Int, layerBlock: LayerBlock, fileContent: HyperCardFileData) -> PartContent {
         
         /* Look for the content block */
-        let contents = layerBlock.contents
+        let contents = layerBlock.extractContents()
         let layerType: LayerType = (layerBlock is CardBlock) ? .card : .background
         guard let contentIndex = contents.index(where: {$0.identifier == identifier && $0.layerType == layerType}) else {
             return PartContent.string("")

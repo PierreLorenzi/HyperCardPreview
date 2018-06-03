@@ -19,7 +19,7 @@ public class LayerBlockV1: DataBlock {
     /* LAYER V1 VALUES, we have to write them here to keep inheriting from Card */
     
     /* The values are shifted */
-    public var bitmapIdentifier: Int? {
+    public func readBitmapIdentifier() -> Int? {
         let value = data.readSInt32(at: 0xC)
         guard value != 0 else {
             return nil
@@ -27,15 +27,15 @@ public class LayerBlockV1: DataBlock {
         return value
     }
     
-    public var cantDelete: Bool {
+    public func readCantDelete() -> Bool {
         return data.readFlag(at: 0x10, bitOffset: 14)
     }
     
-    public var showPict: Bool {
+    public func readShowPict() -> Bool {
         return !data.readFlag(at: 0x10, bitOffset: 13)
     }
     
-    public var dontSearch: Bool {
+    public func readDontSearch() -> Bool {
         return data.readFlag(at: 0x10, bitOffset: 11)
     }
     

@@ -19,7 +19,7 @@ public class LayerBlock: HyperCardFileBlock {
     }
     
     /// ID of bitmap block storing the picture of the layer. Nil if there is no picture.
-    public var bitmapIdentifier: Int? {
+    public func readBitmapIdentifier() -> Int? {
         let value = data.readSInt32(at: 0x10)
         guard value != 0 else {
             return nil
@@ -28,51 +28,51 @@ public class LayerBlock: HyperCardFileBlock {
     }
     
     /// Can't Delete
-    public var cantDelete: Bool {
+    public func readCantDelete() -> Bool {
         return data.readFlag(at: 0x14, bitOffset: 14)
     }
     
     /// Show Picture
-    public var showPict: Bool {
+    public func readShowPict() -> Bool {
         return !data.readFlag(at: 0x14, bitOffset: 13)
     }
     
     /// Don't Search
-    public var dontSearch: Bool {
+    public func readDontSearch() -> Bool {
         return data.readFlag(at: 0x14, bitOffset: 11)
     }
     
     /// Number of parts
-    public var partCount: Int {
+    public func readPartCount() -> Int {
         return data.readUInt16(at: self.partOffset - 0xE)
     }
     
     /// ID to give to a new part
-    public var nextAvailableIdentifier: Int {
+    public func readNextAvailableIdentifier() -> Int {
         return data.readUInt16(at: self.partOffset - 0xC)
     }
     
     /// Total size of the part list, in bytes
-    public var partSize: Int {
+    public func readPartSize() -> Int {
         return data.readUInt32(at: self.partOffset - 0xA)
     }
     
     /// Number of part contents
-    public var contentCount: Int {
+    public func readContentCount() -> Int {
         return data.readUInt16(at: self.partOffset - 0x6)
     }
     
     /// Total size of the part content list, in bytes
-    public var contentSize: Int {
+    public func readContentSize() -> Int {
         return data.readUInt32(at: self.partOffset - 0x4)
     }
     
     /// The parts in the layer
-    public var parts: [PartBlock] {
+    public func extractParts() -> [PartBlock] {
         
         var parts = [PartBlock]()
         var offset = self.partOffset
-        let partCount = self.partCount
+        let partCount = self.readPartCount()
         
         /* Read the parts */
         for _ in 0..<partCount {
@@ -92,12 +92,12 @@ public class LayerBlock: HyperCardFileBlock {
     }
     
     /// The part contents in the layer
-    public var contents: [ContentBlock] {
+    public func extractContents() -> [ContentBlock] {
         
         var contents = [ContentBlock]()
         
-        let partSize = self.partSize
-        let contentCount = self.contentCount
+        let partSize = self.readPartSize()
+        let contentCount = self.readContentCount()
         var offset = self.partOffset + partSize
         
         for _ in 0..<contentCount {
@@ -125,13 +125,13 @@ public class LayerBlock: HyperCardFileBlock {
     }
     
     /// Name
-    public var name: HString {
-        return data.readString(at: self.partOffset + self.partSize + self.contentSize)
+    public func readName() -> HString {
+        return data.readString(at: self.partOffset + self.readPartSize() + self.readContentSize())
     }
     
     /// Script
-    public var script: HString {
-        return data.readString(at: self.partOffset + self.partSize + self.contentSize + self.name.length + 1)
+    public func readScript() -> HString {
+        return data.readString(at: self.partOffset + self.readPartSize() + self.readContentSize() + self.readName().length + 1)
     }
     
 }

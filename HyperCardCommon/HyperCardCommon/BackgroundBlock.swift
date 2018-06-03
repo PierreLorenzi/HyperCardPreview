@@ -25,17 +25,17 @@ public class BackgroundBlock: LayerBlock {
     }
     
     /// Number of cards in the background
-    public var cardCount: Int {
+    public func readCardCount() -> Int {
         return data.readUInt32(at: 0x18)
     }
     
     /// ID of next background
-    public var nextBackgroundIdentifier: Int {
+    public func readNextBackgroundIdentifier() -> Int {
         return data.readSInt32(at: 0x1C)
     }
     
     /// ID of previous background
-    public var previousBackgroundIdentifier: Int {
+    public func readPreviousBackgroundIdentifier() -> Int {
         return data.readSInt32(at: 0x20)
     }
     

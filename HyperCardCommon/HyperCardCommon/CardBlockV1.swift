@@ -20,30 +20,30 @@ public class CardBlockV1: CardBlock {
     }
     
     /* LAYER V1 VALUES, we have to write them here to keep inheriting from Card */
-    public override var bitmapIdentifier: Int? {
-        return layerV1.bitmapIdentifier
+    public override func readBitmapIdentifier() -> Int? {
+        return layerV1.readBitmapIdentifier()
     }
-    public override var cantDelete: Bool {
-        return layerV1.cantDelete
+    public override func readCantDelete() -> Bool {
+        return layerV1.readCantDelete()
     }
-    public override var showPict: Bool {
-        return layerV1.showPict
+    public override func readShowPict() -> Bool {
+        return layerV1.readShowPict()
     }
-    public override var dontSearch: Bool {
-        return layerV1.dontSearch
+    public override func readDontSearch() -> Bool {
+        return layerV1.readDontSearch()
     }
-    public override var contents: [ContentBlock] {
-        return layerV1.listContents(partOffset: self.partOffset, partSize: self.partSize, contentCount: self.contentCount)
+    public override func extractContents() -> [ContentBlock] {
+        return layerV1.listContents(partOffset: self.partOffset, partSize: self.readPartSize(), contentCount: self.readContentCount())
     }
     
     /* CARD VALUES */
     
     /* The values are shifted */
-    public override var pageIdentifier: Int {
+    public override func readPageIdentifier() -> Int {
         return data.readUInt32(at: 0x1C)
     }
     
-    public override var backgroundIdentifier: Int {
+    public override func readBackgroundIdentifier() -> Int {
         return data.readUInt32(at: 0x20)
     }
     

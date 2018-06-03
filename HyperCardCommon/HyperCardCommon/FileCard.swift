@@ -26,7 +26,7 @@ public extension Card {
         
         /* name */
         self.nameProperty.lazyCompute = {
-            return cardBlock.name
+            return cardBlock.readName()
         }
         
         /* backgroundPartContents */
@@ -36,7 +36,7 @@ public extension Card {
         
         /* script */
         self.scriptProperty.lazyCompute = {
-            return cardBlock.script
+            return cardBlock.readScript()
         }
         
     }
@@ -44,7 +44,7 @@ public extension Card {
     private static func loadBackgroundPartContents(cardBlock: CardBlock, fileContent: HyperCardFileData) -> [BackgroundPartContent] {
         
         /* Get the contents */
-        let contents = cardBlock.contents
+        let contents = cardBlock.extractContents()
         
         /* Keep only the background ones */
         let backgroundContents = contents.filter({$0.layerType == .background})

@@ -145,7 +145,7 @@ public class HyperCardFileData: DataBlock {
             backgrounds.append(background)
             
             /* Move to the next */
-            identifier = background.nextBackgroundIdentifier
+            identifier = background.readNextBackgroundIdentifier()
             
         } while (identifier != identifier0)
         

@@ -56,12 +56,12 @@ public class CardBlock: LayerBlock {
     }
     
     /// Identifier of the page referencing the card
-    public var pageIdentifier: Int {
+    public func readPageIdentifier() -> Int {
         return data.readUInt32(at: 0x20)
     }
     
     /// Identifier of the background of the card
-    public var backgroundIdentifier: Int {
+    public func readBackgroundIdentifier() -> Int {
         return data.readUInt32(at: 0x24)
     }
     

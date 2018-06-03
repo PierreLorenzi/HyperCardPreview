@@ -71,7 +71,7 @@ public extension Stack {
     private func wrapCardBlock(cardBlock: CardBlock, fileContent: HyperCardFileData) -> Card {
         
         /* Find the card background */
-        let backgroundIdentifer = cardBlock.backgroundIdentifier
+        let backgroundIdentifer = cardBlock.readBackgroundIdentifier()
         let backgroundIndex = self.backgrounds.index(where: {$0.identifier == backgroundIdentifer})!
         let background = self.backgrounds[backgroundIndex]
         

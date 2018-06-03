@@ -21,12 +21,12 @@ public extension Background {
         
         /* name */
         self.nameProperty.lazyCompute = {
-            return backgroundBlock.name
+            return backgroundBlock.readName()
         }
         
         /* script */
         self.scriptProperty.lazyCompute = {
-            return backgroundBlock.script
+            return backgroundBlock.readScript()
         }
         
     }
