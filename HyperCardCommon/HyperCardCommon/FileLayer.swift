@@ -43,7 +43,7 @@ public extension Layer {
         let bitmapIndex = bitmaps.index(where: {$0.readIdentifier() == bitmapIdentifier})!
         let bitmap = bitmaps[bitmapIndex]
         
-        return bitmap.image
+        return bitmap.readImage()
     }
     
     static func loadParts(layerBlock: LayerBlock, fileContent: HyperCardFileData) -> [LayerPart] {

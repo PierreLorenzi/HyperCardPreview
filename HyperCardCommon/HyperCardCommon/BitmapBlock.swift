@@ -22,39 +22,43 @@ public class BitmapBlock: HyperCardFileBlock {
     private static let ZeroRectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     
     /// The size of the card, as a rectangle
-    public var cardRectangle: Rectangle {
+    public func readCardRectangle() -> Rectangle {
         return data.readRectangle(at: 0x18)
     }
     
     /// The position of the mask
-    public var maskRectangle: Rectangle {
+    public func readMaskRectangle() -> Rectangle {
         return data.readRectangle(at: 0x20)
     }
     
     /// The position of the image
-    public var imageRectangle: Rectangle {
+    public func readImageRectangle() -> Rectangle {
         return data.readRectangle(at: 0x28)
     }
     
     /// Size of the mask data
-    public var maskLength: Int {
+    public func readMaskLength() -> Int {
         return data.readUInt32(at: 0x38)
     }
     
     /// Size of the image data
-    public var imageLength: Int {
+    public func readImageLength() -> Int {
         return data.readUInt32(at: 0x3C)
     }
     
     /// Offset of the mask data in the block
-    public var dataOffset: Int {
+    public func readDataOffset() -> Int {
         return 0x40
     }
     
     /// The decoded image
-    public var image: MaskedImage {
-        guard data.length > self.dataOffset else {
-            return MaskedImage(width: self.cardRectangle.width, height: self.cardRectangle.height, image: .rectangular(rectangle: self.imageRectangle), mask: .rectangular(rectangle: self.maskRectangle))
+    public func readImage() -> MaskedImage {
+        let dataOffset = self.readDataOffset()
+        guard data.length > dataOffset else {
+            let cardRectangle = self.readCardRectangle()
+            let maskRectangle = self.readMaskRectangle()
+            let imageRectangle = self.readImageRectangle()
+            return MaskedImage(width: cardRectangle.width, height: cardRectangle.height, image: .rectangular(rectangle: imageRectangle), mask: .rectangular(rectangle: maskRectangle))
         }
         return self.decodeImage()
     }
@@ -62,11 +66,12 @@ public class BitmapBlock: HyperCardFileBlock {
     func decodeImage() -> MaskedImage {
         
         /* Get the rectangles */
-        let cardRectangle = self.cardRectangle
-        let maskRectangle = self.maskRectangle
-        let imageRectangle = self.imageRectangle
-        let maskLength = self.maskLength
-        let imageLength = self.imageLength
+        let cardRectangle = self.readCardRectangle()
+        let maskRectangle = self.readMaskRectangle()
+        let imageRectangle = self.readImageRectangle()
+        let maskLength = self.readMaskLength()
+        let imageLength = self.readImageLength()
+        let dataOffset = self.readDataOffset()
         
         /* The data rectangle is 32-bit aligned */
         let maskRectangle32 = aligned32Bits(maskRectangle)
@@ -76,14 +81,14 @@ public class BitmapBlock: HyperCardFileBlock {
         var mask: Image? = nil
         if maskLength > 0 {
             mask = Image(width: maskRectangle32.width, height: maskRectangle32.height)
-            self.decodeLayer(self.dataOffset, dataLength: maskLength, pixels: &mask!.data, rectangle: maskRectangle32)
+            self.decodeLayer(dataOffset, dataLength: maskLength, pixels: &mask!.data, rectangle: maskRectangle32)
         }
         
         /* Decode image */
         var image: Image? = nil
         if imageLength > 0 {
             image = Image(width: imageRectangle32.width, height: imageRectangle32.height)
-            self.decodeLayer(self.dataOffset + maskLength, dataLength: imageLength, pixels: &image!.data, rectangle: imageRectangle32)
+            self.decodeLayer(dataOffset + maskLength, dataLength: imageLength, pixels: &image!.data, rectangle: imageRectangle32)
         }
         
         /* Create the masked image */
