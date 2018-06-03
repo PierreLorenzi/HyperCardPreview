@@ -434,7 +434,7 @@ class HyperCardCommonTests: XCTestCase {
         
         /* Content */
         let content = "some button content"
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].string == content)
+        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].readString() == content)
         XCTAssert(file.stack.backgrounds[0].buttons[12].content == content)
         
         /* Pop-up properties */
@@ -651,7 +651,7 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(file.extractParsedData().extractBackgrounds()[0].readContentCount() == 1)
         XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents().count == 1)
         XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].identifier == 2)
-        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].string == "shared content")
+        XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractContents()[0].readString() == "shared content")
         XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[2].readHilite() == false)
         XCTAssert(file.extractParsedData().extractBackgrounds()[0].extractParts()[3].readHilite() == true)
         
@@ -675,11 +675,11 @@ class HyperCardCommonTests: XCTestCase {
         for content in file.extractParsedData().extractCards()[0].extractContents() {
             switch (content.identifier, content.layerType) {
             case (1, .background):
-                XCTAssert(content.string == "card content in bg field")
+                XCTAssert(content.readString() == "card content in bg field")
             case (3, .background):
-                XCTAssert(content.string == "1")
+                XCTAssert(content.readString() == "1")
             case (1, .card):
-                XCTAssert(content.string == "card content")
+                XCTAssert(content.readString() == "card content")
             default:
                 XCTFail()
             }
@@ -704,11 +704,11 @@ class HyperCardCommonTests: XCTestCase {
         for content in file.extractParsedData().extractCards()[0].extractContents() {
             switch (content.identifier, content.layerType) {
             case (1, .card):
-                XCTAssert(content.string == textUnformatted)
-                XCTAssert(content.formattingChanges == nil)
+                XCTAssert(content.readString() == textUnformatted)
+                XCTAssert(content.readFormattingChanges() == nil)
             case (2, .card):
-                XCTAssert(content.string == textFormatted)
-                XCTAssert(content.formattingChanges != nil)
+                XCTAssert(content.readString() == textFormatted)
+                XCTAssert(content.readFormattingChanges() != nil)
             default:
                 XCTFail()
             }

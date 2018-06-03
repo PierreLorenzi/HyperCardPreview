@@ -13,11 +13,11 @@
 public class ContentBlockV1: ContentBlock {
     
     /* All contents are raw strings */
-    public override var string: HString {
+    public override func readString() -> HString {
         return data.readString(at: 2, length: data.length - 3)
     }
     
-    public override var formattingChanges: [TextFormatting]? {
+    public override func readFormattingChanges() -> [TextFormatting]? {
         return nil
     }
     

@@ -89,10 +89,10 @@ public extension Layer {
     static func loadContentFromBlock(content: ContentBlock, layerBlock: LayerBlock, fileContent: HyperCardFileData) -> PartContent {
         
         /* Extract the string */
-        let string = content.string
+        let string = content.readString()
         
         /* Check if it is a raw string */
-        guard let formattingChanges = content.formattingChanges else {
+        guard let formattingChanges = content.readFormattingChanges() else {
             return PartContent.string(string)
         }
         

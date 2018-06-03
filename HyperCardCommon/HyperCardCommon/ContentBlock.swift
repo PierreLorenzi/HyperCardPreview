@@ -36,7 +36,7 @@ public class ContentBlock: DataBlock {
     }
     
     /// The string content
-    public var string: HString {
+    public func readString() -> HString {
         
         /* Check if we're a raw string or a formatted text */
         let plainTextMarker = data.readUInt8(at: 4)
@@ -65,7 +65,7 @@ public class ContentBlock: DataBlock {
     }
     
     /// The style records. They are sorted by offset. If nil, the string has no associated style.
-    public var formattingChanges: [TextFormatting]? {
+    public func readFormattingChanges() -> [TextFormatting]? {
         
         /* Check if we're a raw string or a formatted text */
         let plainTextMarker = data.readUInt8(at: 4)
