@@ -106,21 +106,10 @@ private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> 
 /// A glyph that lazily applies a font variation to a base glyph
 public class DecoratedGlyph: Glyph {
     
-    private let baseGlyph: Glyph
-    private let style: TextStyle
-    private let properties: FontStyleProperties?
-    private let size: Int
-    private let maximumDescent: Int
-    
     private var decoratedImageWidth: Int
     private var decoretedImageHeight: Int
     
     public init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
-        self.baseGlyph = baseGlyph
-        self.style = style
-        self.properties = properties
-        self.size = size
-        self.maximumDescent = maximumDescent
         
         self.decoratedImageWidth = baseGlyph.imageWidth
         self.decoretedImageHeight = baseGlyph.imageHeight
@@ -133,10 +122,14 @@ public class DecoratedGlyph: Glyph {
         self.imageTop = baseGlyph.imageTop
         
         /* Change the measures for the style */
-        self.readjustMeasures()
+        self.readjustMeasures(baseGlyph: baseGlyph, style: style, properties: properties, size: size)
+        
+        self.loadImage = { () -> MaskedImage? in
+            return self.buildImage(baseGlyph: baseGlyph, style: style, maximumDescent: maximumDescent)
+        }
     }
     
-    private func readjustMeasures() {
+    private func readjustMeasures(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int) {
         
         /* Underline: if there is no image, make an image of the line under */
         if style.underline && !baseGlyph.isThereImage {
@@ -224,12 +217,12 @@ public class DecoratedGlyph: Glyph {
         }
     }
     
-    private var imageLoaded = false
+    private var loadImage: (() -> MaskedImage?)? = nil
     public override var image: MaskedImage? {
         get {
-            if !imageLoaded {
-                super.image = buildImage()
-                imageLoaded = true
+            if let loadImage = self.loadImage {
+                super.image = loadImage()
+                self.loadImage = nil
             }
             return super.image
         }
@@ -238,7 +231,7 @@ public class DecoratedGlyph: Glyph {
         }
     }
     
-    private func buildImage() -> MaskedImage? {
+    private func buildImage(baseGlyph: Glyph, style: TextStyle, maximumDescent: Int) -> MaskedImage? {
         
         /* Check if there is an image in the base glyph */
         guard self.imageWidth > 0 && self.imageHeight > 0 else {
