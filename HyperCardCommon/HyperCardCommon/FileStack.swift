@@ -293,10 +293,13 @@ public extension Stack {
         let styles = styleReader?.readStyles() ?? []
         let loadBitmap = { (identifier: Int) -> BitmapBlockReader in
             return fileReader.extractBitmapReader(withIdentifier: identifier) }
+        let loadBackgrounds = { [unowned self] () -> [Background] in
+            return self.backgrounds
+        }
         
         /* Cards */
         self.cardsProperty.lazyCompute = { () -> [Card] in
-            return Stack.listCards(fileReader: fileReader, loadBitmap: loadBitmap, styles: styles, backgroundsProperty: self.backgroundsProperty)
+            return Stack.listCards(fileReader: fileReader, loadBitmap: loadBitmap, styles: styles, loadBackgrounds: loadBackgrounds)
         }
         
         /* Backgrounds */
@@ -322,7 +325,7 @@ public extension Stack {
         
     }
     
-    private static func listCards(fileReader: HyperCardFileReader, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], backgroundsProperty: Property<[Background]>) -> [Card] {
+    private static func listCards(fileReader: HyperCardFileReader, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], loadBackgrounds: () -> [Background]) -> [Card] {
         
         var cards: [Card] = []
         
@@ -343,7 +346,7 @@ public extension Stack {
                 
                 /* Find the background */
                 let backgroundIdentifier = cardReader.readBackgroundIdentifier()
-                let backgrounds = backgroundsProperty.value
+                let backgrounds = loadBackgrounds()
                 let background = backgrounds.first(where: { $0.identifier == backgroundIdentifier })!
                 
                 /* Build the card */

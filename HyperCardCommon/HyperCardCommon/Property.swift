@@ -7,7 +7,7 @@
 //
 
 
-public class Property<T> {
+public struct Property<T> {
     
     private var storedValue: T? = nil
     
@@ -31,7 +31,7 @@ public class Property<T> {
     }
     
     public var value: T {
-        get {
+        mutating get {
             guard let someStoredValue = storedValue else {
                 let newValue = compute()
                 
@@ -71,7 +71,7 @@ public class Property<T> {
         }
     }
     
-    public func invalidate() {
+    public mutating func invalidate() {
         self.storedValue = nil
         
         var areThereDeadObjects = false
@@ -93,12 +93,12 @@ public class Property<T> {
         }
     }
     
-    public func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
+    public mutating func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
         let notification = Notification(object: object, make: make)
         notifications.append(notification)
     }
     
-    public func stopNotifications(for object: AnyObject) {
+    public mutating func stopNotifications(for object: AnyObject) {
         notifications = notifications.filter({ $0.object !== object })
     }
     

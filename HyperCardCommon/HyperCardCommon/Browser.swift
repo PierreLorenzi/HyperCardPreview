@@ -22,14 +22,14 @@ public class Browser {
         get { return cardIndexProperty.value }
         set { if (newValue != cardIndexProperty.value) { cardIndexProperty.value = newValue } }
     }
-    public let cardIndexProperty: Property<Int>
+    public var cardIndexProperty: Property<Int>
     
     /// Activate this flag for the background view: only the background is drawn
     public var displayOnlyBackground: Bool {
         get { return displayOnlyBackgroundProperty.value }
         set { displayOnlyBackgroundProperty.value = newValue }
     }
-    public let displayOnlyBackgroundProperty = Property<Bool>(false)
+    public var displayOnlyBackgroundProperty = Property<Bool>(false)
     
     private let drawing: Drawing
     
@@ -57,7 +57,7 @@ public class Browser {
         get { return needsDisplayProperty.value }
         set { needsDisplayProperty.value = newValue }
     }
-    public let needsDisplayProperty = Property<Bool>(false)
+    public var needsDisplayProperty = Property<Bool>(false)
     
     /// the background before changing card
     private var backgroundBefore: Background? = nil

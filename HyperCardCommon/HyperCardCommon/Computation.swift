@@ -26,7 +26,7 @@ public class Computation<T> {
         self.valueProperty.value = compute()
     }
     
-    public func dependsOn<ObjectType, PropertyType>(_ object: ObjectType, at keyPath: KeyPath<ObjectType, Property<PropertyType>>) {
+    public func dependsOn<ObjectType: AnyObject, PropertyType>(_ object: ObjectType, at keyPath: ReferenceWritableKeyPath<ObjectType, Property<PropertyType>>) {
         object[keyPath: keyPath].startNotifications(for: self, by: { [unowned self] in self.recompute() })
     }
     

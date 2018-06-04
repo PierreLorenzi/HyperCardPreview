@@ -16,7 +16,7 @@ public class View {
         get { return refreshNeedProperty.value }
         set { refreshNeedProperty.value = newValue }
     }
-    public let refreshNeedProperty = Property<RefreshNeed>(.none)
+    public var refreshNeedProperty = Property<RefreshNeed>(.none)
     
     /// The position of the view. If it is absent, the view is not drawn.
     public var rectangle: Rectangle? {

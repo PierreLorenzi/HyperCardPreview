@@ -16,20 +16,20 @@ public class Background: Layer {
         get { return self.identifierProperty.value }
         set { self.identifierProperty.value = newValue }
     }
-    public let identifierProperty = Property<Int>(0)
+    public var identifierProperty = Property<Int>(0)
     
     /// The name
     public var name: HString {
         get { return self.nameProperty.value }
         set { self.nameProperty.value = newValue }
     }
-    public let nameProperty = Property<HString>("")
+    public var nameProperty = Property<HString>("")
     
     /// The script
     public var script: HString {
         get { return self.scriptProperty.value }
         set { self.scriptProperty.value = newValue }
     }
-    public let scriptProperty = Property<HString>("")
+    public var scriptProperty = Property<HString>("")
     
 }

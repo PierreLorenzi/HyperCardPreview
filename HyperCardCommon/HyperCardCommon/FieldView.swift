@@ -65,19 +65,19 @@ public class FieldView: View, MouseResponder {
         get { return self.isUpArrowClickedProperty.value }
         set { self.isUpArrowClickedProperty.value = newValue }
     }
-    private let isUpArrowClickedProperty = Property<Bool>(false)
+    private var isUpArrowClickedProperty = Property<Bool>(false)
     
     private var isDownArrowClicked: Bool {
         get { return self.isDownArrowClickedProperty.value }
         set { self.isDownArrowClickedProperty.value = newValue }
     }
-    private let isDownArrowClickedProperty = Property<Bool>(false)
+    private var isDownArrowClickedProperty = Property<Bool>(false)
     
     private var ghostKnobOffset: Int? {
         get { return self.ghostKnobOffsetProperty.value }
         set { self.ghostKnobOffsetProperty.value = newValue }
     }
-    private let ghostKnobOffsetProperty = Property<Int?>(nil)
+    private var ghostKnobOffsetProperty = Property<Int?>(nil)
     
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
