@@ -19,12 +19,12 @@ public extension Part {
         self.rectangle = partReader.readRectangle()
         
         /* name */
-        self.nameProperty.lazyCompute = {
+        self.nameProperty.lazyCompute {
             return partReader.readName()
         }
         
         /* script */
-        self.scriptProperty.lazyCompute = {
+        self.scriptProperty.lazyCompute {
             return partReader.readScript()
         }
         

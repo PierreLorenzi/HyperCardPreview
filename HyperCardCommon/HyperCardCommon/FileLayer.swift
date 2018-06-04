@@ -20,12 +20,12 @@ public extension Layer {
         /* Enable lazy initialization */
         
         /* image */
-        self.imageProperty.lazyCompute = {
+        self.imageProperty.lazyCompute {
             return Layer.loadImage(layerReader: layerReader, loadBitmap: loadBitmap)
         }
         
         /* parts */
-        self.partsProperty.lazyCompute = {
+        self.partsProperty.lazyCompute {
             return Layer.loadParts(layerReader: layerReader, styles: styles)
         }
         

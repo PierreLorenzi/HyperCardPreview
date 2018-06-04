@@ -9,13 +9,14 @@
 
 public struct Property<T> {
     
-    private var storedValue: T? = nil
-    
-    private var _compute: () -> T
+    private var lazyValue: LazyValue
     
     private var notifications: [Notification] = []
     
-    public var isLazy = false
+    private enum LazyValue {
+        case stored(T)
+        case lazy(() -> T)
+    }
     
     private struct Notification {
         weak var object: AnyObject?
@@ -23,74 +24,45 @@ public struct Property<T> {
     }
     
     public init(_ value: T) {
-        _compute = { return value }
-    }
-    
-    public init(compute: @escaping () -> T) {
-        _compute = compute
+        self.lazyValue = LazyValue.stored(value)
     }
     
     public var value: T {
         mutating get {
-            guard let someStoredValue = storedValue else {
-                let newValue = compute()
+            switch self.lazyValue {
+            case .stored(let value):
+                return value
+            case .lazy(let compute):
+                let value = compute()
+                self.lazyValue = LazyValue.stored(value)
+                return value
+            }
+        }
+        set {
+            self.lazyValue = LazyValue.stored(newValue)
+            
+            var areThereDeadObjects = false
+            
+            /* Send the notifications */
+            for notification in notifications {
                 
-                /* If the property is lazy, discard the closure to free the captured objects,
-                 that are only necessary for the computation */
-                if isLazy {
-                    _compute = { return newValue }
+                guard notification.object != nil else {
+                    areThereDeadObjects = true
+                    continue
                 }
                 
-                self.storedValue = newValue
-                return newValue
-            }
-            return someStoredValue
-        }
-        set {
-            self.compute = { return newValue }
-        }
-    }
-    
-    public var compute: () -> T {
-        get {
-            return _compute
-        }
-        set {
-            _compute = newValue
-            self.invalidate()
-        }
-    }
-    
-    public var lazyCompute: () -> T {
-        get {
-            return _compute
-        }
-        set {
-            _compute = newValue
-            isLazy = true
-        }
-    }
-    
-    public mutating func invalidate() {
-        self.storedValue = nil
-        
-        var areThereDeadObjects = false
-        
-        /* Send the notifications */
-        for notification in notifications {
-            
-            guard notification.object != nil else {
-                areThereDeadObjects = true
-                continue
+                notification.make()
             }
             
-            notification.make()
+            /* Forget the dead objects */
+            if areThereDeadObjects {
+                notifications = notifications.filter({ $0.object != nil })
+            }
         }
-        
-        /* Forget the dead objects */
-        if areThereDeadObjects {
-            notifications = notifications.filter({ $0.object != nil })
-        }
+    }
+    
+    public mutating func lazyCompute(_ compute: @escaping () -> T) {
+        self.lazyValue = LazyValue.lazy(compute)
     }
     
     public mutating func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {

@@ -20,12 +20,12 @@ public extension Background {
         self.initLayerProperties(layerReader: backgroundReader, loadBitmap: loadBitmap, styles: styles)
         
         /* name */
-        self.nameProperty.lazyCompute = {
+        self.nameProperty.lazyCompute {
             return backgroundReader.readName()
         }
         
         /* script */
-        self.scriptProperty.lazyCompute = {
+        self.scriptProperty.lazyCompute {
             return backgroundReader.readScript()
         }
         

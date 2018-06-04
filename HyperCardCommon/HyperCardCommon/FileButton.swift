@@ -35,7 +35,7 @@ public extension Button {
         self.initPartProperties(partReader: partReader)
         
         /* content */
-        self.contentProperty.lazyCompute = {
+        self.contentProperty.lazyCompute {
             let partContent = Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
             return partContent.string
         }

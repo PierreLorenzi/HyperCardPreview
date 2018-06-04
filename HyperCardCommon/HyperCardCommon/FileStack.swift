@@ -298,27 +298,27 @@ public extension Stack {
         }
         
         /* Cards */
-        self.cardsProperty.lazyCompute = { () -> [Card] in
+        self.cardsProperty.lazyCompute { () -> [Card] in
             return Stack.listCards(fileReader: fileReader, loadBitmap: loadBitmap, styles: styles, loadBackgrounds: loadBackgrounds)
         }
         
         /* Backgrounds */
-        self.backgroundsProperty.lazyCompute = { () -> [Background] in
+        self.backgroundsProperty.lazyCompute { () -> [Background] in
             return Stack.listBackgrounds(fileReader: fileReader, stackReader: stackReader, loadBitmap: loadBitmap, styles: styles)
         }
         
         /* patterns */
-        self.patternsProperty.lazyCompute = {
+        self.patternsProperty.lazyCompute {
             return stackReader.readPatterns()
         }
         
         /* script */
-        self.scriptProperty.lazyCompute = {
+        self.scriptProperty.lazyCompute {
             return stackReader.readScript()
         }
         
         /* font names */
-        self.fontNameReferencesProperty.lazyCompute = {
+        self.fontNameReferencesProperty.lazyCompute {
             return fileReader.extractFontBlockReader()?.readFontReferences() ?? []
         }
         

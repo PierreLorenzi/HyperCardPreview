@@ -23,17 +23,17 @@ public extension Card {
         self.initLayerProperties(layerReader: cardReader, loadBitmap: loadBitmap, styles: styles)
         
         /* name */
-        self.nameProperty.lazyCompute = {
+        self.nameProperty.lazyCompute {
             return cardReader.readName()
         }
         
         /* backgroundPartContents */
-        self.backgroundPartContentsProperty.lazyCompute = {
+        self.backgroundPartContentsProperty.lazyCompute {
             return Card.loadBackgroundPartContents(cardReader: cardReader, styles: styles)
         }
         
         /* script */
-        self.scriptProperty.lazyCompute = {
+        self.scriptProperty.lazyCompute {
             return cardReader.readScript()
         }
         
