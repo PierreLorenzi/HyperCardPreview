@@ -432,21 +432,21 @@ public class Browser {
     private func buildFieldView(for field: Field) -> View {
         
         /* Content */
-        let content = retrieveContent(of: field)
+        let contentComputation = retrieveContent(of: field)
         
-        let view = FieldView(field: field, contentProperty: content, fontManager: self.fontManager)
+        let view = FieldView(field: field, contentComputation: contentComputation, fontManager: self.fontManager)
         
         return view
         
     }
     
-    private func retrieveContent(of field: Field) -> Property<PartContent> {
+    private func retrieveContent(of field: Field) -> Computation<PartContent> {
         
         /* Special case: bg buttons with not shared hilite */
         if !field.sharedText && isPartInBackground(field) {
             
-            let property = Property<PartContent>(compute: {
-                [unowned self, unowned field] in
+            let computation = Computation<PartContent> {
+                [unowned self, unowned field] () -> PartContent in
             
                 /* If we're displaying the background, do not display the card contents */
                 if self.displayOnlyBackground {
@@ -460,35 +460,40 @@ public class Browser {
                 
                 return PartContent.string("")
                 
-            })
+            }
             
             /* Dependencies */
-            property.dependsOn(self.cardIndexProperty)
-            property.dependsOn(self.displayOnlyBackgroundProperty)
+            computation.dependsOn(self, at: \Browser.cardIndexProperty)
+            computation.dependsOn(self, at: \Browser.displayOnlyBackgroundProperty)
             
-            return property
+            return computation
             
         }
         
         /* Usual case: just return the content of the parent layer */
-        return field.contentProperty
+        let computation = Computation<PartContent> {
+            [unowned field] () -> PartContent in
+            return field.content
+        }
+        computation.dependsOn(field, at: \Field.contentProperty)
         
+        return computation
     }
     
     private func buildButtonView(for button: Button) -> View {
         
-        let hiliteProperty = retrieveHilite(of: button)
+        let hiliteComputation = retrieveHilite(of: button)
         
-        return ButtonView(button: button, hiliteProperty: hiliteProperty, fontManager: fontManager, resources: resources)
+        return ButtonView(button: button, hiliteComputation: hiliteComputation, fontManager: fontManager, resources: resources)
     }
     
-    private func retrieveHilite(of button: Button) -> Property<Bool> {
+    private func retrieveHilite(of button: Button) -> Computation<Bool> {
         
         /* Special case: bg buttons with not shared hilite */
         if !button.sharedHilite && isPartInBackground(button) {
             
-            let property = Property<Bool>(compute: {
-                [unowned self, unowned button] in
+            let computation = Computation<Bool> {
+                [unowned self, unowned button] () -> Bool in
             
                 /* If we're displaying the background, do not display the card contents */
                 if self.displayOnlyBackground {
@@ -506,18 +511,23 @@ public class Browser {
                 }
             
                 return true
-            })
+            }
             
             /* Dependencies */
-            property.dependsOn(self.cardIndexProperty)
-            property.dependsOn(self.displayOnlyBackgroundProperty)
+            computation.dependsOn(self, at: \Browser.cardIndexProperty)
+            computation.dependsOn(self, at: \Browser.displayOnlyBackgroundProperty)
             
-            return property
+            return computation
         }
         
         /* Usual case: just return hilite */
-        return button.hiliteProperty
+        let computation = Computation<Bool> {
+            [unowned button] () -> Bool in
+            return button.hilite
+        }
+        computation.dependsOn(button, at: \Button.hiliteProperty)
         
+        return computation
     }
     
     private func isPartInBackground(_ part: Part) -> Bool {

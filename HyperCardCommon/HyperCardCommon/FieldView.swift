@@ -52,14 +52,14 @@ public class FieldView: View, MouseResponder {
     private let field: Field
     
     private var richText: RichText {
-        get { return self.richTextProperty.value }
+        get { return self.richTextComputation.value }
     }
-    private let richTextProperty: Property<RichText>
+    private let richTextComputation: Computation<RichText>
     
     private var lineLayouts: [LineLayout] {
-        get { return self.lineLayoutsProperty.value }
+        get { return self.lineLayoutsComputation.value }
     }
-    private let lineLayoutsProperty: Property<[LineLayout]>
+    private let lineLayoutsComputation: Computation<[LineLayout]>
     
     private var isUpArrowClicked: Bool {
         get { return self.isUpArrowClickedProperty.value }
@@ -82,32 +82,32 @@ public class FieldView: View, MouseResponder {
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
     
-    public init(field: Field, contentProperty: Property<PartContent>, fontManager: FontManager) {
+    public init(field: Field, contentComputation: Computation<PartContent>, fontManager: FontManager) {
         
         self.field = field
         
         /* rich text */
-        self.richTextProperty = Property<RichText>(compute: {
-            return FieldView.buildRichText(from: contentProperty.value, withDefaultFontIdentifier: field.textFontIdentifier, defaultSize: field.textFontSize, defaultStyle: field.textStyle, fontManager: fontManager)
-        })
+        self.richTextComputation = Computation<RichText> {
+            return FieldView.buildRichText(from: contentComputation.value, withDefaultFontIdentifier: field.textFontIdentifier, defaultSize: field.textFontSize, defaultStyle: field.textStyle, fontManager: fontManager)
+        }
         
         /* line layouts */
-        let richTextProperty = self.richTextProperty
-        self.lineLayoutsProperty = Property<[LineLayout]>(compute: {
-            return FieldView.layout(field: field, content: richTextProperty.value)
-        })
+        let richTextComputation = self.richTextComputation
+        self.lineLayoutsComputation = Computation<[LineLayout]> {
+            return FieldView.layout(field: field, content: richTextComputation.value)
+        }
         
         super.init()
         
         /* Listen to content change */
-        richTextProperty.dependsOn(contentProperty)
-        lineLayoutsProperty.dependsOn(richTextProperty)
+        richTextComputation.dependsOn(contentComputation, at: \Computation.valueProperty)
+        lineLayoutsComputation.dependsOn(richTextComputation, at: \Computation.valueProperty)
         
         /* Listen to visual changes */
         field.scrollProperty.startNotifications(for: self, by: {
             [unowned self] in if self.field.style == .scrolling { self.refreshNeedProperty.value = .refresh }
         })
-        richTextProperty.startNotifications(for: self, by: {
+        richTextComputation.valueProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
         })
         isUpArrowClickedProperty.startNotifications(for: self, by: {

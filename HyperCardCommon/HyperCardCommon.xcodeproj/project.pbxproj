@@ -16,6 +16,7 @@
 		6C56FD081F56BBA40036FF8A /* TestStrangeFlags.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */; };
 		6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C56FD091F56BC2B0036FF8A /* DataTests.swift */; };
 		6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6064061F5B1DF600988560 /* HdmxTableReader.swift */; };
+		6C76AA9820C5956C009A3446 /* Computation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C76AA9720C5956C009A3446 /* Computation.swift */; };
 		6C7F7B9C1F4F7A1F00C9D3DC /* TestFieldProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */; };
 		6C7F7B9E1F4F7AF500C9D3DC /* TestFreeSize.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */; };
 		6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */; };
@@ -389,6 +390,7 @@
 		6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestStrangeFlags.stack; sourceTree = "<group>"; };
 		6C56FD091F56BC2B0036FF8A /* DataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
 		6C6064061F5B1DF600988560 /* HdmxTableReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HdmxTableReader.swift; sourceTree = "<group>"; };
+		6C76AA9720C5956C009A3446 /* Computation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computation.swift; sourceTree = "<group>"; };
 		6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFieldProperties.stack; sourceTree = "<group>"; };
 		6C7F7B9D1F4F7AF500C9D3DC /* TestFreeSize.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFreeSize.stack; sourceTree = "<group>"; };
 		6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestContents.stack; sourceTree = "<group>"; };
@@ -808,6 +810,7 @@
 				6C9E6AA21E75BCFA00BBF925 /* HString.swift */,
 				6C9E6AA31E75BCFA00BBF925 /* SearchHash.swift */,
 				6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */,
+				6C76AA9720C5956C009A3446 /* Computation.swift */,
 				6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */,
 			);
 			name = Common;
@@ -1715,6 +1718,7 @@
 				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
+				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
 				6CE8F5DC20C42DEA00B99E39 /* StyleBlockReader.swift in Sources */,
 				6CE8F5CE20C42A6A00B99E39 /* LayerBlockReader.swift in Sources */,
 				6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */,

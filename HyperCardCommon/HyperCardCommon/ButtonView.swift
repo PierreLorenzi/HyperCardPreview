@@ -81,39 +81,39 @@ public class ButtonView: View, MouseResponder {
     
     private let button: Button
     
-    private let hiliteProperty: Property<Bool>
+    private let hiliteComputation: Computation<Bool>
     
     /// the font for the texts
     private var font: BitmapFont {
-        return fontProperty.value
+        return fontComputation.value
     }
-    private let fontProperty: Property<BitmapFont>
+    private let fontComputation: Computation<BitmapFont>
     
     /// the image of the icon
     private var icon: MaskedImage? {
-        return iconProperty.value
+        return iconComputation.value
     }
-    private let iconProperty: Property<MaskedImage?>
+    private let iconComputation: Computation<MaskedImage?>
     
     /// the menu items, used by pop-up buttons
     private var menuItems: [HString] {
-        return menuItemsProperty.value
+        return menuItemsComputation.value
     }
-    private let menuItemsProperty: Property<[HString]>
+    private let menuItemsComputation: Computation<[HString]>
     
     /// the condensed version of the font, used by pop-up buttons
     private var condensedFont: BitmapFont {
-        return condensedFontProperty.value
+        return condensedFontComputation.value
     }
-    private let condensedFontProperty: Property<BitmapFont>
+    private let condensedFontComputation: Computation<BitmapFont>
     
-    public init(button: Button, hiliteProperty: Property<Bool>, fontManager: FontManager, resources: ResourceSystem) {
+    public init(button: Button, hiliteComputation: Computation<Bool>, fontManager: FontManager, resources: ResourceSystem) {
         
         self.button = button
-        self.hiliteProperty = hiliteProperty
+        self.hiliteComputation = hiliteComputation
         
         /* font */
-        fontProperty = Property<BitmapFont>(compute: {
+        fontComputation = Computation<BitmapFont> {
             
             let hasIcon = ButtonView.hasButtonIcon(button)
             
@@ -121,19 +121,19 @@ public class ButtonView: View, MouseResponder {
             let fontSize = hasIcon ? iconButtonFontSize : button.textFontSize
             let fontStyle = hasIcon ? iconButtonFontStyle : button.textStyle
             return fontManager.findFont(withIdentifier: fontIdentifier, size: fontSize, style: fontStyle)
-        })
+        }
         
         /* condensedFont */
-        condensedFontProperty = Property<BitmapFont>(compute: {
+        condensedFontComputation = Computation<BitmapFont> {
             
             var consensedStyle = button.textStyle
             consensedStyle.condense = true
             return fontManager.findFont(withIdentifier: button.textFontIdentifier, size: button.textFontSize, style: consensedStyle)
-        })
+        }
         
         /* icon */
         let iconIdentifier = button.iconIdentifier
-        iconProperty = Property<MaskedImage?>(compute: {
+        iconComputation = Computation<MaskedImage?> {
             
             guard iconIdentifier != 0 else {
                 return nil
@@ -144,29 +144,29 @@ public class ButtonView: View, MouseResponder {
             }
             
             return nil
-        })
+        }
         
         /* menuItems */
-        menuItemsProperty = Property<[HString]>(compute: {
+        menuItemsComputation = Computation<[HString]> {
         
             return ButtonView.separateStringLines(in: button.content)
-        })
+        }
         
         super.init()
         
         /* font dependencies */
-        fontProperty.dependsOn(button.iconIdentifierProperty)
-        fontProperty.dependsOn(button.textFontIdentifierProperty)
-        fontProperty.dependsOn(button.textFontSizeProperty)
-        fontProperty.dependsOn(button.textStyleProperty)
+        fontComputation.dependsOn(button, at: \Button.iconIdentifierProperty)
+        fontComputation.dependsOn(button, at: \Button.textFontIdentifierProperty)
+        fontComputation.dependsOn(button, at: \Button.textFontSizeProperty)
+        fontComputation.dependsOn(button, at: \Button.textStyleProperty)
         
         /* condensedFont dependencies */
-        condensedFontProperty.dependsOn(button.textFontIdentifierProperty)
-        condensedFontProperty.dependsOn(button.textFontSizeProperty)
-        condensedFontProperty.dependsOn(button.textStyleProperty)
+        condensedFontComputation.dependsOn(button, at: \Button.textFontIdentifierProperty)
+        condensedFontComputation.dependsOn(button, at: \Button.textFontSizeProperty)
+        condensedFontComputation.dependsOn(button, at: \Button.textStyleProperty)
         
         /* drawing dependencies */
-        hiliteProperty.startNotifications(for: self, by: {
+        hiliteComputation.valueProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = (self.button.style == .transparent || self.button.style == .oval) ? .refreshWithNewShape : .refresh
         })
         button.selectedItemProperty.startNotifications(for: self, by: {
@@ -300,13 +300,13 @@ public class ButtonView: View, MouseResponder {
         
         let transparent = button.style == .transparent || button.style == .oval
         
-        if hiliteProperty.value && transparent {
+        if hiliteComputation.value && transparent {
             return Drawing.XorComposition
         }
         
         /* Special case: hilited
          Even if the button is disabled, the text must be drawn in white on the gray background */
-        if hiliteProperty.value {
+        if hiliteComputation.value {
             return Drawing.MaskComposition
         }
         
@@ -318,12 +318,12 @@ public class ButtonView: View, MouseResponder {
     private func findBackgroundComposition() -> ImageComposition {
         
         /* Special case: disabled */
-        if !button.enabled && hiliteProperty.value {
+        if !button.enabled && hiliteComputation.value {
             return DisabledComposition
         }
         
         /* Second special case: hilited */
-        if hiliteProperty.value {
+        if hiliteComputation.value {
             return Drawing.DirectComposition
         }
         
@@ -340,7 +340,7 @@ public class ButtonView: View, MouseResponder {
         switch button.style {
         case .transparent:
             if icon == nil {
-                if hiliteProperty.value {
+                if hiliteComputation.value {
                     drawing.drawRectangle(rectangle, composition: Drawing.XorComposition)
                 }
                 if !button.enabled {
@@ -363,7 +363,7 @@ public class ButtonView: View, MouseResponder {
             let borderComposition = button.enabled ? Drawing.DirectComposition : DisabledComposition
             drawCornerImage(DefaultCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: DefaultBorderThickness, borderComposition: borderComposition, composition:Drawing.MaskComposition)
         case .oval:
-            if hiliteProperty.value && icon == nil && rectangle.width > 0 && rectangle.height > 0 {
+            if hiliteComputation.value && icon == nil && rectangle.width > 0 && rectangle.height > 0 {
                 /* draw background oval */
                 let radiusX2 = Double(rectangle.width * rectangle.width) / 4
                 let factor2 = Double(rectangle.width * rectangle.width) / Double(rectangle.height * rectangle.height)
@@ -395,7 +395,7 @@ public class ButtonView: View, MouseResponder {
         let transparent = button.style == .transparent || button.style == .oval
         
         if transparent {
-            if hiliteProperty.value {
+            if hiliteComputation.value {
                 return (button.enabled ? Drawing.MaskComposition : DisabledComposition, Drawing.DirectComposition)
             }
             else {
@@ -474,7 +474,7 @@ public class ButtonView: View, MouseResponder {
         /* Draw the image */
         let imagePosition = Point(x: rectangle.x + 3, y: rectangle.y + rectangle.height / 2 - frameImage.height / 2)
         drawing.drawMaskedImage(frameImage, position: imagePosition)
-        if hiliteProperty.value {
+        if hiliteComputation.value {
             let composition = (button.style == .radio && !button.enabled) ? DisabledComposition : Drawing.DirectComposition
             drawing.drawMaskedImage(hiliteImage, position: imagePosition, imageComposition: composition)
         }

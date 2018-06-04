@@ -102,8 +102,4 @@ public class Property<T> {
         notifications = notifications.filter({ $0.object !== object })
     }
     
-    public func dependsOn<T>(_ property: Property<T>) {
-        property.startNotifications(for: self, by: { [unowned self] in self.invalidate() })
-    }
-    
 }
