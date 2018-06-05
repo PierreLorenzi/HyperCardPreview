@@ -42,36 +42,14 @@ private func loadIcons() -> [Any] {
     /* Add the icons */
     let iconIdentifiers = listIconIdentifiers()
     for iconIdentifier in iconIdentifiers {
-        let icon = AppResourceIcon(identifier: iconIdentifier)
+        let contentProperty = Property<Image> { () -> Image in
+            return loadIcon(withIdentifier: iconIdentifier)
+        }
+        let icon = Resource<Image>(identifier: iconIdentifier, name: "", type: ResourceTypes.icon, contentProperty: contentProperty)
         icons.append(icon)
     }
     
     return icons
-}
-
-private class AppResourceIcon: Resource<Image> {
-    // TODO no name for the icons?
-    
-    private static let fakeImage = Image(width: 0, height: 0)
-    
-    public init(identifier: Int) {
-        super.init(identifier: identifier, name: "", type: ResourceTypes.icon, content: AppResourceIcon.fakeImage)
-    }
-    
-    private var contentLoaded = false
-    override public var content: Image {
-        get {
-            if !contentLoaded {
-                super.content = loadIcon(withIdentifier: identifier)
-                contentLoaded = true
-            }
-            return super.content
-        }
-        set {
-            super.content = newValue
-        }
-    }
-    
 }
 
 private let IconFilePrefix = "icon_"

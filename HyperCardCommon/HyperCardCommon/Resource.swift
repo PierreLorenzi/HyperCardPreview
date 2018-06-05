@@ -21,14 +21,18 @@ public class Resource<T> {
     public var type: ResourceType<T>
     
     /// The data contained in the resource
-    public var content: T
+    public var content: T {
+        get { return self.contentProperty.value }
+        set { self.contentProperty.value = newValue }
+    }
+    public let contentProperty: Property<T>
     
     /// Main constructor, explicit so it is public
-    public init(identifier: Int, name: HString, type: ResourceType<T>, content: T) {
+    public init(identifier: Int, name: HString, type: ResourceType<T>, contentProperty: Property<T>) {
         self.identifier = identifier
         self.name = name
         self.type = type
-        self.content = content
+        self.contentProperty = contentProperty
     }
     
 }
