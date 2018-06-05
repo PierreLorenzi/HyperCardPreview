@@ -275,19 +275,13 @@ public class ButtonView: View, MouseResponder {
         let backgroundComposition = findBackgroundComposition()
         
         /* Draw the frame */
-        let rectangle = button.rectangle
+        var rectangle = button.rectangle
         drawButtonFrame(drawing: drawing)
         
         /* Special case: default button */
         if button.style == .`default` {
-            let standardRectangle = Rectangle(top: rectangle.top + defaultMargin, left: rectangle.left + defaultMargin, bottom: rectangle.bottom - defaultMargin, right: rectangle.right - defaultMargin)
-            let initialRectangle = rectangle
-            button.style = .standard
-            button.rectangle = standardRectangle
-            draw(in: drawing)
-            button.style = .`default`
-            button.rectangle = initialRectangle
-            return
+            rectangle = Rectangle(top: rectangle.top + defaultMargin, left: rectangle.left + defaultMargin, bottom: rectangle.bottom - defaultMargin, right: rectangle.right - defaultMargin)
+            drawCornerImage(standardCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: standardBorderThickness, composition: backgroundComposition)
         }
         
         /* Draw title & icon (if an icon is set but not found, the button is layout as if had an icon) */
