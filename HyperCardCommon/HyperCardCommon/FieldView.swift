@@ -50,10 +50,10 @@ public class FieldView: View, MouseResponder {
     }
     private let richTextComputation: Computation<RichText>
     
-    private var lineLayouts: [LineLayout] {
-        get { return self.lineLayoutsComputation.value }
+    private var textLayout: TextLayout {
+        get { return self.textLayoutComputation.value }
     }
-    private let lineLayoutsComputation: Computation<[LineLayout]>
+    private let textLayoutComputation: Computation<TextLayout>
     
     private var isUpArrowClicked: Bool {
         get { return self.isUpArrowClickedProperty.value }
@@ -87,19 +87,18 @@ public class FieldView: View, MouseResponder {
         self.richTextComputation = richTextComputation
         
         /* line layouts */
-        self.lineLayoutsComputation = Computation<[LineLayout]> {
+        self.textLayoutComputation = Computation<TextLayout> {
             let text = richTextComputation.value
             let textWidth: Int? = field.dontWrap ? nil : FieldView.computeTextRectangle(of: field).width
             let lineHeight: Int? = field.fixedLineHeight ? field.textHeight : nil
-            let layout = TextLayout(text: text, width: textWidth, lineHeight: lineHeight)
-            return layout.lines
+            return TextLayout(text: text, width: textWidth, lineHeight: lineHeight)
         }
         
         super.init()
         
         /* Listen to content change */
         richTextComputation.dependsOn(contentComputation, at: \Computation.valueProperty)
-        lineLayoutsComputation.dependsOn(richTextComputation, at: \Computation.valueProperty)
+        textLayoutComputation.dependsOn(richTextComputation, at: \Computation.valueProperty)
         
         /* Listen to visual changes */
         field.scrollProperty.startNotifications(for: self, by: {
@@ -189,17 +188,17 @@ public class FieldView: View, MouseResponder {
         
         /* Get the visual properties as they are now */
         let richText = self.richText
-        let lineLayouts = self.lineLayouts
+        let textLayout = self.textLayout
         
         /* Draw the frame */
-        drawFieldFrame(in: drawing, lineLayouts: lineLayouts)
+        drawFieldFrame(in: drawing)
         
         /* Draw the text */
-        drawText(in: drawing, content: richText, lineLayouts: lineLayouts)
+        drawText(in: drawing, content: richText, textLayout: textLayout)
         
     }
     
-    private func drawFieldFrame(in drawing: Drawing, lineLayouts: [LineLayout]) {
+    private func drawFieldFrame(in drawing: Drawing) {
         
         switch field.style {
             
@@ -232,7 +231,7 @@ public class FieldView: View, MouseResponder {
         
         let textRectangle = FieldView.computeTextRectangle(of: field)
         
-        let lastLineLayout = lineLayouts[lineLayouts.count-1]
+        let lastLineLayout = self.textLayout.lines.last!
         let contentHeight = field.rectangle.height - 2
         let totalTextHeight = textRectangle.top - field.rectangle.top + lastLineLayout.bottom
         
@@ -335,8 +334,9 @@ public class FieldView: View, MouseResponder {
         return Rectangle(x: scrollBarRectangle.x, y: scrollBarRectangle.y + knobOffset, width: scrollBarRectangle.width, height: scrollKnobHeight)
     }
     
-    private func drawText(in drawing: Drawing, content: RichText, lineLayouts: [LineLayout]) {
+    private func drawText(in drawing: Drawing, content: RichText, textLayout: TextLayout) {
         
+        let lineLayouts = textLayout.lines
         let textRectangle = FieldView.computeTextRectangle(of: field)
         let contentRectangle = FieldView.computeContentRectangle(of: field)
         let showLines = field.showLines && field.style != .scrolling
