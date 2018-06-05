@@ -22,23 +22,16 @@ public class Glyph {
     /// Top of image, from the baseline
     public var imageTop = 0
     
+    /// Width of the image
+    public var imageWidth: Int = 0
+    
+    /// Height of the image
+    public var imageHeight: Int = 0
+    
+    /// If there is an image
+    public var isThereImage: Bool = false
+    
     /// The image of the character
     public var image: MaskedImage? = nil
-    
-    
-    /// Not necessary, designed for lazy-loading
-    public var imageWidth: Int {
-        return image?.width ?? 0
-    }
-    
-    /// Not necessary, designed for lazy-loading
-    public var imageHeight: Int {
-        return image?.height ?? 0
-    }
-    
-    /// Not necessary, designed for lazy-loading
-    public var isThereImage: Bool {
-        return image != nil
-    }
     
 }

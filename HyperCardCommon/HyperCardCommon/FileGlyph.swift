@@ -16,13 +16,11 @@ public class FileGlyph: Glyph {
     
     private let bitImage: Image
     private let bitmapLocationTable: [Int]
-    private let fontRectangleHeight: Int
     private let index: Int
     
     public init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, widthTable: [Int], offsetTable: [Int], bitmapLocationTable: [Int], bitImage: Image, index: Int) {
         self.bitImage = bitImage
         self.bitmapLocationTable = bitmapLocationTable
-        self.fontRectangleHeight = fontRectangleHeight
         self.index = index
         
         super.init()
@@ -30,6 +28,10 @@ public class FileGlyph: Glyph {
         self.width = widthTable[index]
         self.imageOffset = maximumKerning + offsetTable[index]
         self.imageTop = maximumAscent
+        let (startOffset, endOffset) = retrieveImageOffsets()
+        self.imageWidth = endOffset - startOffset
+        self.imageHeight = fontRectangleHeight
+        self.isThereImage = (endOffset > startOffset)
     }
     
     private var imageLoaded = false
@@ -71,20 +73,6 @@ public class FileGlyph: Glyph {
         let endOffset = bitmapLocationTable[index+1]
         
         return (startOffset, endOffset)
-    }
-    
-    public override var imageWidth: Int {
-        let (startOffset, endOffset) = retrieveImageOffsets()
-        return endOffset - startOffset
-    }
-    
-    public override var imageHeight: Int {
-        return fontRectangleHeight
-    }
-    
-    public override var isThereImage: Bool {
-        let (startOffset, endOffset) = retrieveImageOffsets()
-        return endOffset > startOffset
     }
     
 }

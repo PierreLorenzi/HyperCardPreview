@@ -106,13 +106,7 @@ private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> 
 /// A glyph that lazily applies a font variation to a base glyph
 public class DecoratedGlyph: Glyph {
     
-    private var decoratedImageWidth: Int
-    private var decoretedImageHeight: Int
-    
     public init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
-        
-        self.decoratedImageWidth = baseGlyph.imageWidth
-        self.decoretedImageHeight = baseGlyph.imageHeight
         
         super.init()
         
@@ -120,6 +114,9 @@ public class DecoratedGlyph: Glyph {
         self.width = baseGlyph.width
         self.imageOffset = baseGlyph.imageOffset
         self.imageTop = baseGlyph.imageTop
+        self.imageWidth = baseGlyph.imageWidth
+        self.imageHeight = baseGlyph.imageHeight
+        self.isThereImage = baseGlyph.isThereImage
         
         /* Change the measures for the style */
         self.readjustMeasures(baseGlyph: baseGlyph, style: style, properties: properties, size: size)
@@ -197,24 +194,6 @@ public class DecoratedGlyph: Glyph {
             }
         }
         
-    }
-    
-    public override var imageWidth: Int {
-        get {
-            return decoratedImageWidth
-        }
-        set {
-            decoratedImageWidth = newValue
-        }
-    }
-    
-    public override var imageHeight: Int {
-        get {
-            return decoretedImageHeight
-        }
-        set {
-            decoretedImageHeight = newValue
-        }
     }
     
     private var loadImage: (() -> MaskedImage?)? = nil
