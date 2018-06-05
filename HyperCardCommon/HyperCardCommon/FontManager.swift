@@ -58,13 +58,13 @@ public class FontManager {
             
             /* Check if a bitmap font with the right parameters is available */
             if let existingFamilyFont = family.bitmapFonts.first(where: { $0.size == descriptor.size && $0.style == descriptor.style }) {
-                return existingFamilyFont.font
+                return existingFamilyFont.resource.content
             }
             
             /* Look for a vector font (during tests, it appeared that it is only loaded for plain fonts) */
             if descriptor.style == PlainTextStyle {
                 if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
-                    return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(vectorFont.font, CGFloat(descriptor.size), nil, nil))
+                    return VectorFontConverting.convertVectorFont(CTFontCreateWithGraphicsFont(vectorFont.resource.content, CGFloat(descriptor.size), nil, nil))
                 }
             }
         }

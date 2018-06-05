@@ -14,7 +14,7 @@
 /// lazy in swift.
 public extension FontFamily {
     
-    public init(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResourceBlock], vectorFonts: [VectorFontResourceBlock]) {
+    public init(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
         
         /* Get the references from the resource */
         let associations = resource.readFontAssociationTable()
@@ -37,35 +37,27 @@ public extension FontFamily {
         
     }
     
-    private static func convertAssociationToBitmapReference(association: FontFamilyResourceBlock.FontAssociation, bitmapFonts: [BitmapFontResourceBlock]) -> FontFamily.FamilyBitmapFont? {
+    private static func convertAssociationToBitmapReference(association: FontFamilyResourceBlock.FontAssociation, bitmapFonts: [BitmapFontResource]) -> FontFamily.FamilyBitmapFont? {
         
         /* Find the font in the fork */
-        guard let index = bitmapFonts.index(where: {$0.identifier == association.resourceIdentifier}) else {
+        guard let bitmapFont = bitmapFonts.first(where: {$0.identifier == association.resourceIdentifier}) else {
             return nil;
         }
         
-        /* Build a new font */
-        let fontResource = bitmapFonts[index]
-        let font = BitmapFont(block: fontResource)
-        
         /* Build the reference */
-        return FontFamily.FamilyBitmapFont(size: association.size, style: association.style, font: font)
+        return FontFamily.FamilyBitmapFont(size: association.size, style: association.style, resource: bitmapFont)
         
     }
     
-    private static func convertAssociationToVectorReference(association: FontFamilyResourceBlock.FontAssociation, vectorFonts: [VectorFontResourceBlock]) -> FontFamily.FamilyVectorFont? {
+    private static func convertAssociationToVectorReference(association: FontFamilyResourceBlock.FontAssociation, vectorFonts: [VectorFontResource]) -> FontFamily.FamilyVectorFont? {
         
         /* Find the vector font in the fork */
-        guard let index = vectorFonts.index(where: {$0.identifier == association.resourceIdentifier}) else {
+        guard let vectorFont = vectorFonts.first(where: {$0.identifier == association.resourceIdentifier}) else {
             return nil
         }
         
-        /* Load the font */
-        let fontResource = vectorFonts[index]
-        let font = fontResource.readCGFont()
-        
         /* Build the reference */
-        return FontFamily.FamilyVectorFont(style: association.style, font: font)
+        return FontFamily.FamilyVectorFont(style: association.style, resource: vectorFont)
         
     }
     

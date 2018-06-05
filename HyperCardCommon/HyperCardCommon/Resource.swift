@@ -48,6 +48,18 @@ public struct FontFamilyResourceType: ResourceType {
 }
 public typealias FontFamilyResource = Resource<FontFamilyResourceType>
 
+/// Bitmap Fonts
+public struct BitmapFontResourceType: ResourceType {
+    public typealias ContentType = BitmapFont
+}
+public typealias BitmapFontResource = Resource<BitmapFontResourceType>
+
+/// Vector Fonts
+public struct VectorFontResourceType: ResourceType {
+    public typealias ContentType = CGFont
+}
+public typealias VectorFontResource = Resource<VectorFontResourceType>
+
 /// AddColor card colors
 public struct CardColorResourceType: ResourceType {
     public typealias ContentType = [AddColorElement]

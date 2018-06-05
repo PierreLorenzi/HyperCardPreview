@@ -24,9 +24,25 @@ public extension ResourceRepository {
             return IconResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
         
+        /* Add the bitmap fonts */
+        let bitmapFontBlocks = fork.extractBitmapFonts()
+        let bitmapFonts = bitmapFontBlocks.map { (block: BitmapFontResourceBlock) -> BitmapFontResource in
+            let contentProperty = Property<BitmapFont> { () -> BitmapFont in
+                return BitmapFont(block: block)
+            }
+            return BitmapFontResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
+        }
+        
+        /* Add the vector fonts */
+        let vectorFontBlocks = fork.extractVectorFonts()
+        let vectorFonts = vectorFontBlocks.map { (block: VectorFontResourceBlock) -> VectorFontResource in
+            let contentProperty = Property<CGFont> { () -> CGFont in
+                return block.readCGFont()
+            }
+            return VectorFontResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
+        }
+        
         /* Add the font families */
-        let bitmapFonts = fork.extractBitmapFonts()
-        let vectorFonts = fork.extractVectorFonts()
         let fontFamilyBlocks = fork.extractFontFamilies()
         let fontFamilies = fontFamilyBlocks.map { (block: FontFamilyResourceBlock) -> FontFamilyResource in
             let contentProperty = Property<FontFamily> { () -> FontFamily in
