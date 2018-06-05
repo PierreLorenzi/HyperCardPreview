@@ -11,7 +11,7 @@
 /// Glyph with lazy loading from a file
 public extension Glyph {
     
-    public convenience init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, width: Int, offset: Int, startImageOffset: Int, endImageOffset: Int, bitImage: Image) {
+    public convenience init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, width: Int, offset: Int, startImageOffset: Int, endImageOffset: Int, loadBitImage: @escaping () -> Image) {
         
         self.init()
         
@@ -22,11 +22,11 @@ public extension Glyph {
         self.imageHeight = fontRectangleHeight
         self.isThereImage = (endImageOffset > startImageOffset)
         self.imageProperty.lazyCompute { () -> MaskedImage? in
-            return Glyph.loadImage(startOffset: startImageOffset, endOffset: endImageOffset, bitImage: bitImage)
+            return Glyph.loadImage(startOffset: startImageOffset, endOffset: endImageOffset, loadBitImage: loadBitImage)
         }
     }
     
-    private static func loadImage(startOffset: Int, endOffset: Int, bitImage: Image) -> MaskedImage? {
+    private static func loadImage(startOffset: Int, endOffset: Int, loadBitImage: () -> Image) -> MaskedImage? {
         
         /* If the image has a null width, there is no image */
         guard endOffset > startOffset else {
@@ -34,6 +34,7 @@ public extension Glyph {
         }
         
         /* Load the image */
+        let bitImage = loadBitImage()
         let drawing = Drawing(width: endOffset - startOffset, height: bitImage.height)
         drawing.drawImage(bitImage, position: Point(x: 0, y: 0), rectangleToDraw: Rectangle(top: 0, left: startOffset, bottom: bitImage.height, right: endOffset))
         

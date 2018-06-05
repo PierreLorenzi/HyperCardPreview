@@ -27,6 +27,10 @@ public class Property<T> {
         self.lazyValue = LazyValue.stored(value)
     }
     
+    public init(lazy compute: @escaping () -> T) {
+        self.lazyValue = LazyValue.lazy(compute)
+    }
+    
     public var value: T {
         get {
             switch self.lazyValue {
