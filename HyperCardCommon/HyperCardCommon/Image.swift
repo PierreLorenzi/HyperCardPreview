@@ -14,9 +14,11 @@ import AppKit
 /// We don't use a Cocoa image because there are a lot of specific processes in 1-bit images.
 public struct Image {
     
+    public typealias Integer = UInt32
+    
     /// The bits, stored in 32-bit integers. A row always starts at the beginning of an integer,
     /// so there may be unused bits at the end of every row for 32-bit alignment.
-    public var data: [UInt32]
+    public var data: [Image.Integer]
     
     /// Width of the image, in pixels
     public let width: Int
@@ -33,12 +35,12 @@ public struct Image {
         /* Compute the bounds */
         self.width = width
         self.height = height
-        let integerCountInRow = upToMultiple(width, 32) / 32
+        let integerCountInRow = upToMultiple(width, Image.Integer.bitWidth) / Image.Integer.bitWidth
         self.integerCountInRow = integerCountInRow
         
         /* Build the color data */
         let integerCount = integerCountInRow * height
-        self.data = [UInt32](repeating: 0, count: integerCount)
+        self.data = [Image.Integer](repeating: 0, count: integerCount)
         
     }
     
@@ -47,19 +49,19 @@ public struct Image {
     /// x is counted from the left, y from the top.
     public subscript(x: Int, y: Int) -> Bool {
         get {
-            let integerIndexInRow = x / 32
-            let indexInInteger = 31 - x & 31
+            let integerIndexInRow = x / Image.Integer.bitWidth
+            let indexInInteger = Image.Integer.bitWidth - 1 - x % Image.Integer.bitWidth
             let integer = data[ y * integerCountInRow + integerIndexInRow ]
-            let bit = (integer >> UInt32(indexInInteger)) & 1
+            let bit = (integer >> indexInInteger) & 1
             return bit == 1
         }
         set {
             /* Write the mask */
-            let indexInInteger = 31 - x & 31
-            let mask = UInt32(1 << indexInInteger)
+            let indexInInteger = Image.Integer.bitWidth - 1 - x % Image.Integer.bitWidth
+            let mask = Image.Integer(1 << indexInInteger)
             
             /* Locate the integer */
-            let integerIndexInRow = x / 32
+            let integerIndexInRow = x / Image.Integer.bitWidth
             let integerIndex =  y * integerCountInRow + integerIndexInRow
             
             /* Change the integer */

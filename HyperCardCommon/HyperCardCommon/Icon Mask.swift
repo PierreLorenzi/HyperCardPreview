@@ -19,7 +19,7 @@ public func maskIcon(_ image: Image) -> MaskedImage {
     
     /* Make the mask as a rectangle */
     for i in 0..<mask.data.count {
-        mask.data[i] = UInt32.max
+        mask.data[i] = Image.Integer.max
     }
     
     /* Top and bottom */

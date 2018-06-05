@@ -12,9 +12,9 @@
 /// Here are the arguments:
 /// 1: some pixels in a row of the destination image. The process must be applied on them
 /// 2: the corresponding pixels in the image that is drawn
-/// 3. the index of the 32-bit integer in the row
+/// 3. the index of the Image.Integer.bitWidth-bit integer in the row
 /// 4. the y-coordinate of the pixels
-public typealias ImageComposition = (inout UInt32, UInt32, Int, Int) -> ()
+public typealias ImageComposition = (inout Image.Integer, Image.Integer, Int, Int) -> ()
 
 
 
@@ -27,7 +27,7 @@ public class Drawing {
     /// It is available so optimized processes can be made on the raw data
     public var image: Image
     
-    private var row: [UInt32]
+    private var row: [Image.Integer]
     
     /// The width of the drawing, in pixels
     public var width: Int {
@@ -40,27 +40,27 @@ public class Drawing {
     }
     
     /// Direct composition: the black pixels of the drawn image are drawn black
-    public static let DirectComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a |= b }
+    public static let DirectComposition: ImageComposition = { ( a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in a |= b }
     
     /// Mask Composition: the black pixels of the drawn image are drawn white
-    public static let MaskComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a &= ~b }
+    public static let MaskComposition: ImageComposition = { ( a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in a &= ~b }
     
     /// Xor Composition: the target image is inverted at the black pixels of the drawn image
-    public static let XorComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a ^= b}
+    public static let XorComposition: ImageComposition = { ( a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in a ^= b}
     
     /// No Composition: nothing is drawn
-    public static let NoComposition: ImageComposition = { ( a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in return }
+    public static let NoComposition: ImageComposition = { ( a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in return }
     
     /// Builds a white drawing
     public init(width: Int, height: Int) {
         self.image = Image(width: width, height: height)
-        self.row = [UInt32](repeating: 0, count: image.integerCountInRow + 1)
+        self.row = [Image.Integer](repeating: 0, count: image.integerCountInRow + 1)
     }
     
     /// Builds a drawing from an image
     public init(image: Image) {
         self.image = image
-        self.row = [UInt32](repeating: 0, count: image.integerCountInRow + 1)
+        self.row = [Image.Integer](repeating: 0, count: image.integerCountInRow + 1)
     }
     
     /// To edit pixel by pixel
@@ -76,7 +76,7 @@ public class Drawing {
     /// Makes the whole drawing white
     public func clear() {
         for i in 0..<image.data.count {
-            image.data[i] = UInt32(0)
+            image.data[i] = Image.Integer(0)
         }
     }
     
@@ -92,7 +92,7 @@ public class Drawing {
         }
         
         /* Fill it with the mask of the rectangle */
-        self.fillRowWithMask(rectangle.left & 31, length: rectangle.width)
+        self.fillRowWithMask(rectangle.left % Image.Integer.bitWidth, length: rectangle.width)
         
         /* Loop on the rows */
         for y in rectangle.top..<rectangle.bottom {
@@ -134,8 +134,8 @@ public class Drawing {
         /* Store the size */
         let length = rectangle.width
         
-        /* Compute the shift mod 32 between source and destination */
-        let shift = position.x & 31 - rectangle.left & 31
+        /* Compute the shift mod Image.Integer.bitWidth between source and destination */
+        let shift = position.x  % Image.Integer.bitWidth - rectangle.left  % Image.Integer.bitWidth
         
         /* Store the positions of the rows */
         var imagePosition = Point(x: rectangle.left, y: rectangle.top)
@@ -182,11 +182,11 @@ public class Drawing {
     public func fillRowWithImage(_ image: Image, position: Point, length: Int) {
         
         /* Check which integers are involved */
-        let integerIndex = position.y * image.integerCountInRow + position.x / 32
-        let integerLength = (upToMultiple(position.x + length, 32) - downToMultiple(position.x, 32)) / 32
+        let integerIndex = position.y * image.integerCountInRow + position.x / Image.Integer.bitWidth
+        let integerLength = (upToMultiple(position.x + length, Image.Integer.bitWidth) - downToMultiple(position.x, Image.Integer.bitWidth)) / Image.Integer.bitWidth
         
         /* Fill the buffer with a position mask */
-        fillRowWithMask(position.x & 31, length: length)
+        fillRowWithMask(position.x % Image.Integer.bitWidth, length: length)
         
         /* Copy the image to the buffer */
         for i in 0..<integerLength {
@@ -201,17 +201,17 @@ public class Drawing {
     /// Fills the internal temporary buffer of the drawing with a row of a mask
     public func fillRowWithMask(_ index: Int, length: Int) {
         
-        let allOnes = ~UInt32(0)
+        let allOnes = ~Image.Integer(0)
         
         /* Check which integers are involved */
-        let integerStartIndex = index / 32
-        let integerEndIndex = (index + length-1) / 32
+        let integerStartIndex = index / Image.Integer.bitWidth
+        let integerEndIndex = (index + length-1) / Image.Integer.bitWidth
         
         /* Get the border masks */
-        let startBitIndex = UInt32(index & 31)
+        let startBitIndex = Image.Integer(index % Image.Integer.bitWidth)
         let startMask = allOnes >> startBitIndex
-        let endBitIndex = UInt32((index + length-1) & 31)
-        let endMask = allOnes << (31 - endBitIndex)
+        let endBitIndex = Image.Integer((index + length-1) % Image.Integer.bitWidth)
+        let endMask = allOnes << (Image.Integer(Image.Integer.bitWidth) - 1 - endBitIndex)
         
         /* Fill the row */
         for i in 0..<integerStartIndex {
@@ -234,27 +234,27 @@ public class Drawing {
     public func applyRow(_ position: Point, length: Int, composition: ImageComposition = DirectComposition) {
         
         /* Check which integers are involved */
-        let integerIndex = position.y * self.image.integerCountInRow + position.x / 32
-        let integerLength = (upToMultiple(position.x + length, 32) - downToMultiple(position.x, 32)) / 32
+        let integerIndex = position.y * self.image.integerCountInRow + position.x / Image.Integer.bitWidth
+        let integerLength = (upToMultiple(position.x + length, Image.Integer.bitWidth) - downToMultiple(position.x, Image.Integer.bitWidth)) / Image.Integer.bitWidth
         
-        let rowIntegerIndex = position.x / 32
+        let rowIntegerIndex = position.x / Image.Integer.bitWidth
         
         /* Left integer */
         let integerLeft = self.image.data[integerIndex]
         var newIntegerLeft = integerLeft
         composition(&newIntegerLeft, row[0], rowIntegerIndex, position.y)
-        let outerPixelCountLeft = position.x % 32
+        let outerPixelCountLeft = position.x % Image.Integer.bitWidth
         if outerPixelCountLeft > 0 {
             // I have to use a super weird expression because Swift throws "Shift too large"
-            let maskLeft = UInt32.max << UInt32(-outerPixelCountLeft + MemoryLayout<UInt32>.size * 8)
+            let maskLeft = Image.Integer.max << Image.Integer(-outerPixelCountLeft + Image.Integer.bitWidth)
             newIntegerLeft = (newIntegerLeft & ~maskLeft) | (integerLeft & maskLeft)
         }
         
         /* Special case: there is only one integer */
-        let outerPixelCountRight = 31 - (position.x + length - 1) % 32
+        let outerPixelCountRight = Image.Integer.bitWidth - 1 - (position.x + length - 1) % Image.Integer.bitWidth
         if integerLength == 1 {
             if outerPixelCountRight > 0 {
-                let maskRight = UInt32.max >> UInt32(32 - outerPixelCountRight)
+                let maskRight = Image.Integer.max >> Image.Integer(Image.Integer.bitWidth - outerPixelCountRight)
                 newIntegerLeft = (newIntegerLeft & ~maskRight) | (integerLeft & maskRight)
             }
             self.image.data[integerIndex] = newIntegerLeft
@@ -268,7 +268,7 @@ public class Drawing {
         var newIntegerRight = integerRight
         composition(&newIntegerRight, row[integerLength - 1], rowIntegerIndex + integerLength - 1, position.y)
         if outerPixelCountRight > 0 {
-            let maskRight = UInt32.max >> UInt32(32 - outerPixelCountRight)
+            let maskRight = Image.Integer.max >> Image.Integer(Image.Integer.bitWidth - outerPixelCountRight)
             newIntegerRight = (newIntegerRight & ~maskRight) | (integerRight & maskRight)
         }
         self.image.data[integerIndex + integerLength - 1] = newIntegerRight
@@ -282,7 +282,7 @@ public class Drawing {
     
     /// Shifts the internal temporary buffer
     public func shiftRowRight(_ value: Int) {
-        assert(value >= -32 && value <= 32)
+        assert(value >= -Image.Integer.bitWidth && value <= Image.Integer.bitWidth)
         
         /* Quick case */
         if value == 0 {
@@ -291,20 +291,20 @@ public class Drawing {
         
         /* If the shift is to the right */
         if value > 0 {
-            let value32 = UInt32(value)
+            let value32 = Image.Integer(value)
             for i in (1..<self.row.count).reversed() {
                 self.row[i] >>= value32
-                self.row[i] |= (row[i-1] << (32 - value32))
+                self.row[i] |= (row[i-1] << (Image.Integer(Image.Integer.bitWidth) - value32))
             }
             self.row[0] >>= value32
         }
         
         /* If the shift is to the left */
         if value < 0 {
-            let value32 = UInt32(-value)
+            let value32 = Image.Integer(-value)
             for i in 0..<(row.count-1) {
                 self.row[i] <<= value32
-                self.row[i] |= (row[i+1] >> (32 - value32))
+                self.row[i] |= (row[i+1] >> (Image.Integer(Image.Integer.bitWidth) - value32))
             }
             self.row[row.count-1] <<= value32
         }
