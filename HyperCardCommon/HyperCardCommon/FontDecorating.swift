@@ -11,75 +11,74 @@
 /* Differences from original: underline extends too much around the characters, start offset of text can shift one pixel */
 
 
-public enum FontDecorating {
+public extension BitmapFont {
     
     /// Applies a font variation to a bitmap font
-    public static func decorateFont(from baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) -> BitmapFont {
+    public convenience init(decorate baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) {
         
         /* Copy the font */
-        let font = BitmapFont()
-        font.maximumWidth = baseFont.maximumWidth
-        font.maximumKerning = baseFont.maximumKerning
-        font.fontRectangleWidth = baseFont.fontRectangleWidth
-        font.fontRectangleHeight = baseFont.fontRectangleHeight
-        font.maximumAscent = baseFont.maximumAscent
-        font.maximumDescent = baseFont.maximumDescent
-        font.leading = baseFont.leading
+        self.init()
+        self.maximumWidth = baseFont.maximumWidth
+        self.maximumKerning = baseFont.maximumKerning
+        self.fontRectangleWidth = baseFont.fontRectangleWidth
+        self.fontRectangleHeight = baseFont.fontRectangleHeight
+        self.maximumAscent = baseFont.maximumAscent
+        self.maximumDescent = baseFont.maximumDescent
+        self.leading = baseFont.leading
         
         /* Decorate the glyphs */
-        font.glyphs = baseFont.glyphs.map({ Glyph(baseGlyph: $0, style: style, properties: possibleFamily?.styleProperties, size: size, maximumDescent: font.maximumDescent) })
+        self.glyphs = baseFont.glyphs.map({ Glyph(baseGlyph: $0, style: style, properties: possibleFamily?.styleProperties, size: size, maximumDescent: self.maximumDescent) })
         
         /* Adjust the metrics */
-        FontDecorating.adjustMeasures(of: font, for: style, properties: possibleFamily?.styleProperties, size: size)
+        self.adjustMeasures(for: style, properties: possibleFamily?.styleProperties, size: size)
         
-        return font
     }
     
-    private static func adjustMeasures(of font: BitmapFont, for style: TextStyle, properties: FontStyleProperties?, size: Int) {
+    private func adjustMeasures(for style: TextStyle, properties: FontStyleProperties?, size: Int) {
         
         if style.bold {
-            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.boldExtraWidth, size: size)
-            font.fontRectangleWidth += 1
+            self.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.boldExtraWidth, size: size)
+            self.fontRectangleWidth += 1
         }
         
         if style.italic {
-            font.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.italicExtraWidth, size: size)
-            font.maximumKerning -= font.maximumDescent/2
-            font.fontRectangleWidth += font.fontRectangleHeight/2
+            self.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.italicExtraWidth, size: size)
+            self.maximumKerning -= self.maximumDescent/2
+            self.fontRectangleWidth += self.fontRectangleHeight/2
         }
         
         if style.underline {
-            font.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.underlineExtraWidth, size: size)
-            font.fontRectangleWidth += 2
-            if font.maximumDescent < 2 {
-                font.fontRectangleHeight += 2 - font.maximumDescent
-                font.maximumDescent = 2
+            self.maximumWidth += computeExtraWidth(byDefault: 0, property: properties?.underlineExtraWidth, size: size)
+            self.fontRectangleWidth += 2
+            if self.maximumDescent < 2 {
+                self.fontRectangleHeight += 2 - self.maximumDescent
+                self.maximumDescent = 2
             }
         }
         
         if style.outline || style.shadow {
-            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.outlineExtraWidth, size: size)
-            font.maximumKerning -= 1
-            font.fontRectangleWidth += 2
-            font.fontRectangleHeight += 2
-            font.maximumAscent += 1
-            font.maximumDescent += 1
+            self.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.outlineExtraWidth, size: size)
+            self.maximumKerning -= 1
+            self.fontRectangleWidth += 2
+            self.fontRectangleHeight += 2
+            self.maximumAscent += 1
+            self.maximumDescent += 1
         }
         
         if style.shadow {
             let value = (style.outline ? 2 : 1)
-            font.maximumWidth += value * computeExtraWidth(byDefault: 1, property: properties?.shadowExtraWidth, size: size)
-            font.fontRectangleWidth += value
-            font.maximumDescent += value
-            font.fontRectangleHeight += value
+            self.maximumWidth += value * computeExtraWidth(byDefault: 1, property: properties?.shadowExtraWidth, size: size)
+            self.fontRectangleWidth += value
+            self.maximumDescent += value
+            self.fontRectangleHeight += value
         }
         
         if style.condense {
-            font.maximumWidth += computeExtraWidth(byDefault: -1, property: properties?.condensedExtraWidth, size: size)
+            self.maximumWidth += computeExtraWidth(byDefault: -1, property: properties?.condensedExtraWidth, size: size)
         }
         
         if style.extend {
-            font.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.extendedExtraWidth, size: size)
+            self.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.extendedExtraWidth, size: size)
         }
         
     }
