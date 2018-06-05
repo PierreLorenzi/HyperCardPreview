@@ -184,9 +184,9 @@ public extension Image {
                     shift -= 8
                 }
             }
-            if shift != 24 {
+            if shift != Image.Integer(Image.Integer.bitWidth - 8) {
                 integerIndex += 1
-                shift = 24
+                shift = Image.Integer(Image.Integer.bitWidth - 8)
             }
         }
         

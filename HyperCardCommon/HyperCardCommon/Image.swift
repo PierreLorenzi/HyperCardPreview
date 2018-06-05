@@ -14,7 +14,7 @@ import AppKit
 /// We don't use a Cocoa image because there are a lot of specific processes in 1-bit images.
 public struct Image {
     
-    public typealias Integer = UInt32
+    public typealias Integer = UInt64
     
     /// The bits, stored in 32-bit integers. A row always starts at the beginning of an integer,
     /// so there may be unused bits at the end of every row for 32-bit alignment.
@@ -58,7 +58,7 @@ public struct Image {
         set {
             /* Write the mask */
             let indexInInteger = Image.Integer.bitWidth - 1 - x % Image.Integer.bitWidth
-            let mask = Image.Integer(1 << indexInInteger)
+            let mask = (Image.Integer(1) << indexInInteger)
             
             /* Locate the integer */
             let integerIndexInRow = x / Image.Integer.bitWidth

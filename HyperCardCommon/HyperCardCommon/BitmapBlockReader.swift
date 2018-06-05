@@ -135,7 +135,7 @@ public struct BitmapBlockReader {
     private func decodeLayer(_ dataOffset: Int, dataLength: Int, pixels: inout [Image.Integer], rectangle: Rectangle) {
         
         var pixelIndex = 0
-        let integerLengthImage = rectangle.width / Image.Integer.bitWidth
+        let integerLengthImage = upToMultiple(rectangle.width, Image.Integer.bitWidth) / Image.Integer.bitWidth
         let integerLength32 = rectangle.width / 32
         let rowWidth32 = integerLength32 * 32
         
@@ -376,12 +376,12 @@ public struct BitmapBlockReader {
     
     private func writeByteInRow(_ byte: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
         
-        row[rowPixelIndex + x / Image.Integer.bitWidth] |= Image.Integer(byte << (Image.Integer.bitWidth - 8 - x % Image.Integer.bitWidth))
+        row[rowPixelIndex + x / Image.Integer.bitWidth] |= (Image.Integer(byte) << (Image.Integer.bitWidth - 8 - x % Image.Integer.bitWidth))
     }
     
     private func writeInt32InRow(_ int32: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
         
-        row[rowPixelIndex + x / Image.Integer.bitWidth] |= Image.Integer(int32 >> (x % Image.Integer.bitWidth))
+        row[rowPixelIndex + x / Image.Integer.bitWidth] |= (Image.Integer(int32) << (Image.Integer.bitWidth - 32 - x % Image.Integer.bitWidth))
     }
     
 }
