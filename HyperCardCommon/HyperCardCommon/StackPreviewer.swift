@@ -37,8 +37,8 @@ public class StackPreviewer: NSObject {
         return browser.image.integerCountInRow
     }
     
-    public var imageData: UnsafePointer<UInt32> {
-        return UnsafePointer<UInt32>(browser.image.data)
+    public var imageData: UnsafePointer<Image.Integer> {
+        return UnsafePointer<Image.Integer>(browser.image.data)
     }
 
     
