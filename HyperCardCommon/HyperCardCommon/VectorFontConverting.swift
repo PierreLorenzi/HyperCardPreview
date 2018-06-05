@@ -48,7 +48,7 @@ private func buildFontFromVector(_ vectorFont: CTFont) -> BitmapFont {
         }
         else {
             let integerWidth = integerWidthTable?.widths[Int(vectorGlyphSingleton[0])]
-            let glyph = VectorGlyph(font: vectorFont, glyph: vectorGlyphSingleton[0], integerWidth: integerWidth)
+            let glyph = Glyph(font: vectorFont, glyph: vectorGlyphSingleton[0], integerWidth: integerWidth)
             glyphs.append(glyph)
         }
     }
@@ -82,62 +82,46 @@ private func findIntegerWidths(inVectorFont vectorFont: CTFont) -> HdmxTableReco
 }
 
 
-public class VectorGlyph: Glyph {
+public extension Glyph {
     
-    private let vectorFont: CTFont
-    private let vectorGlyph: CGGlyph
-    private let glyphWidth: Int
-    private let glyphHeight: Int
-    
-    public init(font: CTFont, glyph: CGGlyph, integerWidth: Int?) {
+    public convenience init(font: CTFont, glyph: CGGlyph, integerWidth: Int?) {
+        
+        self.init()
         
         /* Get metrics */
         let vectorGlyphSingleton = [glyph]
         let advance = CTFontGetAdvancesForGlyphs(font, CTFontOrientation.horizontal, vectorGlyphSingleton, nil, 1)
         let boundingRect = CTFontGetBoundingRectsForGlyphs(font, CTFontOrientation.horizontal, vectorGlyphSingleton, nil, 1)
         
-        self.vectorFont = font
-        self.vectorGlyph = glyph
-        self.glyphWidth = Int(round(boundingRect.size.width) + 2)
-        self.glyphHeight = Int(round(boundingRect.size.height) + 2)
-        
-        super.init()
-        
+        /* Adjust scalar fields */
         self.width = integerWidth ?? Int(ceil(advance))
         self.imageOffset = Int(round(boundingRect.origin.x) - 1)
         self.imageTop = Int(round(boundingRect.origin.y + boundingRect.size.height) + 1)
+        self.imageWidth = Int(round(boundingRect.size.width) + 2)
+        self.imageHeight = Int(round(boundingRect.size.height) + 2)
+        
+        /* Lazy-load image */
+        self.imageProperty.lazyCompute { () -> MaskedImage? in
+            return self.loadImage(vectorFont: font, vectorGlyph: glyph)
+        }
         
     }
     
-    private var imageLoaded = false
-    public override var image: MaskedImage? {
-        get {
-            if !imageLoaded {
-                super.image = loadImage()
-                imageLoaded = true
-            }
-            return super.image
-        }
-        set {
-            super.image = newValue
-        }
-    }
-    
-    private func loadImage() -> MaskedImage? {
+    private func loadImage(vectorFont: CTFont, vectorGlyph: CGGlyph) -> MaskedImage? {
         
-        if glyphWidth == 0 || glyphHeight == 0 {
+        if imageWidth == 0 || imageHeight == 0 {
             return nil
         }
         
         /* Build a graphic context where to draw the glyph */
-        guard let context = CGContext(data: nil, width: glyphWidth, height: glyphHeight, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+        guard let context = CGContext(data: nil, width: imageWidth, height: imageHeight, bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
             return nil
         }
         context.setShouldAntialias(false)
         
         /* Draw the glyph */
         var glyphs = [vectorGlyph]
-        var positions = [CGPoint(x: Double(-self.imageOffset), y: Double(self.glyphHeight-self.imageTop))]
+        var positions = [CGPoint(x: Double(-self.imageOffset), y: Double(self.imageHeight-self.imageTop))]
         CTFontDrawGlyphs(vectorFont, &glyphs, &positions, 1, context)
         
         /* Convert the image to 1-bit */
