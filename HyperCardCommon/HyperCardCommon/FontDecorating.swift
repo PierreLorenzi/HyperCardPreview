@@ -27,7 +27,7 @@ public enum FontDecorating {
         font.leading = baseFont.leading
         
         /* Decorate the glyphs */
-        font.glyphs = baseFont.glyphs.map({ DecoratedGlyph(baseGlyph: $0, style: style, properties: possibleFamily?.styleProperties, size: size, maximumDescent: font.maximumDescent) })
+        font.glyphs = baseFont.glyphs.map({ Glyph(baseGlyph: $0, style: style, properties: possibleFamily?.styleProperties, size: size, maximumDescent: font.maximumDescent) })
         
         /* Adjust the metrics */
         FontDecorating.adjustMeasures(of: font, for: style, properties: possibleFamily?.styleProperties, size: size)
@@ -104,11 +104,11 @@ private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> 
 
 
 /// A glyph that lazily applies a font variation to a base glyph
-public class DecoratedGlyph: Glyph {
+public extension Glyph {
     
-    public init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
+    public convenience init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
         
-        super.init()
+        self.init()
         
         /* Copy the measures of the base glyph */
         self.width = baseGlyph.width
@@ -121,7 +121,7 @@ public class DecoratedGlyph: Glyph {
         /* Change the measures for the style */
         self.readjustMeasures(baseGlyph: baseGlyph, style: style, properties: properties, size: size)
         
-        self.loadImage = { () -> MaskedImage? in
+        self.imageProperty.lazyCompute { () -> MaskedImage? in
             return self.buildImage(baseGlyph: baseGlyph, style: style, maximumDescent: maximumDescent)
         }
     }
@@ -194,20 +194,6 @@ public class DecoratedGlyph: Glyph {
             }
         }
         
-    }
-    
-    private var loadImage: (() -> MaskedImage?)? = nil
-    public override var image: MaskedImage? {
-        get {
-            if let loadImage = self.loadImage {
-                super.image = loadImage()
-                self.loadImage = nil
-            }
-            return super.image
-        }
-        set {
-            super.image = newValue
-        }
     }
     
     private func buildImage(baseGlyph: Glyph, style: TextStyle, maximumDescent: Int) -> MaskedImage? {

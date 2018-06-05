@@ -32,6 +32,10 @@ public class Glyph {
     public var isThereImage: Bool = false
     
     /// The image of the character
-    public var image: MaskedImage? = nil
+    public var image: MaskedImage? {
+        get { return imageProperty.value }
+        set { imageProperty.value = newValue }
+    }
+    public var imageProperty = Property<MaskedImage?>(nil)
     
 }

@@ -8,51 +8,29 @@
 
 
 
-/// Subclass of Glyph with lazy loading from a file
-/// <p>
-/// Lazy loading is implemented by hand because an inherited property can't be made
-/// lazy in swift.
-public class FileGlyph: Glyph {
+/// Glyph with lazy loading from a file
+public extension Glyph {
     
-    private let bitImage: Image
-    private let bitmapLocationTable: [Int]
-    private let index: Int
-    
-    public init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, widthTable: [Int], offsetTable: [Int], bitmapLocationTable: [Int], bitImage: Image, index: Int) {
-        self.bitImage = bitImage
-        self.bitmapLocationTable = bitmapLocationTable
-        self.index = index
+    public convenience init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, widthTable: [Int], offsetTable: [Int], bitmapLocationTable: [Int], bitImage: Image, index: Int) {
         
-        super.init()
+        self.init()
+        
+        /* Get the offsets in the bit image */
+        let startOffset = bitmapLocationTable[index]
+        let endOffset = bitmapLocationTable[index + 1]
         
         self.width = widthTable[index]
         self.imageOffset = maximumKerning + offsetTable[index]
         self.imageTop = maximumAscent
-        let (startOffset, endOffset) = retrieveImageOffsets()
         self.imageWidth = endOffset - startOffset
         self.imageHeight = fontRectangleHeight
         self.isThereImage = (endOffset > startOffset)
-    }
-    
-    private var imageLoaded = false
-    override public var image: MaskedImage? {
-        get {
-            if !imageLoaded {
-                super.image = loadImage()
-                imageLoaded = true
-            }
-            return super.image
-        }
-        set {
-            imageLoaded = true
-            super.image = newValue
+        self.imageProperty.lazyCompute { () -> MaskedImage? in
+            return Glyph.loadImage(startOffset: startOffset, endOffset: endOffset, bitImage: bitImage)
         }
     }
     
-    private func loadImage() -> MaskedImage? {
-        
-        /* Get the position of the image in the resource bitmap */
-        let (startOffset, endOffset) = retrieveImageOffsets()
+    private static func loadImage(startOffset: Int, endOffset: Int, bitImage: Image) -> MaskedImage? {
         
         /* If the image has a null width, there is no image */
         guard endOffset > startOffset else {
@@ -65,14 +43,6 @@ public class FileGlyph: Glyph {
         
         return MaskedImage(image: drawing.image)
         
-    }
-    
-    private func retrieveImageOffsets() -> (Int, Int) {
-        
-        let startOffset = bitmapLocationTable[index]
-        let endOffset = bitmapLocationTable[index+1]
-        
-        return (startOffset, endOffset)
     }
     
 }
