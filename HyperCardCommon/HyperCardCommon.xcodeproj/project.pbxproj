@@ -37,6 +37,7 @@
 		6C9DF50020C725620024F61B /* ResourceReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4FF20C725620024F61B /* ResourceReference.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
 		6C9DF50420C726090024F61B /* ResourceExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50320C726090024F61B /* ResourceExtractor.swift */; };
+		6C9DF50720C732B10024F61B /* RichText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50620C732B10024F61B /* RichText.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
 		6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */; };
@@ -413,6 +414,7 @@
 		6C9DF4FF20C725620024F61B /* ResourceReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceReference.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
 		6C9DF50320C726090024F61B /* ResourceExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceExtractor.swift; sourceTree = "<group>"; };
+		6C9DF50620C732B10024F61B /* RichText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichText.swift; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -786,6 +788,20 @@
 			name = "Resource Reading";
 			sourceTree = "<group>";
 		};
+		6C9DF50520C732860024F61B /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				6C9E6AE91E75BCFA00BBF925 /* Image.swift */,
+				6C9E6AEA1E75BCFA00BBF925 /* MaskedImage.swift */,
+				6C9E6AEB1E75BCFA00BBF925 /* Drawing.swift */,
+				6C9E6AEC1E75BCFA00BBF925 /* Icon Mask.swift */,
+				6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */,
+				6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */,
+				6C9DF50620C732B10024F61B /* RichText.swift */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
 		6C9E6A811E75BCCD00BBF925 = {
 			isa = PBXGroup;
 			children = (
@@ -962,12 +978,7 @@
 		6C9E6AFA1E75BCFA00BBF925 /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6AE91E75BCFA00BBF925 /* Image.swift */,
-				6C9E6AEA1E75BCFA00BBF925 /* MaskedImage.swift */,
-				6C9E6AEB1E75BCFA00BBF925 /* Drawing.swift */,
-				6C9E6AEC1E75BCFA00BBF925 /* Icon Mask.swift */,
-				6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */,
-				6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */,
+				6C9DF50520C732860024F61B /* Common */,
 				6C9E6AF51E75BCFA00BBF925 /* Views */,
 				6C9E6AF91E75BCFA00BBF925 /* Fonts */,
 			);
@@ -1718,6 +1729,7 @@
 				6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */,
 				6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */,
 				6C9E6B0A1E75BCFA00BBF925 /* Resource.swift in Sources */,
+				6C9DF50720C732B10024F61B /* RichText.swift in Sources */,
 				6C9E6B381E75BCFA00BBF925 /* FileFontFamily.swift in Sources */,
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
 				6CE8F5C220C4296600B99E39 /* MasterBlockReader.swift in Sources */,

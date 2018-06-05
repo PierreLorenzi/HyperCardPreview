@@ -7,32 +7,37 @@
 //
 
 
-private let FieldShadowShift = 3
-private let FieldShadowThickness = 2
+private let fieldShadowShift = 3
+private let fieldShadowThickness = 2
 
 private let carriageReturn = HChar(13)
 private let space = HChar(32)
 
-private let FieldLineComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
+/// Ints representing an gray image
+private let gray1: UInt = 0xAAAA_AAAA_AAAA_AAAA
+private let gray2: UInt = 0x5555_5555_5555_5555
+private let grays = [ Image.Integer(truncatingIfNeeded: gray1), Image.Integer(truncatingIfNeeded: gray2) ]
+
+private let fieldLineComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
     
-    let gray = Grays[0]
-    let inverseGray = Grays[1]
+    let gray = grays[0]
+    let inverseGray = grays[1]
     a |= (b & gray)
     a &= ~(b & inverseGray)
     
 }
 
-private let ScrollWidth = 17
-private let ScrollButtonHeight = 16
-private let ScrollKnobHeight = 16
+private let scrollWidth = 17
+private let scrollButtonHeight = 16
+private let scrollKnobHeight = 16
 
-private let ScrollUpButtonImage = MaskedImage(named: "scroll up arrow")!
-private let ScrollDownButtonImage = MaskedImage(named: "scroll down arrow")!
+private let scrollUpButtonImage = MaskedImage(named: "scroll up arrow")!
+private let scrollDownButtonImage = MaskedImage(named: "scroll down arrow")!
 
-private let ScrollUpButtonClickedImage = MaskedImage(named: "scroll up arrow clicked")!
-private let ScrollDownButtonClickedImage = MaskedImage(named: "scroll down arrow clicked")!
+private let scrollUpButtonClickedImage = MaskedImage(named: "scroll up arrow clicked")!
+private let scrollDownButtonClickedImage = MaskedImage(named: "scroll down arrow clicked")!
 
-private let ScrollPatternImage = Image(named: "scroll pattern")!
+private let scrollPatternImage = Image(named: "scroll pattern")!
 
 private struct LineLayout {
     var textRange: CountableRange<Int>
@@ -256,14 +261,14 @@ public class FieldView: View, MouseResponder {
         case .shadow:
             return Rectangle(top: baseRectangle.top,
                              left: baseRectangle.left,
-                             bottom: baseRectangle.bottom  - FieldShadowThickness,
-                             right: baseRectangle.right - FieldShadowThickness)
+                             bottom: baseRectangle.bottom  - fieldShadowThickness,
+                             right: baseRectangle.right - fieldShadowThickness)
             
         case .scrolling:
             return Rectangle(top: baseRectangle.top,
                              left: baseRectangle.left,
                              bottom: baseRectangle.bottom,
-                             right: baseRectangle.right - ScrollWidth + 1)
+                             right: baseRectangle.right - scrollWidth + 1)
             
         default:
             return baseRectangle
@@ -368,7 +373,7 @@ public class FieldView: View, MouseResponder {
             drawing.drawBorderedRectangle(field.rectangle)
             
         case .shadow:
-            drawing.drawShadowedRectangle(field.rectangle, thickness: FieldShadowThickness, shift: FieldShadowShift)
+            drawing.drawShadowedRectangle(field.rectangle, thickness: fieldShadowThickness, shift: fieldShadowShift)
             
         case .scrolling:
             FieldView.drawScrollFrame(in: drawing, rectangle: field.rectangle, isUpArrowClicked: self.isUpArrowClicked, isDownArrowClicked: self.isDownArrowClicked)
@@ -406,27 +411,27 @@ public class FieldView: View, MouseResponder {
         /* Draw the scroll borders */
         
         /* Left scroll border */
-        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: 1, height: rectangle.height))
+        drawing.drawRectangle(Rectangle(x: rectangle.right - scrollWidth, y: rectangle.top, width: 1, height: rectangle.height))
         
         /* Don't draw the arrows if the field is too short (minus one because it is until the borders merge) */
-        guard rectangle.height >= 2 * ScrollButtonHeight - 1 else {
+        guard rectangle.height >= 2 * scrollButtonHeight - 1 else {
             return
         }
         
         /* Up arrow scroll border */
-        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top + ScrollButtonHeight - 1, width: ScrollWidth, height: 1))
+        drawing.drawRectangle(Rectangle(x: rectangle.right - scrollWidth, y: rectangle.top + scrollButtonHeight - 1, width: scrollWidth, height: 1))
         
         /* Down arrow scroll border */
-        drawing.drawRectangle(Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: 1))
+        drawing.drawRectangle(Rectangle(x: rectangle.right - scrollWidth, y: rectangle.bottom - scrollButtonHeight, width: scrollWidth, height: 1))
         
         /* Up arrow icon (draw inside the borders of the button) */
         let upArrowRectangle = computeUpArrowPosition(inFieldWithRectangle: rectangle)
-        let upArrowImage = isUpArrowClicked ? ScrollUpButtonClickedImage : ScrollUpButtonImage
+        let upArrowImage = isUpArrowClicked ? scrollUpButtonClickedImage : scrollUpButtonImage
         drawing.drawMaskedImage(upArrowImage, position: Point(x: upArrowRectangle.x + 1, y: upArrowRectangle.y + 1))
         
         /* Down arrow icon (draw inside the borders of the button) */
         let downArrowRectangle = computeDownArrowPosition(inFieldWithRectangle: rectangle)
-        let downArrowImage = isDownArrowClicked ? ScrollDownButtonClickedImage : ScrollDownButtonImage
+        let downArrowImage = isDownArrowClicked ? scrollDownButtonClickedImage : scrollDownButtonImage
         drawing.drawMaskedImage(downArrowImage, position: Point(x: downArrowRectangle.x + 1, y: downArrowRectangle.y + 1))
         
     }
@@ -434,21 +439,21 @@ public class FieldView: View, MouseResponder {
     private static func computeUpArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
         
         /* If the field is too short to draw the arrows, it can still be clicked */
-        guard rectangle.height >= 2 * ScrollButtonHeight else {
-            return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: ScrollWidth, height: (rectangle.height + 1) / 2)
+        guard rectangle.height >= 2 * scrollButtonHeight else {
+            return Rectangle(x: rectangle.right - scrollWidth, y: rectangle.top, width: scrollWidth, height: (rectangle.height + 1) / 2)
         }
         
-        return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.top, width: ScrollWidth, height: ScrollButtonHeight)
+        return Rectangle(x: rectangle.right - scrollWidth, y: rectangle.top, width: scrollWidth, height: scrollButtonHeight)
     }
     
     private static func computeDownArrowPosition(inFieldWithRectangle rectangle: Rectangle) -> Rectangle {
         
         /* If the field is too short to draw the arrows, it can still be clicked */
-        guard rectangle.height >= 2 * ScrollButtonHeight else {
-            return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: rectangle.height / 2)
+        guard rectangle.height >= 2 * scrollButtonHeight else {
+            return Rectangle(x: rectangle.right - scrollWidth, y: rectangle.bottom - scrollButtonHeight, width: scrollWidth, height: rectangle.height / 2)
         }
         
-        return Rectangle(x: rectangle.right - ScrollWidth, y: rectangle.bottom - ScrollButtonHeight, width: ScrollWidth, height: ScrollButtonHeight)
+        return Rectangle(x: rectangle.right - scrollWidth, y: rectangle.bottom - scrollButtonHeight, width: scrollWidth, height: scrollButtonHeight)
     }
     
     private static func drawActiveScroll(in drawing: Drawing, rectangle: Rectangle, scroll: Int, scrollRange: Int, ghostKnobOffset: Int?) {
@@ -460,7 +465,7 @@ public class FieldView: View, MouseResponder {
         }
         
         /* Draw the background */
-        drawing.drawPattern(ScrollPatternImage, rectangle: scrollBarRectangle, offset: Point(x: -(scrollBarRectangle.x % 2), y: 0))
+        drawing.drawPattern(scrollPatternImage, rectangle: scrollBarRectangle, offset: Point(x: -(scrollBarRectangle.x % 2), y: 0))
         
         /* Draw the knob */
         if let knobRectangle = computeKnobRectangle(forScrollBarRectangle: scrollBarRectangle, scroll: scroll, scrollRange: scrollRange) {
@@ -469,7 +474,7 @@ public class FieldView: View, MouseResponder {
         
         /* Draw the ghost knob if it exists */
         if let offset = ghostKnobOffset {
-            let ghostKnobRectangle = Rectangle(x: scrollBarRectangle.left, y: scrollBarRectangle.top + offset, width: scrollBarRectangle.width, height: ScrollKnobHeight)
+            let ghostKnobRectangle = Rectangle(x: scrollBarRectangle.left, y: scrollBarRectangle.top + offset, width: scrollBarRectangle.width, height: scrollKnobHeight)
             drawing.drawBorderedRectangle(ghostKnobRectangle, composition: Drawing.NoComposition, borderComposition: Drawing.XorComposition)
         }
         
@@ -477,20 +482,20 @@ public class FieldView: View, MouseResponder {
     
     private static func computeScrollBarRectangle(forRectangle rectangle: Rectangle) -> Rectangle {
         
-        return Rectangle(top: rectangle.top + ScrollButtonHeight, left: rectangle.right - ScrollWidth + 1, bottom: rectangle.bottom - ScrollButtonHeight, right: rectangle.right - 1)
+        return Rectangle(top: rectangle.top + scrollButtonHeight, left: rectangle.right - scrollWidth + 1, bottom: rectangle.bottom - scrollButtonHeight, right: rectangle.right - 1)
     }
     
     private static func computeKnobRectangle(forScrollBarRectangle scrollBarRectangle: Rectangle, scroll: Int, scrollRange: Int) -> Rectangle? {
         
         /* If the knob doesn't fit in the scoll bar, it is not drawn */
-        guard scrollBarRectangle.height >= ScrollKnobHeight else {
+        guard scrollBarRectangle.height >= scrollKnobHeight else {
             return nil
         }
         
         /* Compute the position of the knob */
-        let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+        let knobRange = scrollBarRectangle.height - scrollKnobHeight
         let knobOffset = knobRange * scroll / scrollRange
-        return Rectangle(x: scrollBarRectangle.x, y: scrollBarRectangle.y + knobOffset, width: scrollBarRectangle.width, height: ScrollKnobHeight)
+        return Rectangle(x: scrollBarRectangle.x, y: scrollBarRectangle.y + knobOffset, width: scrollBarRectangle.width, height: scrollKnobHeight)
     }
     
     private func drawText(in drawing: Drawing, content: RichText, lineLayouts: [LineLayout]) {
@@ -539,7 +544,7 @@ public class FieldView: View, MouseResponder {
             
             /* Draw the line */
             if showLines {
-                drawing.drawRectangle(Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right), clipRectangle: contentRectangle, composition: FieldLineComposition)
+                drawing.drawRectangle(Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right), clipRectangle: contentRectangle, composition: fieldLineComposition)
             }
             
             /* Draw the line */
@@ -660,7 +665,7 @@ public class FieldView: View, MouseResponder {
         }
         
         /* The position must be in the scroll area */
-        guard position.x > field.rectangle.right - ScrollWidth else {
+        guard position.x > field.rectangle.right - scrollWidth else {
             return
         }
         
@@ -691,8 +696,8 @@ public class FieldView: View, MouseResponder {
         let possibleKnobRectangle = FieldView.computeKnobRectangle(forScrollBarRectangle: scrollBarRectangle, scroll: field.scroll, scrollRange: self.scrollRange)
         if let knobRectangle = possibleKnobRectangle, knobRectangle.containsPosition(position) {
             
-            let knobOffset = knobRectangle.top - field.rectangle.top - ScrollButtonHeight
-            let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+            let knobOffset = knobRectangle.top - field.rectangle.top - scrollButtonHeight
+            let knobRange = scrollBarRectangle.height - scrollKnobHeight
             self.startMovingGhostKnob(fromOffset: knobOffset, knobRange: knobRange)
             return
         }
@@ -794,7 +799,7 @@ public class FieldView: View, MouseResponder {
             
             /* Update the scroll */
             let scrollBarRectangle = FieldView.computeScrollBarRectangle(forRectangle: field.rectangle)
-            let knobRange = scrollBarRectangle.height - ScrollKnobHeight
+            let knobRange = scrollBarRectangle.height - scrollKnobHeight
             let scrollRange = self.scrollRange
             field.scroll = scrollRange * offset / knobRange
             

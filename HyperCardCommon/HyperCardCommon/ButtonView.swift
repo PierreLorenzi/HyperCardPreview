@@ -7,11 +7,10 @@
 //
 
 
-private let ButtonMargin = 9
-private let IconNameButtonMargin = 1
+private let buttonMargin = 9
+private let iconNameButtonMargin = 1
 
-private let DefaultExteriorBorderSize = 3
-private let DefaultMargin = 4
+private let defaultMargin = 4
 
 private struct CornerImage {
     var topLeft: MaskedImage
@@ -19,21 +18,21 @@ private struct CornerImage {
     var bottomLeft: MaskedImage
     var bottomRight: MaskedImage
 }
-private let CornerSize = 8
-private let TopLeftCornerName = "top left"
-private let TopRightCornerName = "top right"
-private let BottomLeftCornerName = "bottom left"
-private let BottomRightCornerName = "bottom right"
-private let RoundRectCornerImage = loadCornerImage(name: "roundrect")
-private let StandardCornerImage = loadCornerImage(name: "standard")
-private let DefaultCornerImage = loadCornerImage(name: "default")
+private let cornerSize = 8
+private let topLeftCornerName = "top left"
+private let topRightCornerName = "top right"
+private let bottomLeftCornerName = "bottom left"
+private let bottomRightCornerName = "bottom right"
+private let roundRectCornerImage = loadCornerImage(name: "roundrect")
+private let standardCornerImage = loadCornerImage(name: "standard")
+private let defaultCornerImage = loadCornerImage(name: "default")
 private func loadCornerImage(name: String) -> CornerImage {
     
     /* Load the images */
-    let topLeftImage = MaskedImage(named: "\(name) \(TopLeftCornerName)")!
-    let topRightImage = MaskedImage(named: "\(name) \(TopRightCornerName)")!
-    let bottomLeftImage = MaskedImage(named: "\(name) \(BottomLeftCornerName)")!
-    let bottomRightImage = MaskedImage(named: "\(name) \(BottomRightCornerName)")!
+    let topLeftImage = MaskedImage(named: "\(name) \(topLeftCornerName)")!
+    let topRightImage = MaskedImage(named: "\(name) \(topRightCornerName)")!
+    let bottomLeftImage = MaskedImage(named: "\(name) \(bottomLeftCornerName)")!
+    let bottomRightImage = MaskedImage(named: "\(name) \(bottomRightCornerName)")!
     
     
     /* Build the result */
@@ -51,24 +50,53 @@ private struct BorderThickness {
     var bottom: Int
     var right: Int
 }
-private let RoundRectBorderThickness = BorderThickness(top: 1, left: 1, bottom: 2, right: 2)
-private let StandardBorderThickness = BorderThickness(top: 1, left: 1, bottom: 1, right: 1)
-private let DefaultBorderThickness = BorderThickness(top: 3, left: 3, bottom: 3, right: 3)
+private let roundRectBorderThickness = BorderThickness(top: 1, left: 1, bottom: 2, right: 2)
+private let standardBorderThickness = BorderThickness(top: 1, left: 1, bottom: 1, right: 1)
+private let defaultBorderThickness = BorderThickness(top: 3, left: 3, bottom: 3, right: 3)
 
-private let CheckBoxFrame = MaskedImage(named: "checkbox frame")!
-private let CheckBoxHilite = MaskedImage(named: "checkbox hilite")!
-private let CheckBoxClick = MaskedImage(named: "checkbox click")!
+private let checkBoxFrame = MaskedImage(named: "checkbox frame")!
+private let checkBoxHilite = MaskedImage(named: "checkbox hilite")!
+private let checkBoxClick = MaskedImage(named: "checkbox click")!
 
-private let RadioFrame = MaskedImage(named: "radio frame")!
-private let RadioHilite = MaskedImage(named: "radio hilite")!
-private let RadioClick = MaskedImage(named: "radio click")!
+private let radioFrame = MaskedImage(named: "radio frame")!
+private let radioHilite = MaskedImage(named: "radio hilite")!
+private let radioClick = MaskedImage(named: "radio click")!
 
-private let PopupTextLeftMargin = 18
-private let PopupTextRightMargin = 20
-private let PopupEllipsis: HString = "…"
-private let PopupArrowImage = MaskedImage(named: "popup arrow")!
-private let PopupArrowDistanceFromBorder = 18
-private let PopupArrowHeight = 6
+private let popupTextLeftMargin = 18
+private let popupTextRightMargin = 20
+private let popupEllipsis: HString = "…"
+private let popupArrowImage = MaskedImage(named: "popup arrow")!
+private let popupArrowDistanceFromBorder = 18
+private let popupArrowHeight = 6
+
+/// The composition applied to a part image to make it look disabled
+private let disabledComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
+    
+    let gray = grays[y % 2]
+    let inverseGray = grays[1 - y % 2]
+    a |= (b & gray)
+    a &= ~(b & inverseGray)
+    
+}
+
+/// The composition applied to a hilited part image to make it look disabled
+private let blackToGrayComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
+    
+    let inverseGray = grays[1 - y % 2]
+    a &= ~(b & inverseGray)
+    
+}
+
+/// Shift between buttons and their shadows, in pixels
+private let buttonShadowShift = 2
+
+/// Thickness of the shadows of the buttons, in pixels
+private let buttonShadowThickness = 1
+
+/// Ints representing an gray image
+private let gray1: UInt = 0xAAAA_AAAA_AAAA_AAAA
+private let gray2: UInt = 0x5555_5555_5555_5555
+private let grays = [ Image.Integer(truncatingIfNeeded: gray1), Image.Integer(truncatingIfNeeded: gray2) ]
 
 
 
@@ -252,7 +280,7 @@ public class ButtonView: View, MouseResponder {
         
         /* Special case: default button */
         if button.style == .`default` {
-            let standardRectangle = Rectangle(top: rectangle.top + DefaultMargin, left: rectangle.left + DefaultMargin, bottom: rectangle.bottom - DefaultMargin, right: rectangle.right - DefaultMargin)
+            let standardRectangle = Rectangle(top: rectangle.top + defaultMargin, left: rectangle.left + defaultMargin, bottom: rectangle.bottom - defaultMargin, right: rectangle.right - defaultMargin)
             let initialRectangle = rectangle
             button.style = .standard
             button.rectangle = standardRectangle
@@ -269,22 +297,22 @@ public class ButtonView: View, MouseResponder {
             let nameY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - font.maximumAscent / 6
             drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle, composition: titleComposition)
             if !button.enabled {
-                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: BlackToGrayComposition)
+                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
             }
         }
         else {
-            let iconAndTitleHeight = (button.showName) ? IconSize + IconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : IconSize + 2
+            let iconAndTitleHeight = (button.showName) ? IconSize + iconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : IconSize + 2
             let iconAndTitleOrigin = rectangle.height / 2 - iconAndTitleHeight / 2 + 1
             if button.showName {
                 let nameWidth = font.computeSizeOfString(button.name)
                 let nameX = computeNameX(nameWidth: nameWidth)
-                let nameY = rectangle.y + iconAndTitleOrigin + IconSize + IconNameButtonMargin + font.maximumAscent - 1
+                let nameY = rectangle.y + iconAndTitleOrigin + IconSize + iconNameButtonMargin + font.maximumAscent - 1
                 if isTransparent {
                     drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: backgroundComposition)
                 }
                 drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle, composition: titleComposition)
                 if !button.enabled {
-                    drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: BlackToGrayComposition)
+                    drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
                 }
             }
             let iconX = rectangle.width / 2 - IconSize / 2
@@ -319,7 +347,7 @@ public class ButtonView: View, MouseResponder {
         
         /* Special case: disabled */
         if !button.enabled && hiliteComputation.value {
-            return DisabledComposition
+            return disabledComposition
         }
         
         /* Second special case: hilited */
@@ -344,7 +372,7 @@ public class ButtonView: View, MouseResponder {
                     drawing.drawRectangle(rectangle, composition: Drawing.XorComposition)
                 }
                 if !button.enabled {
-                    drawing.drawRectangle(rectangle, composition: BlackToGrayComposition)
+                    drawing.drawRectangle(rectangle, composition: blackToGrayComposition)
                 }
             }
         case .opaque:
@@ -352,16 +380,16 @@ public class ButtonView: View, MouseResponder {
         case .rectangle:
             drawing.drawBorderedRectangle(rectangle, composition: backgroundComposition)
         case .shadow:
-            drawing.drawShadowedRectangle(rectangle, thickness: ButtonShadowThickness, shift: ButtonShadowShift, composition: backgroundComposition)
+            drawing.drawShadowedRectangle(rectangle, thickness: buttonShadowThickness, shift: buttonShadowShift, composition: backgroundComposition)
         case .roundRect:
-            drawCornerImage(RoundRectCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: RoundRectBorderThickness, composition: backgroundComposition)
+            drawCornerImage(roundRectCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: roundRectBorderThickness, composition: backgroundComposition)
         case .standard:
-            drawCornerImage(StandardCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: StandardBorderThickness, composition: backgroundComposition)
+            drawCornerImage(standardCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: standardBorderThickness, composition: backgroundComposition)
         case .`default`:
             
             /* Draw the external border only, without hilite */
-            let borderComposition = button.enabled ? Drawing.DirectComposition : DisabledComposition
-            drawCornerImage(DefaultCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: DefaultBorderThickness, borderComposition: borderComposition, composition:Drawing.MaskComposition)
+            let borderComposition = button.enabled ? Drawing.DirectComposition : disabledComposition
+            drawCornerImage(defaultCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: defaultBorderThickness, borderComposition: borderComposition, composition:Drawing.MaskComposition)
         case .oval:
             if hiliteComputation.value && icon == nil && rectangle.width > 0 && rectangle.height > 0 {
                 /* draw background oval */
@@ -379,7 +407,7 @@ public class ButtonView: View, MouseResponder {
                     
                     drawing.drawRectangle(rowRectangle, composition: Drawing.XorComposition)
                     if !button.enabled {
-                        drawing.drawRectangle(rowRectangle, composition: BlackToGrayComposition)
+                        drawing.drawRectangle(rowRectangle, composition: blackToGrayComposition)
                     }
                 }
             }
@@ -396,14 +424,14 @@ public class ButtonView: View, MouseResponder {
         
         if transparent {
             if hiliteComputation.value {
-                return (button.enabled ? Drawing.MaskComposition : DisabledComposition, Drawing.DirectComposition)
+                return (button.enabled ? Drawing.MaskComposition : disabledComposition, Drawing.DirectComposition)
             }
             else {
-                return (button.enabled ? Drawing.DirectComposition : DisabledComposition, Drawing.MaskComposition)
+                return (button.enabled ? Drawing.DirectComposition : disabledComposition, Drawing.MaskComposition)
             }
         }
         else {
-            return (button.enabled ? Drawing.XorComposition : DisabledComposition, nil)
+            return (button.enabled ? Drawing.XorComposition : disabledComposition, nil)
         }
         
     }
@@ -413,13 +441,13 @@ public class ButtonView: View, MouseResponder {
         switch button.textAlign {
             
         case .left:
-            return button.rectangle.x + ButtonMargin
+            return button.rectangle.x + buttonMargin
             
         case .center:
             return button.rectangle.x + button.rectangle.width / 2 - nameWidth / 2
             
         case .right:
-            return button.rectangle.right - ButtonMargin - nameWidth
+            return button.rectangle.right - buttonMargin - nameWidth
             
         }
         
@@ -428,14 +456,14 @@ public class ButtonView: View, MouseResponder {
     private func drawCornerImage(_ cornerImage: CornerImage, rectangle: Rectangle, drawing: Drawing, borderThickness: BorderThickness, borderComposition: @escaping ImageComposition = Drawing.DirectComposition, composition: @escaping ImageComposition) {
         
         /* If the button is too small, the border images must be clipped */
-        let cornerWidth = min(CornerSize, rectangle.width / 2)
-        let cornerHeight = min(CornerSize, rectangle.height / 2)
+        let cornerWidth = min(cornerSize, rectangle.width / 2)
+        let cornerHeight = min(cornerSize, rectangle.height / 2)
         
         /* Draw the images */
         drawing.drawMaskedImage(cornerImage.topLeft, position: Point(x: rectangle.x, y: rectangle.y), rectangleToDraw: Rectangle(x: 0, y: 0, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
-        drawing.drawMaskedImage(cornerImage.topRight, position: Point(x: rectangle.right - cornerWidth, y: rectangle.y), rectangleToDraw: Rectangle(x: CornerSize - cornerWidth, y: 0, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
-        drawing.drawMaskedImage(cornerImage.bottomLeft, position: Point(x: rectangle.x, y: rectangle.bottom - cornerHeight), rectangleToDraw: Rectangle(x: 0, y: CornerSize - cornerHeight, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
-        drawing.drawMaskedImage(cornerImage.bottomRight, position: Point(x: rectangle.right - cornerWidth, y: rectangle.bottom - cornerHeight), rectangleToDraw: Rectangle(x: CornerSize - cornerWidth, y: CornerSize - cornerHeight, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
+        drawing.drawMaskedImage(cornerImage.topRight, position: Point(x: rectangle.right - cornerWidth, y: rectangle.y), rectangleToDraw: Rectangle(x: cornerSize - cornerWidth, y: 0, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
+        drawing.drawMaskedImage(cornerImage.bottomLeft, position: Point(x: rectangle.x, y: rectangle.bottom - cornerHeight), rectangleToDraw: Rectangle(x: 0, y: cornerSize - cornerHeight, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
+        drawing.drawMaskedImage(cornerImage.bottomRight, position: Point(x: rectangle.right - cornerWidth, y: rectangle.bottom - cornerHeight), rectangleToDraw: Rectangle(x: cornerSize - cornerWidth, y: cornerSize - cornerHeight, width: cornerWidth , height: cornerHeight), imageComposition: borderComposition, maskComposition: composition)
         
         /* Draw the background */
         
@@ -475,7 +503,7 @@ public class ButtonView: View, MouseResponder {
         let imagePosition = Point(x: rectangle.x + 3, y: rectangle.y + rectangle.height / 2 - frameImage.height / 2)
         drawing.drawMaskedImage(frameImage, position: imagePosition)
         if hiliteComputation.value {
-            let composition = (button.style == .radio && !button.enabled) ? DisabledComposition : Drawing.DirectComposition
+            let composition = (button.style == .radio && !button.enabled) ? disabledComposition : Drawing.DirectComposition
             drawing.drawMaskedImage(hiliteImage, position: imagePosition, imageComposition: composition)
         }
         
@@ -486,7 +514,7 @@ public class ButtonView: View, MouseResponder {
             drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle)
             if !button.enabled {
                 let nameWidth = font.computeSizeOfString(button.name)
-                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: BlackToGrayComposition)
+                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
             }
         }
         
@@ -497,10 +525,10 @@ public class ButtonView: View, MouseResponder {
         switch button.style {
             
         case .checkBox:
-            return (CheckBoxFrame, CheckBoxHilite, CheckBoxClick)
+            return (checkBoxFrame, checkBoxHilite, checkBoxClick)
             
         case .radio:
-            return (RadioFrame, RadioHilite, RadioClick)
+            return (radioFrame, radioHilite, radioClick)
             
         default:
             fatalError()
@@ -527,11 +555,11 @@ public class ButtonView: View, MouseResponder {
         }
         
         /* Draw the borders */
-        drawing.drawShadowedRectangle(popupRectangle, thickness: ButtonShadowThickness, shift: ButtonShadowShift)
+        drawing.drawShadowedRectangle(popupRectangle, thickness: buttonShadowThickness, shift: buttonShadowShift)
         
         /* Draw the arrow */
-        let arrowX = (popupRectangle.width > 22) ? popupRectangle.right - PopupArrowDistanceFromBorder : popupRectangle.left + popupRectangle.width / 2 - PopupArrowImage.width / 2 - 1
-        drawing.drawMaskedImage(PopupArrowImage, position: Point(x: arrowX, y: popupRectangle.top + (popupRectangle.height - PopupArrowHeight)/2), clipRectangle: popupRectangle)
+        let arrowX = (popupRectangle.width > 22) ? popupRectangle.right - popupArrowDistanceFromBorder : popupRectangle.left + popupRectangle.width / 2 - popupArrowImage.width / 2 - 1
+        drawing.drawMaskedImage(popupArrowImage, position: Point(x: arrowX, y: popupRectangle.top + (popupRectangle.height - popupArrowHeight)/2), clipRectangle: popupRectangle)
         
         if menuItems.count > button.selectedItem && button.selectedItem >= 0 {
             /* Draw the text */
@@ -543,16 +571,16 @@ public class ButtonView: View, MouseResponder {
             let (textToDraw, currentFont) = fitPopupText(text, buttonWidth: popupRectangle.width)
             
             /* Draw it */
-            drawing.drawString(textToDraw, position: Point(x: popupRectangle.x + PopupTextLeftMargin, y: baseLineY), font: currentFont, clip: popupRectangle)
+            drawing.drawString(textToDraw, position: Point(x: popupRectangle.x + popupTextLeftMargin, y: baseLineY), font: currentFont, clip: popupRectangle)
         }
         
         
         /* Enabled / disabled */
         if !button.enabled {
             if button.showName {
-                drawing.drawRectangle(titleBackgroundRectangle, composition: BlackToGrayComposition)
+                drawing.drawRectangle(titleBackgroundRectangle, composition: blackToGrayComposition)
             }
-            drawing.drawRectangle(popupRectangle, composition: BlackToGrayComposition)
+            drawing.drawRectangle(popupRectangle, composition: blackToGrayComposition)
         }
         
     }
@@ -561,13 +589,13 @@ public class ButtonView: View, MouseResponder {
         
         /* Check if the text already fits */
         let size = font.computeSizeOfString(text)
-        if size < buttonWidth - PopupTextLeftMargin - PopupTextRightMargin {
+        if size < buttonWidth - popupTextLeftMargin - popupTextRightMargin {
             return (text, font)
         }
         
         /* Check if it fits with condensed font */
         let condensedSize = condensedFont.computeSizeOfString(text)
-        if condensedSize < buttonWidth - PopupTextLeftMargin - PopupTextRightMargin {
+        if condensedSize < buttonWidth - popupTextLeftMargin - popupTextRightMargin {
             return (text, condensedFont)
         }
         
@@ -576,11 +604,11 @@ public class ButtonView: View, MouseResponder {
         while truncatedText.length > 2 {
             
             /* Truncate */
-            truncatedText[(truncatedText.length-2)...(truncatedText.length-1)] = PopupEllipsis
+            truncatedText[(truncatedText.length-2)...(truncatedText.length-1)] = popupEllipsis
             
             /* Try to draw */
             let truncatedSize = condensedFont.computeSizeOfString(truncatedText)
-            if truncatedSize < buttonWidth - PopupTextLeftMargin - PopupTextRightMargin {
+            if truncatedSize < buttonWidth - popupTextLeftMargin - popupTextRightMargin {
                 return (truncatedText, condensedFont)
             }
             
