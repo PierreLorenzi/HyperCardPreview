@@ -12,40 +12,28 @@
 /// <p>
 /// Lazy loading is implemented by hand because an inherited property can't be made
 /// lazy in swift.
-public extension Resource where T == FontFamilyResourceType {
+public extension FontFamily {
     
-    private static let fakeFontFamily = FontFamily()
-    
-    public convenience init(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResourceBlock], vectorFonts: [VectorFontResourceBlock]) {
-        
-        let contentProperty = Property<FontFamily> { () -> FontFamily in
-            return Resource.loadContent(resource: resource, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
-        }
-        
-        self.init(identifier: resource.identifier, name: resource.name, contentProperty: contentProperty)
-    }
-    
-    private static func loadContent(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResourceBlock], vectorFonts: [VectorFontResourceBlock]) -> FontFamily {
+    public init(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResourceBlock], vectorFonts: [VectorFontResourceBlock]) {
         
         /* Get the references from the resource */
         let associations = resource.readFontAssociationTable()
         
         /* Load the bitmap fonts */
         let bitmapAssociations = associations.filter({ $0.size != 0 })
-        let bitmapFonts = bitmapAssociations.compactMap { return convertAssociationToBitmapReference(association: $0, bitmapFonts: bitmapFonts)
+        let bitmapFonts = bitmapAssociations.compactMap { return FontFamily.convertAssociationToBitmapReference(association: $0, bitmapFonts: bitmapFonts)
         }
         
         /* Load the vector fonts */
         let vectorAssociations = associations.filter({ $0.size == 0 })
-        let vectorFonts = vectorAssociations.compactMap { return convertAssociationToVectorReference(association: $0, vectorFonts: vectorFonts)
+        let vectorFonts = vectorAssociations.compactMap { return FontFamily.convertAssociationToVectorReference(association: $0, vectorFonts: vectorFonts)
         }
         
         /* Build the family */
-        var family = FontFamily()
-        family.bitmapFonts = bitmapFonts
-        family.vectorFonts = vectorFonts
-        family.styleProperties = (resource.readUseIntegerExtraWidth()) ? nil : resource.readStyleProperties()
-        return family
+        self.init()
+        self.bitmapFonts = bitmapFonts
+        self.vectorFonts = vectorFonts
+        self.styleProperties = (resource.readUseIntegerExtraWidth()) ? nil : resource.readStyleProperties()
         
     }
     

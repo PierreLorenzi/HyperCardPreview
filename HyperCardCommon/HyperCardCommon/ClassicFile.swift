@@ -106,7 +106,10 @@ public extension ResourceRepository {
         let bitmapFonts = fork.extractBitmapFonts()
         let vectorFonts = fork.extractVectorFonts()
         for fontFamilyResourceBlock in fork.extractFontFamilies() {
-            let fontFamilyResource = FontFamilyResource(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+            let contentProperty = Property<FontFamily> { () -> FontFamily in
+                return FontFamily(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+            }
+            let fontFamilyResource = FontFamilyResource(identifier: fontFamilyResourceBlock.identifier, name: fontFamilyResourceBlock.name, contentProperty: contentProperty)
             self.resources.append(fontFamilyResource)
         }
         

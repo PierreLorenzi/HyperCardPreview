@@ -62,7 +62,7 @@
 		6C9E6B341E75BCFA00BBF925 /* FileBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */; };
 		6C9E6B351E75BCFA00BBF925 /* FileField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADF1E75BCFA00BBF925 /* FileField.swift */; };
 		6C9E6B361E75BCFA00BBF925 /* FileButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE01E75BCFA00BBF925 /* FileButton.swift */; };
-		6C9E6B381E75BCFA00BBF925 /* FileFontFamilyResource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE31E75BCFA00BBF925 /* FileFontFamilyResource.swift */; };
+		6C9E6B381E75BCFA00BBF925 /* FileFontFamily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE31E75BCFA00BBF925 /* FileFontFamily.swift */; };
 		6C9E6B391E75BCFA00BBF925 /* FileBitmapFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE41E75BCFA00BBF925 /* FileBitmapFont.swift */; };
 		6C9E6B3A1E75BCFA00BBF925 /* FileGlyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE51E75BCFA00BBF925 /* FileGlyph.swift */; };
 		6C9E6B3B1E75BCFA00BBF925 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE91E75BCFA00BBF925 /* Image.swift */; };
@@ -437,7 +437,7 @@
 		6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileBackground.swift; sourceTree = "<group>"; };
 		6C9E6ADF1E75BCFA00BBF925 /* FileField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileField.swift; sourceTree = "<group>"; };
 		6C9E6AE01E75BCFA00BBF925 /* FileButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileButton.swift; sourceTree = "<group>"; };
-		6C9E6AE31E75BCFA00BBF925 /* FileFontFamilyResource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileFontFamilyResource.swift; sourceTree = "<group>"; };
+		6C9E6AE31E75BCFA00BBF925 /* FileFontFamily.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileFontFamily.swift; sourceTree = "<group>"; };
 		6C9E6AE41E75BCFA00BBF925 /* FileBitmapFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileBitmapFont.swift; sourceTree = "<group>"; };
 		6C9E6AE51E75BCFA00BBF925 /* FileGlyph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileGlyph.swift; sourceTree = "<group>"; };
 		6C9E6AE91E75BCFA00BBF925 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
@@ -896,7 +896,7 @@
 		6C9E6AE61E75BCFA00BBF925 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6AE31E75BCFA00BBF925 /* FileFontFamilyResource.swift */,
+				6C9E6AE31E75BCFA00BBF925 /* FileFontFamily.swift */,
 				6C9E6AE41E75BCFA00BBF925 /* FileBitmapFont.swift */,
 				6C9E6AE51E75BCFA00BBF925 /* FileGlyph.swift */,
 			);
@@ -1709,7 +1709,7 @@
 				6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */,
 				6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */,
 				6C9E6B0A1E75BCFA00BBF925 /* Resource.swift in Sources */,
-				6C9E6B381E75BCFA00BBF925 /* FileFontFamilyResource.swift in Sources */,
+				6C9E6B381E75BCFA00BBF925 /* FileFontFamily.swift in Sources */,
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
 				6CE8F5C220C4296600B99E39 /* MasterBlockReader.swift in Sources */,
 				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
