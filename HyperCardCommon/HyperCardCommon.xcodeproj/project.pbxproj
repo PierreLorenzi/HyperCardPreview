@@ -28,7 +28,6 @@
 		6C9DF4D620C703DF0024F61B /* FileResourceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* FileResourceRepository.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
-		6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */; };
 		6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */; };
 		6C9E6AFE1E75BCFA00BBF925 /* Numeric Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9F1E75BCFA00BBF925 /* Numeric Functions.swift */; };
 		6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA01E75BCFA00BBF925 /* HyperCardBundle.swift */; };
@@ -404,7 +403,6 @@
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Browser.swift; sourceTree = "<group>"; };
-		6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackPreviewer.swift; sourceTree = "<group>"; };
 		6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
 		6C9E6A9F1E75BCFA00BBF925 /* Numeric Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Numeric Functions.swift"; sourceTree = "<group>"; };
 		6C9E6AA01E75BCFA00BBF925 /* HyperCardBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardBundle.swift; sourceTree = "<group>"; };
@@ -790,7 +788,6 @@
 			children = (
 				6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */,
 				6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */,
-				6C9E6A9D1E75BCFA00BBF925 /* StackPreviewer.swift */,
 				6C9E6AA41E75BCFA00BBF925 /* Common */,
 				6C9E6AB41E75BCFA00BBF925 /* Stack */,
 				6C9E6AE81E75BCFA00BBF925 /* File */,
@@ -1710,7 +1707,6 @@
 			files = (
 				6C9E6B331E75BCFA00BBF925 /* FileCard.swift in Sources */,
 				6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */,
-				6C9E6AFC1E75BCFA00BBF925 /* StackPreviewer.swift in Sources */,
 				6C9E6B0A1E75BCFA00BBF925 /* Resource.swift in Sources */,
 				6C9E6B381E75BCFA00BBF925 /* FileFontFamily.swift in Sources */,
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
