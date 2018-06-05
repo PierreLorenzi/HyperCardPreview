@@ -132,11 +132,12 @@ public struct BitmapBlockReader {
         return Rectangle(top: rectangle.top, left: downToMultiple(rectangle.left, 32), bottom: rectangle.bottom, right: upToMultiple(rectangle.right, 32))
     }
     
-    private func decodeLayer(_ dataOffset: Int, dataLength: Int, pixels: inout [UInt32], rectangle: Rectangle) {
+    private func decodeLayer(_ dataOffset: Int, dataLength: Int, pixels: inout [Image.Integer], rectangle: Rectangle) {
         
         var pixelIndex = 0
-        let integerLength = rectangle.width / 32
-        let rowWidth = integerLength * 32
+        let integerLengthImage = rectangle.width / Image.Integer.bitWidth
+        let integerLength32 = rectangle.width / 32
+        let rowWidth32 = integerLength32 * 32
         
         var offset = dataOffset
         var dx = 0
@@ -152,7 +153,7 @@ public struct BitmapBlockReader {
             var repeatCount = 1
             
             /* Read the opcodes */
-            while x < rowWidth {
+            while x < rowWidth32 {
                 
                 /* Read the opcode */
                 let opcode = data.readUInt8(at: offset)
@@ -178,21 +179,21 @@ public struct BitmapBlockReader {
                     
                 case 0x80:
                     /* One row of uncompressed data */
-                    for i in 0..<integerLength {
-                        let value = UInt32(data.readUInt32(at: offset + i*4))
+                    for i in 0..<integerLength32 {
+                        let value = data.readUInt32(at: offset + i*4)
                         for r in 0..<repeatCount {
-                            pixels[i + pixelIndex + r * integerLength] = value
+                            writeInt32InRow(value, row: &pixels, rowPixelIndex: pixelIndex + r * integerLengthImage, x: i * 32)
                         }
                     }
-                    offset += integerLength * 4
-                    pixelIndex += repeatCount * integerLength
+                    offset += integerLength32 * 4
+                    pixelIndex += repeatCount * integerLengthImage
                     y += repeatCount
                     repeatCount = 1
                     continue rowLoop
                     
                 case 0x81:
                     /* One white row */
-                    pixelIndex += repeatCount * integerLength
+                    pixelIndex += repeatCount * integerLengthImage
                     y += repeatCount
                     repeatCount = 1
                     continue rowLoop
@@ -200,10 +201,10 @@ public struct BitmapBlockReader {
                 case 0x82:
                     /* One black row */
                     for _ in 0..<repeatCount {
-                        for i in 0..<integerLength {
+                        for i in 0..<integerLengthImage {
                             pixels[i + pixelIndex] = 0xFFFF_FFFF
                         }
-                        pixelIndex += integerLength
+                        pixelIndex += integerLengthImage
                         y += 1
                     }
                     repeatCount = 1
@@ -213,13 +214,17 @@ public struct BitmapBlockReader {
                     /* One row of a repeated byte of data */
                     let v = data.readUInt8(at: offset)
                     offset += 1
-                    let integer = UInt32(v | (v << 8) | (v << 16) | (v << 24))
+                    var integer: Image.Integer = 0
+                    for _ in stride(from: 0, to: Image.Integer.bitWidth, by: 8) {
+                        integer <<= 8
+                        integer |= Image.Integer(v)
+                    }
                     repeatedBytes[y % 8] = v
                     for _ in 0..<repeatCount {
-                        for i in 0..<integerLength {
+                        for i in 0..<integerLengthImage {
                             pixels[i + pixelIndex] = integer
                         }
-                        pixelIndex += integerLength
+                        pixelIndex += integerLengthImage
                         y += 1
                     }
                     repeatCount = 1
@@ -229,11 +234,15 @@ public struct BitmapBlockReader {
                     /* One row of a repeated byte of data previously used */
                     for _ in 0..<repeatCount {
                         let v = repeatedBytes[y % 8]
-                        let integer = UInt32(v | (v << 8) | (v << 16) | (v << 24))
-                        for i in 0..<integerLength {
+                        var integer: Image.Integer = 0
+                        for _ in stride(from: 0, to: Image.Integer.bitWidth, by: 8) {
+                            integer <<= 8
+                            integer |= Image.Integer(v)
+                        }
+                        for i in 0..<integerLengthImage {
                             pixels[i + pixelIndex] = integer
                         }
-                        pixelIndex += integerLength
+                        pixelIndex += integerLengthImage
                         y += 1
                     }
                     repeatCount = 1
@@ -242,10 +251,10 @@ public struct BitmapBlockReader {
                 case 0x85:
                     /* Copy the previous row */
                     for _ in 0..<repeatCount {
-                        for i in 0..<integerLength {
-                            pixels[i + pixelIndex] = pixels[i + pixelIndex - integerLength]
+                        for i in 0..<integerLengthImage {
+                            pixels[i + pixelIndex] = pixels[i + pixelIndex - integerLengthImage]
                         }
-                        pixelIndex += integerLength
+                        pixelIndex += integerLengthImage
                         y += 1
                     }
                     repeatCount = 1
@@ -254,10 +263,10 @@ public struct BitmapBlockReader {
                 case 0x86:
                     /* Copy the row before the previous row */
                     for _ in 0..<repeatCount {
-                        for i in 0..<integerLength {
-                            pixels[i + pixelIndex] = pixels[i + pixelIndex - 2 * integerLength]
+                        for i in 0..<integerLengthImage {
+                            pixels[i + pixelIndex] = pixels[i + pixelIndex - 2 * integerLengthImage]
                         }
-                        pixelIndex += integerLength
+                        pixelIndex += integerLengthImage
                         y += 1
                     }
                     repeatCount = 1
@@ -321,38 +330,38 @@ public struct BitmapBlockReader {
             
             /* If we get here, we must apply the transformations to the row */
             if dx != 0 {
-                applyDx(dx, row: &pixels, rowPixelIndex: pixelIndex, integerLength: integerLength)
+                applyDx(dx, row: &pixels, rowPixelIndex: pixelIndex, integerLength: integerLengthImage)
             }
             if dy != 0 && dy <= y - rectangle.top {
-                for i in 0..<integerLength {
-                    pixels[i + pixelIndex] ^= pixels[i + pixelIndex - dy * integerLength]
+                for i in 0..<integerLengthImage {
+                    pixels[i + pixelIndex] ^= pixels[i + pixelIndex - dy * integerLengthImage]
                 }
             }
-            pixelIndex += integerLength
+            pixelIndex += integerLengthImage
             y += 1
             
         }
         
     }
     
-    private func applyDx(_ dx: Int, row: inout [UInt32], rowPixelIndex: Int, integerLength: Int) {
+    private func applyDx(_ dx: Int, row: inout [Image.Integer], rowPixelIndex: Int, integerLength: Int) {
         
         /* dx can only be 1, 2, 4, 8, 16, 32 */
         
-        var previousResult: UInt32 = 0
-        var previousXorLeft: UInt32 = 0
+        var previousResult: Image.Integer = 0
+        var previousXorLeft: Image.Integer = 0
         
         for i in 0..<integerLength {
             
             let value = row[i + rowPixelIndex]
             
-            var xorLeft: UInt32 = value
-            var xorRight: UInt32 = 0
+            var xorLeft: Image.Integer = value
+            var xorRight: Image.Integer = 0
             
             /* Apply dx on that window */
-            for i in 0..<(32 / dx) {
-                xorLeft ^= (value << UInt32(dx * i))
-                xorRight ^= (value >> UInt32(dx * i))
+            for i in 0..<(Image.Integer.bitWidth / dx) {
+                xorLeft ^= (value << Image.Integer(dx * i))
+                xorRight ^= (value >> Image.Integer(dx * i))
             }
             
             let result = previousResult ^ previousXorLeft ^ xorRight
@@ -365,9 +374,14 @@ public struct BitmapBlockReader {
         }
     }
     
-    private func writeByteInRow(_ byte: Int, row: inout [UInt32], rowPixelIndex: Int, x: Int) {
+    private func writeByteInRow(_ byte: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
         
-        row[rowPixelIndex + x / 32] |= UInt32(byte << (24 - x % 32))
+        row[rowPixelIndex + x / Image.Integer.bitWidth] |= Image.Integer(byte << (Image.Integer.bitWidth - 8 - x % Image.Integer.bitWidth))
+    }
+    
+    private func writeInt32InRow(_ int32: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
+        
+        row[rowPixelIndex + x / Image.Integer.bitWidth] |= Image.Integer(int32 >> (x % Image.Integer.bitWidth))
     }
     
 }
