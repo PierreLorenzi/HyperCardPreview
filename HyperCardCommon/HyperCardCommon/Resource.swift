@@ -7,9 +7,12 @@
 //
 
 
+public protocol ResourceType {
+    associatedtype ContentType
+}
 
 /// A resource data in a resource fork. T is the type of the data contained in the resource.
-public class Resource<T> {
+public class Resource<T: ResourceType> {
     
     /// The identifier
     public var identifier: Int
@@ -17,44 +20,48 @@ public class Resource<T> {
     /// The name
     public var name: HString
     
-    /// The type, linked to the type of the data contained in the resource
-    public var type: ResourceType<T>
-    
     /// The data contained in the resource
-    public var content: T {
+    public var content: T.ContentType {
         get { return self.contentProperty.value }
         set { self.contentProperty.value = newValue }
     }
-    public let contentProperty: Property<T>
+    public let contentProperty: Property<T.ContentType>
     
     /// Main constructor, explicit so it is public
-    public init(identifier: Int, name: HString, type: ResourceType<T>, contentProperty: Property<T>) {
+    public init(identifier: Int, name: HString, contentProperty: Property<T.ContentType>) {
         self.identifier = identifier
         self.name = name
-        self.type = type
         self.contentProperty = contentProperty
     }
     
 }
 
-/// A resource type, linked to the type of the data that the resources of that type contain.
-public class ResourceType<T> {}
-
-/// Common resource types
-public enum ResourceTypes {
-    
-    /// Black & White Icons
-    public static let icon = ResourceType<Image>()
-    
-    /// Fonts
-    public static let fontFamily = ResourceType<FontFamily>()
-    
-    /// AddColor card colors
-    public static let cardColor = ResourceType<[AddColorElement]>()
-    
-    /// AddColor background colors
-    public static let backgroundColor = ResourceType<[AddColorElement]>()
-    
-    /// Pictures
-    public static let picture = ResourceType<NSImage>()
+/// Black & White Icons
+public struct IconResourceType: ResourceType {
+    public typealias ContentType = Image
 }
+public typealias IconResource = Resource<IconResourceType>
+
+/// Fonts
+public struct FontFamilyResourceType: ResourceType {
+    public typealias ContentType = FontFamily
+}
+public typealias FontFamilyResource = Resource<FontFamilyResourceType>
+
+/// AddColor card colors
+public struct CardColorResourceType: ResourceType {
+    public typealias ContentType = [AddColorElement]
+}
+public typealias CardColorResource = Resource<CardColorResourceType>
+
+/// AddColor background colors
+public struct BackgroundColorResourceType: ResourceType {
+    public typealias ContentType = [AddColorElement]
+}
+public typealias BackgroundColorResource = Resource<BackgroundColorResourceType>
+
+/// Pictures
+public struct PictureResourceType: ResourceType {
+    public typealias ContentType = NSImage
+}
+public typealias PictureResource = Resource<PictureResourceType>

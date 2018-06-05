@@ -45,7 +45,7 @@ private func loadIcons() -> [Any] {
         let contentProperty = Property<Image> { () -> Image in
             return loadIcon(withIdentifier: iconIdentifier)
         }
-        let icon = Resource<Image>(identifier: iconIdentifier, name: "", type: ResourceTypes.icon, contentProperty: contentProperty)
+        let icon = IconResource(identifier: iconIdentifier, name: "", contentProperty: contentProperty)
         icons.append(icon)
     }
     

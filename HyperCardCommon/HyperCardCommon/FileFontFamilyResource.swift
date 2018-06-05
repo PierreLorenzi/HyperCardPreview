@@ -12,7 +12,7 @@
 /// <p>
 /// Lazy loading is implemented by hand because an inherited property can't be made
 /// lazy in swift.
-public extension Resource where T == FontFamily {
+public extension Resource where T == FontFamilyResourceType {
     
     private static let fakeFontFamily = FontFamily()
     
@@ -22,7 +22,7 @@ public extension Resource where T == FontFamily {
             return Resource.loadContent(resource: resource, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
         }
         
-        self.init(identifier: resource.identifier, name: resource.name, type: ResourceTypes.fontFamily, contentProperty: contentProperty)
+        self.init(identifier: resource.identifier, name: resource.name, contentProperty: contentProperty)
     }
     
     private static func loadContent(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResourceBlock], vectorFonts: [VectorFontResourceBlock]) -> FontFamily {

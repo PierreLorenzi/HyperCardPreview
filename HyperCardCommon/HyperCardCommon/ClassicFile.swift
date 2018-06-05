@@ -98,7 +98,7 @@ public extension ResourceRepository {
             let contentProperty = Property<Image> { () -> Image in
                 return iconResourceBlock.readImage()
             }
-            let iconResource = Resource<Image>(identifier: iconResourceBlock.identifier, name: iconResourceBlock.name, type: ResourceTypes.icon, contentProperty: contentProperty)
+            let iconResource = IconResource(identifier: iconResourceBlock.identifier, name: iconResourceBlock.name, contentProperty: contentProperty)
             self.resources.append(iconResource)
         }
         
@@ -106,7 +106,7 @@ public extension ResourceRepository {
         let bitmapFonts = fork.extractBitmapFonts()
         let vectorFonts = fork.extractVectorFonts()
         for fontFamilyResourceBlock in fork.extractFontFamilies() {
-            let fontFamilyResource = Resource<FontFamily>(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+            let fontFamilyResource = FontFamilyResource(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
             self.resources.append(fontFamilyResource)
         }
         
@@ -115,7 +115,7 @@ public extension ResourceRepository {
             let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
                 return resourceBlock.readElements()
             }
-            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.cardColor, contentProperty: contentProperty)
+            let resource = CardColorResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
             self.resources.append(resource)
         }
         
@@ -124,7 +124,7 @@ public extension ResourceRepository {
             let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
                 return resourceBlock.readElements()
             }
-            let resource = Resource<[AddColorElement]>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.backgroundColor, contentProperty: contentProperty)
+            let resource = BackgroundColorResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
             self.resources.append(resource)
         }
         
@@ -133,7 +133,7 @@ public extension ResourceRepository {
             let contentProperty = Property<NSImage> { () -> NSImage in
                 return resourceBlock.readImage()
             }
-            let resource = Resource<NSImage>(identifier: resourceBlock.identifier, name: resourceBlock.name, type: ResourceTypes.picture, contentProperty: contentProperty)
+            let resource = PictureResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
             self.resources.append(resource)
         }
     }

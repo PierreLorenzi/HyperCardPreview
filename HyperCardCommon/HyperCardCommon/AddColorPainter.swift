@@ -25,7 +25,7 @@ public class AddColorPainter {
         }
         
         /* Check if there are AddColor resources */
-        guard let _ = resources.first(where: { $0 is Resource<[AddColorElement]> }) else {
+        guard let _ = resources.first(where: { $0 is CardColorResource || $0 is BackgroundColorResource }) else {
             return
         }
         
@@ -37,14 +37,14 @@ public class AddColorPainter {
         let background = card.background
         
         /* Background */
-        let backgroundElements = findAddColorResource(withType: ResourceTypes.backgroundColor, identifier: background.identifier, among: resources)
+        let backgroundElements = findAddColorResource(withType: BackgroundColorResourceType.self, identifier: background.identifier, among: resources)
         if let elements = backgroundElements {
             AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, resources: resources)
         }
         
         /* Card */
         if !excludeCardParts {
-            let cardElements = findAddColorResource(withType: ResourceTypes.cardColor, identifier: card.identifier, among: resources)
+            let cardElements = findAddColorResource(withType: CardColorResourceType.self, identifier: card.identifier, among: resources)
             if let elements = cardElements {
                 AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, resources: resources)
             }
@@ -52,17 +52,17 @@ public class AddColorPainter {
         
     }
     
-    private static func findAddColorResource(withType type: ResourceType<[AddColorElement]>, identifier: Int, among resources: [Any]) -> [AddColorElement]? {
+    private static func findAddColorResource<T: ResourceType>(withType type: T.Type, identifier: Int, among resources: [Any]) -> T.ContentType? {
         
         for resource in resources {
             
             /* Check that's an AddColor Resource */
-            guard let addColorResource = resource as? Resource<[AddColorElement]> else {
+            guard let addColorResource = resource as? Resource<T> else {
                 continue
             }
             
             /* Check that's the one requested */
-            guard addColorResource.type === type && addColorResource.identifier == identifier else {
+            guard addColorResource.identifier == identifier else {
                 continue
             }
             
@@ -251,12 +251,12 @@ public class AddColorPainter {
         for resource in resources {
             
             /* Check that's a picture resource */
-            guard let pictureResource = resource as? Resource<NSImage> else {
+            guard let pictureResource = resource as? PictureResource else {
                 continue
             }
             
             /* Check that's the one requested */
-            guard pictureResource.type === ResourceTypes.picture && pictureResource.name == name else {
+            guard pictureResource.name == name else {
                 continue
             }
             

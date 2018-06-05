@@ -130,7 +130,7 @@ public class Browser {
     private static func areThereColors(inStack stack: Stack) -> Bool {
         
         if let resources = stack.resources?.resources {
-            if let _ = resources.index(where: { $0 is Resource<[AddColorElement]> }) {
+            if let _ = resources.index(where: { $0 is CardColorResource || $0 is BackgroundColorResource }) {
                 return true
             }
         }
