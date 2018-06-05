@@ -7,7 +7,7 @@
 //
 
 
-public struct Property<T> {
+public class Property<T> {
     
     private var lazyValue: LazyValue
     
@@ -28,7 +28,7 @@ public struct Property<T> {
     }
     
     public var value: T {
-        mutating get {
+        get {
             switch self.lazyValue {
             case .stored(let value):
                 return value
@@ -61,16 +61,16 @@ public struct Property<T> {
         }
     }
     
-    public mutating func lazyCompute(_ compute: @escaping () -> T) {
+    public func lazyCompute(_ compute: @escaping () -> T) {
         self.lazyValue = LazyValue.lazy(compute)
     }
     
-    public mutating func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
+    public func startNotifications(for object: AnyObject, by make: @escaping () -> ()) {
         let notification = Notification(object: object, make: make)
         notifications.append(notification)
     }
     
-    public mutating func stopNotifications(for object: AnyObject) {
+    public func stopNotifications(for object: AnyObject) {
         notifications = notifications.filter({ $0.object !== object })
     }
     
