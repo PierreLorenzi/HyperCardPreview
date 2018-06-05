@@ -25,6 +25,8 @@ public struct BitmapBlockReader {
     
     private static let ZeroRectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
     private static let version1Offset = -4
+    private static let blackPixelInteger: UInt = 0xFFFF_FFFF_FFFF_FFFF
+    private static let blackPixel = Image.Integer(truncatingIfNeeded: blackPixelInteger)
     
     /// Identifier
     public func readIdentifier() -> Int {
@@ -202,7 +204,7 @@ public struct BitmapBlockReader {
                     /* One black row */
                     for _ in 0..<repeatCount {
                         for i in 0..<integerLengthImage {
-                            pixels[i + pixelIndex] = 0xFFFF_FFFF
+                            pixels[i + pixelIndex] = BitmapBlockReader.blackPixel
                         }
                         pixelIndex += integerLengthImage
                         y += 1
