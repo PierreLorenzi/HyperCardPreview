@@ -20,43 +20,35 @@ public struct ResourceSystem {
     public init() {}
     
     /// Finds a resource by identifier in the forks, respecting the order of precedence
-    public func findResource<T: ResourceType>(ofType type: T.Type, withIdentifier identifier: Int) -> Resource<T>? {
+    public func findResource<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>, withIdentifier identifier: Int) -> Resource<T>? {
         for repository in repositories {
-            for resource in repository.resources {
-                if let r = resource as? Resource<T>, r.identifier == identifier {
-                    return r
-                }
+            let resources = repository[keyPath: keyPath]
+            if let resource = resources.first(where: { $0.identifier == identifier }) {
+                return resource
             }
         }
         return nil
     }
     
     /// Finds a resource by name in the forks, respecting the order of precedence
-    public func findResource<T: ResourceType>(ofType type: T.Type, withName name: HString) -> Resource<T>? {
+    public func findResource<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>, withName name: HString) -> Resource<T>? {
         for repository in repositories {
-            for resource in repository.resources {
-                if let r = resource as? Resource<T>, r.name == name {
-                    return r
-                }
+            let resources = repository[keyPath: keyPath]
+            if let resource = resources.first(where: { $0.name == name }) {
+                return resource
             }
         }
         return nil
     }
     
     /// Lists all the resources of a certain type. Respects the order of precedence.
-    public func listResources<T: ResourceType>(ofType type: T.Type) -> [Resource<T>] {
+    public func listResources<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>) -> [Resource<T>] {
         var list = [Resource<T>]()
         var identifiers = Set<Int>()
         for repository in repositories {
-            let repositoryList = repository.resources.compactMap( {
-                (resource: Any) -> Resource<T>? in
-                if let r = resource as? Resource<T>, !identifiers.contains(r.identifier) {
-                    identifiers.insert(r.identifier)
-                    return r
-                }
-                return nil
-            } )
-            list.append(contentsOf: repositoryList)
+            let resources = repository[keyPath: keyPath]
+            let resourcesNonRedundant = resources.filter { identifiers.insert($0.identifier).inserted }
+            list.append(contentsOf: resourcesNonRedundant)
         }
         return list
     }

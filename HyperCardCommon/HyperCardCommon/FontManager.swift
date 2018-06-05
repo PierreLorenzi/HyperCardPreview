@@ -89,7 +89,7 @@ public class FontManager {
     private func findFontFamily(withIdentifier identifier: Int) -> FontFamily? {
         
         /* Look for the resource */
-        let possibleFamilyResource = resources.findResource(ofType: FontFamilyResourceType.self, withIdentifier: identifier)
+        let possibleFamilyResource = resources.findResource(ofType: \ResourceRepository.fontFamilies, withIdentifier: identifier)
         let possibleFamily = possibleFamilyResource?.content
         
         /* Get the expected name of the font */
@@ -104,7 +104,7 @@ public class FontManager {
         }
         
         /* If the name doesn't match, try searching by name */
-        guard let familyResourceByName = resources.findResource(ofType: FontFamilyResourceType.self, withName: fontName) else {
+        guard let familyResourceByName = resources.findResource(ofType: \ResourceRepository.fontFamilies, withName: fontName) else {
             return possibleFamily
         }
         

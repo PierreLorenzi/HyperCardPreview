@@ -91,54 +91,55 @@ public extension ResourceRepository {
     
     /// Makes a list of the resources in a parsed resource fork.
     public init(fromFork fork: ResourceFork) {
-        self.init()
         
         /* Add the icons */
-        for iconResourceBlock in fork.extractIcons() {
+        let iconResourceBlocks = fork.extractIcons()
+        let icons = iconResourceBlocks.map { (block: IconResourceBlock) -> IconResource in
             let contentProperty = Property<Image> { () -> Image in
-                return iconResourceBlock.readImage()
+                return block.readImage()
             }
-            let iconResource = IconResource(identifier: iconResourceBlock.identifier, name: iconResourceBlock.name, contentProperty: contentProperty)
-            self.resources.append(iconResource)
+            return IconResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
         
         /* Add the font families */
         let bitmapFonts = fork.extractBitmapFonts()
         let vectorFonts = fork.extractVectorFonts()
-        for fontFamilyResourceBlock in fork.extractFontFamilies() {
+        let fontFamilyBlocks = fork.extractFontFamilies()
+        let fontFamilies = fontFamilyBlocks.map { (block: FontFamilyResourceBlock) -> FontFamilyResource in
             let contentProperty = Property<FontFamily> { () -> FontFamily in
-                return FontFamily(resource: fontFamilyResourceBlock, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+                return FontFamily(resource: block, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
             }
-            let fontFamilyResource = FontFamilyResource(identifier: fontFamilyResourceBlock.identifier, name: fontFamilyResourceBlock.name, contentProperty: contentProperty)
-            self.resources.append(fontFamilyResource)
+            return FontFamilyResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
         
         /* Add the AddColor elements in cards */
-        for resourceBlock in fork.extractCardColors() {
+        let cardColorBlocks = fork.extractCardColors()
+        let cardColors = cardColorBlocks.map { (block: AddColorResourceBlockCard) -> CardColorResource in
             let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
-                return resourceBlock.readElements()
+                return block.readElements()
             }
-            let resource = CardColorResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
-            self.resources.append(resource)
+            return CardColorResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
         
         /* Add the AddColor elements in backgrounds */
-        for resourceBlock in fork.extractBackgroundColors() {
+        let backgroundColorBlocks = fork.extractBackgroundColors()
+        let backgroundColors = backgroundColorBlocks.map { (block: AddColorResourceBlockBackground) -> BackgroundColorResource in
             let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
-                return resourceBlock.readElements()
+                return block.readElements()
             }
-            let resource = BackgroundColorResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
-            self.resources.append(resource)
+            return BackgroundColorResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
         
         /* Add the pictures */
-        for resourceBlock in fork.extractPictures() {
+        let pictureBlocks = fork.extractPictures()
+        let pictures = pictureBlocks.map { (block: PictureResourceBlock) -> PictureResource in
             let contentProperty = Property<NSImage> { () -> NSImage in
-                return resourceBlock.readImage()
+                return block.readImage()
             }
-            let resource = PictureResource(identifier: resourceBlock.identifier, name: resourceBlock.name, contentProperty: contentProperty)
-            self.resources.append(resource)
+            return PictureResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
         }
+        
+        self.init(icons: icons, fontFamilies: fontFamilies, cardColors: cardColors, backgroundColors: backgroundColors, pictures: pictures)
     }
     
 }

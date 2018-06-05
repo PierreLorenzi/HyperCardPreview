@@ -11,33 +11,48 @@
 /// A resource fork, not as a raw data but as a typed data
 public struct ResourceRepository {
     
-    /// The resources. The Resource<> objects have not common superclass, so no type can be given to the array
-    public var resources: [Any]    = []
+    public var icons: [IconResource]
+    public var fontFamilies: [FontFamilyResource]
+    public var cardColors: [CardColorResource]
+    public var backgroundColors: [BackgroundColorResource]
+    public var pictures: [PictureResource]
     
     /// The repository representing the resource forks of HyperCard and Mac OS.
     public static let mainRepository = buildMainRepository()
     
 }
 
+private extension ResourceRepository {
+    
+    mutating func append(_ repository: ResourceRepository) {
+        self.icons.append(contentsOf: repository.icons)
+        self.fontFamilies.append(contentsOf: repository.fontFamilies)
+        self.cardColors.append(contentsOf: repository.cardColors)
+        self.backgroundColors.append(contentsOf: repository.backgroundColors)
+        self.pictures.append(contentsOf: repository.pictures)
+    }
+    
+}
+
 private func buildMainRepository() -> ResourceRepository {
     
-    var repository = ResourceRepository()
+    var repository = ResourceRepository(icons: [], fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
     
     /* Add the icons */
     let icons = loadIcons()
-    repository.resources.append(contentsOf: icons)
+    repository.append(icons)
     
     /* Add the fonts */
     let fonts = loadClassicFontResources()
-    repository.resources.append(contentsOf: fonts)
+    repository.append(fonts)
     
     return repository
 }
 
-private func loadIcons() -> [Any] {
+private func loadIcons() -> ResourceRepository {
     
     /* Create the repository */
-    var icons = [Any]()
+    var icons = [IconResource]()
     
     /* Add the icons */
     let iconIdentifiers = listIconIdentifiers()
@@ -49,7 +64,7 @@ private func loadIcons() -> [Any] {
         icons.append(icon)
     }
     
-    return icons
+    return ResourceRepository(icons: icons, fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
 }
 
 private let IconFilePrefix = "icon_"
@@ -118,13 +133,19 @@ private let classicFontRepositoryNames: [String] = [
     "Fonts"
 ]
 
-private func loadClassicFontResources() -> [Any] {
+private func loadClassicFontResources() -> ResourceRepository {
     
-    return classicFontRepositoryNames.compactMap(loadClassicFontResources).reduce([], { (a: [Any], b: [Any]) in a+b })
+    var fontRepository = ResourceRepository(icons: [], fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
+    let repositories = classicFontRepositoryNames.compactMap(loadClassicFontResources)
     
+    for repository in repositories {
+        fontRepository.append(repository)
+    }
+    
+    return fontRepository
 }
 
-private func loadClassicFontResources(withName name: String) -> [Any]? {
+private func loadClassicFontResources(withName name: String) -> ResourceRepository? {
     
     /* Get the path to file */
     guard let path = HyperCardBundle.path(forResource: name, ofType: "dfont") else {
@@ -134,7 +155,7 @@ private func loadClassicFontResources(withName name: String) -> [Any]? {
     /* Load the file */
     let file = ClassicFile(path: path, loadResourcesFromDataFork: true)
     
-    return file.resourceRepository?.resources
+    return file.resourceRepository
     
 }
 

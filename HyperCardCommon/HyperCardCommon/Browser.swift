@@ -129,13 +129,11 @@ public class Browser {
     
     private static func areThereColors(inStack stack: Stack) -> Bool {
         
-        if let resources = stack.resources?.resources {
-            if let _ = resources.index(where: { $0 is CardColorResource || $0 is BackgroundColorResource }) {
-                return true
-            }
+        guard let repository = stack.resources else {
+            return false
         }
         
-        return false
+        return !repository.cardColors.isEmpty || !repository.backgroundColors.isEmpty
     }
     
     private func rebuildViews() {
