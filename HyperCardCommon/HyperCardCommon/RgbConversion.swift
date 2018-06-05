@@ -111,14 +111,12 @@ public class RgbConverter {
                 let bitCount = min(Image.Integer.bitWidth, image.width - integerIndexInRow * Image.Integer.bitWidth)
                 
                 /* Copy the pixels */
-                var i = bitCount - 1
-                while i >= 0 {
-                    let pixelValue = (integer >> i) & Image.Integer(1)
+                for i in 0..<bitCount {
+                    let pixelValue = (integer >> (Image.Integer.bitWidth - 1 - i)) & Image.Integer(1)
                     if pixelValue == Image.Integer(1) {
                         buffer[offset] = RgbBlack
                     }
                     offset += 1
-                    i -= 1
                 }
             }
         }
