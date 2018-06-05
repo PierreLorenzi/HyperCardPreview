@@ -30,7 +30,7 @@ public extension Stack {
         }
         
         /* Build the stack */
-        self.init(fileReader: fileReader, resources: file.resourceRepository)
+        self.init(fileReader: fileReader, resourceFork: file.resourceFork)
         
     }
     
@@ -261,12 +261,17 @@ public extension Stack {
         return string
     }
     
-    private convenience init(fileReader: HyperCardFileReader, resources: ResourceRepository?) {
+    private convenience init(fileReader: HyperCardFileReader, resourceFork possibleResourceFork: Data?) {
         
         self.init()
         
         /* Register the resources */
-        self.resources = resources
+        self.resourcesProperty.lazyCompute { () -> ResourceRepository? in
+            guard let resourceFork = possibleResourceFork else {
+                return nil
+            }
+            return ResourceRepository(fromResourceFork: resourceFork)
+        }
         
         /* Get the stack */
         let stackReader = fileReader.extractStackReader()

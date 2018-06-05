@@ -153,9 +153,9 @@ private func loadClassicFontResources(withName name: String) -> ResourceReposito
     }
     
     /* Load the file */
-    let file = ClassicFile(path: path, loadResourcesFromDataFork: true)
+    let file = ClassicFile(path: path)
     
-    return file.resourceRepository
+    return ResourceRepository(fromResourceFork: file.dataFork!)
     
 }
 
