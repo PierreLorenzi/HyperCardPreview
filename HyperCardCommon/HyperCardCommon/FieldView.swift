@@ -323,7 +323,7 @@ public class FieldView: View, MouseResponder {
         /* Compute the vertical position of the layout */
         if field.fixedLineHeight {
             layout.bottom = textBottom + field.textHeight
-            layout.baseLineY = textBottom + field.textHeight - (layout.leading + layout.descent) * field.textHeight / (layout.ascent + layout.descent + layout.leading)
+            layout.baseLineY = textBottom + field.textHeight - field.textHeight / 4
         }
         else {
             layout.bottom = textBottom + layout.ascent + layout.descent + layout.leading
