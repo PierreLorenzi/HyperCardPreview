@@ -1,11 +1,10 @@
 //
-//  FontFamilyResource.swift
-//  HyperCard
+//  FontFamilyResourceReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 16/02/2016.
-//  Copyright © 2016 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 05/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
 
 
 /// Parsed font family resource
@@ -14,10 +13,12 @@
 /// bitmap fonts and vector fonts to use for different sizes and styles.
 /// <p>
 /// All the sizes and styles don't need to be present. If one is missing, it is generated.
-public class FontFamilyResourceBlock: ResourceBlock {
+public struct FontFamilyResourceReader {
     
-    public override class var Name: NumericName {
-        return NumericName(string: "FOND")!
+    private let data: DataRange
+    
+    public init(data: DataRange) {
+        self.data = data
     }
     
     /// A font record, mapping a size and a style to a font
@@ -142,13 +143,13 @@ public class FontFamilyResourceBlock: ResourceBlock {
     /// <p>
     /// Possible values are:
     /// <p>
-    /// 0	Created by the Macintosh system software. The font family resource will not have the glyph-width tables and the fields will contain 0.
+    /// 0    Created by the Macintosh system software. The font family resource will not have the glyph-width tables and the fields will contain 0.
     /// <p>
-    /// 1	Original format as designed by the font developer. This font family record probably has the width tables and most of the fields are filled.
+    /// 1    Original format as designed by the font developer. This font family record probably has the width tables and most of the fields are filled.
     /// <p>
-    /// 2	This record may contain the offset and bounding-box tables.
+    /// 2    This record may contain the offset and bounding-box tables.
     /// <p>
-    /// 3	This record definitely contains the offset and bounding-box tables.
+    /// 3    This record definitely contains the offset and bounding-box tables.
     public func readVersion() -> Int {
         return data.readUInt16(at: 0x32)
     }

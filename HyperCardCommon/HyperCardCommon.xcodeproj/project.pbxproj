@@ -12,7 +12,6 @@
 		6C30878D1F48957100CCA9A7 /* FilePart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* FilePart.swift */; };
 		6C30E8D11F4D117A00ACB457 /* CharacterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */; };
 		6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */; };
-		6C549B201F5112E300836AE2 /* AddColorResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */; };
 		6C56FD081F56BBA40036FF8A /* TestStrangeFlags.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */; };
 		6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C56FD091F56BC2B0036FF8A /* DataTests.swift */; };
 		6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6064061F5B1DF600988560 /* HdmxTableReader.swift */; };
@@ -27,6 +26,17 @@
 		6C8746271F5402E0005A41AB /* Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8746261F5402E0005A41AB /* Responder.swift */; };
 		6C9DF4D620C703DF0024F61B /* FileResourceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* FileResourceRepository.swift */; };
 		6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D720C708A80024F61B /* MainRepository.swift */; };
+		6C9DF4F720C7252C0024F61B /* VectorFontResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4EF20C7252C0024F61B /* VectorFontResourceReader.swift */; };
+		6C9DF4F820C7252C0024F61B /* PictureResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F020C7252C0024F61B /* PictureResourceReader.swift */; };
+		6C9DF4F920C7252C0024F61B /* ResourceMapReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */; };
+		6C9DF4FA20C7252D0024F61B /* FontFamilyResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */; };
+		6C9DF4FB20C7252D0024F61B /* BitmapFontResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */; };
+		6C9DF4FC20C7252D0024F61B /* IconResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F420C7252C0024F61B /* IconResourceReader.swift */; };
+		6C9DF4FD20C7252D0024F61B /* ResourceForkReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */; };
+		6C9DF4FE20C7252D0024F61B /* ColorResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */; };
+		6C9DF50020C725620024F61B /* ResourceReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4FF20C725620024F61B /* ResourceReference.swift */; };
+		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
+		6C9DF50420C726090024F61B /* ResourceExtractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50320C726090024F61B /* ResourceExtractor.swift */; };
 		6C9E6A901E75BCCD00BBF925 /* HyperCardCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = 6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */; };
 		6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */; };
@@ -50,14 +60,7 @@
 		6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */; };
 		6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */; };
 		6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */; };
-		6C9E6B121E75BCFA00BBF925 /* DataBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB71E75BCFA00BBF925 /* DataBlock.swift */; };
 		6C9E6B141E75BCFA00BBF925 /* FileStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */; };
-		6C9E6B2B1E75BCFA00BBF925 /* ResourceFork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */; };
-		6C9E6B2C1E75BCFA00BBF925 /* ResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD51E75BCFA00BBF925 /* ResourceBlock.swift */; };
-		6C9E6B2D1E75BCFA00BBF925 /* IconResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD61E75BCFA00BBF925 /* IconResourceBlock.swift */; };
-		6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */; };
-		6C9E6B2F1E75BCFA00BBF925 /* BitmapFontResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */; };
-		6C9E6B301E75BCFA00BBF925 /* VectorFontResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */; };
 		6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */; };
 		6C9E6B331E75BCFA00BBF925 /* FileCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */; };
 		6C9E6B341E75BCFA00BBF925 /* FileBackground.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */; };
@@ -326,7 +329,6 @@
 		6C9E6D3D1E75BEEA00BBF925 /* Symbol.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */; };
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
-		6CADFE871F520A6600465A00 /* PictureResourceBlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CADFE861F520A6600465A00 /* PictureResourceBlock.swift */; };
 		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
@@ -386,7 +388,6 @@
 		6C30878C1F48957100CCA9A7 /* FilePart.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FilePart.swift; sourceTree = "<group>"; };
 		6C30E8D01F4D117A00ACB457 /* CharacterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTable.swift; sourceTree = "<group>"; };
 		6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RgbConversion.swift; sourceTree = "<group>"; };
-		6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColorResourceBlock.swift; sourceTree = "<group>"; };
 		6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestStrangeFlags.stack; sourceTree = "<group>"; };
 		6C56FD091F56BC2B0036FF8A /* DataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
 		6C6064061F5B1DF600988560 /* HdmxTableReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HdmxTableReader.swift; sourceTree = "<group>"; };
@@ -401,6 +402,17 @@
 		6C8746261F5402E0005A41AB /* Responder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Responder.swift; sourceTree = "<group>"; };
 		6C9DF4D520C703DF0024F61B /* FileResourceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileResourceRepository.swift; sourceTree = "<group>"; };
 		6C9DF4D720C708A80024F61B /* MainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRepository.swift; sourceTree = "<group>"; };
+		6C9DF4EF20C7252C0024F61B /* VectorFontResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorFontResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4F020C7252C0024F61B /* PictureResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMapReader.swift; sourceTree = "<group>"; };
+		6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamilyResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFontResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4F420C7252C0024F61B /* IconResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceForkReader.swift; sourceTree = "<group>"; };
+		6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorResourceReader.swift; sourceTree = "<group>"; };
+		6C9DF4FF20C725620024F61B /* ResourceReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceReference.swift; sourceTree = "<group>"; };
+		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
+		6C9DF50320C726090024F61B /* ResourceExtractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceExtractor.swift; sourceTree = "<group>"; };
 		6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperCardCommon.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperCardCommon.h; sourceTree = "<group>"; };
 		6C9E6A8F1E75BCCD00BBF925 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -426,14 +438,7 @@
 		6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Glyph.swift; sourceTree = "<group>"; };
 		6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFile.swift; sourceTree = "<group>"; };
 		6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRange.swift; sourceTree = "<group>"; };
-		6C9E6AB71E75BCFA00BBF925 /* DataBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBlock.swift; sourceTree = "<group>"; };
 		6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileStack.swift; sourceTree = "<group>"; };
-		6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceFork.swift; sourceTree = "<group>"; };
-		6C9E6AD51E75BCFA00BBF925 /* ResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceBlock.swift; sourceTree = "<group>"; };
-		6C9E6AD61E75BCFA00BBF925 /* IconResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconResourceBlock.swift; sourceTree = "<group>"; };
-		6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamilyResourceBlock.swift; sourceTree = "<group>"; };
-		6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFontResourceBlock.swift; sourceTree = "<group>"; };
-		6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VectorFontResourceBlock.swift; sourceTree = "<group>"; };
 		6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileLayer.swift; sourceTree = "<group>"; };
 		6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileCard.swift; sourceTree = "<group>"; };
 		6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FileBackground.swift; sourceTree = "<group>"; };
@@ -702,7 +707,6 @@
 		6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Symbol.dfont; sourceTree = "<group>"; };
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
-		6CADFE861F520A6600465A00 /* PictureResourceBlock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureResourceBlock.swift; sourceTree = "<group>"; };
 		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -766,6 +770,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6C9DF4EE20C725100024F61B /* Resource Reading */ = {
+			isa = PBXGroup;
+			children = (
+				6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */,
+				6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */,
+				6C9DF50320C726090024F61B /* ResourceExtractor.swift */,
+				6C9DF4F420C7252C0024F61B /* IconResourceReader.swift */,
+				6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */,
+				6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */,
+				6C9DF4EF20C7252C0024F61B /* VectorFontResourceReader.swift */,
+				6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */,
+				6C9DF4F020C7252C0024F61B /* PictureResourceReader.swift */,
+			);
+			name = "Resource Reading";
+			sourceTree = "<group>";
+		};
 		6C9E6A811E75BCCD00BBF925 = {
 			isa = PBXGroup;
 			children = (
@@ -838,6 +858,7 @@
 				6C9E6AB01E75BCFA00BBF925 /* FontFamily.swift */,
 				6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */,
 				6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */,
+				6C9DF50120C7257C0024F61B /* AddColor.swift */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -856,30 +877,15 @@
 			isa = PBXGroup;
 			children = (
 				6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */,
-				6C9E6AB71E75BCFA00BBF925 /* DataBlock.swift */,
 				6CE8F5C920C429E700B99E39 /* MasterRecord.swift */,
 				6CE8F5C720C429CB00B99E39 /* PageReference.swift */,
 				6CE8F5C520C429C400B99E39 /* CardReference.swift */,
 				6CE8F5CB20C42A0800B99E39 /* FreeLocation.swift */,
 				6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */,
 				6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */,
+				6C9DF4FF20C725620024F61B /* ResourceReference.swift */,
 			);
 			name = Common;
-			sourceTree = "<group>";
-		};
-		6C9E6ADA1E75BCFA00BBF925 /* Resource Reading */ = {
-			isa = PBXGroup;
-			children = (
-				6C9E6AD41E75BCFA00BBF925 /* ResourceFork.swift */,
-				6C9E6AD51E75BCFA00BBF925 /* ResourceBlock.swift */,
-				6C9E6AD61E75BCFA00BBF925 /* IconResourceBlock.swift */,
-				6C9E6AD71E75BCFA00BBF925 /* FontFamilyResourceBlock.swift */,
-				6C9E6AD81E75BCFA00BBF925 /* BitmapFontResourceBlock.swift */,
-				6C9E6AD91E75BCFA00BBF925 /* VectorFontResourceBlock.swift */,
-				6C549B1F1F5112E300836AE2 /* AddColorResourceBlock.swift */,
-				6CADFE861F520A6600465A00 /* PictureResourceBlock.swift */,
-			);
-			name = "Resource Reading";
 			sourceTree = "<group>";
 		};
 		6C9E6AE11E75BCFA00BBF925 /* Stack */ = {
@@ -923,7 +929,7 @@
 				6C9E6AE71E75BCFA00BBF925 /* Content */,
 				6C9E6AB91E75BCFA00BBF925 /* Common */,
 				6CE8F5BA20C428F400B99E39 /* Data Reading */,
-				6C9E6ADA1E75BCFA00BBF925 /* Resource Reading */,
+				6C9DF4EE20C725100024F61B /* Resource Reading */,
 			);
 			name = File;
 			sourceTree = "<group>";
@@ -1716,6 +1722,7 @@
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
 				6CE8F5C220C4296600B99E39 /* MasterBlockReader.swift in Sources */,
 				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
+				6C9DF4FD20C7252D0024F61B /* ResourceForkReader.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
@@ -1728,28 +1735,28 @@
 				6C9E6B071E75BCFA00BBF925 /* Part.swift in Sources */,
 				6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */,
 				6CE8F5D620C42C8200B99E39 /* ContentBlockReader.swift in Sources */,
-				6C9E6B2C1E75BCFA00BBF925 /* ResourceBlock.swift in Sources */,
+				6C9DF4F820C7252C0024F61B /* PictureResourceReader.swift in Sources */,
 				6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */,
-				6CADFE871F520A6600465A00 /* PictureResourceBlock.swift in Sources */,
+				6C9DF4FB20C7252D0024F61B /* BitmapFontResourceReader.swift in Sources */,
 				6C9E6B3D1E75BCFA00BBF925 /* Drawing.swift in Sources */,
 				6C9E6B3C1E75BCFA00BBF925 /* MaskedImage.swift in Sources */,
+				6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */,
 				6CE8F5BF20C4296600B99E39 /* ListBlockReader.swift in Sources */,
-				6C9E6B121E75BCFA00BBF925 /* DataBlock.swift in Sources */,
 				6C9E6AFE1E75BCFA00BBF925 /* Numeric Functions.swift in Sources */,
 				6C9E6B3B1E75BCFA00BBF925 /* Image.swift in Sources */,
+				6C9DF4FC20C7252D0024F61B /* IconResourceReader.swift in Sources */,
 				6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */,
 				6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */,
 				6C9E6B411E75BCFA00BBF925 /* LayerView.swift in Sources */,
-				6C9E6B2D1E75BCFA00BBF925 /* IconResourceBlock.swift in Sources */,
-				6C9E6B2E1E75BCFA00BBF925 /* FontFamilyResourceBlock.swift in Sources */,
 				6CE8F5D420C42BAB00B99E39 /* PartBlockReader.swift in Sources */,
+				6C9DF50420C726090024F61B /* ResourceExtractor.swift in Sources */,
 				6C8746271F5402E0005A41AB /* Responder.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
 				6CE8F5CA20C429E800B99E39 /* MasterRecord.swift in Sources */,
+				6C9DF4F720C7252C0024F61B /* VectorFontResourceReader.swift in Sources */,
 				6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6CE8F5DA20C42D1900B99E39 /* BitmapBlockReader.swift in Sources */,
-				6C549B201F5112E300836AE2 /* AddColorResourceBlock.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
 				6C9E6B141E75BCFA00BBF925 /* FileStack.swift in Sources */,
 				6CE8F5CC20C42A0900B99E39 /* FreeLocation.swift in Sources */,
@@ -1759,24 +1766,24 @@
 				6CE8F5C020C4296600B99E39 /* HyperCardFileReader.swift in Sources */,
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
 				6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */,
+				6C9DF4F920C7252C0024F61B /* ResourceMapReader.swift in Sources */,
 				6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */,
-				6C9E6B301E75BCFA00BBF925 /* VectorFontResourceBlock.swift in Sources */,
 				6C9E6B491E75BCFA00BBF925 /* VectorFontConverting.swift in Sources */,
 				6C9E6B341E75BCFA00BBF925 /* FileBackground.swift in Sources */,
 				6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */,
 				6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */,
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
-				6C9E6B2F1E75BCFA00BBF925 /* BitmapFontResourceBlock.swift in Sources */,
 				6C9E6B361E75BCFA00BBF925 /* FileButton.swift in Sources */,
 				6CE8F5C420C4297600B99E39 /* StackBlockReader.swift in Sources */,
 				6C9E6B3A1E75BCFA00BBF925 /* FileGlyph.swift in Sources */,
-				6C9E6B2B1E75BCFA00BBF925 /* ResourceFork.swift in Sources */,
+				6C9DF4FA20C7252D0024F61B /* FontFamilyResourceReader.swift in Sources */,
 				6CE8F5C620C429C400B99E39 /* CardReference.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6CE8F5EE20C4330700B99E39 /* LayerBlockCommonReader.swift in Sources */,
 				6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */,
 				6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */,
+				6C9DF4FE20C7252D0024F61B /* ColorResourceReader.swift in Sources */,
 				6CE8F5D220C42B7400B99E39 /* BackgroundBlockReader.swift in Sources */,
 				6C30E8D11F4D117A00ACB457 /* CharacterTable.swift in Sources */,
 				6CE8F5E020C42E4500B99E39 /* FontBlockReader.swift in Sources */,
@@ -1785,6 +1792,7 @@
 				6C9E6B051E75BCFA00BBF925 /* Card.swift in Sources */,
 				6C9E6B461E75BCFA00BBF925 /* FieldView.swift in Sources */,
 				6C9E6B081E75BCFA00BBF925 /* Field.swift in Sources */,
+				6C9DF50020C725620024F61B /* ResourceReference.swift in Sources */,
 				6CE8F5C120C4296600B99E39 /* PageBlockReader.swift in Sources */,
 				6C9E6B471E75BCFA00BBF925 /* FontManager.swift in Sources */,
 				6C9E6B061E75BCFA00BBF925 /* Background.swift in Sources */,

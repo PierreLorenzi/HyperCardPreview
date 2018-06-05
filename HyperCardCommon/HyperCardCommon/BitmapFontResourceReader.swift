@@ -1,17 +1,19 @@
 //
-//  FontResource.swift
-//  HyperCard
+//  BitmapFontReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 16/02/2016.
-//  Copyright © 2016 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 05/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
 
 /// Parsed bitmap font resource
-public class BitmapFontResourceBlock: ResourceBlock {
+public struct BitmapFontResourceReader {
     
-    public override class var Name: NumericName {
-        return NumericName(string: "NFNT")!
+    private let data: DataRange
+    
+    public init(data: DataRange) {
+        self.data = data
     }
     
     /// Whether the font resource contains an image height table
@@ -159,13 +161,3 @@ public class BitmapFontResourceBlock: ResourceBlock {
     }
     
 }
-
-/// A sub-class for the 'FONT' resources. They have the same structure and they may be also present
-public class BitmapFontResourceBlockOld: BitmapFontResourceBlock {
-    
-    public override class var Name: NumericName {
-        return NumericName(string: "FONT")!
-}
-
-}
-

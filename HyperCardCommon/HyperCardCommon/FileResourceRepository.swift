@@ -9,75 +9,75 @@
 
 public extension ResourceRepository {
     
+    private static let iconTypeName = NumericName(string: "ICON")!
+    private static let fontFamilyTypeName = NumericName(string: "FOND")!
+    private static let bitmapFontTypeName = NumericName(string: "NFNT")!
+    private static let bitmapFontOldTypeName = NumericName(string: "FONT")!
+    private static let vectorFontTypeName = NumericName(string: "sfnt")!
+    private static let cardColorTypeName = NumericName(string: "HCcd")!
+    private static let backgroundColorTypeName = NumericName(string: "HCbg")!
+    private static let pictureTypeName = NumericName(string: "PICT")!
+    
     /// Makes a list of the resources by reading in a resource fork data
     public init(fromResourceFork resourceData: Data) {
         
+        /* Build a resource extractor */
         let dataRange = DataRange(sharedData: resourceData, offset: 0, length: resourceData.count)
-        let fork = ResourceFork(data: dataRange)
+        let forkReader = ResourceForkReader(data: dataRange)
+        let extractor = ResourceExtractor(resourceForkReader: forkReader)
         
-        /* Add the icons */
-        let iconResourceBlocks = fork.extractIcons()
-        let icons = iconResourceBlocks.map { (block: IconResourceBlock) -> IconResource in
-            let contentProperty = Property<Image> { () -> Image in
-                return block.readImage()
-            }
-            return IconResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the icons */
+        let icons = extractor.listResources(withType: IconResourceType.self, typeName: ResourceRepository.iconTypeName, parse: { (data: DataRange) -> Image in
+            let reader = IconResourceReader(data: data)
+            return reader.readImage()
+            })
         
-        /* Add the bitmap fonts */
-        let bitmapFontBlocks = fork.extractBitmapFonts()
-        let bitmapFonts = bitmapFontBlocks.map { (block: BitmapFontResourceBlock) -> BitmapFontResource in
-            let contentProperty = Property<BitmapFont> { () -> BitmapFont in
-                return BitmapFont(block: block)
-            }
-            return BitmapFontResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the bitmap fonts */
+        let bitmapFontsNew = extractor.listResources(withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontTypeName, parse: { (data: DataRange) -> BitmapFont in
+            let reader = BitmapFontResourceReader(data: data)
+            return BitmapFont(reader: reader)
+        })
         
-        /* Add the vector fonts */
-        let vectorFontBlocks = fork.extractVectorFonts()
-        let vectorFonts = vectorFontBlocks.map { (block: VectorFontResourceBlock) -> VectorFontResource in
-            let contentProperty = Property<CGFont> { () -> CGFont in
-                return block.readCGFont()
-            }
-            return VectorFontResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the bitmap fonts from old format */
+        let bitmapFontsOld = extractor.listResources(withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontOldTypeName, parse: { (data: DataRange) -> BitmapFont in
+            let reader = BitmapFontResourceReader(data: data)
+            return BitmapFont(reader: reader)
+        })
         
-        /* Add the font families */
-        let fontFamilyBlocks = fork.extractFontFamilies()
-        let fontFamilies = fontFamilyBlocks.map { (block: FontFamilyResourceBlock) -> FontFamilyResource in
-            let contentProperty = Property<FontFamily> { () -> FontFamily in
-                return FontFamily(resource: block, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
-            }
-            return FontFamilyResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List all the bitmap fonts */
+        let bitmapFonts: [BitmapFontResource] = bitmapFontsNew + bitmapFontsOld
         
-        /* Add the AddColor elements in cards */
-        let cardColorBlocks = fork.extractCardColors()
-        let cardColors = cardColorBlocks.map { (block: AddColorResourceBlockCard) -> CardColorResource in
-            let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
-                return block.readElements()
-            }
-            return CardColorResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the vector fonts */
+        let vectorFonts = extractor.listResources(withType: VectorFontResourceType.self, typeName: ResourceRepository.vectorFontTypeName, parse: { (data: DataRange) -> CGFont in
+            let reader = VectorFontResourceReader(data: data)
+            return reader.readCGFont()
+        })
         
-        /* Add the AddColor elements in backgrounds */
-        let backgroundColorBlocks = fork.extractBackgroundColors()
-        let backgroundColors = backgroundColorBlocks.map { (block: AddColorResourceBlockBackground) -> BackgroundColorResource in
-            let contentProperty = Property<[AddColorElement]> { () -> [AddColorElement] in
-                return block.readElements()
-            }
-            return BackgroundColorResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the font familes */
+        let fontFamilies = extractor.listResources(withType: FontFamilyResourceType.self, typeName: ResourceRepository.fontFamilyTypeName, parse: { (data: DataRange) -> FontFamily in
+            let reader = FontFamilyResourceReader(data: data)
+            return FontFamily(reader: reader, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+        })
         
-        /* Add the pictures */
-        let pictureBlocks = fork.extractPictures()
-        let pictures = pictureBlocks.map { (block: PictureResourceBlock) -> PictureResource in
-            let contentProperty = Property<NSImage> { () -> NSImage in
-                return block.readImage()
-            }
-            return PictureResource(identifier: block.identifier, name: block.name, contentProperty: contentProperty)
-        }
+        /* List the card colors */
+        let cardColors = extractor.listResources(withType: CardColorResourceType.self, typeName: ResourceRepository.cardColorTypeName, parse: { (data: DataRange) -> [AddColorElement] in
+            let reader = ColorResourceReader(data: data)
+            return reader.readElements()
+        })
         
+        /* List the background colors */
+        let backgroundColors = extractor.listResources(withType: BackgroundColorResourceType.self, typeName: ResourceRepository.backgroundColorTypeName, parse: { (data: DataRange) -> [AddColorElement] in
+            let reader = ColorResourceReader(data: data)
+            return reader.readElements()
+        })
+        
+        /* List the background colors */
+        let pictures = extractor.listResources(withType: PictureResourceType.self, typeName: ResourceRepository.pictureTypeName, parse: { (data: DataRange) -> NSImage in
+            let reader = PictureResourceReader(data: data)
+            return reader.readImage()
+        })
+        
+        /* Init */
         self.init(icons: icons, fontFamilies: fontFamilies, cardColors: cardColors, backgroundColors: backgroundColors, pictures: pictures)
     }
     

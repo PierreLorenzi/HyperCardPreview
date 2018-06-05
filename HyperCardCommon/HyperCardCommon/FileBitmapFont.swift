@@ -13,40 +13,40 @@
 /// lazy in swift.
 public extension BitmapFont {
     
-    public convenience init(block: BitmapFontResourceBlock) {
+    public convenience init(reader: BitmapFontResourceReader) {
         
         self.init()
         
         /* Read now the scalar fields */
-        self.maximumWidth = block.readMaximumWidth()
-        self.maximumKerning = block.readMaximumKerning()
-        self.fontRectangleWidth = block.readFontRectangleWidth()
-        self.fontRectangleHeight = block.readFontRectangleHeight()
-        self.maximumAscent = block.readMaximumAscent()
-        self.maximumDescent = block.readMaximumDescent()
-        self.leading = block.readLeading()
+        self.maximumWidth = reader.readMaximumWidth()
+        self.maximumKerning = reader.readMaximumKerning()
+        self.fontRectangleWidth = reader.readFontRectangleWidth()
+        self.fontRectangleHeight = reader.readFontRectangleHeight()
+        self.maximumAscent = reader.readMaximumAscent()
+        self.maximumDescent = reader.readMaximumDescent()
+        self.leading = reader.readLeading()
         
         /* Lazy load the glyphs */
         self.glyphsProperty.lazyCompute { () -> [Glyph] in
-            return BitmapFont.loadGlyphs(block: block)
+            return BitmapFont.loadGlyphs(reader: reader)
         }
     }
     
-    private static func loadGlyphs(block: BitmapFontResourceBlock) -> [Glyph] {
+    private static func loadGlyphs(reader: BitmapFontResourceReader) -> [Glyph] {
         
         var glyphs = [Glyph]()
         
         /* Gather some data */
-        let lastCharacterCode = block.readLastCharacterCode()
-        let firstCharacterCode = block.readFirstCharacterCode()
-        let maximumAscent = block.readMaximumAscent()
-        let maximumKerning = block.readMaximumKerning()
-        let fontRectangleHeight = block.readFontRectangleHeight()
-        let widthTable = block.readWidthTable()
-        let offsetTable = block.readOffsetTable()
-        let bitmapLocationTable = block.readBitmapLocationTable()
+        let lastCharacterCode = reader.readLastCharacterCode()
+        let firstCharacterCode = reader.readFirstCharacterCode()
+        let maximumAscent = reader.readMaximumAscent()
+        let maximumKerning = reader.readMaximumKerning()
+        let fontRectangleHeight = reader.readFontRectangleHeight()
+        let widthTable = reader.readWidthTable()
+        let offsetTable = reader.readOffsetTable()
+        let bitmapLocationTable = reader.readBitmapLocationTable()
         let bitImageProperty = Property<Image> { () -> Image in
-            return block.readBitImage()
+            return reader.readBitImage()
         }
         let loadBitImage = { () -> Image in return bitImageProperty.value }
         

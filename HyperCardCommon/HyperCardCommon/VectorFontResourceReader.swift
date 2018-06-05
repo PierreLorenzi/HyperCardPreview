@@ -1,19 +1,19 @@
 //
-//  VectorFont.swift
-//  HyperCard
+//  VectorFontResourceReader.swift
+//  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 18/02/2016.
-//  Copyright © 2016 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 05/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
-import Foundation
 
 
 /// Parsed vector font resource
-public class VectorFontResourceBlock: ResourceBlock {
+public struct VectorFontResourceReader {
     
-    public override class var Name: NumericName {
-        return NumericName(string: "sfnt")!
+    private let data: DataRange
+    
+    public init(data: DataRange) {
+        self.data = data
     }
     
     /// The resource contains a vector font file, that can be read with Core Graphics

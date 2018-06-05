@@ -1,20 +1,19 @@
 //
-//  PictureResourceBlock.swift
+//  PictureResourceReader.swift
 //  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 26/08/2017.
-//  Copyright © 2017 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 05/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
-
-
-import AppKit
 
 
 /// Apple PICT resource, with Apple internal format
-public class PictureResourceBlock: ResourceBlock {
+public struct PictureResourceReader {
     
-    public override class var Name: NumericName {
-        return NumericName(string: "PICT")!
+    private let data: DataRange
+    
+    public init(data: DataRange) {
+        self.data = data
     }
     
     public func readImage() -> NSImage {
@@ -28,4 +27,3 @@ public class PictureResourceBlock: ResourceBlock {
     }
     
 }
-

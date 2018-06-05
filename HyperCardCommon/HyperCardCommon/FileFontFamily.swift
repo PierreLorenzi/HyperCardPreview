@@ -14,10 +14,10 @@
 /// lazy in swift.
 public extension FontFamily {
     
-    public init(resource: FontFamilyResourceBlock, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
+    public init(reader: FontFamilyResourceReader, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
         
         /* Get the references from the resource */
-        let associations = resource.readFontAssociationTable()
+        let associations = reader.readFontAssociationTable()
         
         /* Load the bitmap fonts */
         let bitmapAssociations = associations.filter({ $0.size != 0 })
@@ -33,11 +33,11 @@ public extension FontFamily {
         self.init()
         self.bitmapFonts = bitmapFonts
         self.vectorFonts = vectorFonts
-        self.styleProperties = (resource.readUseIntegerExtraWidth()) ? nil : resource.readStyleProperties()
+        self.styleProperties = (reader.readUseIntegerExtraWidth()) ? nil : reader.readStyleProperties()
         
     }
     
-    private static func convertAssociationToBitmapReference(association: FontFamilyResourceBlock.FontAssociation, bitmapFonts: [BitmapFontResource]) -> FontFamily.FamilyBitmapFont? {
+    private static func convertAssociationToBitmapReference(association: FontFamilyResourceReader.FontAssociation, bitmapFonts: [BitmapFontResource]) -> FontFamily.FamilyBitmapFont? {
         
         /* Find the font in the fork */
         guard let bitmapFont = bitmapFonts.first(where: {$0.identifier == association.resourceIdentifier}) else {
@@ -49,7 +49,7 @@ public extension FontFamily {
         
     }
     
-    private static func convertAssociationToVectorReference(association: FontFamilyResourceBlock.FontAssociation, vectorFonts: [VectorFontResource]) -> FontFamily.FamilyVectorFont? {
+    private static func convertAssociationToVectorReference(association: FontFamilyResourceReader.FontAssociation, vectorFonts: [VectorFontResource]) -> FontFamily.FamilyVectorFont? {
         
         /* Find the vector font in the fork */
         guard let vectorFont = vectorFonts.first(where: {$0.identifier == association.resourceIdentifier}) else {

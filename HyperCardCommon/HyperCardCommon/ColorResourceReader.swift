@@ -1,78 +1,19 @@
 //
-//  AddColorResourceBlock.swift
+//  ColorResourceReader.swift
 //  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 26/08/2017.
-//  Copyright © 2017 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 05/06/2018.
+//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
 
-public struct AddColor {
-    public var red: Double
-    public var green: Double
-    public var blue: Double
-}
-
-/// The elements are displayed in the order of the resource, not the order of the HyperCard object
-public enum AddColorElement {
+public struct ColorResourceReader {
     
-    case button(AddColorButton)
-    case field(AddColorField)
-    case rectangle(AddColorRectangle)
-    case pictureResource(AddColorPictureResource)
-    case pictureFile(AddColorPictureFile)
-}
-
-public struct AddColorButton {
+    private let data: DataRange
     
-    public var buttonIdentifier: Int
-    public var bevel: Int
-    public var color: AddColor
-    public var enabled: Bool
-}
-
-public struct AddColorField {
-    
-    public var fieldIdentifier: Int
-    public var bevel: Int
-    public var color: AddColor
-    public var enabled: Bool
-}
-
-public struct AddColorRectangle {
-    
-    public var rectangle: Rectangle
-    public var bevel: Int
-    public var color: AddColor
-    public var enabled: Bool
-}
-
-public struct AddColorPictureResource {
-    
-    public var rectangle: Rectangle
-    
-    /// Transparent means that the white pixels of the image are drawn transparent
-    public var transparent: Bool
-    public var resourceName: HString
-    public var enabled: Bool
-}
-
-public struct AddColorPictureFile {
-    
-    public var rectangle: Rectangle
-    
-    /// Transparent means that the white pixels of the image are drawn transparent
-    public var transparent: Bool
-    
-    /// The file name is just the name of the file, not the path. The file is supposed to be in the same folder
-    ///  as the HyperCard application, the Home stack or the current stack
-    public var fileName: HString
-    public var enabled: Bool
-}
-
-
-
-public class AddColorResourceBlock: ResourceBlock {
+    public init(data: DataRange) {
+        self.data = data
+    }
     
     public func readElements() -> [AddColorElement] {
         
@@ -95,7 +36,7 @@ public class AddColorResourceBlock: ResourceBlock {
         let enabled = ((typeAndFlags >> 7) & 1) == 0
         
         switch type {
-        
+            
         case 1: // button
             let identifier = data.readUInt16(at: offset + 0x1)
             let bevel = data.readUInt16(at: offset + 0x3)
@@ -165,20 +106,3 @@ public class AddColorResourceBlock: ResourceBlock {
     }
     
 }
-
-public class AddColorResourceBlockCard: AddColorResourceBlock {
-    
-    public override class var Name: NumericName {
-        return NumericName(string: "HCcd")!
-    }
-    
-}
-
-public class AddColorResourceBlockBackground: AddColorResourceBlock {
-    
-    public override class var Name: NumericName {
-        return NumericName(string: "HCbg")!
-    }
-    
-}
-
