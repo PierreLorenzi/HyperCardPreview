@@ -336,106 +336,56 @@ public class FieldView: View, MouseResponder {
     
     private func drawText(in drawing: Drawing, content: RichText, textLayout: TextLayout) {
         
-        let lineLayouts = textLayout.lines
         let textRectangle = FieldView.computeTextRectangle(of: field)
         let contentRectangle = FieldView.computeContentRectangle(of: field)
-        let showLines = field.showLines && field.style != .scrolling
         
         if textRectangle.width == 0 || textRectangle.height == 0  {
             return
         }
         
-        var baseLineY = 0
-        var descent = 0
-        var ascent = 0
+        /* Draw the lines if necessary */
+        let showLines = field.showLines && field.style != .scrolling
+        if showLines {
+            self.drawLines(drawing: drawing, layout: textLayout, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: field.scroll)
+        }
         
+        /* Draw the text */
+        textLayout.draw(in: drawing, at: Point(x: textRectangle.left, y: textRectangle.top - field.scroll), width: textRectangle.width, alignment: field.textAlign, clipRectangle: contentRectangle)
+        
+    }
+    
+    private func drawLines(drawing: Drawing, layout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
+        
+        var baseLineY = 0
         var lineIndex = 0
         
         while true {
             
-            if lineIndex < lineLayouts.count {
-                let layout = lineLayouts[lineIndex]
+            /* While there is text, stick to the baselines, elsewhere, continue till the bottom of the field */
+            if lineIndex < layout.lines.count {
+                let layout = layout.lines[lineIndex]
                 baseLineY = textRectangle.top + layout.baseLineY - field.scroll
-                ascent = layout.ascent
-                descent = showLines ? max(layout.descent, 2) : layout.descent
-            }
-            else if showLines {
-                baseLineY += field.textHeight
-                descent = 2
-                ascent = 0
+                lineIndex += 1
             }
             else {
-                break
+                baseLineY += field.textHeight
             }
             
             /* Check if the lines start being visible */
-            if baseLineY + descent <= contentRectangle.top {
-                lineIndex += 1
+            guard baseLineY + 1 >= contentRectangle.top else {
                 continue
             }
             
             /* Check if the lines stop being visible */
-            if baseLineY - ascent >= contentRectangle.bottom {
+            guard baseLineY + 2 <= contentRectangle.bottom else {
                 break
             }
             
             /* Draw the line */
-            if showLines {
-                drawing.drawRectangle(Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right), clipRectangle: contentRectangle, composition: fieldLineComposition)
-            }
-            
-            /* Draw the line */
-            if lineIndex < lineLayouts.count {
-                drawLine(atIndex: lineIndex, atLineBaseY: baseLineY, in: drawing, lineLayouts: lineLayouts, contentRectangle: contentRectangle, textRectangle: textRectangle, content: content)
-                lineIndex += 1
-            }
+            let lineRectangle = Rectangle(top: baseLineY + 1, left: contentRectangle.left, bottom: baseLineY+2, right: contentRectangle.right)
+            drawing.drawRectangle(lineRectangle, clipRectangle: contentRectangle, composition: fieldLineComposition)
             
         }
-        
-    }
-    
-    private func drawLine(atIndex lineIndex: Int, atLineBaseY lineY: Int, in drawing: Drawing, lineLayouts: [LineLayout], contentRectangle: Rectangle, textRectangle: Rectangle, content: RichText) {
-        
-        /* Get the layout for that line */
-        let layout = lineLayouts[lineIndex]
-        
-        /* Apply alignment */
-        let lineX = computeLineStartX(lineWidth: layout.width, textRectangle: textRectangle)
-        var point = Point(x: lineX, y: lineY)
-        
-        /* Initialize the state */
-        var characterIndex = layout.textRange.lowerBound
-        var attributeIndex = layout.initialAttributeIndex
-        
-        while characterIndex < layout.textRange.upperBound {
-            
-            /* Get the extent of the current run */
-            let runCharacterEndIndex = (attributeIndex == content.attributes.count-1) ? layout.textRange.upperBound : min(layout.textRange.upperBound,content.attributes[attributeIndex+1].index)
-            let runFont = content.attributes[attributeIndex].font
-            let runWidth = runFont.computeSizeOfString(content.string, index: characterIndex, length: runCharacterEndIndex - characterIndex)
-            
-            drawing.drawString(content.string, index: characterIndex, length: runCharacterEndIndex - characterIndex, position: point, font: runFont, clip: contentRectangle)
-            
-            characterIndex = runCharacterEndIndex
-            point.x += runWidth
-            attributeIndex += 1
-            
-        }
-        
-        
-    }
-    
-    private func computeLineStartX(lineWidth: Int, textRectangle: Rectangle) -> Int {
-        
-        switch field.textAlign {
-        case .left:
-            return textRectangle.left
-        case .center:
-            return textRectangle.left + textRectangle.width/2 - lineWidth/2
-        case .right:
-            return textRectangle.right - lineWidth
-        }
-        
     }
     
     public override var rectangle: Rectangle? {

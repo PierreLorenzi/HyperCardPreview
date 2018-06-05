@@ -22,6 +22,7 @@ public struct LineLayout {
 
 public struct TextLayout {
     
+    public var text: RichText
     public var lines: [LineLayout]
 }
 
@@ -125,7 +126,7 @@ public extension TextLayout {
             }
         }
         
-        self.init(lines: lineLayouts)
+        self.init(text: text, lines: lineLayouts)
     }
     
     private static func buildEmptyLayout(atIndex index: Int, of text: RichText, attributeIndex: Int) -> LineLayout {
