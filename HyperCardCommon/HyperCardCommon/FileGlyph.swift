@@ -11,22 +11,18 @@
 /// Glyph with lazy loading from a file
 public extension Glyph {
     
-    public convenience init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, widthTable: [Int], offsetTable: [Int], bitmapLocationTable: [Int], bitImage: Image, index: Int) {
+    public convenience init(maximumAscent: Int, maximumKerning: Int, fontRectangleHeight: Int, width: Int, offset: Int, startImageOffset: Int, endImageOffset: Int, bitImage: Image) {
         
         self.init()
         
-        /* Get the offsets in the bit image */
-        let startOffset = bitmapLocationTable[index]
-        let endOffset = bitmapLocationTable[index + 1]
-        
-        self.width = widthTable[index]
-        self.imageOffset = maximumKerning + offsetTable[index]
+        self.width = width
+        self.imageOffset = maximumKerning + offset
         self.imageTop = maximumAscent
-        self.imageWidth = endOffset - startOffset
+        self.imageWidth = endImageOffset - startImageOffset
         self.imageHeight = fontRectangleHeight
-        self.isThereImage = (endOffset > startOffset)
+        self.isThereImage = (endImageOffset > startImageOffset)
         self.imageProperty.lazyCompute { () -> MaskedImage? in
-            return Glyph.loadImage(startOffset: startOffset, endOffset: endOffset, bitImage: bitImage)
+            return Glyph.loadImage(startOffset: startImageOffset, endOffset: endImageOffset, bitImage: bitImage)
         }
     }
     

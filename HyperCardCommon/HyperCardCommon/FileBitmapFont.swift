@@ -62,7 +62,7 @@ public class FileBitmapFont: BitmapFont {
         
         /* The special glyph is used outside the character bounds. It is the last in the font */
         let specialGlyphIndex = lastCharacterCode - firstCharacterCode + 1
-        let specialGlyph = Glyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, widthTable: widthTable, offsetTable: offsetTable, bitmapLocationTable: bitmapLocationTable, bitImage: bitImage, index: specialGlyphIndex)
+        let specialGlyph = Glyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, width: widthTable[specialGlyphIndex], offset: offsetTable[specialGlyphIndex], startImageOffset: bitmapLocationTable[specialGlyphIndex], endImageOffset: bitmapLocationTable[specialGlyphIndex+1], bitImage: bitImage)
         
         for index in 0..<256 {
             
@@ -73,7 +73,7 @@ public class FileBitmapFont: BitmapFont {
             }
             
             /* Build the glyph */
-            let glyph = Glyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, widthTable: widthTable, offsetTable: offsetTable, bitmapLocationTable: bitmapLocationTable, bitImage: bitImage, index: index)
+            let glyph = Glyph(maximumAscent: maximumAscent, maximumKerning: maximumKerning, fontRectangleHeight: fontRectangleHeight, width: widthTable[index], offset: offsetTable[index], startImageOffset: bitmapLocationTable[index], endImageOffset: bitmapLocationTable[index+1], bitImage: bitImage)
             glyphs.append(glyph)
             
         }
