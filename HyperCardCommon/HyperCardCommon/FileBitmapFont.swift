@@ -11,14 +11,11 @@
 /// <p>
 /// Lazy loading is implemented by hand because an inherited property can't be made
 /// lazy in swift.
-public class FileBitmapFont: BitmapFont {
+public extension BitmapFont {
     
-    private let block: BitmapFontResourceBlock
-    
-    public init(block: BitmapFontResourceBlock) {
-        self.block = block
+    public convenience init(block: BitmapFontResourceBlock) {
         
-        super.init()
+        self.init()
         
         /* Read now the scalar fields */
         self.maximumWidth = block.readMaximumWidth()
@@ -28,24 +25,14 @@ public class FileBitmapFont: BitmapFont {
         self.maximumAscent = block.readMaximumAscent()
         self.maximumDescent = block.readMaximumDescent()
         self.leading = block.readLeading()
-    }
-    
-    private var glyphsLoaded = false
-    override public var glyphs: [Glyph] {
-        get {
-            if !glyphsLoaded {
-                super.glyphs = loadGlyphs()
-                glyphsLoaded = true
-            }
-            return super.glyphs
-        }
-        set {
-            glyphsLoaded = true
-            super.glyphs = newValue
+        
+        /* Lazy load the glyphs */
+        self.glyphsProperty.lazyCompute { () -> [Glyph] in
+            return BitmapFont.loadGlyphs(block: block)
         }
     }
     
-    private func loadGlyphs() -> [Glyph] {
+    private static func loadGlyphs(block: BitmapFontResourceBlock) -> [Glyph] {
         
         var glyphs = [Glyph]()
         

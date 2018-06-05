@@ -74,7 +74,7 @@ public class FileFontFamilyResource : Resource<FontFamily> {
         
         /* Build a new font */
         let fontResource = self.bitmapFonts[index]
-        let font = FileBitmapFont(block: fontResource)
+        let font = BitmapFont(block: fontResource)
         
         /* Build the reference */
         return FontFamily.FamilyBitmapFont(size: association.size, style: association.style, font: font)

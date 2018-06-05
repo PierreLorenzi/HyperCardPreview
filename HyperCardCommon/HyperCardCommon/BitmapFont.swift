@@ -41,7 +41,11 @@ public class BitmapFont {
     public var leading = 0
     
     /// The glyphs. The indexes range from 0 to 255
-    public var glyphs: [Glyph] = []
+    public var glyphs: [Glyph] {
+        get { return self.glyphsProperty.value }
+        set { self.glyphsProperty.value = newValue }
+    }
+    public var glyphsProperty = Property<[Glyph]>([])
     
     /// Compute the width of a string in that font, in pixels, from the origin of the first
     /// glyph to the origin of the glyph after the last glyph
