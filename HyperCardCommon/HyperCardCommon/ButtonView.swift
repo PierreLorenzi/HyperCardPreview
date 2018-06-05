@@ -183,15 +183,15 @@ public class ButtonView: View, MouseResponder {
         super.init()
         
         /* font dependencies */
-        fontComputation.dependsOn(button, at: \Button.iconIdentifierProperty)
-        fontComputation.dependsOn(button, at: \Button.textFontIdentifierProperty)
-        fontComputation.dependsOn(button, at: \Button.textFontSizeProperty)
-        fontComputation.dependsOn(button, at: \Button.textStyleProperty)
+        fontComputation.dependsOn(button.iconIdentifierProperty)
+        fontComputation.dependsOn(button.textFontIdentifierProperty)
+        fontComputation.dependsOn(button.textFontSizeProperty)
+        fontComputation.dependsOn(button.textStyleProperty)
         
         /* condensedFont dependencies */
-        condensedFontComputation.dependsOn(button, at: \Button.textFontIdentifierProperty)
-        condensedFontComputation.dependsOn(button, at: \Button.textFontSizeProperty)
-        condensedFontComputation.dependsOn(button, at: \Button.textStyleProperty)
+        condensedFontComputation.dependsOn(button.textFontIdentifierProperty)
+        condensedFontComputation.dependsOn(button.textFontSizeProperty)
+        condensedFontComputation.dependsOn(button.textStyleProperty)
         
         /* drawing dependencies */
         hiliteComputation.valueProperty.startNotifications(for: self, by: {

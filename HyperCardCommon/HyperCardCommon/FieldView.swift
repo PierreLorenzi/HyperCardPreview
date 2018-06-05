@@ -97,8 +97,8 @@ public class FieldView: View, MouseResponder {
         super.init()
         
         /* Listen to content change */
-        richTextComputation.dependsOn(contentComputation, at: \Computation.valueProperty)
-        textLayoutComputation.dependsOn(richTextComputation, at: \Computation.valueProperty)
+        richTextComputation.dependsOn(contentComputation.valueProperty)
+        textLayoutComputation.dependsOn(richTextComputation.valueProperty)
         
         /* Listen to visual changes */
         field.scrollProperty.startNotifications(for: self, by: {

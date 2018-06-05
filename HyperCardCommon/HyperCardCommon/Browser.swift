@@ -461,8 +461,8 @@ public class Browser {
             }
             
             /* Dependencies */
-            computation.dependsOn(self, at: \Browser.cardIndexProperty)
-            computation.dependsOn(self, at: \Browser.displayOnlyBackgroundProperty)
+            computation.dependsOn(self.cardIndexProperty)
+            computation.dependsOn(self.displayOnlyBackgroundProperty)
             
             return computation
             
@@ -473,7 +473,7 @@ public class Browser {
             [unowned field] () -> PartContent in
             return field.content
         }
-        computation.dependsOn(field, at: \Field.contentProperty)
+        computation.dependsOn(field.contentProperty)
         
         return computation
     }
@@ -512,8 +512,8 @@ public class Browser {
             }
             
             /* Dependencies */
-            computation.dependsOn(self, at: \Browser.cardIndexProperty)
-            computation.dependsOn(self, at: \Browser.displayOnlyBackgroundProperty)
+            computation.dependsOn(self.cardIndexProperty)
+            computation.dependsOn(self.displayOnlyBackgroundProperty)
             
             return computation
         }
@@ -523,7 +523,7 @@ public class Browser {
             [unowned button] () -> Bool in
             return button.hilite
         }
-        computation.dependsOn(button, at: \Button.hiliteProperty)
+        computation.dependsOn(button.hiliteProperty)
         
         return computation
     }
