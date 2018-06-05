@@ -248,7 +248,7 @@ public extension Glyph {
                 drawing.shiftRowRight( (imageTop - y + maximumDescent - 1) / 2 - maximumDescent / 2)
                 
                 /* Draw it on the image */
-                drawing.applyRow(Point(x: 0, y: y), length: drawing.width, composition: {(a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in a = b})
+                drawing.applyRow(Point(x: 0, y: y), length: drawing.width, composition: {(a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in a = b})
                 
             }
             
@@ -312,7 +312,7 @@ public extension Glyph {
             drawing.drawImage(initialBitmap, position: Point(x: -1, y: 1))
             
             /* Keep a clean underline */
-            var row: [UInt32] = []
+            var row: [Image.Integer] = []
             if style.underline {
                 
                 /* Remove the pixels around the underline that the outline has put */
@@ -330,7 +330,7 @@ public extension Glyph {
                 
                 /* Save the state of the underline before applying the shadow */
                 let newRow = drawing.image.data[drawing.image.integerCountInRow * (imageTop + 1) ..< drawing.image.integerCountInRow * (imageTop + 2)]
-                row = [UInt32](newRow)
+                row = [Image.Integer](newRow)
             }
             
             /* Shadow */
@@ -384,7 +384,7 @@ public extension Glyph {
         
         /* Make the image black */
         for i in 0..<image.integerCountInRow {
-            image.data[i] = UInt32.max
+            image.data[i] = Image.Integer.max
         }
         
         /* Create the masked image */

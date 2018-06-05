@@ -9,10 +9,12 @@
 
 
 /// Ints representing an gray image
-public let Grays = [ UInt32(0xAAAA_AAAA), UInt32(0x5555_5555) ]
+let gray1: UInt = 0xAAAA_AAAA_AAAA_AAAA
+let gray2: UInt = 0x5555_5555_5555_5555
+public let Grays = [ Image.Integer(truncatingIfNeeded: gray1), Image.Integer(truncatingIfNeeded: gray2) ]
 
 /// The composition applied to a part image to make it look disabled
-public let DisabledComposition: ImageComposition = { (a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in
+public let DisabledComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
     
     let gray = Grays[y % 2]
     let inverseGray = Grays[1 - y % 2]
@@ -22,7 +24,7 @@ public let DisabledComposition: ImageComposition = { (a: inout UInt32, b: UInt32
 }
 
 /// The composition applied to a hilited part image to make it look disabled
-public let BlackToGrayComposition: ImageComposition = { (a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in
+public let BlackToGrayComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
     
     let inverseGray = Grays[1 - y % 2]
     a &= ~(b & inverseGray)

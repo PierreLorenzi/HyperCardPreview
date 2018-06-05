@@ -13,7 +13,7 @@ private let FieldShadowThickness = 2
 private let carriageReturn = HChar(13)
 private let space = HChar(32)
 
-private let FieldLineComposition: ImageComposition = { (a: inout UInt32, b: UInt32, integerIndex: Int, y: Int) in
+private let FieldLineComposition: ImageComposition = { (a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in
     
     let gray = Grays[0]
     let inverseGray = Grays[1]
