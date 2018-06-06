@@ -11,7 +11,9 @@
 
 public extension Button {
     
-    public convenience init(partReader: PartBlockReader, loadContent: @escaping () -> HString) {
+    public convenience init(loadFromData data: DataRange, loadContent: @escaping () -> HString) {
+        
+        let partReader = PartBlockReader(data: data)
         
         self.init()
         

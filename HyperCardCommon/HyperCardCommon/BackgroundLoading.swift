@@ -19,7 +19,7 @@ public extension Background {
         self.identifier = backgroundReader.readIdentifier()
         
         /* Enable lazy initialization */
-        self.initLayerProperties(layerReader: backgroundReader, loadBitmap: loadBitmap, styles: styles)
+        _ = self.initLayerProperties(layerReader: backgroundReader, version: version, layerType: LayerType.background, loadBitmap: loadBitmap, styles: styles)
         
         /* name */
         self.nameProperty.lazyCompute {

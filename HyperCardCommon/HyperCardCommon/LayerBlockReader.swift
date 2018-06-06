@@ -40,10 +40,10 @@ public protocol LayerBlockReader {
     func readContentSize() -> Int
     
     /// The parts in the layer
-    func extractPartReaders() -> [PartBlockReader]
+    func extractPartBlocks() -> [DataRange]
     
     /// The part contents in the layer
-    func extractContentReaders() -> [ContentBlockReader]
+    func extractContentBlocks() -> [DataRange]
     
     /// Name
     func readName() -> HString

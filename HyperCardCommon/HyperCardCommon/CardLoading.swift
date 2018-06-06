@@ -22,7 +22,7 @@ public extension Card {
         self.searchHash = cardReference.searchHash
         
         /* Enable lazy initialization */
-        self.initLayerProperties(layerReader: cardReader, loadBitmap: loadBitmap, styles: styles)
+        let contentMapProperty = self.initLayerProperties(layerReader: cardReader, version: version, layerType: LayerType.card, loadBitmap: loadBitmap, styles: styles)
         
         /* name */
         self.nameProperty.lazyCompute {
@@ -31,7 +31,7 @@ public extension Card {
         
         /* backgroundPartContents */
         self.backgroundPartContentsProperty.lazyCompute {
-            return Card.loadBackgroundPartContents(cardReader: cardReader, styles: styles)
+            return Card.loadBackgroundPartContents(contentMap: contentMapProperty.value, styles: styles)
         }
         
         /* script */
@@ -41,18 +41,12 @@ public extension Card {
         
     }
     
-    private static func loadBackgroundPartContents(cardReader: CardBlockReader, styles: [IndexedStyle]) -> [BackgroundPartContent] {
-        
-        /* Get the contents */
-        let contentReaders = cardReader.extractContentReaders()
-        
-        /* Keep only the background ones */
-        let backgroundContentReaders = contentReaders.filter({$0.readLayerType() == .background})
+    private static func loadBackgroundPartContents(contentMap: ContentMap, styles: [IndexedStyle]) -> [BackgroundPartContent] {
         
         /* Load them */
-        let result = backgroundContentReaders.map({
-            (contentReader: ContentBlockReader) -> Card.BackgroundPartContent in
-            let identifier = contentReader.readIdentifier()
+        let result = contentMap.backgroundContents.map({
+            (identifier: Int, contentReader: ContentBlockReader) -> Card.BackgroundPartContent in
+            
             let content = Layer.loadContentFromReader(contentReader: contentReader, styles: styles)
             return BackgroundPartContent(partIdentifier: identifier, partContent: content)
         })

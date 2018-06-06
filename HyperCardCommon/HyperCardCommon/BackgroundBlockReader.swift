@@ -80,12 +80,12 @@ public struct BackgroundBlockReader: LayerBlockReader {
         return layerReader.readContentSize()
     }
     
-    public func extractPartReaders() -> [PartBlockReader] {
-        return layerReader.extractPartReaders()
+    public func extractPartBlocks() -> [DataRange] {
+        return layerReader.extractPartBlocks()
     }
     
-    public func extractContentReaders() -> [ContentBlockReader] {
-        return layerReader.extractContentReaders()
+    public func extractContentBlocks() -> [DataRange] {
+        return layerReader.extractContentBlocks()
     }
     
     public func readName() -> HString {

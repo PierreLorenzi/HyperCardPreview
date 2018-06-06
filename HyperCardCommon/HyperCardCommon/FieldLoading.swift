@@ -10,7 +10,9 @@
 
 public extension Field {
     
-    public convenience init(partReader: PartBlockReader, loadContent: @escaping () -> PartContent) {
+    public convenience init(loadFromData data: DataRange, loadContent: @escaping () -> PartContent) {
+        
+        let partReader = PartBlockReader(data: data)
         
         self.init()
         

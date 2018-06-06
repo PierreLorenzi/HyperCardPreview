@@ -7,15 +7,26 @@
 //
 
 
+public struct ContentMap {
+    var cardContents: [Int: ContentBlockReader]
+    var backgroundContents: [Int: ContentBlockReader]
+}
+
+
 public extension Layer {
     
-    func initLayerProperties(layerReader: LayerBlockReader, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) {
+    func initLayerProperties(layerReader: LayerBlockReader, version: FileVersion, layerType: LayerType, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) -> Property<ContentMap> {
         
         /* Read now the scalar fields */
         self.cantDelete = layerReader.readCantDelete()
         self.showPict = layerReader.readShowPict()
         self.dontSearch = layerReader.readDontSearch()
         self.nextAvailablePartIdentifier = layerReader.readNextAvailableIdentifier()
+        
+        /* Make a map of the contents, useful for some properties */
+        let contentsProperty = Property<ContentMap> { () -> ContentMap in
+            return Layer.mapContents(layerReader: layerReader, version: version)
+        }
         
         /* Enable lazy initialization */
         
@@ -32,34 +43,62 @@ public extension Layer {
         
         /* parts */
         self.partsProperty.lazyCompute {
-            return Layer.loadParts(layerReader: layerReader, styles: styles)
+            return Layer.loadParts(layerReader: layerReader, layerType: layerType, contentsProperty: contentsProperty, styles: styles)
         }
         
+        return contentsProperty
     }
     
-    static func loadParts(layerReader: LayerBlockReader, styles: [IndexedStyle]) -> [LayerPart] {
+    private static func mapContents(layerReader: LayerBlockReader, version: FileVersion) -> ContentMap {
+        
+        let contentBlocks = layerReader.extractContentBlocks()
+        let contents = contentBlocks.map({ ContentBlockReader(data: $0, version: version) })
+        
+        let cardContents = contents.filter({ $0.readLayerType() == LayerType.card })
+        let backgroundContents = contents.filter({ $0.readLayerType() == LayerType.background })
+        
+        let cardContentMap = Layer.index(cardContents, by: { $0.readIdentifier() })
+        let backgroundContentMap = Layer.index(backgroundContents, by: { $0.readIdentifier() })
+        
+        return ContentMap(cardContents: cardContentMap, backgroundContents: backgroundContentMap)
+    }
+    
+    static func index<T, Index: Hashable>(_ elements: [T], by closure: (T) -> Index) -> [Index: T] {
+        var map: [Index: T] = [:]
+        for element in elements {
+            let index = closure(element)
+            map[index] = element
+        }
+        return map
+    }
+    
+    static func loadParts(layerReader: LayerBlockReader, layerType: LayerType, contentsProperty: Property<ContentMap>, styles: [IndexedStyle]) -> [LayerPart] {
         
         var parts = [LayerPart]()
         
         /* Load the part blocks */
-        let partReaders = layerReader.extractPartReaders()
+        let partBlocks = layerReader.extractPartBlocks()
         
         /* Convert them to parts */
-        for partReader in partReaders {
+        for partBlock in partBlocks {
+            
+            /* Read the part type */
+            let partReader = PartBlockReader(data: partBlock)
+            let partType = partReader.readType()
             
             /* Check if the part is a field or a button */
-            switch partReader.readType() {
+            switch partType {
             case .button:
                 let loadContent = { () -> HString in
-                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles).string
+                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerType: layerType, contentsProperty: contentsProperty, styles: styles).string
                 }
-                let button = Button(partReader: partReader, loadContent: loadContent)
+                let button = Button(loadFromData: partBlock, loadContent: loadContent)
                 parts.append(LayerPart.button(button))
             case .field:
                 let loadContent = { () -> PartContent in
-                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
+                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerType: layerType, contentsProperty: contentsProperty, styles: styles)
                 }
-                let field = Field(partReader: partReader, loadContent: loadContent)
+                let field = Field(loadFromData: partBlock, loadContent: loadContent)
                 parts.append(LayerPart.field(field))
             }
             
@@ -68,19 +107,16 @@ public extension Layer {
         return parts
     }
     
-    static func loadContent(identifier: Int, layerReader: LayerBlockReader, styles: [IndexedStyle]) -> PartContent {
+    static func loadContent(identifier: Int, layerType: LayerType, contentsProperty: Property<ContentMap>, styles: [IndexedStyle]) -> PartContent {
         
         /* Look for the content block */
-        let contentReaders = layerReader.extractContentReaders()
-        let layerType: LayerType = (layerReader is CardBlockReader) ? .card : .background
-        guard let contentIndex = contentReaders.index(where: {$0.readIdentifier() == identifier && $0.readLayerType() == layerType}) else {
+        let contentMap = contentsProperty.value
+        let layerContentMap = (layerType == LayerType.card ? contentMap.cardContents : contentMap.backgroundContents)
+        guard let contentReader = layerContentMap[identifier] else {
             return PartContent.string("")
         }
         
-        let contentReader = contentReaders[contentIndex]
-        
         return loadContentFromReader(contentReader: contentReader, styles: styles)
-        
     }
     
     static func loadContentFromReader(contentReader: ContentBlockReader, styles: [IndexedStyle]) -> PartContent {

@@ -74,9 +74,9 @@ public struct LayerBlockCommonReader: LayerBlockReader {
         return data.readUInt32(at: self.partOffset - 0x4)
     }
     
-    public func extractPartReaders() -> [PartBlockReader] {
+    public func extractPartBlocks() -> [DataRange] {
         
-        var parts = [PartBlockReader]()
+        var parts = [DataRange]()
         var offset = self.partOffset
         let partCount = self.readPartCount()
         
@@ -88,8 +88,7 @@ public struct LayerBlockCommonReader: LayerBlockReader {
             
             /* Build the part block */
             let dataRange = DataRange(sharedData: self.data.sharedData, offset: self.data.offset + offset, length: size)
-            let part = PartBlockReader(data: dataRange)
-            parts.append(part)
+            parts.append(dataRange)
             
             /* Move to the next part data */
             offset += size
@@ -97,14 +96,14 @@ public struct LayerBlockCommonReader: LayerBlockReader {
         return parts
     }
     
-    public func extractContentReaders() -> [ContentBlockReader] {
+    public func extractContentBlocks() -> [DataRange] {
         
         /* Special case for v1 */
         guard self.version.isTwo() else {
-            return self.extractContentReadersV1()
+            return self.extractContentBlocksV1()
         }
         
-        var contents = [ContentBlockReader]()
+        var contents = [DataRange]()
         
         let partSize = self.readPartSize()
         let contentCount = self.readContentCount()
@@ -113,22 +112,11 @@ public struct LayerBlockCommonReader: LayerBlockReader {
         for _ in 0..<contentCount {
             
             /* Read the identifier and size */
-            let storedIdentifier = data.readSInt16(at: offset)
             let size = data.readUInt16(at: offset + 2)
-            
-            /* If the identifier is 0 the file is corrupted, but HyperCard opens it anyway  */
-            guard storedIdentifier != 0 else {
-                break
-            }
-            
-            /* If the identifier is <0, then it is a card content */
-            let identifier = abs(storedIdentifier)
-            let layerType: LayerType = (storedIdentifier < 0) ? .card : .background
             
             /* Build the content block */
             let dataRange = DataRange(sharedData: self.data.sharedData, offset: self.data.offset + offset, length: size + 4)
-            let content = ContentBlockReader(data: dataRange, version: self.version, identifier: identifier, layerType: layerType)
-            contents.append(content)
+            contents.append(dataRange)
             
             /* Skip the content */
             offset += size + 4
@@ -140,9 +128,9 @@ public struct LayerBlockCommonReader: LayerBlockReader {
     }
     
     /* The contents are all unformatted strings */
-    private func extractContentReadersV1() -> [ContentBlockReader] {
+    private func extractContentBlocksV1() -> [DataRange] {
         
-        var contents = [ContentBlockReader]()
+        var contents = [DataRange]()
         
         let partSize = self.readPartSize()
         let contentCount = self.readContentCount()
@@ -150,13 +138,7 @@ public struct LayerBlockCommonReader: LayerBlockReader {
         
         for _ in 0..<contentCount {
             
-            /* Read the identifier and size */
-            let storedIdentifier = data.readSInt16(at: offset)
-            
-            /* If the identifier is <0, then it is a card content */
-            let identifier = abs(storedIdentifier)
-            let layerType: LayerType = (storedIdentifier < 0) ? .card : .background
-            
+            /* Register the offset of the start of the content */
             let contentOffset = offset
             
             /* Skip the content */
@@ -168,8 +150,7 @@ public struct LayerBlockCommonReader: LayerBlockReader {
             
             /* Build the content block */
             let dataRange = DataRange(sharedData: self.data.sharedData, offset: self.data.offset + contentOffset, length: offset - contentOffset)
-            let content = ContentBlockReader(data: dataRange, version: self.version, identifier: identifier, layerType: layerType)
-            contents.append(content)
+            contents.append(dataRange)
         }
         
         return contents

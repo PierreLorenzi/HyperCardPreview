@@ -18,27 +18,21 @@ public struct ContentBlockReader {
     
     private let version: FileVersion
     
-    /* this parameter is read separately */
-    private let identifier: Int
-    
-    /* this parameter is read separately */
-    private let layerType: LayerType
-    
-    public init(data: DataRange, version: FileVersion, identifier: Int, layerType: LayerType) {
+    public init(data: DataRange, version: FileVersion) {
         self.data = data
         self.version = version
-        self.identifier = identifier
-        self.layerType = layerType
     }
     
     /// The identifier of the part
     public func readIdentifier() -> Int {
-        return self.identifier
+        let storedIdentifier = data.readSInt16(at: 0)
+        return abs(storedIdentifier)
     }
     
     /// Whether the part is in the background or the card
     public func readLayerType() -> LayerType {
-        return self.layerType
+        let storedIdentifier = data.readSInt16(at: 0)
+        return (storedIdentifier < 0) ? .card : .background
     }
     
     /// The string content
