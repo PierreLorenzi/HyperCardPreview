@@ -10,7 +10,7 @@
 
 public extension Field {
     
-    public convenience init(partReader: PartBlockReader, layerReader: LayerBlockReader, styles: [IndexedStyle]) {
+    public convenience init(partReader: PartBlockReader, loadContent: @escaping () -> PartContent) {
         
         self.init()
         
@@ -38,9 +38,7 @@ public extension Field {
         
         
         /* content */
-        self.contentProperty.lazyCompute {
-            return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
-        }
+        self.contentProperty.lazyCompute(loadContent)
         
     }
     

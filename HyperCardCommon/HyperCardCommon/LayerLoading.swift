@@ -57,10 +57,16 @@ public extension Layer {
             /* Check if the part is a field or a button */
             switch partReader.readType() {
             case .button:
-                let button = Button(partReader: partReader, layerReader: layerReader, styles: styles)
+                let loadContent = { () -> HString in
+                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles).string
+                }
+                let button = Button(partReader: partReader, loadContent: loadContent)
                 parts.append(LayerPart.button(button))
             case .field:
-                let field = Field(partReader: partReader, layerReader: layerReader, styles: styles)
+                let loadContent = { () -> PartContent in
+                    return Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
+                }
+                let field = Field(partReader: partReader, loadContent: loadContent)
                 parts.append(LayerPart.field(field))
             }
             

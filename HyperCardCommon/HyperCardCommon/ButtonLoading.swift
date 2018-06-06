@@ -11,7 +11,7 @@
 
 public extension Button {
     
-    public convenience init(partReader: PartBlockReader, layerReader: LayerBlockReader, styles: [IndexedStyle]) {
+    public convenience init(partReader: PartBlockReader, loadContent: @escaping () -> HString) {
         
         self.init()
         
@@ -35,11 +35,7 @@ public extension Button {
         self.initPartProperties(partReader: partReader)
         
         /* content */
-        self.contentProperty.lazyCompute {
-            let partContent = Layer.loadContent(identifier: partReader.readIdentifier(), layerReader: layerReader, styles: styles)
-            return partContent.string
-        }
-        
+        self.contentProperty.lazyCompute(loadContent)
         
     }
     
