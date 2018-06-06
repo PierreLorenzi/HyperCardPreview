@@ -10,7 +10,7 @@
 
 public extension Card {
     
-    public convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], background: Background) {
+    public convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
         
         let cardReader = CardBlockReader(data: data, version: version)
         

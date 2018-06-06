@@ -40,9 +40,10 @@ public extension Stack {
         /* Load some data to load the cards and backgrounds */
         let version = stackReader.readVersion()
         let styles = Stack.loadStyles(fileReader: fileReader, stackReader: stackReader)
-        let loadBitmap = { (identifier: Int) -> BitmapBlockReader in
+        let loadBitmap = { (identifier: Int) -> MaskedImage in
             let bitmapBlock = fileReader.extractBitmapBlock(withIdentifier: identifier)
-            return BitmapBlockReader(data: bitmapBlock, version: version)
+            let bitmapBlockReader = BitmapBlockReader(data: bitmapBlock, version: version)
+            return bitmapBlockReader.readImage()
         }
         let loadBackgrounds = { [unowned self] () -> [Background] in
             return self.backgrounds
@@ -101,7 +102,7 @@ public extension Stack {
         return fontBlockReader.readFontReferences()
     }
     
-    private static func listCards(fileReader: HyperCardFileReader, stackReader: StackBlockReader, version: FileVersion, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], loadBackgrounds: () -> [Background]) -> [Card] {
+    private static func listCards(fileReader: HyperCardFileReader, stackReader: StackBlockReader, version: FileVersion, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], loadBackgrounds: () -> [Background]) -> [Card] {
         
         var cards: [Card] = []
         
@@ -142,7 +143,7 @@ public extension Stack {
         return cards
     }
     
-    private static func listBackgrounds(fileReader: HyperCardFileReader, stackReader: StackBlockReader, version: FileVersion, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle]) -> [Background] {
+    private static func listBackgrounds(fileReader: HyperCardFileReader, stackReader: StackBlockReader, version: FileVersion, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) -> [Background] {
         
         var backgrounds: [Background] = []
         

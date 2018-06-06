@@ -9,7 +9,7 @@
 
 public extension Background {
     
-    public convenience init(loadFromData data: DataRange, version: FileVersion, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle]) {
+    public convenience init(loadFromData data: DataRange, version: FileVersion, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) {
         
         let backgroundReader = BackgroundBlockReader(data: data, version: version)
         
