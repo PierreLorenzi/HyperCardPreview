@@ -7,11 +7,23 @@
 //
 
 
-/// A bitmap stores the picture of a card or a background.
+/// Reads inside a bitmap (BMAP) data block, which contains the picture of a card
+/// or of a background.
 /// <p>
-/// It has two layers with one bit per pixel: an image, to tell where the black pixels are, and a mask, to tell where the white pixels are. This is not the classical notion of mask: the mask is not about transparency, it just tells where the blank pixels are. If a pixel is activated in the image and not in the mask, it is black. It it is activated only in the mask, it is blank. If it is activated in both, it is black. The pixels neither activated in the image and in the mask are transparent.
+/// It is a proprietary image format designed by Bill Atkinson, and retro-engineered
+/// with great pain by Rebecca Bettencourt, who called it Wrath of Bill Atkinson, or
+/// WOBA, for its tortuous complexity
 /// <p>
-/// The mask and the image both have rectangles where they are enclosed, relative to the card coordinates. Outside the rectangles, the pixels are transparent. The mask and image rectangles are not necessarily in the same place.
+/// It has two layers with one bit per pixel: an image, to tell where the black pixels are,
+/// and a mask, to tell where the white pixels are. This is not the classical notion of mask:
+/// the mask is not about transparency, it just tells where the blank pixels are. If a pixel
+/// is activated in the image and not in the mask, it is black. It it is activated only in the
+/// mask, it is blank. If it is activated in both, it is black. The pixels neither activated
+/// in the image and in the mask are transparent.
+/// <p>
+/// The mask and the image both have rectangles where they are enclosed, relative to the card
+/// coordinates. Outside the rectangles, the pixels are transparent. The mask and image
+/// rectangles are not necessarily in the same place.
 public struct BitmapBlockReader {
     
     private let data: DataRange

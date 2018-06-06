@@ -9,6 +9,10 @@
 
 /// Record of a free block in a stack file
 public struct FreeLocation {
+    
+    /// Offset in the file
     public var offset: Int
+    
+    /// Length
     public var size: Int
 }

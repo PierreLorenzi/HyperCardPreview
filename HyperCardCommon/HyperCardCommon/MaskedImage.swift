@@ -9,7 +9,6 @@
 import AppKit
 
 
-
 /// A 1-bit image with a 1-bit mask
 /// <p>
 /// The structure of this object is a little complex because it is meant to handle card

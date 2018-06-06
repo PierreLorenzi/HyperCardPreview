@@ -41,6 +41,7 @@ private let scrollPatternImage = Image(named: "scroll pattern")!
 
 
 
+/// The view of a field.
 public class FieldView: View, MouseResponder {
     
     private let field: Field

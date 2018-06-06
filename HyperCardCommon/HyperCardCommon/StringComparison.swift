@@ -7,27 +7,32 @@
 //
 
 
+/// Result of a string comparison
 public enum ComparisonResult {
     case equal
     case less
     case greater
 }
 
+/// Compares two strings byte-to-byte
 public func compare(_ string1: HString, _ string2: HString) -> ComparisonResult {
     
     return compareGeneric(string1, string2, transform: noTransform)
 }
 
+/// Compares two strings case-insensitive
 public func compareCase(_ string1: HString, _ string2: HString) -> ComparisonResult {
     
     return compareGeneric(string1, string2, transform: caseTransform)
 }
 
+/// Compares two strings case-insensitive and diacritics-insensitive
 public func compareCaseDiacritics(_ string1: HString, _ string2: HString) -> ComparisonResult {
     
     return compareGeneric(string1, string2, transform: caseDiacriticTransform)
 }
 
+/// Write the string in lowercase without diacritics
 public func convertStringToLowerCaseWithoutAccent(_ string: HString) -> HString {
     return HString(data: Data(string.data.map(caseDiacriticTransform)))
 }

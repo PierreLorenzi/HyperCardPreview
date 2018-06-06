@@ -7,12 +7,9 @@
 //
 
 
-/// Subclass of BitmapFont with lazy loading from a file
-/// <p>
-/// Lazy loading is implemented by hand because an inherited property can't be made
-/// lazy in swift.
 public extension BitmapFont {
     
+    /// Loads a bitmap font from the data of a NFNT or FONT resource
     public convenience init(loadFromData data: DataRange) {
         
         let reader = BitmapFontResourceReader(data: data)

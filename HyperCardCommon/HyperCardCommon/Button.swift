@@ -7,7 +7,7 @@
 //
 
 
-/// A button
+/// A button, as a HyperCard object
 public class Button: Part {
     
     /// The content

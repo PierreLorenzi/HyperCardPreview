@@ -12,6 +12,10 @@ public typealias HChar = UInt8
 
 
 /// A Mac OS Roman string
+/// <p>
+/// It is not equatable because string comparisons in old Mac OS are always
+/// case-insensitive or even diacritics-insensitive, so the byte-to-byte comparison
+/// it not an option.
 public struct HString: ExpressibleByStringLiteral, CustomStringConvertible {
     
     /// The bytes of the string, without null terminator

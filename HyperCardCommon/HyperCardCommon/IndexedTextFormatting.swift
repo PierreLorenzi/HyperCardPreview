@@ -7,7 +7,7 @@
 //
 
 
-/// A style record of a styled content
+/// A reference to a style in the Style Block.
 public struct IndexedTextFormatting {
     
     /// Offset of the style in the string content

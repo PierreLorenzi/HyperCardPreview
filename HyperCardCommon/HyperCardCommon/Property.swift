@@ -7,6 +7,9 @@
 //
 
 
+/// Handles lazy-loading and listeners in the model objects.
+/// <p>
+/// It is a class because a struct triggers exclusive access problems and crashes.
 public class Property<T> {
     
     private var lazyValue: LazyValue

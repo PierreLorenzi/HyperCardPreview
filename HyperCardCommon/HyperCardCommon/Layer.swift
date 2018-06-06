@@ -7,7 +7,6 @@
 //
 
 
-
 /// An abstract class for cards and backgrounds
 public class Layer {
     

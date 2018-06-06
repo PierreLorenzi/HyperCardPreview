@@ -7,8 +7,7 @@
 //
 
 
-
-/// A background
+/// A background, as a HyperCard object
 public class Background: Layer {
     
     /// The identifier

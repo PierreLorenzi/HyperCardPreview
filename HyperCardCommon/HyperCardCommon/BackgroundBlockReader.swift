@@ -7,7 +7,8 @@
 //
 
 
-/// A background block contains the properties of a background
+/// Reads inside a background (BKGD) data block, which contains the informations
+/// about a background
 public struct BackgroundBlockReader: LayerBlockReader {
     
     private let data: DataRange

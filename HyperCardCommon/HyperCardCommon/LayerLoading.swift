@@ -7,13 +7,13 @@
 //
 
 
-public struct ContentMap {
+struct ContentMap {
     var cardContents: [Int: ContentBlockReader]
     var backgroundContents: [Int: ContentBlockReader]
 }
 
 
-public extension Layer {
+extension Layer {
     
     func initLayerProperties(layerReader: LayerBlockReader, version: FileVersion, layerType: LayerType, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) -> Property<ContentMap> {
         

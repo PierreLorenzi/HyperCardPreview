@@ -7,7 +7,8 @@
 //
 
 
-/// The Style Block contain the text styles used in the stack.public struct StyleBlockReaderV1V2: StyleBlockReader {
+/// Reads inside a Style Block (STLB) data, which contains the text styles used in
+/// the rich texts of the stack.
 public struct StyleBlockReader {
     
     private let data: DataRange

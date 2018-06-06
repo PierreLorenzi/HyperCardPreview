@@ -7,7 +7,7 @@
 //
 
 
-/// A hash used in HyperCard to search words
+/// A hash used in HyperCard for word search in a card
 public struct SearchHash {
     
     private var ints: [UInt32]

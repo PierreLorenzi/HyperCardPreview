@@ -7,9 +7,9 @@
 //
 
 
-
 public extension Field {
     
+    /// Loads a field from a part data block inside the stack file data fork.
     public convenience init(loadFromData data: DataRange, loadContent: @escaping () -> PartContent) {
         
         let partReader = PartBlockReader(data: data)

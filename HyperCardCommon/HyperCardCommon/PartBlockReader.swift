@@ -7,7 +7,8 @@
 //
 
 
-/// A part block contains the properties of a button or a field
+/// Reads inside a part data block, which contains the informations about
+/// a button or a field.
 public struct PartBlockReader {
     
     private let data: DataRange

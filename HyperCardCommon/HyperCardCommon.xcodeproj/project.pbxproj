@@ -793,7 +793,6 @@
 			children = (
 				6C9DF4F520C7252C0024F61B /* ResourceRepositoryReader.swift */,
 				6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */,
-				6C9DF50320C726090024F61B /* ResourceExtractor.swift */,
 				6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */,
 				6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */,
 				6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */,
@@ -921,6 +920,7 @@
 				6C9DF4FF20C725620024F61B /* ResourceReference.swift */,
 				6CA2CCB720C829DD0042148A /* OpeningError.swift */,
 				6CA2CCBF20C82F820042148A /* StackBlockDecrypter.swift */,
+				6C9DF50320C726090024F61B /* ResourceExtractor.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";

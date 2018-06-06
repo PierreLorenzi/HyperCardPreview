@@ -7,6 +7,7 @@
 //
 
 
+/// Reads inside a resource fork
 public struct ResourceRepositoryReader {
     
     private let data: DataRange
@@ -44,6 +45,7 @@ public struct ResourceRepositoryReader {
         return ResourceMapReader(data: dataRange)
     }
     
+    /// Extracts the resource data block at the given offset.
     public func extractResourceData(at dataOffset: Int) -> DataRange {
         
         let offset = dataOffset + self.dataOffset

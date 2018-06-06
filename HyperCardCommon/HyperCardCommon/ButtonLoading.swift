@@ -7,10 +7,9 @@
 //
 
 
-
-
 public extension Button {
     
+    /// Loads a button from a part data block inside the stack file data fork.
     public convenience init(loadFromData data: DataRange, loadContent: @escaping () -> HString) {
         
         let partReader = PartBlockReader(data: data)

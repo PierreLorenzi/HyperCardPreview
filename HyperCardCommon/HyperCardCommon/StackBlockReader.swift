@@ -7,7 +7,8 @@
 //
 
 
-/// The stack block (STAK), containing the global data about the stack
+/// Reads inside a stack (STAK) data block, which contains the informations
+/// on the stack stored in the file.
 public struct StackBlockReader {
     
     private let data: DataRange

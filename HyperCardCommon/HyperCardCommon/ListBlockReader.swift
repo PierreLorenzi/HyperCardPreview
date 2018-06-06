@@ -6,8 +6,10 @@
 //  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
-/// The list block (LIST), containing the card list. To make insertions and deletions faster,
-/// it is divided in sections called pages.
+
+/// Reads inside a list (LIST) data block, which contains the card list of
+/// the stack. The card list is divided into sections, called pages, in order
+/// to speed up insertions and deletions.
 public struct ListBlockReader {
     
     private let data: DataRange

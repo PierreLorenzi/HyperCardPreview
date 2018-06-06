@@ -7,6 +7,8 @@
 //
 
 
+/// Reads inside a resource map data, which contains the map of all the resources
+/// stored in a resource fork
 public struct ResourceMapReader {
     
     private let data: DataRange

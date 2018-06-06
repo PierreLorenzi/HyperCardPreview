@@ -9,6 +9,7 @@
 
 public extension Background {
     
+    /// Loads a background from a BKGD data block inside the stack file data fork.
     public convenience init(loadFromData data: DataRange, version: FileVersion, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle]) {
         
         let backgroundReader = BackgroundBlockReader(data: data, version: version)

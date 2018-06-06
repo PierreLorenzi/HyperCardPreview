@@ -104,7 +104,7 @@ private let grays = [ Image.Integer(truncatingIfNeeded: gray1), Image.Integer(tr
 
 
 
-
+/// The view of a button.
 public class ButtonView: View, MouseResponder {
     
     private let button: Button
@@ -168,7 +168,7 @@ public class ButtonView: View, MouseResponder {
             }
             
             if let iconResource = resources.findResource(ofType: \ResourceRepository.icons, withIdentifier: iconIdentifier) {
-                return maskIcon(iconResource.content)
+                return iconResource.content.buildMaskedRepresentation()
             }
             
             return nil

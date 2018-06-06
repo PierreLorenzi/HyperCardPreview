@@ -7,6 +7,7 @@
 //
 
 
+/// Reads inside the data of an AddColor resource
 public struct ColorResourceReader {
     
     private let data: DataRange
@@ -15,6 +16,7 @@ public struct ColorResourceReader {
         self.data = data
     }
     
+    /// Reads the color declarations
     public func readElements() -> [AddColorElement] {
         
         var offset = 0

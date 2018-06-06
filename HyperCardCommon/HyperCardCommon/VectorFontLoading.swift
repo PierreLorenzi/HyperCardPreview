@@ -9,6 +9,7 @@
 
 public extension VectorFont {
     
+    /// Loads a vector font from the data of a sfnt resource
     public init(loadFromData dataRange: DataRange) {
         
         /* Copy the data */

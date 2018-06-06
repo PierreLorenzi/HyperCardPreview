@@ -18,7 +18,7 @@ public extension ResourceRepository {
     private static let backgroundColorTypeName = NumericName(string: "HCbg")!
     private static let pictureTypeName = NumericName(string: "PICT")!
     
-    /// Makes a list of the resources by reading in a resource fork data
+    /// Loads a resource repository from the content of a resource fork
     public init(loadFromData resourceData: Data) {
         
         /* Build a resource extractor */

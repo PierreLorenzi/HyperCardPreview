@@ -7,13 +7,9 @@
 //
 
 
-
-/// Implementation of Font Family Resource with lazy loading from a file
-/// <p>
-/// Lazy loading is implemented by hand because an inherited property can't be made
-/// lazy in swift.
 public extension FontFamily {
     
+    /// Loads a font family from the data of a FOND resource
     public init(loadFromData data: DataRange, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
         
         let reader = FontFamilyResourceReader(data: data)

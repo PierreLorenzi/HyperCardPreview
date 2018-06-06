@@ -7,7 +7,7 @@
 //
 
 
-/// Record of a card in a page
+/// Record of a card block in a page block
 public struct CardReference {
     
     /// Identifier of the card
@@ -16,7 +16,7 @@ public struct CardReference {
     /// Is card marked
     public var marked: Bool
     
-    /// Has the card text content in the fields
+    /// If the card has some text content in its fields
     public var hasTextContent: Bool
     
     /// Is the card at the beginning of a background

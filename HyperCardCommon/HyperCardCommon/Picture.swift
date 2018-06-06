@@ -7,7 +7,10 @@
 //
 
 
+/// A colored picture
 public struct Picture {
     
+    /// The NSImage used to represent the picture. NSImage is used because it is still
+    /// able to read the old Apple-centric PICT image format.
     public var nsimage: NSImage
 }

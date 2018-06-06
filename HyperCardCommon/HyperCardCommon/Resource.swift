@@ -7,11 +7,15 @@
 //
 
 
+/// Represents a resource type, symbolized in Mac OS by a four-letter name like
+/// 'ICON' for icons or 'NFNT' for fonts.
+/// <p>
+/// ContentType is the type used in the code to represent its data content.
 public protocol ResourceType {
     associatedtype ContentType
 }
 
-/// A resource data in a resource fork. T is the type of the data contained in the resource.
+/// The content of a resource in a resource fork.
 public class Resource<T: ResourceType> {
     
     /// The identifier
@@ -36,43 +40,43 @@ public class Resource<T: ResourceType> {
     
 }
 
-/// Black & White Icons
+/// Black & White Icons without mask, formerly named 'PICT'
 public struct IconResourceType: ResourceType {
     public typealias ContentType = Icon
 }
 public typealias IconResource = Resource<IconResourceType>
 
-/// Fonts
+/// Fonts, formerly named 'FOND'
 public struct FontFamilyResourceType: ResourceType {
     public typealias ContentType = FontFamily
 }
 public typealias FontFamilyResource = Resource<FontFamilyResourceType>
 
-/// Bitmap Fonts
+/// Bitmap Fonts, naformerly namedmed 'NFNT' or 'FONT'
 public struct BitmapFontResourceType: ResourceType {
     public typealias ContentType = BitmapFont
 }
 public typealias BitmapFontResource = Resource<BitmapFontResourceType>
 
-/// Vector Fonts
+/// Vector Fonts, formerly named 'sfnt'
 public struct VectorFontResourceType: ResourceType {
     public typealias ContentType = VectorFont
 }
 public typealias VectorFontResource = Resource<VectorFontResourceType>
 
-/// AddColor card colors
+/// AddColor card colors, formerly named 'HCcd'
 public struct CardColorResourceType: ResourceType {
     public typealias ContentType = LayerColor
 }
 public typealias CardColorResource = Resource<CardColorResourceType>
 
-/// AddColor background colors
+/// AddColor background colors, formerly named 'HCbg'
 public struct BackgroundColorResourceType: ResourceType {
     public typealias ContentType = LayerColor
 }
 public typealias BackgroundColorResource = Resource<BackgroundColorResourceType>
 
-/// Pictures
+/// Color Pictures, formerly named 'PICT'
 public struct PictureResourceType: ResourceType {
     public typealias ContentType = Picture
 }

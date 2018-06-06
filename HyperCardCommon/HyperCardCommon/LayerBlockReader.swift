@@ -6,6 +6,7 @@
 //  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
+
 /// Super-protocol for card and background blocks. They share a lot of fields.
 public protocol LayerBlockReader {
     

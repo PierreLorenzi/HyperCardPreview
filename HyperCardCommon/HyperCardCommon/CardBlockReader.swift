@@ -7,7 +7,8 @@
 //
 
 
-/// A card block contains the properties of a card
+/// Reads inside a card (CARD) data block, which contains the informations
+/// about a card
 public struct CardBlockReader: LayerBlockReader {
     
     private let data: DataRange

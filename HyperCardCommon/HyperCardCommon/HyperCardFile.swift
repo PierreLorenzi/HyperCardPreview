@@ -7,6 +7,7 @@
 //
 
 
+/// Represents the content of a HyperCard file, including data and resources
 public class HyperCardFile {
 
     /// The content stack

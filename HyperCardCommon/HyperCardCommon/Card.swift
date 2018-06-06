@@ -6,7 +6,8 @@
 //  Copyright © 2017 Pierre Lorenzi. All rights reserved.
 //
 
-/// A card
+
+/// A card, as a HyperCard object
 public class Card: Layer {
     
     /// The background behind the card. It is the "owner" property in HyperTalk.

@@ -18,7 +18,7 @@ public typealias ImageComposition = (inout Image.Integer, Image.Integer, Int, In
 
 
 
-/// This classes handles all the 2D drawing. It contains a 1-bit image (without mask), and
+/// Handles all the 2D drawing. It contains a 1-bit image (without mask), and
 /// methods to draw on it.
 public class Drawing {
     

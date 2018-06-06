@@ -9,6 +9,11 @@
 
 /// A font family, containing fonts of different sizes and styles. The fonts can be either
 /// bitmap or vector.
+/// <p>
+/// A font family represents what the user perceives as a font. It contains a list of
+/// bitmap fonts and vector fonts to use for different sizes and styles.
+/// <p>
+/// All the sizes and styles don't need to be present. If one is missing, it is generated.
 public struct FontFamily {
     
     /// The bitmap fonts of the family

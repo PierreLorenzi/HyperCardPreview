@@ -6,7 +6,8 @@
 //  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
-/// Record of a page in the list
+
+/// Reference of a page block in the list block
 public struct PageReference {
     
     /// Identifier of the PAGE block

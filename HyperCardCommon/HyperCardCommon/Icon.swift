@@ -7,6 +7,7 @@
 //
 
 
+/// A 32x32 black&white unmasked icon
 public struct Icon {
     
     public var image: Image

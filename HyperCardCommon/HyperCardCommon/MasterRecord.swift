@@ -7,7 +7,7 @@
 //
 
 
-/// A record of a data block
+/// A record of a data block in the global map
 public struct MasterRecord {
     
     /// Last byte of the identifier of the data block (it can be ambiguous, the whole

@@ -9,7 +9,7 @@
 
 public extension ResourceRepository {
     
-    /// The repository representing the resource forks of HyperCard and Mac OS.
+    /// The main resource repository, representing the resource forks of HyperCard and Mac OS.
     public static let mainRepository = buildMainRepository()
 }
 

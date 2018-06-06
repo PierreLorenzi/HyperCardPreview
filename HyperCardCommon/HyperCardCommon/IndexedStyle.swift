@@ -7,7 +7,7 @@
 //
 
 
-/// A record of a text style
+/// A text style, defined in the Style Block
 public struct IndexedStyle {
     
     /// The ID of the style

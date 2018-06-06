@@ -9,6 +9,8 @@
 import Foundation
 
 
+/// Contains utility functions for image conversion between black & white and
+/// modern RGB.
 public class RgbConverter {
 
     /* The representations of the RGB colors in memory */
@@ -32,6 +34,7 @@ public class RgbConverter {
     private static let RgbWhiteBlack: RgbColor2 = 0xFF00_0000_FFFF_FFFF
     private static let rgbColor2Table: [RgbColor2] = [RgbWhiteWhite, RgbWhiteBlack, RgbBlackWhite, RgbBlackBlack]
     
+    /// Converts a black & white image to a modern CoreGraphics image
     public static func convertImage(_ image: Image) -> CGImage {
         
         /* Allocate a buffer for the image */

@@ -7,6 +7,8 @@
 //
 
 
+/// Stores a value computed with other values, so that computed properties
+/// can be included in a network of properties and listeners.
 public class Computation<T> {
     
     private let compute: () -> T
@@ -19,7 +21,7 @@ public class Computation<T> {
     
     public init(_ compute: @escaping () -> T) {
         self.compute = compute
-        self.valueProperty = Property<T>(compute())
+        self.valueProperty = Property<T>(lazy: compute)
     }
     
     public func recompute() {

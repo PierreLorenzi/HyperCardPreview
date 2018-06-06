@@ -7,7 +7,7 @@
 //
 
 
-/// A stack, as an object, not as a file
+/// A stack, as a HyperCard object
 public class Stack {
     
     /// The card list

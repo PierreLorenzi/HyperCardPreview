@@ -7,7 +7,7 @@
 //
 
 
-/// A resource record in the map
+/// A reference to a resource in a resource map
 public struct ResourceReference {
     
     /// Type of the resource

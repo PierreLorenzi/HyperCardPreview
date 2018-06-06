@@ -9,6 +9,7 @@
 
 public extension TextLayout {
     
+    /// Draws the laid-out text in the given drawing
     public func draw(in drawing: Drawing, at origin: Point, width: Int, alignment: TextAlign, clipRectangle: Rectangle) {
         
         for lineLayout in self.lines {

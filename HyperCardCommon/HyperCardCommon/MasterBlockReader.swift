@@ -7,7 +7,8 @@
 //
 
 
-/// The master block (MAST), containing the locations of the other blocks
+/// Reads inside a master (MAST) data block, which contains a map of all the
+/// data blocks in the file.
 public struct MasterBlockReader {
     
     private let data: DataRange

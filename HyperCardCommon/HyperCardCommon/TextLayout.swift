@@ -7,23 +7,42 @@
 //
 
 
-
-public struct LineLayout {
-    public var textRange: CountableRange<Int>
-    public var width: Int
-    public var baseLineY: Int
-    public var ascent: Int
-    public var descent: Int
-    public var leading: Int
-    public var bottom: Int
-    public var initialAttributeIndex: Int
-}
-
-
+/// The structure of a text divided in lines to be drawn on the screen.
 public struct TextLayout {
     
+    /// The laid-out text
     public var text: RichText
+    
+    /// The lines dividing the text
     public var lines: [LineLayout]
+}
+
+/// The properties of a line in a text layout
+public struct LineLayout {
+    
+    /// The portion of text composing the line
+    public var textRange: CountableRange<Int>
+    
+    /// The width taken by the characters of the line
+    public var width: Int
+    
+    /// The y-coordinate of the baseline, counted from the top of the text
+    public var baseLineY: Int
+    
+    /// The maximum ascent of the characters in the line
+    public var ascent: Int
+    
+    /// The maximum descent of the characters in the line
+    public var descent: Int
+    
+    /// The minimum leading of the characters in the line
+    public var leading: Int
+    
+    /// The y-coorodinate of the bottom of the line
+    public var bottom: Int
+    
+    /// The index of the text attribute in use at the first character of the line
+    public var initialAttributeIndex: Int
 }
 
 public extension TextLayout {
@@ -31,6 +50,8 @@ public extension TextLayout {
     private static let carriageReturn = HChar(13)
     private static let space = HChar(32)
     
+    /// Layouts a text within a certain width. If the width is nil, the text is not
+    /// wrapped. If a non-nil line height is provided, it is given to all the lines.
     public init(text: RichText, width possibleTextWidth: Int?, lineHeight: Int?) {
         
         /* Init the lines */

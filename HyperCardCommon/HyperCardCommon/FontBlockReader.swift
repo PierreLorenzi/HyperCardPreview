@@ -7,9 +7,11 @@
 //
 
 
-/// The font name table.
+/// Reads inside a Font Block (FTBL) data, which contains the names of the fonts
+/// used in the stack
 /// <p>
-/// Since fonts IDs were not consistent across the installations, HyperCard stores a table of the names of the fonts used in the stack. This block appears only once in a file.
+/// This data block was necessary because the font identifiers were not always
+/// consistent across the installations.
 public struct FontBlockReader {
     
     private let data: DataRange

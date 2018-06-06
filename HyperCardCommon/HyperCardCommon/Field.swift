@@ -7,7 +7,7 @@
 //
 
 
-/// A text field
+/// A text field, as a HyperCard object
 public class Field: Part {
     
     /// The text contained in the field

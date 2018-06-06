@@ -7,6 +7,8 @@
 //
 
 
+/// Decodes an encrypted stack. When a stack is private access, a certain fraction
+/// of its header data is encrypted.
 public struct StackBlockDecrypter {
     
     private let stackBlockData: DataRange
@@ -14,10 +16,13 @@ public struct StackBlockDecrypter {
     public static let encodedDataOffset = 0x18
     public static let encodedDataLength = 0x32
     
+    /// Inits with the data of a stack block.
     public init(stackBlockData: DataRange) {
         self.stackBlockData = stackBlockData
     }
     
+    /// Decodes the data with the given password. Upon success, returns the decoded
+    /// fraction of data.
     public func decrypt(withPassword caseDiacriticsPassword: HString) -> Data? {
         
         /* Ignore case and accents in the password */
@@ -129,6 +134,8 @@ public struct StackBlockDecrypter {
         return string
     }
     
+    /// Hacks the encryption. Upon success, returns the decoded
+    /// fraction of data.
     public func hack() -> Data? {
         
         /* Find the first integer used to XOR the header */

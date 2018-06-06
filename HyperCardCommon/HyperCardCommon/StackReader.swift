@@ -6,7 +6,10 @@
 //  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
-/// The parsed data blocks in a stack file
+
+/// Reads inside a stack data fork.
+/// <p>
+/// It extracts the blocks that compose the stack data.
 public struct StackReader {
     
     private let data: DataRange
@@ -21,6 +24,7 @@ public struct StackReader {
     private static let styleBlockName = NumericName(string: "STBL")!
     private static let fontBlockName = NumericName(string: "FTBL")!
     
+    /// Inits from the data fork of a HyperCard stack
     public init(data: DataRange) {
         self.data = data
         self.masterRecords = StackReader.readMasterRecords(in: data)
@@ -38,11 +42,13 @@ public struct StackReader {
         return masterReader.readRecords()
     }
     
+    /// Extracts the STAK data block
     public func extractStackBlock() -> DataRange {
         let stackLength = data.readUInt32(at: 0x0)
         return DataRange(sharedData: self.data.sharedData, offset: self.data.offset, length: stackLength)
     }
     
+    /// Extracts a LIST data block
     public func extractListBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.listName, identifier: identifier)
     }
@@ -85,26 +91,32 @@ public struct StackReader {
         
     }
     
+    /// Extracts a PAGE data block
     public func extractPageBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.pageName, identifier: identifier)
     }
     
+    /// Extracts a CARD data block
     public func extractCardBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.cardName, identifier: identifier)
     }
     
+    /// Extracts a BKGD data block
     public func extractBackgroundBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.backgroundName, identifier: identifier)
     }
     
+    /// Extracts a BMAP data block
     public func extractBitmapBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.bitmapName, identifier: identifier)
     }
     
+    /// Extracts a STBL data block
     public func extractStyleBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.styleBlockName, identifier: identifier)
     }
     
+    /// Extracts a FTBL data block
     public func extractFontBlock(withIdentifier identifier: Int) -> DataRange {
         return self.findBlock(name: StackReader.fontBlockName, identifier: identifier)
     }

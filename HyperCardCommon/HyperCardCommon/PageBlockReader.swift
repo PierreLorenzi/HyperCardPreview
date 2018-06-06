@@ -6,7 +6,8 @@
 //  Copyright © 2018 Pierre Lorenzi. All rights reserved.
 //
 
-/// A page block contains a section of the card list
+
+/// Reads inside a page (PAGE) data block, which contains a section of the card list.
 public struct PageBlockReader {
     
     private let data: DataRange

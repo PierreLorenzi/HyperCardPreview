@@ -8,7 +8,7 @@
 
 
 
-public extension Part {
+extension Part {
     
     func initPartProperties(partReader: PartBlockReader) {
         

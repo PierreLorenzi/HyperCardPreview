@@ -7,7 +7,7 @@
 //
 
 
-/// Parsed bitmap font resource
+/// Reads inside the data of a bitmap font resource
 public struct BitmapFontResourceReader {
     
     private let data: DataRange

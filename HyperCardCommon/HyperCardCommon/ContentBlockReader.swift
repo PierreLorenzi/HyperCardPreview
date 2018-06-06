@@ -7,11 +7,12 @@
 //
 
 
-/// Content of a part
+/// Reads inside a part content data block, which contains the text content of a field
+/// or of a button.
 /// <p>
 /// Part contents are separated from parts because it makes text search easier, because
-/// background fields have text contents in the card, because background buttons have hilite
-/// contents in the card
+/// background fields have text contents in the card, and because background buttons
+/// without shared hilite have contents in cards to tell if they are hilite or not.
 public struct ContentBlockReader {
     
     private let data: DataRange

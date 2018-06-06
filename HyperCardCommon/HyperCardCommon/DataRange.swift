@@ -9,7 +9,7 @@
 import Foundation
 
 
-/// An object pointing to a section of a data
+/// An reference to a section of a data
 public struct DataRange {
     
     /// The data pointed by by the object
