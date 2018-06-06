@@ -60,7 +60,6 @@
 		6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */; };
 		6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB01E75BCFA00BBF925 /* FontFamily.swift */; };
 		6C9E6B0E1E75BCFA00BBF925 /* BitmapFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */; };
-		6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */; };
 		6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */; };
 		6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */; };
 		6C9E6B141E75BCFA00BBF925 /* StackLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ABA1E75BCFA00BBF925 /* StackLoading.swift */; };
@@ -446,7 +445,6 @@
 		6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceSystem.swift; sourceTree = "<group>"; };
 		6C9E6AB01E75BCFA00BBF925 /* FontFamily.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamily.swift; sourceTree = "<group>"; };
 		6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFont.swift; sourceTree = "<group>"; };
-		6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Glyph.swift; sourceTree = "<group>"; };
 		6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClassicFile.swift; sourceTree = "<group>"; };
 		6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRange.swift; sourceTree = "<group>"; };
 		6C9E6ABA1E75BCFA00BBF925 /* StackLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackLoading.swift; sourceTree = "<group>"; };
@@ -891,7 +889,6 @@
 				6CA2CCC720C83DE10042148A /* Icon.swift */,
 				6C9E6AB01E75BCFA00BBF925 /* FontFamily.swift */,
 				6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */,
-				6C9E6AB21E75BCFA00BBF925 /* Glyph.swift */,
 				6CA2CCC920C83FF40042148A /* VectorFont.swift */,
 				6C9DF50120C7257C0024F61B /* AddColor.swift */,
 			);
@@ -1824,7 +1821,6 @@
 				6CE8F5C620C429C400B99E39 /* CardReference.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6CE8F5EE20C4330700B99E39 /* LayerBlockCommonReader.swift in Sources */,
-				6C9E6B0F1E75BCFA00BBF925 /* Glyph.swift in Sources */,
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* LayerLoading.swift in Sources */,
 				6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */,
