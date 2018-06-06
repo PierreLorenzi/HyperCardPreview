@@ -43,27 +43,27 @@ class Document: NSDocument, NSAnimationDelegate {
             let stack = try Stack(file: file, password: password)
             self.browser = Browser(stack: stack)
         }
-        catch Stack.OpeningError.notStack {
+        catch OpeningError.notStack {
             
             /* Tell the user we can't open the file */
-            let alert = NSAlert(error: Stack.OpeningError.notStack)
+            let alert = NSAlert(error: OpeningError.notStack)
             alert.messageText = "The file is not a stack"
             alert.informativeText = "The file can't be opened because it is not recognized as a stack"
             alert.runModal()
-            throw Stack.OpeningError.notStack
+            throw OpeningError.notStack
             
         }
-        catch Stack.OpeningError.corrupted {
+        catch OpeningError.corrupted {
             
             /* Tell the user we can't open the file */
-            let alert = NSAlert(error: Stack.OpeningError.notStack)
+            let alert = NSAlert(error: OpeningError.notStack)
             alert.messageText = "The stack is corrupted"
             alert.informativeText = "The stack can't be opened because the data is corrupted"
             alert.runModal()
-            throw Stack.OpeningError.notStack
+            throw OpeningError.notStack
             
         }
-        catch Stack.OpeningError.missingPassword {
+        catch OpeningError.missingPassword {
             
             /* Ask the user for a password */
             let alert = NSAlert()
@@ -77,13 +77,13 @@ class Document: NSDocument, NSAnimationDelegate {
             
             /* If cancel, stop */
             guard answer == NSApplication.ModalResponse.alertFirstButtonReturn else {
-                throw Stack.OpeningError.wrongPassword
+                throw OpeningError.wrongPassword
             }
             
             /* Get the password */
             let passwordString = textField.stringValue
             guard passwordString != "" else {
-                throw Stack.OpeningError.wrongPassword
+                throw OpeningError.wrongPassword
             }
             
             /* Convert it to Mac OS Roman encoding */
@@ -93,18 +93,18 @@ class Document: NSDocument, NSAnimationDelegate {
                 let alert = NSAlert()
                 alert.messageText = "Wrong Password"
                 alert.runModal()
-                throw Stack.OpeningError.wrongPassword
+                throw OpeningError.wrongPassword
             }
             
             /* Try again to open the file, this time with the password */
             try self.readStack(atPath: path, password: password)
             
         }
-        catch Stack.OpeningError.wrongPassword {
+        catch OpeningError.wrongPassword {
             let alert = NSAlert()
             alert.messageText = "Wrong Password"
             alert.runModal()
-            throw Stack.OpeningError.wrongPassword
+            throw OpeningError.wrongPassword
         }
         
     }

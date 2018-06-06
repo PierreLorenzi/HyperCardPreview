@@ -332,6 +332,7 @@
 		6C9E6D3D1E75BEEA00BBF925 /* Symbol.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */; };
 		6C9E6D3E1E75BEEA00BBF925 /* Times.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C431E75BEEA00BBF925 /* Times.dfont */; };
 		6C9E6D3F1E75BEEA00BBF925 /* Venice.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6C9E6C441E75BEEA00BBF925 /* Venice.dfont */; };
+		6CA2CCB820C829DD0042148A /* OpeningError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCB720C829DD0042148A /* OpeningError.swift */; };
 		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
@@ -713,6 +714,7 @@
 		6C9E6C421E75BEEA00BBF925 /* Symbol.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Symbol.dfont; sourceTree = "<group>"; };
 		6C9E6C431E75BEEA00BBF925 /* Times.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Times.dfont; sourceTree = "<group>"; };
 		6C9E6C441E75BEEA00BBF925 /* Venice.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = Venice.dfont; sourceTree = "<group>"; };
+		6CA2CCB720C829DD0042148A /* OpeningError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpeningError.swift; sourceTree = "<group>"; };
 		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -906,6 +908,7 @@
 				6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */,
 				6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */,
 				6C9DF4FF20C725620024F61B /* ResourceReference.swift */,
+				6CA2CCB720C829DD0042148A /* OpeningError.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1803,6 +1806,7 @@
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* FileLayer.swift in Sources */,
 				6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */,
+				6CA2CCB820C829DD0042148A /* OpeningError.swift in Sources */,
 				6C9DF4FE20C7252D0024F61B /* ColorResourceReader.swift in Sources */,
 				6CE8F5D220C42B7400B99E39 /* BackgroundBlockReader.swift in Sources */,
 				6C30E8D11F4D117A00ACB457 /* StringComparison.swift in Sources */,

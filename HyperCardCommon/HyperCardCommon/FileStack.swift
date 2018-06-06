@@ -9,13 +9,6 @@
 
 public extension Stack {
     
-    public enum OpeningError: Error {
-        case notStack
-        case corrupted
-        case missingPassword
-        case wrongPassword
-    }
-    
     public convenience init(file: ClassicFile, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
         
         /* Decrypt the header if necessary */
