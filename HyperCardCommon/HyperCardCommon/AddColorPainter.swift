@@ -39,14 +39,14 @@ public class AddColorPainter {
         
         /* Background */
         let backgroundResource = resources.backgroundColors.first(where: { $0.identifier == background.identifier })
-        if let elements = backgroundResource?.content {
+        if let elements = backgroundResource?.content.elements {
             AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, pictures: resources.pictures)
         }
         
         /* Card */
         if !excludeCardParts {
             let cardResource = resources.cardColors.first(where: { $0.identifier == card.identifier })
-            if let elements = cardResource?.content {
+            if let elements = cardResource?.content.elements {
                 AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, pictures: resources.pictures)
             }
         }

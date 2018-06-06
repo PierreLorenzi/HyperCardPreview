@@ -61,15 +61,17 @@ public extension ResourceRepository {
         })
         
         /* List the card colors */
-        let cardColors = extractor.listResources(withType: CardColorResourceType.self, typeName: ResourceRepository.cardColorTypeName, parse: { (data: DataRange) -> [AddColorElement] in
+        let cardColors = extractor.listResources(withType: CardColorResourceType.self, typeName: ResourceRepository.cardColorTypeName, parse: { (data: DataRange) -> LayerColor in
             let reader = ColorResourceReader(data: data)
-            return reader.readElements()
+            let elements = reader.readElements()
+            return LayerColor(elements: elements)
         })
         
         /* List the background colors */
-        let backgroundColors = extractor.listResources(withType: BackgroundColorResourceType.self, typeName: ResourceRepository.backgroundColorTypeName, parse: { (data: DataRange) -> [AddColorElement] in
+        let backgroundColors = extractor.listResources(withType: BackgroundColorResourceType.self, typeName: ResourceRepository.backgroundColorTypeName, parse: { (data: DataRange) -> LayerColor in
             let reader = ColorResourceReader(data: data)
-            return reader.readElements()
+            let elements = reader.readElements()
+            return LayerColor(elements: elements)
         })
         
         /* List the background colors */

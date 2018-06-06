@@ -7,6 +7,11 @@
 //
 
 
+public struct LayerColor {
+    
+    public var elements: [AddColorElement]
+}
+
 public struct AddColor {
     public var red: Double
     public var green: Double

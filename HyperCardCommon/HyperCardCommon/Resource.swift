@@ -62,13 +62,13 @@ public typealias VectorFontResource = Resource<VectorFontResourceType>
 
 /// AddColor card colors
 public struct CardColorResourceType: ResourceType {
-    public typealias ContentType = [AddColorElement]
+    public typealias ContentType = LayerColor
 }
 public typealias CardColorResource = Resource<CardColorResourceType>
 
 /// AddColor background colors
 public struct BackgroundColorResourceType: ResourceType {
-    public typealias ContentType = [AddColorElement]
+    public typealias ContentType = LayerColor
 }
 public typealias BackgroundColorResource = Resource<BackgroundColorResourceType>
 
