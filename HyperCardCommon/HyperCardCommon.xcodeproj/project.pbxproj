@@ -336,6 +336,7 @@
 		6CA2CCC020C82F820042148A /* StackBlockDecrypter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCBF20C82F820042148A /* StackBlockDecrypter.swift */; };
 		6CA2CCC820C83DE10042148A /* Icon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCC720C83DE10042148A /* Icon.swift */; };
 		6CA2CCCA20C83FF40042148A /* VectorFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCC920C83FF40042148A /* VectorFont.swift */; };
+		6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCCB20C842CE0042148A /* Picture.swift */; };
 		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
@@ -721,6 +722,7 @@
 		6CA2CCBF20C82F820042148A /* StackBlockDecrypter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackBlockDecrypter.swift; sourceTree = "<group>"; };
 		6CA2CCC720C83DE10042148A /* Icon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icon.swift; sourceTree = "<group>"; };
 		6CA2CCC920C83FF40042148A /* VectorFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VectorFont.swift; sourceTree = "<group>"; };
+		6CA2CCCB20C842CE0042148A /* Picture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Picture.swift; sourceTree = "<group>"; };
 		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -891,6 +893,7 @@
 				6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */,
 				6CA2CCC920C83FF40042148A /* VectorFont.swift */,
 				6C9DF50120C7257C0024F61B /* AddColor.swift */,
+				6CA2CCCB20C842CE0042148A /* Picture.swift */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -1763,6 +1766,7 @@
 				6C9DF4FD20C7252D0024F61B /* ResourceForkReader.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
+				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
 				6CE8F5DC20C42DEA00B99E39 /* StyleBlockReader.swift in Sources */,
 				6CE8F5CE20C42A6A00B99E39 /* LayerBlockReader.swift in Sources */,

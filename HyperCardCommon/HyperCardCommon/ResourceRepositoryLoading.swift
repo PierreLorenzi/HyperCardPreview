@@ -75,9 +75,10 @@ public extension ResourceRepository {
         })
         
         /* List the background colors */
-        let pictures = extractor.listResources(withType: PictureResourceType.self, typeName: ResourceRepository.pictureTypeName, parse: { (data: DataRange) -> NSImage in
+        let pictures = extractor.listResources(withType: PictureResourceType.self, typeName: ResourceRepository.pictureTypeName, parse: { (data: DataRange) -> Picture in
             let reader = PictureResourceReader(data: data)
-            return reader.readImage()
+            let nsimage = reader.readImage()
+            return Picture(nsimage: nsimage)
         })
         
         /* Init */

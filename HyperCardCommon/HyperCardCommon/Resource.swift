@@ -74,6 +74,6 @@ public typealias BackgroundColorResource = Resource<BackgroundColorResourceType>
 
 /// Pictures
 public struct PictureResourceType: ResourceType {
-    public typealias ContentType = NSImage
+    public typealias ContentType = Picture
 }
 public typealias PictureResource = Resource<PictureResourceType>
