@@ -9,82 +9,73 @@
 import Foundation
 
 
-public enum VectorFontConverting {
+public extension BitmapFont {
     
-    /// Converts a Core Text font to a bitmap font
-    public static func convertVectorFont(_ font: CTFont) -> BitmapFont {
-        return buildFontFromVector(font)
-    }
-    
-}
-
-
-private func buildFontFromVector(_ vectorFont: CTFont) -> BitmapFont {
-    
-    let font = BitmapFont()
-    
-    /* Check if the CT Font has an integer width table */
-    let integerWidthTable: HdmxTableRecord? = findIntegerWidths(inVectorFont: vectorFont)
-    
-    /* Measures */
-    let boundingBox = CTFontGetBoundingBox(vectorFont)
-    font.maximumWidth = integerWidthTable?.maximumWidth ?? Int(round(boundingBox.origin.x + boundingBox.size.width))
-    font.maximumKerning = Int(round(boundingBox.origin.x))
-    font.maximumAscent = Int(round(CTFontGetAscent(vectorFont)))
-    font.maximumDescent = Int(round(CTFontGetDescent(vectorFont)))
-    font.fontRectangleWidth = Int(round(boundingBox.size.width))
-    font.fontRectangleHeight = Int(round(boundingBox.size.height))
-    
-    /* Glyphs */
-    var glyphs = [Glyph]()
-    
-    for i in 0..<256 {
-        let unicodeCharacter = UnicharMacOSRoman[i]
-        let singletonCharacter = [unicodeCharacter]
-        var vectorGlyphSingleton: [CGGlyph] = [CGGlyph(0)]
-        let result = CTFontGetGlyphsForCharacters(vectorFont, singletonCharacter, &vectorGlyphSingleton, 1)
-        if !result || vectorGlyphSingleton[0] == CGGlyph(0) {
-            glyphs.append(Glyph())
+    public convenience init(fromVectorFont vectorFont: CTFont) {
+        
+        self.init()
+        
+        /* Check if the CT Font has an integer width table */
+        let integerWidthTable: HdmxTableRecord? = findIntegerWidths(inVectorFont: vectorFont)
+        
+        /* Measures */
+        let boundingBox = CTFontGetBoundingBox(vectorFont)
+        self.maximumWidth = integerWidthTable?.maximumWidth ?? Int(round(boundingBox.origin.x + boundingBox.size.width))
+        self.maximumKerning = Int(round(boundingBox.origin.x))
+        self.maximumAscent = Int(round(CTFontGetAscent(vectorFont)))
+        self.maximumDescent = Int(round(CTFontGetDescent(vectorFont)))
+        self.fontRectangleWidth = Int(round(boundingBox.size.width))
+        self.fontRectangleHeight = Int(round(boundingBox.size.height))
+        
+        /* Glyphs */
+        var glyphs = [Glyph]()
+        
+        for i in 0..<256 {
+            let unicodeCharacter = UnicharMacOSRoman[i]
+            let singletonCharacter = [unicodeCharacter]
+            var vectorGlyphSingleton: [CGGlyph] = [CGGlyph(0)]
+            let result = CTFontGetGlyphsForCharacters(vectorFont, singletonCharacter, &vectorGlyphSingleton, 1)
+            if !result || vectorGlyphSingleton[0] == CGGlyph(0) {
+                glyphs.append(Glyph())
+            }
+            else {
+                let integerWidth = integerWidthTable?.widths[Int(vectorGlyphSingleton[0])]
+                let glyph = Glyph(font: vectorFont, glyph: vectorGlyphSingleton[0], integerWidth: integerWidth)
+                glyphs.append(glyph)
+            }
         }
-        else {
-            let integerWidth = integerWidthTable?.widths[Int(vectorGlyphSingleton[0])]
-            let glyph = Glyph(font: vectorFont, glyph: vectorGlyphSingleton[0], integerWidth: integerWidth)
-            glyphs.append(glyph)
+        
+        self.glyphs = glyphs
+    }
+
+    private func findIntegerWidths(inVectorFont vectorFont: CTFont) -> HdmxTableRecord? {
+        
+        /* Get the integer width table */
+        guard let cfdata = CTFontCopyTable(vectorFont, CTFontTableTag(kCTFontTableHdmx), CTFontTableOptions(rawValue: 0)) else {
+            return nil
         }
+        
+        /* Get the font sizes present in the table */
+        let data = cfdata as NSData as Data
+        let header = HdmxTableReader.readHeader(inData: data)
+        let fontSizes = HdmxTableReader.listFontSizes(recordCount: header.recordCount, recordSize: header.recordSize, inData: data)
+        
+        /* Check if the right font size is present */
+        let vectorFontSize = Int(CTFontGetSize(vectorFont))
+        guard let index = fontSizes.index(where: { $0 == vectorFontSize }) else {
+            return nil
+        }
+        
+        /* Return the integer width table */
+        return HdmxTableReader.readRecord(atIndex: index, size: header.recordSize, inData: data)
+        
     }
-    
-    font.glyphs = glyphs
-    
-    return font
+
 }
 
-private func findIntegerWidths(inVectorFont vectorFont: CTFont) -> HdmxTableRecord? {
+private extension Glyph {
     
-    /* Get the integer width table */
-    guard let cfdata = CTFontCopyTable(vectorFont, CTFontTableTag(kCTFontTableHdmx), CTFontTableOptions(rawValue: 0)) else {
-        return nil
-    }
-    
-    /* Get the font sizes present in the table */
-    let data = cfdata as NSData as Data
-    let header = HdmxTableReader.readHeader(inData: data)
-    let fontSizes = HdmxTableReader.listFontSizes(recordCount: header.recordCount, recordSize: header.recordSize, inData: data)
-    
-    /* Check if the right font size is present */
-    let vectorFontSize = Int(CTFontGetSize(vectorFont))
-    guard let index = fontSizes.index(where: { $0 == vectorFontSize }) else {
-        return nil
-    }
-    
-    /* Return the integer width table */
-    return HdmxTableReader.readRecord(atIndex: index, size: header.recordSize, inData: data)
-    
-}
-
-
-public extension Glyph {
-    
-    public convenience init(font: CTFont, glyph: CGGlyph, integerWidth: Int?) {
+    convenience init(font: CTFont, glyph: CGGlyph, integerWidth: Int?) {
         
         self.init()
         
