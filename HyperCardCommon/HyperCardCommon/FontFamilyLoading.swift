@@ -14,7 +14,9 @@
 /// lazy in swift.
 public extension FontFamily {
     
-    public init(reader: FontFamilyResourceReader, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
+    public init(loadFromData data: DataRange, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
+        
+        let reader = FontFamilyResourceReader(data: data)
         
         /* Get the references from the resource */
         let associations = reader.readFontAssociationTable()

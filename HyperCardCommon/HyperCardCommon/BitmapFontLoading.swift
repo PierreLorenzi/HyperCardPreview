@@ -13,7 +13,9 @@
 /// lazy in swift.
 public extension BitmapFont {
     
-    public convenience init(reader: BitmapFontResourceReader) {
+    public convenience init(loadFromData data: DataRange) {
+        
+        let reader = BitmapFontResourceReader(data: data)
         
         self.init()
         

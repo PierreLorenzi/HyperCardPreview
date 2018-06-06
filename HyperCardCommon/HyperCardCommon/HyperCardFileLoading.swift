@@ -27,7 +27,7 @@ public extension HyperCardFile {
             guard let resourceFork = file.resourceFork else {
                 return nil
             }
-            return ResourceRepository(fromResourceFork: resourceFork)
+            return ResourceRepository(loadFromData: resourceFork)
         }
         
     }

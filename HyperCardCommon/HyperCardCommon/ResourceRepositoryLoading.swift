@@ -19,7 +19,7 @@ public extension ResourceRepository {
     private static let pictureTypeName = NumericName(string: "PICT")!
     
     /// Makes a list of the resources by reading in a resource fork data
-    public init(fromResourceFork resourceData: Data) {
+    public init(loadFromData resourceData: Data) {
         
         /* Build a resource extractor */
         let dataRange = DataRange(sharedData: resourceData, offset: 0, length: resourceData.count)
@@ -28,20 +28,17 @@ public extension ResourceRepository {
         
         /* List the icons */
         let icons = extractor.listResources(withType: IconResourceType.self, typeName: ResourceRepository.iconTypeName, parse: { (data: DataRange) -> Icon in
-            let reader = IconResourceReader(data: data)
-            return Icon(image: reader.readImage())
+            return Icon(loadFromData: data)
             })
         
         /* List the bitmap fonts */
         let bitmapFontsNew = extractor.listResources(withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontTypeName, parse: { (data: DataRange) -> BitmapFont in
-            let reader = BitmapFontResourceReader(data: data)
-            return BitmapFont(reader: reader)
+            return BitmapFont(loadFromData: data)
         })
         
         /* List the bitmap fonts from old format */
         let bitmapFontsOld = extractor.listResources(withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontOldTypeName, parse: { (data: DataRange) -> BitmapFont in
-            let reader = BitmapFontResourceReader(data: data)
-            return BitmapFont(reader: reader)
+            return BitmapFont(loadFromData: data)
         })
         
         /* List all the bitmap fonts */
@@ -49,36 +46,27 @@ public extension ResourceRepository {
         
         /* List the vector fonts */
         let vectorFonts = extractor.listResources(withType: VectorFontResourceType.self, typeName: ResourceRepository.vectorFontTypeName, parse: { (data: DataRange) -> VectorFont in
-            let reader = VectorFontResourceReader(data: data)
-            let cgfont = reader.readCGFont()
-            return VectorFont(cgfont: cgfont)
+            return VectorFont(loadFromData: data)
         })
         
         /* List the font familes */
         let fontFamilies = extractor.listResources(withType: FontFamilyResourceType.self, typeName: ResourceRepository.fontFamilyTypeName, parse: { (data: DataRange) -> FontFamily in
-            let reader = FontFamilyResourceReader(data: data)
-            return FontFamily(reader: reader, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+            return FontFamily(loadFromData: data, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
         })
         
         /* List the card colors */
         let cardColors = extractor.listResources(withType: CardColorResourceType.self, typeName: ResourceRepository.cardColorTypeName, parse: { (data: DataRange) -> LayerColor in
-            let reader = ColorResourceReader(data: data)
-            let elements = reader.readElements()
-            return LayerColor(elements: elements)
+            return LayerColor(loadFromData: data)
         })
         
         /* List the background colors */
         let backgroundColors = extractor.listResources(withType: BackgroundColorResourceType.self, typeName: ResourceRepository.backgroundColorTypeName, parse: { (data: DataRange) -> LayerColor in
-            let reader = ColorResourceReader(data: data)
-            let elements = reader.readElements()
-            return LayerColor(elements: elements)
+            return LayerColor(loadFromData: data)
         })
         
         /* List the background colors */
         let pictures = extractor.listResources(withType: PictureResourceType.self, typeName: ResourceRepository.pictureTypeName, parse: { (data: DataRange) -> Picture in
-            let reader = PictureResourceReader(data: data)
-            let nsimage = reader.readImage()
-            return Picture(nsimage: nsimage)
+            return Picture(loadFromData: data)
         })
         
         /* Init */
