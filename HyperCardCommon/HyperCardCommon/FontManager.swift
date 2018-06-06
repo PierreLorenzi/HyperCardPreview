@@ -64,7 +64,7 @@ public class FontManager {
             /* Look for a vector font (during tests, it appeared that it is only loaded for plain fonts) */
             if descriptor.style == PlainTextStyle {
                 if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
-                    let ctfont = CTFontCreateWithGraphicsFont(vectorFont.resource.content, CGFloat(descriptor.size), nil, nil)
+                    let ctfont = CTFontCreateWithGraphicsFont(vectorFont.resource.content.cgfont, CGFloat(descriptor.size), nil, nil)
                     return BitmapFont(fromVectorFont: ctfont)
                 }
             }

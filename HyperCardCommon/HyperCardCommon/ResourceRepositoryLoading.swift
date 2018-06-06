@@ -48,9 +48,10 @@ public extension ResourceRepository {
         let bitmapFonts: [BitmapFontResource] = bitmapFontsNew + bitmapFontsOld
         
         /* List the vector fonts */
-        let vectorFonts = extractor.listResources(withType: VectorFontResourceType.self, typeName: ResourceRepository.vectorFontTypeName, parse: { (data: DataRange) -> CGFont in
+        let vectorFonts = extractor.listResources(withType: VectorFontResourceType.self, typeName: ResourceRepository.vectorFontTypeName, parse: { (data: DataRange) -> VectorFont in
             let reader = VectorFontResourceReader(data: data)
-            return reader.readCGFont()
+            let cgfont = reader.readCGFont()
+            return VectorFont(cgfont: cgfont)
         })
         
         /* List the font familes */

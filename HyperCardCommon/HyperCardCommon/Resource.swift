@@ -56,7 +56,7 @@ public typealias BitmapFontResource = Resource<BitmapFontResourceType>
 
 /// Vector Fonts
 public struct VectorFontResourceType: ResourceType {
-    public typealias ContentType = CGFont
+    public typealias ContentType = VectorFont
 }
 public typealias VectorFontResource = Resource<VectorFontResourceType>
 
