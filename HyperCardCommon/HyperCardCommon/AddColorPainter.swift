@@ -17,10 +17,10 @@ public class AddColorPainter {
     /// Alpha applied to transparent fields and buttons
     private static let transparentPartAlpha = 0.63
     
-    public static func paintAddColor(ofStack stack: Stack, atCardIndex cardIndex: Int, excludeCardParts: Bool, onContext context: CGContext) {
+    public static func paintAddColor(ofFile hyperCardFile: HyperCardFile, atCardIndex cardIndex: Int, excludeCardParts: Bool, onContext context: CGContext) {
         
         /* Check if there are resources */
-        guard let resources = stack.resources else {
+        guard let resources = hyperCardFile.resources else {
             return
         }
         
@@ -33,6 +33,7 @@ public class AddColorPainter {
         context.setShouldAntialias(false)
         
         /* Get card and background */
+        let stack = hyperCardFile.stack
         let card = stack.cards[cardIndex]
         let background = card.background
         

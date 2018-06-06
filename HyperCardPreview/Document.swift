@@ -40,8 +40,8 @@ class Document: NSDocument, NSAnimationDelegate {
         
         do {
             let file = ClassicFile(path: path)
-            let stack = try Stack(file: file, password: password)
-            self.browser = Browser(stack: stack)
+            let hyperCardFile = try HyperCardFile(file: file, password: password)
+            self.browser = Browser(hyperCardFile: hyperCardFile)
         }
         catch OpeningError.notStack {
             
@@ -170,7 +170,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Check if the thumbnails are managed */
         if self.collectionViewManager == nil {
-            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, stack: browser.stack, document: self)
+            self.collectionViewManager = CollectionViewManager(collectionView: self.collectionView, hyperCardFile: browser.hyperCardFile, document: self)
         }
         
         /* Display the card list */
@@ -616,7 +616,7 @@ class Document: NSDocument, NSAnimationDelegate {
     }
     
     @objc func displayStackInfo(_ sender: AnyObject) {
-        displayInfo().displayStack(browser.stack)
+        displayInfo().displayStack(browser.hyperCardFile)
     }
     
     @objc func displayBackgroundInfo(_ sender: AnyObject) {

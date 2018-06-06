@@ -32,11 +32,12 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     
     private static let itemIdentifier = "item"
     
-    init(collectionView: NSCollectionView, stack: Stack, document: Document) {
+    init(collectionView: NSCollectionView, hyperCardFile: HyperCardFile, document: Document) {
         self.collectionView = collectionView
-        self.browser = Browser(stack: stack)
+        self.browser = Browser(hyperCardFile: hyperCardFile)
         self.thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: browser.image.width, cardHeight: browser.image.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
         self.document = document
+        let stack = hyperCardFile.stack
         self.thumbnails = [CGImage?](repeating: nil, count: stack.cards.count)
         self.renderingQueue = DispatchQueue(label: "CollectionViewManager Rendering Queue")
         self.renderingPriorities = [Int](repeating: 0, count: stack.cards.count)

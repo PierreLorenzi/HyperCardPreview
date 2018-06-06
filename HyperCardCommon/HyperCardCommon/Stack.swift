@@ -25,13 +25,6 @@ public class Stack {
     }
     public var backgroundsProperty = Property<[Background]>([])
     
-    /// The resources of the stack, present in the resource fork of the file
-    public var resources: ResourceRepository? {
-        get { return self.resourcesProperty.value }
-        set { self.resourcesProperty.value = newValue }
-    }
-    public var resourcesProperty = Property<ResourceRepository?>(nil)
-    
     /// The hash of the password. It is just used to check the passwork, the file is not encrypted.
     public var passwordHash: Int? {
         get { return self.passwordHashProperty.value }

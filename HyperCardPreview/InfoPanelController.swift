@@ -32,8 +32,9 @@ class InfoPanelController {
         
     }
     
-    func displayStack(_ stack: Stack) {
+    func displayStack(_ hyperCardFile: HyperCardFile) {
         window.title = "Stack Info"
+        let stack = hyperCardFile.stack
         displayScript(stack.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
@@ -42,7 +43,7 @@ class InfoPanelController {
         
         infoView.string = ["Number of Cards: \(stack.cards.count)",
             "Number of Backgrounds: \(stack.backgrounds.count)",
-            "Resources: \(stack.resources != nil)\n",
+            "Resources: \(hyperCardFile.resources != nil)\n",
             "Password: \(stack.passwordHash != nil)",
             "User Level: \(stack.userLevel.rawValue)",
             "Can't Abort: \(stack.cantAbort)",

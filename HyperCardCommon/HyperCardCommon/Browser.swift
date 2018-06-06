@@ -15,7 +15,10 @@ private let trueHiliteContent = "1"
 public class Browser {
     
     /// The stack being browsed
-    public let stack: Stack
+    public let hyperCardFile: HyperCardFile
+    public var stack: Stack {
+        return self.hyperCardFile.stack
+    }
     
     /// The index of the current card. Set it to browse.
     public var cardIndex: Int {
@@ -89,12 +92,13 @@ public class Browser {
     }
     
     /// Builds a new browser from the given stack. A starting card index can be given.
-    public init(stack: Stack, cardIndex: Int = 0) {
-        self.stack = stack
+    public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0) {
+        self.hyperCardFile = hyperCardFile
+        let stack = hyperCardFile.stack
         drawing = Drawing(width: stack.size.width, height: stack.size.height)
         
         var resources = ResourceSystem()
-        if let stackResources = stack.resources {
+        if let stackResources = hyperCardFile.resources {
             resources.repositories.append(stackResources)
         }
         resources.repositories.append(ResourceRepository.mainRepository)
@@ -111,7 +115,7 @@ public class Browser {
         self.cgcontext = RgbConverter.createContext(forRgbData: cgdata, width: width, height: height)
         self.whiteView = WhiteView(cardRectangle: Rectangle(x: 0, y: 0, width: width, height: height))
         
-        self.areThereColors = Browser.areThereColors(inStack: stack)
+        self.areThereColors = Browser.areThereColors(inFile: hyperCardFile)
         
         /* Flip the contect */
         cgcontext.translateBy(x: 0, y: CGFloat(height))
@@ -127,9 +131,9 @@ public class Browser {
         self.displayOnlyBackgroundProperty.startNotifications(for: self, by: { [unowned self] in self.rebuildViews() })
     }
     
-    private static func areThereColors(inStack stack: Stack) -> Bool {
+    private static func areThereColors(inFile hyperCardFile: HyperCardFile) -> Bool {
         
-        guard let repository = stack.resources else {
+        guard let repository = hyperCardFile.resources else {
             return false
         }
         
@@ -313,7 +317,7 @@ public class Browser {
         cgcontext.fill(CGRect(x: 0, y: 0, width: image.width, height: image.height))
         
         /* Draw the colors */
-        AddColorPainter.paintAddColor(ofStack: stack, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: cgcontext)
+        AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: cgcontext)
         
         /* Update data */
         cgcontext.flush()
