@@ -10,7 +10,9 @@
 
 public extension Card {
     
-    public convenience init(cardReader: CardBlockReader, cardReference: CardReference, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], background: Background) {
+    public convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> BitmapBlockReader, styles: [IndexedStyle], background: Background) {
+        
+        let cardReader = CardBlockReader(data: data, version: version)
         
         self.init(background: background)
         

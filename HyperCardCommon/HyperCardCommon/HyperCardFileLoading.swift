@@ -15,9 +15,7 @@ public extension HyperCardFile {
         self.init()
         
         /* Build the stack */
-        self.stackProperty.lazyCompute { () -> Stack in
-            return Stack(loadFromData: file.dataFork!, password: possiblePassword, hackEncryption: hackEncryption)
-        }
+        self.stack = try Stack(loadFromData: file.dataFork!, password: possiblePassword, hackEncryption: hackEncryption)
         
         /* Register the resources */
         self.resourcesProperty.lazyCompute { () -> ResourceRepository? in
