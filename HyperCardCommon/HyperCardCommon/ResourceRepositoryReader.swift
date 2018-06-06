@@ -1,5 +1,5 @@
 //
-//  ResourceForkReader.swift
+//  ResourceRepositoryReader.swift
 //  HyperCardCommon
 //
 //  Created by Pierre Lorenzi on 05/06/2018.
@@ -7,7 +7,7 @@
 //
 
 
-public struct ResourceForkReader {
+public struct ResourceRepositoryReader {
     
     private let data: DataRange
     

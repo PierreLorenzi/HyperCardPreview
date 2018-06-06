@@ -29,7 +29,7 @@
 		6C9DF4F920C7252C0024F61B /* ResourceMapReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */; };
 		6C9DF4FA20C7252D0024F61B /* FontFamilyResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */; };
 		6C9DF4FB20C7252D0024F61B /* BitmapFontResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */; };
-		6C9DF4FD20C7252D0024F61B /* ResourceForkReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */; };
+		6C9DF4FD20C7252D0024F61B /* ResourceRepositoryReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F520C7252C0024F61B /* ResourceRepositoryReader.swift */; };
 		6C9DF4FE20C7252D0024F61B /* ColorResourceReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */; };
 		6C9DF50020C725620024F61B /* ResourceReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4FF20C725620024F61B /* ResourceReference.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
@@ -358,7 +358,7 @@
 		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
 		6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */; };
 		6CE8F5BF20C4296600B99E39 /* ListBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5BB20C4296600B99E39 /* ListBlockReader.swift */; };
-		6CE8F5C020C4296600B99E39 /* HyperCardFileReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5BC20C4296600B99E39 /* HyperCardFileReader.swift */; };
+		6CE8F5C020C4296600B99E39 /* StackReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5BC20C4296600B99E39 /* StackReader.swift */; };
 		6CE8F5C120C4296600B99E39 /* PageBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5BD20C4296600B99E39 /* PageBlockReader.swift */; };
 		6CE8F5C220C4296600B99E39 /* MasterBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5BE20C4296600B99E39 /* MasterBlockReader.swift */; };
 		6CE8F5C420C4297600B99E39 /* StackBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5C320C4297600B99E39 /* StackBlockReader.swift */; };
@@ -414,7 +414,7 @@
 		6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceMapReader.swift; sourceTree = "<group>"; };
 		6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamilyResourceReader.swift; sourceTree = "<group>"; };
 		6C9DF4F320C7252C0024F61B /* BitmapFontResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFontResourceReader.swift; sourceTree = "<group>"; };
-		6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceForkReader.swift; sourceTree = "<group>"; };
+		6C9DF4F520C7252C0024F61B /* ResourceRepositoryReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceRepositoryReader.swift; sourceTree = "<group>"; };
 		6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorResourceReader.swift; sourceTree = "<group>"; };
 		6C9DF4FF20C725620024F61B /* ResourceReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceReference.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
@@ -746,7 +746,7 @@
 		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
 		6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
 		6CE8F5BB20C4296600B99E39 /* ListBlockReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListBlockReader.swift; sourceTree = "<group>"; };
-		6CE8F5BC20C4296600B99E39 /* HyperCardFileReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardFileReader.swift; sourceTree = "<group>"; };
+		6CE8F5BC20C4296600B99E39 /* StackReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackReader.swift; sourceTree = "<group>"; };
 		6CE8F5BD20C4296600B99E39 /* PageBlockReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5BE20C4296600B99E39 /* MasterBlockReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MasterBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5C320C4297600B99E39 /* StackBlockReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackBlockReader.swift; sourceTree = "<group>"; };
@@ -791,7 +791,7 @@
 		6C9DF4EE20C725100024F61B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */,
+				6C9DF4F520C7252C0024F61B /* ResourceRepositoryReader.swift */,
 				6C9DF4F120C7252C0024F61B /* ResourceMapReader.swift */,
 				6C9DF50320C726090024F61B /* ResourceExtractor.swift */,
 				6C9DF4F220C7252C0024F61B /* FontFamilyResourceReader.swift */,
@@ -1352,7 +1352,7 @@
 		6CE8F5BA20C428F400B99E39 /* Stack */ = {
 			isa = PBXGroup;
 			children = (
-				6CE8F5BC20C4296600B99E39 /* HyperCardFileReader.swift */,
+				6CE8F5BC20C4296600B99E39 /* StackReader.swift */,
 				6CE8F5C320C4297600B99E39 /* StackBlockReader.swift */,
 				6CE8F5BE20C4296600B99E39 /* MasterBlockReader.swift */,
 				6CE8F5BB20C4296600B99E39 /* ListBlockReader.swift */,
@@ -1766,7 +1766,7 @@
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
 				6CE8F5C220C4296600B99E39 /* MasterBlockReader.swift in Sources */,
 				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
-				6C9DF4FD20C7252D0024F61B /* ResourceForkReader.swift in Sources */,
+				6C9DF4FD20C7252D0024F61B /* ResourceRepositoryReader.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
 				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
@@ -1812,7 +1812,7 @@
 				6CA2CCC820C83DE10042148A /* Icon.swift in Sources */,
 				6C9DF50B20C73A8A0024F61B /* TextLayout.swift in Sources */,
 				6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */,
-				6CE8F5C020C4296600B99E39 /* HyperCardFileReader.swift in Sources */,
+				6CE8F5C020C4296600B99E39 /* StackReader.swift in Sources */,
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
 				6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */,
 				6C9DF4F920C7252C0024F61B /* ResourceMapReader.swift in Sources */,

@@ -9,11 +9,11 @@
 
 public struct ResourceExtractor {
     
-    private let reader: ResourceForkReader
+    private let reader: ResourceRepositoryReader
     
     private let references: [ResourceReference]
     
-    public init(resourceForkReader: ResourceForkReader) {
+    public init(resourceForkReader: ResourceRepositoryReader) {
         self.reader = resourceForkReader
         
         let mapReader = reader.extractResourceMapReader()

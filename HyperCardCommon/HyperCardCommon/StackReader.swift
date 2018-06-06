@@ -1,5 +1,5 @@
 //
-//  HyperCardFileReader.swift
+//  StackReader.swift
 //  HyperCardCommon
 //
 //  Created by Pierre Lorenzi on 03/06/2018.
@@ -7,7 +7,7 @@
 //
 
 /// The parsed data blocks in a stack file
-public struct HyperCardFileReader {
+public struct StackReader {
     
     private let data: DataRange
     
@@ -23,7 +23,7 @@ public struct HyperCardFileReader {
     
     public init(data: DataRange) {
         self.data = data
-        self.masterRecords = HyperCardFileReader.readMasterRecords(in: data)
+        self.masterRecords = StackReader.readMasterRecords(in: data)
     }
     
     private static func readMasterRecords(in data: DataRange) -> [MasterRecord] {
@@ -44,7 +44,7 @@ public struct HyperCardFileReader {
     }
     
     public func extractListBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.listName, identifier: identifier)
+        return self.findBlock(name: StackReader.listName, identifier: identifier)
     }
     
     private func findBlock(name: NumericName, identifier: Int) -> DataRange {
@@ -86,27 +86,27 @@ public struct HyperCardFileReader {
     }
     
     public func extractPageBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.pageName, identifier: identifier)
+        return self.findBlock(name: StackReader.pageName, identifier: identifier)
     }
     
     public func extractCardBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.cardName, identifier: identifier)
+        return self.findBlock(name: StackReader.cardName, identifier: identifier)
     }
     
     public func extractBackgroundBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.backgroundName, identifier: identifier)
+        return self.findBlock(name: StackReader.backgroundName, identifier: identifier)
     }
     
     public func extractBitmapBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.bitmapName, identifier: identifier)
+        return self.findBlock(name: StackReader.bitmapName, identifier: identifier)
     }
     
     public func extractStyleBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.styleBlockName, identifier: identifier)
+        return self.findBlock(name: StackReader.styleBlockName, identifier: identifier)
     }
     
     public func extractFontBlock(withIdentifier identifier: Int) -> DataRange {
-        return self.findBlock(name: HyperCardFileReader.fontBlockName, identifier: identifier)
+        return self.findBlock(name: StackReader.fontBlockName, identifier: identifier)
     }
     
 }

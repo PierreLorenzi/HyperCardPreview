@@ -23,7 +23,7 @@ public extension ResourceRepository {
         
         /* Build a resource extractor */
         let dataRange = DataRange(sharedData: resourceData, offset: 0, length: resourceData.count)
-        let forkReader = ResourceForkReader(data: dataRange)
+        let forkReader = ResourceRepositoryReader(data: dataRange)
         let extractor = ResourceExtractor(resourceForkReader: forkReader)
         
         /* List the icons */
