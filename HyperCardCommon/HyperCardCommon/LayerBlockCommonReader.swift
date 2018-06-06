@@ -116,6 +116,11 @@ public struct LayerBlockCommonReader: LayerBlockReader {
             let storedIdentifier = data.readSInt16(at: offset)
             let size = data.readUInt16(at: offset + 2)
             
+            /* If the identifier is 0 the file is corrupted, but HyperCard opens it anyway  */
+            guard storedIdentifier != 0 else {
+                break
+            }
+            
             /* If the identifier is <0, then it is a card content */
             let identifier = abs(storedIdentifier)
             let layerType: LayerType = (storedIdentifier < 0) ? .card : .background
