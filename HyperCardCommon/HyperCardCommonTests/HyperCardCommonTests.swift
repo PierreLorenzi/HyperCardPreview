@@ -82,7 +82,8 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(fileReader.extractBackgroundReader(withIdentifier: backgroundIdentifier2).readPreviousBackgroundIdentifier() == backgroundIdentifier1)
         
         /* Check in data */
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         XCTAssert(stack.cards.count == 6)
         XCTAssert(stack.cards[0].identifier == cardIdentifier0)
         XCTAssert(stack.cards[0].background === stack.backgrounds[0])
@@ -137,7 +138,7 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readUserLevel() == .browse)
-        try! XCTAssert(Stack(file: file).userLevel == .browse)
+        try! XCTAssert(HyperCardFile(file: file).stack.userLevel == .browse)
         
         /* User Level 5 */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel5", ofType: "stack")!
@@ -145,7 +146,7 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readUserLevel() == .script)
-        try! XCTAssert(Stack(file: file).userLevel == .script)
+        try! XCTAssert(HyperCardFile(file: file).stack.userLevel == .script)
         
         /* Can't Abort */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantAbort", ofType: "stack")!
@@ -153,7 +154,7 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readCantAbort())
-        try! XCTAssert(Stack(file: file).cantAbort)
+        try! XCTAssert(HyperCardFile(file: file).stack.cantAbort)
         
         /* Can't Delete */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantDelete", ofType: "stack")!
@@ -161,7 +162,7 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readCantDelete())
-        try! XCTAssert(Stack(file: file).cantDelete)
+        try! XCTAssert(HyperCardFile(file: file).stack.cantDelete)
         
         /* Can't Modify */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantModify", ofType: "stack")!
@@ -169,7 +170,7 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readCantModify())
-        try! XCTAssert(Stack(file: file).cantModify)
+        try! XCTAssert(HyperCardFile(file: file).stack.cantModify)
         
         /* Can't Peek */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantPeek", ofType: "stack")!
@@ -177,26 +178,26 @@ class HyperCardCommonTests: XCTestCase {
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
         fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
         XCTAssert(fileReader.extractStackReader().readCantPeek())
-        try! XCTAssert(Stack(file: file).cantPeek)
+        try! XCTAssert(HyperCardFile(file: file).stack.cantPeek)
         
         /* Private Access */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPrivateAccess", ofType: "stack")!
         file = ClassicFile(path: path)
-        XCTAssertThrowsError(try Stack(file: file, password: "", hackEncryption: false))
-        XCTAssertThrowsError(try Stack(file: file, password: "coucou", hackEncryption: false))
-        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
-        XCTAssertNoThrow(try Stack(file: file, password: "AA ee 1234 AAa"))
-        XCTAssertNoThrow(try Stack(file: file, hackEncryption: true))
-        try! XCTAssert(Stack(file: file, hackEncryption: true).privateAccess)
-        try! XCTAssert(Stack(file: file, hackEncryption: true).passwordHash == 0xCA922FEB)
+        XCTAssertThrowsError(try HyperCardFile(file: file, password: "", hackEncryption: false))
+        XCTAssertThrowsError(try HyperCardFile(file: file, password: "coucou", hackEncryption: false))
+        XCTAssertNoThrow(try HyperCardFile(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
+        XCTAssertNoThrow(try HyperCardFile(file: file, password: "AA ee 1234 AAa"))
+        XCTAssertNoThrow(try HyperCardFile(file: file, hackEncryption: true))
+        try! XCTAssert(HyperCardFile(file: file, hackEncryption: true).stack.privateAccess)
+        try! XCTAssert(HyperCardFile(file: file, hackEncryption: true).stack.passwordHash == 0xCA922FEB)
         
         /* Password without private access */
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestPassword", ofType: "stack")!
         file = ClassicFile(path: path)
-        XCTAssertNoThrow(try Stack(file: file, hackEncryption: true))
-        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
-        XCTAssertNoThrow(try Stack(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: true))
-        try! XCTAssert(Stack(file: file).passwordHash == 0xCA922FEB)
+        XCTAssertNoThrow(try HyperCardFile(file: file, hackEncryption: true))
+        XCTAssertNoThrow(try HyperCardFile(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: false))
+        XCTAssertNoThrow(try HyperCardFile(file: file, password: "AA éé 1234 ÀÂä", hackEncryption: true))
+        try! XCTAssert(HyperCardFile(file: file).stack.passwordHash == 0xCA922FEB)
         
     }
     
@@ -218,7 +219,8 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(fileReader.extractStackReader().readVersionAtLastModification() == Version(major: 2, minor1: 4, minor2: 1, state: .final, release: 0))
         
         /* Check data */
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         XCTAssert(stack.versionAtCreation == fileReader.extractStackReader().readVersionAtCreation())
         XCTAssert(stack.versionAtLastCompacting == fileReader.extractStackReader().readVersionAtLastCompacting())
         XCTAssert(stack.versionAtLastModificationSinceLastCompacting == fileReader.extractStackReader().readVersionAtLastModificationSinceLastCompacting())
@@ -242,7 +244,8 @@ class HyperCardCommonTests: XCTestCase {
         
         /* Check number of cards */
         XCTAssert(fileReader.extractStackReader().readCardCount() == cardIdentifiers.count)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         XCTAssert(stack.cards.count == cardIdentifiers.count)
         
         /* Check the identifiers of the cards */
@@ -275,7 +278,8 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(fileReader.extractStackReader().readScreenRectangle() == screenRectangle)
         
         /* Check data */
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         XCTAssert(stack.size == cardSize)
         
     }
@@ -296,7 +300,8 @@ class HyperCardCommonTests: XCTestCase {
         XCTAssert(fileReader.extractStackReader().readScript() == script)
         
         /* Check data */
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         XCTAssert(stack.script == script)
         
     }
@@ -306,7 +311,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardProperties", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* Can't Delete */
         XCTAssert(stack.cards[0].cantDelete == true)
@@ -335,7 +341,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestBackgroundProperties", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* Can't Delete */
         XCTAssert(stack.backgrounds[0].cantDelete == true)
@@ -364,7 +371,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestButtonProperties", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* General properties */
         
@@ -465,7 +473,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFieldProperties", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* General properties */
         
@@ -568,7 +577,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestContents", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* Shared contents */
         if case let PartContent.string(string) = stack.backgrounds[0].fields[0].content, string == "" {
@@ -605,7 +615,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFormattedContent", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         let textUnformatted = "unformatted content"
         let textFormatted = "formatted content: fontsizestyleall"
@@ -656,7 +667,8 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestV1", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let stack = try! Stack(file: file)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         XCTAssert(stack.cards.count == 9)
         XCTAssert(stack.backgrounds.count == 3)
