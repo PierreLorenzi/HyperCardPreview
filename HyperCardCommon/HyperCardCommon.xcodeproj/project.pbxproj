@@ -782,7 +782,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6C9DF4EE20C725100024F61B /* Resource Reading */ = {
+		6C9DF4EE20C725100024F61B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				6C9DF4F520C7252C0024F61B /* ResourceForkReader.swift */,
@@ -795,7 +795,7 @@
 				6C9DF4F620C7252C0024F61B /* ColorResourceReader.swift */,
 				6C9DF4F020C7252C0024F61B /* PictureResourceReader.swift */,
 			);
-			name = "Resource Reading";
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		6C9DF50520C732860024F61B /* Common */ = {
@@ -840,7 +840,7 @@
 				6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */,
 				6C9DF4D720C708A80024F61B /* MainRepository.swift */,
 				6C9E6AA41E75BCFA00BBF925 /* Common */,
-				6C9E6AB41E75BCFA00BBF925 /* Stack */,
+				6C9E6AB41E75BCFA00BBF925 /* Data */,
 				6C9E6AE81E75BCFA00BBF925 /* File */,
 				6C9E6AFA1E75BCFA00BBF925 /* Graphics */,
 				6C9E6A8F1E75BCCD00BBF925 /* Info.plist */,
@@ -864,7 +864,7 @@
 			name = Common;
 			sourceTree = "<group>";
 		};
-		6C9E6AAC1E75BCFA00BBF925 /* Content */ = {
+		6C9E6AAC1E75BCFA00BBF925 /* Stack */ = {
 			isa = PBXGroup;
 			children = (
 				6C9E6AA51E75BCFA00BBF925 /* Stack.swift */,
@@ -875,7 +875,7 @@
 				6C9E6AAA1E75BCFA00BBF925 /* Field.swift */,
 				6C9E6AAB1E75BCFA00BBF925 /* Button.swift */,
 			);
-			name = Content;
+			name = Stack;
 			sourceTree = "<group>";
 		};
 		6C9E6AB31E75BCFA00BBF925 /* Resources */ = {
@@ -892,19 +892,20 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		6C9E6AB41E75BCFA00BBF925 /* Stack */ = {
+		6C9E6AB41E75BCFA00BBF925 /* Data */ = {
 			isa = PBXGroup;
 			children = (
 				6CA2CCB920C82A500042148A /* HyperCardFile.swift */,
-				6C9E6AAC1E75BCFA00BBF925 /* Content */,
+				6C9E6AAC1E75BCFA00BBF925 /* Stack */,
 				6C9E6AB31E75BCFA00BBF925 /* Resources */,
 			);
-			name = Stack;
+			name = Data;
 			sourceTree = "<group>";
 		};
 		6C9E6AB91E75BCFA00BBF925 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */,
 				6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */,
 				6CE8F5C920C429E700B99E39 /* MasterRecord.swift */,
 				6CE8F5C720C429CB00B99E39 /* PageReference.swift */,
@@ -921,6 +922,7 @@
 		6C9E6AE11E75BCFA00BBF925 /* Stack */ = {
 			isa = PBXGroup;
 			children = (
+				6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */,
 				6C9E6ADC1E75BCFA00BBF925 /* FileLayer.swift */,
 				6C9E6ADD1E75BCFA00BBF925 /* FileCard.swift */,
 				6C9E6ADE1E75BCFA00BBF925 /* FileBackground.swift */,
@@ -942,25 +944,22 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		6C9E6AE71E75BCFA00BBF925 /* Content */ = {
+		6C9E6AE71E75BCFA00BBF925 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
+				6CA2CCBB20C82A6C0042148A /* HyperCardFileLoading.swift */,
 				6C9E6AE11E75BCFA00BBF925 /* Stack */,
 				6C9E6AE61E75BCFA00BBF925 /* Resources */,
 			);
-			name = Content;
+			name = Loading;
 			sourceTree = "<group>";
 		};
 		6C9E6AE81E75BCFA00BBF925 /* File */ = {
 			isa = PBXGroup;
 			children = (
-				6CA2CCBB20C82A6C0042148A /* HyperCardFileLoading.swift */,
-				6C9E6ABA1E75BCFA00BBF925 /* FileStack.swift */,
-				6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */,
-				6C9E6AE71E75BCFA00BBF925 /* Content */,
+				6C9E6AE71E75BCFA00BBF925 /* Loading */,
+				6CA2CCBE20C82D2F0042148A /* Reading */,
 				6C9E6AB91E75BCFA00BBF925 /* Common */,
-				6CE8F5BA20C428F400B99E39 /* Data Reading */,
-				6C9DF4EE20C725100024F61B /* Resource Reading */,
 			);
 			name = File;
 			sourceTree = "<group>";
@@ -1284,6 +1283,15 @@
 			path = HyperCardCommon/Resources;
 			sourceTree = "<group>";
 		};
+		6CA2CCBE20C82D2F0042148A /* Reading */ = {
+			isa = PBXGroup;
+			children = (
+				6CE8F5BA20C428F400B99E39 /* Stack */,
+				6C9DF4EE20C725100024F61B /* Resources */,
+			);
+			name = Reading;
+			sourceTree = "<group>";
+		};
 		6CB025461F4ED75700B57D87 /* HyperCardCommonTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -1332,7 +1340,7 @@
 			name = Security;
 			sourceTree = "<group>";
 		};
-		6CE8F5BA20C428F400B99E39 /* Data Reading */ = {
+		6CE8F5BA20C428F400B99E39 /* Stack */ = {
 			isa = PBXGroup;
 			children = (
 				6CE8F5BC20C4296600B99E39 /* HyperCardFileReader.swift */,
@@ -1350,7 +1358,7 @@
 				6CE8F5DB20C42DEA00B99E39 /* StyleBlockReader.swift */,
 				6CE8F5DF20C42E4500B99E39 /* FontBlockReader.swift */,
 			);
-			name = "Data Reading";
+			name = Stack;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
