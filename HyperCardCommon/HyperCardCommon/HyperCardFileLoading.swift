@@ -11,15 +11,12 @@ public extension HyperCardFile {
     
     public convenience init(file: ClassicFile, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
         
-        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = try HyperCardFileReader(data: dataRange, password: possiblePassword, hackEncryption: hackEncryption)
-        
         /* Start initialization */
         self.init()
         
         /* Build the stack */
         self.stackProperty.lazyCompute { () -> Stack in
-            return Stack(fileReader: fileReader)
+            return Stack(loadFromData: file.dataFork!, password: possiblePassword, hackEncryption: hackEncryption)
         }
         
         /* Register the resources */

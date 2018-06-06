@@ -9,7 +9,10 @@
 
 public extension Stack {
     
-    public convenience init(fileReader: HyperCardFileReader) {
+    public convenience init(loadFromData data: Data, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
+        
+        let dataRange = DataRange(sharedData: data, offset: 0, length: data.count)
+        let fileReader = try HyperCardFileReader(data: dataRange, password: possiblePassword, hackEncryption: hackEncryption)
         
         self.init()
         
