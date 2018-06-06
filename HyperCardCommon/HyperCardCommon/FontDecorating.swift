@@ -103,9 +103,9 @@ private func computeExtraWidth(byDefault: Int, property: Double?, size: Int) -> 
 
 
 /// A glyph that lazily applies a font variation to a base glyph
-public extension Glyph {
+private extension Glyph {
     
-    public convenience init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
+    convenience init(baseGlyph: Glyph, style: TextStyle, properties: FontStyleProperties?, size: Int, maximumDescent: Int) {
         
         self.init()
         
