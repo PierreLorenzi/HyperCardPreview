@@ -49,7 +49,7 @@ private func loadIcons() -> ResourceRepository {
     /* Add the icons */
     let iconIdentifiers = listIconIdentifiers()
     for iconIdentifier in iconIdentifiers {
-        let contentProperty = Property<Image> { () -> Image in
+        let contentProperty = Property<Icon> { () -> Icon in
             return loadIcon(withIdentifier: iconIdentifier)
         }
         let icon = IconResource(identifier: iconIdentifier, name: "", contentProperty: contentProperty)
@@ -92,13 +92,13 @@ private func listIconIdentifiers() -> [Int] {
     return iconIdentifiers
 }
 
-private func loadIcon(withIdentifier identifier: Int) -> Image {
+private func loadIcon(withIdentifier identifier: Int) -> Icon {
     
     /* Load the icon */
     let iconName = IconFilePrefix + identifier.description
     if let maskedImage = MaskedImage(named: iconName) {
         if case MaskedImage.Layer.bitmap(let image, _, _) = maskedImage.image {
-            return image
+            return Icon(image: image)
         }
     }
     fatalError("loadIcon: can't find icon with identifier \(identifier)")

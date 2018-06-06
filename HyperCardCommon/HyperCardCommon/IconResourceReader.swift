@@ -20,7 +20,7 @@ public struct IconResourceReader {
     public func readImage() -> Image {
         
         /* Build an image with the data of the row */
-        return Image(data: self.data.sharedData, offset: self.data.offset, width: IconSize, height: IconSize)
+        return Image(data: self.data.sharedData, offset: self.data.offset, width: Icon.size, height: Icon.size)
     }
     
 }

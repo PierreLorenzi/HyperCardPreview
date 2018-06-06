@@ -295,12 +295,12 @@ public class ButtonView: View, MouseResponder {
             }
         }
         else {
-            let iconAndTitleHeight = (button.showName) ? IconSize + iconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : IconSize + 2
+            let iconAndTitleHeight = (button.showName) ? Icon.size + iconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : Icon.size + 2
             let iconAndTitleOrigin = rectangle.height / 2 - iconAndTitleHeight / 2 + 1
             if button.showName {
                 let nameWidth = font.computeSizeOfString(button.name)
                 let nameX = computeNameX(nameWidth: nameWidth)
-                let nameY = rectangle.y + iconAndTitleOrigin + IconSize + iconNameButtonMargin + font.maximumAscent - 1
+                let nameY = rectangle.y + iconAndTitleOrigin + Icon.size + iconNameButtonMargin + font.maximumAscent - 1
                 if isTransparent {
                     drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: backgroundComposition)
                 }
@@ -309,7 +309,7 @@ public class ButtonView: View, MouseResponder {
                     drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
                 }
             }
-            let iconX = rectangle.width / 2 - IconSize / 2
+            let iconX = rectangle.width / 2 - Icon.size / 2
             let (imageComposition, maskComposition) = findIconComposition()
             if let icon = icon {
                 drawing.drawMaskedImage(icon, position: Point(x: rectangle.x + iconX, y: rectangle.y + iconAndTitleOrigin), clipRectangle: rectangle, imageComposition: imageComposition, maskComposition: maskComposition)

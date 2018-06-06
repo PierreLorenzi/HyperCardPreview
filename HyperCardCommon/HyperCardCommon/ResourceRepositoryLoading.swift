@@ -27,9 +27,9 @@ public extension ResourceRepository {
         let extractor = ResourceExtractor(resourceForkReader: forkReader)
         
         /* List the icons */
-        let icons = extractor.listResources(withType: IconResourceType.self, typeName: ResourceRepository.iconTypeName, parse: { (data: DataRange) -> Image in
+        let icons = extractor.listResources(withType: IconResourceType.self, typeName: ResourceRepository.iconTypeName, parse: { (data: DataRange) -> Icon in
             let reader = IconResourceReader(data: data)
-            return reader.readImage()
+            return Icon(image: reader.readImage())
             })
         
         /* List the bitmap fonts */

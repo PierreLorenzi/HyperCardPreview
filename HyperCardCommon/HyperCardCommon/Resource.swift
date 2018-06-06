@@ -38,7 +38,7 @@ public class Resource<T: ResourceType> {
 
 /// Black & White Icons
 public struct IconResourceType: ResourceType {
-    public typealias ContentType = Image
+    public typealias ContentType = Icon
 }
 public typealias IconResource = Resource<IconResourceType>
 
