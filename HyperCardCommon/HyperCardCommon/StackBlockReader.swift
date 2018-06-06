@@ -14,9 +14,39 @@ public struct StackBlockReader {
     
     private let decodedHeader: Data?
     
-    public init(data: DataRange, decodedHeader: Data?) {
+    public init(data: DataRange, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
+        
+        /* Check if the data is encrypted */
+        let isDataEntrypted = StackBlockReader.readPrivateAccess(in: data)
+        
+        /* Init */
         self.data = data
-        self.decodedHeader = decodedHeader
+        self.decodedHeader = isDataEntrypted ? try StackBlockReader.computeDecodedHeader(in: data, possiblePassword: possiblePassword, hackEncryption: hackEncryption) : nil
+        
+        /* Check checksum */
+        guard self.isChecksumValid() else {
+            throw OpeningError.corrupted
+        }
+    }
+    
+    private static func computeDecodedHeader(in data: DataRange, possiblePassword: HString?, hackEncryption: Bool) throws -> Data? {
+        
+        let decrypter = StackBlockDecrypter(stackBlockData: data)
+        
+        /* Hack is requested */
+        if hackEncryption, let decodedData = decrypter.hack() {
+            return decodedData
+        }
+        
+        /* Use the password if given */
+        guard let password = possiblePassword else {
+            throw OpeningError.missingPassword
+        }
+        guard let decodedData = decrypter.decrypt(withPassword: password) else {
+            throw OpeningError.wrongPassword
+        }
+        
+        return decodedData
     }
     
     private func readDecodedUInt32(at offset: Int) -> Int {
@@ -149,6 +179,11 @@ public struct StackBlockReader {
     
     /// Private Access
     public func readPrivateAccess() -> Bool {
+        return StackBlockReader.readPrivateAccess(in: self.data)
+    }
+    
+    /// Private Access
+    private static func readPrivateAccess(in data: DataRange) -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 13)
     }
     

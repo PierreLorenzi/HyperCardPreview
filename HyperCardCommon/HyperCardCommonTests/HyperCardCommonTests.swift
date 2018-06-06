@@ -31,7 +31,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCardsBackgrounds", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         /* Check cards and backgrounds */
         let stackBlock = fileReader.extractStackReader()
@@ -117,7 +117,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFreeSize", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         XCTAssert(fileReader.extractStackReader().readFreeSize() == 3232)
         
@@ -136,7 +136,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel1", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readUserLevel() == .browse)
         try! XCTAssert(HyperCardFile(file: file).stack.userLevel == .browse)
         
@@ -144,7 +144,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestUserLevel5", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readUserLevel() == .script)
         try! XCTAssert(HyperCardFile(file: file).stack.userLevel == .script)
         
@@ -152,7 +152,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantAbort", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readCantAbort())
         try! XCTAssert(HyperCardFile(file: file).stack.cantAbort)
         
@@ -160,7 +160,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantDelete", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readCantDelete())
         try! XCTAssert(HyperCardFile(file: file).stack.cantDelete)
         
@@ -168,7 +168,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantModify", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readCantModify())
         try! XCTAssert(HyperCardFile(file: file).stack.cantModify)
         
@@ -176,7 +176,7 @@ class HyperCardCommonTests: XCTestCase {
         path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestCantPeek", ofType: "stack")!
         file = ClassicFile(path: path)
         dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        fileReader = try! HyperCardFileReader(data: dataRange)
         XCTAssert(fileReader.extractStackReader().readCantPeek())
         try! XCTAssert(HyperCardFile(file: file).stack.cantPeek)
         
@@ -207,7 +207,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestVersion", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         /* In HyperCard, result of "print the version of this stack":
          "02374001,02358000,02358000,02418000,<number of ticks since last edition>" */
@@ -236,7 +236,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestManyCards", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         let cardIdentifiers: [Int] = [
             2928,29104,29402,29579,29919,30161,30437,30554,30872,31217,31253,31697,31894,32111,32472,32516,32838,33200,33282,33767,34013,34081,34452,34677,35030,35107,35531,35624,36298,36607,36808,37050,37278,37619,37729,37900,38216,38410,38708,39131,39380,39518,39767,40037,40328,40637,40809,41151,41437,41643,41729,42016,42254,42539,42960,43061,43265,43678,43974,44241,44388,44590,44847,45258,45417,45634,45899,46203,46447,46596,46869,47323,47508,47685,47922,48379,48594,48734,49110,49273,49663,49821,50014,50397,50516,50806,51033,51436,51523,51941,52070,52682,52755,53230,53280,53595,53819,54053,54429,54753,54806,3662,3967,4152,4518,4785,4868,5327,5434,5688,6019,6360,6456,6833,7125,7298,7518,7740,8018,8232,8675,8854,8971,9447,9654,9742,10031,10378,10610,10956,11091,11502,11716,11854,12092,12400,12690,12858,13175,13495,13626,14035,14082,14411,14632,14870,15204,15507,15661,16028,16381,16502,16878,16976,17266,17416,17794,18003,18251,18512,18701,19134,19264,19587,19933,20192,20390,20698,20815,21227,21474,21564,21789,22129,22427,22686,22810,23195,23296,23694,23843,24211,24494,24813,25044,25276,25446,25709,25901,26351,26431,26759,26892,27356,27596,27804,28005,28284,28544,28851
@@ -262,7 +262,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestWindowSize", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
         
@@ -290,7 +290,7 @@ class HyperCardCommonTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestStackScript", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
         

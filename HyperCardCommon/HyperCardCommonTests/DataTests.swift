@@ -25,7 +25,7 @@ class DataTests: XCTestCase {
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestStrangeFlags", ofType: "stack")!
         let file = ClassicFile(path: path)
         let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = HyperCardFileReader(data: dataRange, decodedHeader: nil)
+        let fileReader = try! HyperCardFileReader(data: dataRange)
         
         /* Check window rectangle */
         let stackReader = fileReader.extractStackReader()

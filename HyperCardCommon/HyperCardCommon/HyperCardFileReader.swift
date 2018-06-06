@@ -27,8 +27,8 @@ public struct HyperCardFileReader {
     private static let styleBlockName = NumericName(string: "STBL")!
     private static let fontBlockName = NumericName(string: "FTBL")!
     
-    public init(data: DataRange, decodedHeader: Data?) {
-        let stackReader = HyperCardFileReader.extractStackReader(in: data, decodedHeader: decodedHeader)
+    public init(data: DataRange, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
+        let stackReader = try HyperCardFileReader.extractStackReader(in: data, password: possiblePassword, hackEncryption: hackEncryption)
         let masterRecords = HyperCardFileReader.readMasterRecords(in: data)
         let version = stackReader.readVersion()
         
@@ -39,11 +39,11 @@ public struct HyperCardFileReader {
         self.listReader = HyperCardFileReader.extractListReader(in: data, stackReader: stackReader, masterRecords: masterRecords, version: version)
     }
     
-    private static func extractStackReader(in data: DataRange, decodedHeader: Data?) -> StackBlockReader {
+    private static func extractStackReader(in data: DataRange, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws -> StackBlockReader {
         
         let stackLength = data.readUInt32(at: 0x0)
         let stackData = DataRange(sharedData: data.sharedData, offset: data.offset, length: stackLength)
-        return StackBlockReader(data: stackData, decodedHeader: decodedHeader)
+        return try StackBlockReader(data: stackData, password: possiblePassword, hackEncryption: hackEncryption)
     }
     
     private static func readMasterRecords(in data: DataRange) -> [MasterRecord] {
