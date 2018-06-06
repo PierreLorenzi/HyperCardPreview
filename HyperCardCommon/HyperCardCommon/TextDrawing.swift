@@ -9,9 +9,6 @@
 
 public extension TextLayout {
     
-    // arg: origin.y = textRectangle.y - scroll, width = textRectangle.width, clipRectangle = contentRectangle
-    // show lines!
-    // check if textRectangle non empty
     public func draw(in drawing: Drawing, at origin: Point, width: Int, alignment: TextAlign, clipRectangle: Rectangle) {
         
         for lineLayout in self.lines {
