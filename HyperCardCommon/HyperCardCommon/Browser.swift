@@ -8,7 +8,7 @@
 
 
 
-private let trueHiliteContent: HString = "1"
+private let trueHiliteContent = "1"
 
 
 /// Browses through a stack: maintains a current card and current background and draws them.
@@ -504,7 +504,7 @@ public class Browser {
                 }
                 
                 /* If the card content is equal to "1", the button is hilited */
-                guard case PartContent.string(trueHiliteContent) = content  else {
+                guard case PartContent.string(let textContent) = content, textContent == trueHiliteContent  else {
                     return false
                 }
             

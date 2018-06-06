@@ -34,7 +34,7 @@ public struct ResourceSystem {
     public func findResource<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>, withName name: HString) -> Resource<T>? {
         for repository in repositories {
             let resources = repository[keyPath: keyPath]
-            if let resource = resources.first(where: { $0.name == name }) {
+            if let resource = resources.first(where: { compareCase($0.name, name) == .equal }) {
                 return resource
             }
         }

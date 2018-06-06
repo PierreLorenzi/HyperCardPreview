@@ -213,7 +213,7 @@ public class AddColorPainter {
     private static func paintPicture(name: HString, rectangle: Rectangle, transparent: Bool, onContext context: CGContext, pictures: [PictureResource]) {
         
         /* Find the resource */
-        guard let image = pictures.first(where: { $0.name == name })?.content else {
+        guard let image = pictures.first(where: { compareCase($0.name, name) == .equal })?.content else {
             return
         }
         
