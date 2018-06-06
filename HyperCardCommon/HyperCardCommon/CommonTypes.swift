@@ -474,6 +474,7 @@ public enum FontIdentifiers {
     public static let london = 6
     public static let athens = 7
     public static let sanFrancisco = 8
+    public static let toronto = 9
     public static let cairo = 11
     public static let losAngeles = 12
     public static let palatino = 16
@@ -481,6 +482,7 @@ public enum FontIdentifiers {
     public static let helvetica = 21
     public static let courier = 22
     public static let symbol = 23
+    public static let taliesin = 24
     public static let charcoal = 2002
 }
 
