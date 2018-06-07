@@ -77,7 +77,7 @@ public extension TextLayout {
             
             /* Get the current character */
             let character = text.string[state.endIndex]
-            let characterWidth = state.endFont.glyphs[Int(character)].width
+            let characterWidth = character == carriageReturn ? 0 : state.endFont.glyphs[Int(character)].width
             
             /* If we're going to start a word, save the current state in case we wrap here */
             if !dontWrap && character != space && state.endIndex > 0 && text.string[state.endIndex-1] == space && state.startIndex != state.endIndex {
