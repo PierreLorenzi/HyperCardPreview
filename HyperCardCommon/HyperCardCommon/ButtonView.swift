@@ -291,7 +291,7 @@ public class ButtonView: View, MouseResponder {
             let nameY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - font.maximumAscent / 6
             drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle, composition: titleComposition)
             if !button.enabled {
-                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
+                drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX, bottom: nameY + font.maximumDescent, right: nameX + nameWidth), clipRectangle: rectangle, composition: blackToGrayComposition)
             }
         }
         else {
@@ -306,7 +306,7 @@ public class ButtonView: View, MouseResponder {
                 }
                 drawing.drawString(button.name, position: Point(x: nameX, y: nameY), font: font, clip: rectangle, composition: titleComposition)
                 if !button.enabled {
-                    drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX - 2, bottom: nameY + font.maximumDescent, right: nameX + nameWidth + 2), clipRectangle: rectangle, composition: blackToGrayComposition)
+                    drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX, bottom: nameY + font.maximumDescent, right: nameX + nameWidth), clipRectangle: rectangle, composition: blackToGrayComposition)
                 }
             }
             let iconX = rectangle.width / 2 - Icon.size / 2
