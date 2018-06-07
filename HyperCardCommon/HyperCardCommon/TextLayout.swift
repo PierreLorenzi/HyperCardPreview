@@ -119,6 +119,7 @@ public extension TextLayout {
         var ascent = 0
         var descent = 0
         var leading = 0
+        var nextAttributeCharacterIndex: Int? = 0
         
         init(endFont: BitmapFont) {
             self.endFont = endFont
@@ -130,13 +131,20 @@ public extension TextLayout {
         mutating func step(endCharacterWidth: Int, text: RichText) {
             
             /* Check if the state integrates a new attribute */
-            if text.attributes[self.endAttributeIndex].index == self.endIndex {
+            if self.endIndex == self.nextAttributeCharacterIndex {
                 
                 let attribute = text.attributes[self.endAttributeIndex]
                 
                 self.ascent = max(self.ascent, attribute.font.maximumAscent)
                 self.descent = max(self.descent, attribute.font.maximumDescent)
                 self.leading = min(self.leading, attribute.font.leading)
+                
+                if self.endAttributeIndex < text.attributes.count - 1 {
+                    self.nextAttributeCharacterIndex = text.attributes[self.endAttributeIndex + 1].index
+                }
+                else {
+                    self.nextAttributeCharacterIndex = nil
+                }
             }
             
             /* Step */
@@ -144,7 +152,7 @@ public extension TextLayout {
             self.width += endCharacterWidth
             
             /* Check if the end index comes to a new attribute */
-            if self.endIndex < text.string.length && self.endAttributeIndex < text.attributes.count - 1 && text.attributes[self.endAttributeIndex + 1].index == self.endIndex {
+            if self.endIndex == self.nextAttributeCharacterIndex {
                 
                 let attribute = text.attributes[self.endAttributeIndex + 1]
                 
