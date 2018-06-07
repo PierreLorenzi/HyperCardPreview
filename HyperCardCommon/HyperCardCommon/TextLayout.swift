@@ -170,7 +170,7 @@ public extension TextLayout {
             case .left:
                 originX = 0
             case .center:
-                originX = textWidth/2 - self.width/2
+                originX = (textWidth - self.width)/2
             case .right:
                 originX = textWidth - self.width
             }
