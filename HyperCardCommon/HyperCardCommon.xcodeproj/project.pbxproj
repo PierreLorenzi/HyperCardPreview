@@ -886,6 +886,7 @@
 				6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */,
 				6C76AA9720C5956C009A3446 /* Computation.swift */,
 				6C30E8D01F4D117A00ACB457 /* StringComparison.swift */,
+				6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -907,9 +908,8 @@
 		6C9E6AB31E75BCFA00BBF925 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6AAD1E75BCFA00BBF925 /* Resource.swift */,
 				6C9E6AAE1E75BCFA00BBF925 /* ResourceRepository.swift */,
-				6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */,
+				6C9E6AAD1E75BCFA00BBF925 /* Resource.swift */,
 				6CA2CCC720C83DE10042148A /* Icon.swift */,
 				6C9E6AB01E75BCFA00BBF925 /* FontFamily.swift */,
 				6C9E6AB11E75BCFA00BBF925 /* BitmapFont.swift */,
