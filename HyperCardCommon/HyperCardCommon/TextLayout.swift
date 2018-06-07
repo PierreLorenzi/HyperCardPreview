@@ -15,193 +15,184 @@ public struct TextLayout {
     
     /// The lines dividing the text
     public var lines: [LineLayout]
+    
+    /// The total height of the lines
+    public var height: Int
 }
 
-/// The properties of a line in a text layout
+/// A line in a laid-out text
 public struct LineLayout {
     
-    /// The portion of text composing the line
-    public var textRange: CountableRange<Int>
+    /// Index of the first character included in the line
+    public var startIndex: Int
     
-    /// The width taken by the characters of the line
-    public var width: Int
+    /// Index after the last character included in the line
+    public var endIndex: Int
     
-    /// The y-coordinate of the baseline, counted from the top of the text
-    public var baseLineY: Int
-    
-    /// The maximum ascent of the characters in the line
-    public var ascent: Int
-    
-    /// The maximum descent of the characters in the line
-    public var descent: Int
-    
-    /// The minimum leading of the characters in the line
-    public var leading: Int
-    
-    /// The y-coorodinate of the bottom of the line
-    public var bottom: Int
-    
-    /// The index of the text attribute in use at the first character of the line
+    /// The text attribute in use at the first character
     public var initialAttributeIndex: Int
+    
+    /// The point where to draw the text, y is the baseline
+    public var origin: Point
 }
+
+private let carriageReturn = HChar(13)
+private let space = HChar(32)
 
 public extension TextLayout {
     
-    private static let carriageReturn = HChar(13)
-    private static let space = HChar(32)
-    
     /// Layouts a text within a certain width. If the width is nil, the text is not
     /// wrapped. If a non-nil line height is provided, it is given to all the lines.
-    public init(text: RichText, width possibleTextWidth: Int?, lineHeight: Int?) {
+    public init(for text: RichText, textWidth: Int, alignment: TextAlign, dontWrap: Bool, lineHeight: Int?) {
+        
+        /* The algorithm doesn't handle empty texts */
+        guard text.string.length > 0 else {
+            self.init(text: text, lines: [], height: 0)
+            return
+        }
         
         /* Init the lines */
         var lineLayouts: [LineLayout] = []
         
-        /* State */
-        var index = 0
-        var attributeIndex = 0
-        var layout = TextLayout.buildEmptyLayout(atIndex: index, of: text, attributeIndex: attributeIndex)
+        /* Line state */
+        var state = State(endFont: text.attributes[0].font)
         
-        /* Space break monitoring */
-        var layoutAfterLastSpace: LineLayout? = nil
-        var indexAfterLastSpace = 0
-        var attributeIndexAfterLastSpace = 0
+        var stateAtWordStart: State? = nil
         
-        /* Loop through the characters to find the returns */
-        while index <= text.string.length {
+        /* Loop on the characters */
+        while state.endIndex <= text.string.length {
             
             /* Check if we must break because of a return or because we have reached the end */
-            if (index > 0 && text.string[index-1] == TextLayout.carriageReturn) || index == text.string.length {
+            if (state.endIndex > 0 && text.string[state.endIndex-1] == carriageReturn) || state.endIndex == text.string.length {
                 
-                /* Break at the current character */
-                layout.textRange = layout.textRange.lowerBound..<index
-                TextLayout.finalizeLayout(&layout, lineHeight: lineHeight, content: text, previousLayout: lineLayouts.last)
-                lineLayouts.append(layout)
+                /* Break line */
+                let newLine = state.moveToNextLine(text: text, textWidth: textWidth, alignment: alignment, dontWrap: dontWrap, lineHeight: lineHeight)
+                lineLayouts.append(newLine)
                 
-                if index < text.string.length {
-                    /* Stay to the same character */
-                    layout = TextLayout.buildEmptyLayout(atIndex: index, of: text, attributeIndex: attributeIndex)
-                    layoutAfterLastSpace = nil
-                }
-                else {
+                /* If we have finished, stop. Elsewhere, continue on the same character */
+                if state.endIndex == text.string.length {
                     break
                 }
-                
             }
             
             /* Get the current character */
-            let character = text.string[index]
-            let width = TextLayout.computeCharacterLength(atIndex: index, of: text, attributeIndex: attributeIndex)
+            let character = text.string[state.endIndex]
+            let characterWidth = state.endFont.glyphs[Int(character)].width
             
-            /* Monitor spaces (we mustn't do it if we have just break at that space) */
-            if character != TextLayout.space && index > 0 && text.string[index-1] == TextLayout.space && layout.textRange.lowerBound != index {
-                layoutAfterLastSpace = layout
-                indexAfterLastSpace = index
-                attributeIndexAfterLastSpace = attributeIndex
+            /* If we're going to start a word, save the current state in case we wrap here */
+            if !dontWrap && character != space && state.endIndex > 0 && text.string[state.endIndex-1] == space && state.startIndex != state.endIndex {
+                stateAtWordStart = state
             }
             
-            /* Check if we must break because the character is going over the line */
-            if let textWidth = possibleTextWidth, layout.width + width > textWidth && character != TextLayout.space && character != TextLayout.carriageReturn && index != layout.textRange.lowerBound {
+            /* Check if we must break because the line is too large */
+            if !dontWrap, state.width + characterWidth > textWidth && character != space && character != carriageReturn && state.startIndex != state.endIndex {
                 
-                /* Check if we can go back to the start of the word */
-                if var l = layoutAfterLastSpace {
-                    
-                    /* Append the layout as it was after the last space */
-                    l.textRange = l.textRange.lowerBound..<indexAfterLastSpace
-                    TextLayout.finalizeLayout(&l, lineHeight: lineHeight, content: text, previousLayout: lineLayouts.last)
-                    lineLayouts.append(l)
-                    
-                    /* Move to last space */
-                    index = indexAfterLastSpace
-                    attributeIndex = attributeIndexAfterLastSpace
-                    layout = TextLayout.buildEmptyLayout(atIndex: index, of: text, attributeIndex: attributeIndex)
-                    layoutAfterLastSpace = nil
-                    continue
+                /* If there were spaces in the line, move to the start of the last word */
+                if let wrapState = stateAtWordStart {
+                    state = wrapState
+                    stateAtWordStart = nil
                 }
                 
-                /* Break at the current character */
-                layout.textRange = layout.textRange.lowerBound..<index
-                TextLayout.finalizeLayout(&layout, lineHeight: lineHeight, content: text, previousLayout: lineLayouts.last)
-                lineLayouts.append(layout)
+                /* Break line */
+                let newLine = state.moveToNextLine(text: text, textWidth: textWidth, alignment: alignment, dontWrap: dontWrap, lineHeight: lineHeight)
+                lineLayouts.append(newLine)
                 
-                /* Stay to the same character */
-                layout = TextLayout.buildEmptyLayout(atIndex: index, of: text, attributeIndex: attributeIndex)
-                layoutAfterLastSpace = nil
                 continue
-                
             }
             
-            /* Step to the end of the character */
-            if text.attributes[attributeIndex].index == index {
-                let font = text.attributes[attributeIndex].font
-                layout.ascent = max(layout.ascent, font.maximumAscent)
-                layout.descent = max(layout.descent, font.maximumDescent)
-                layout.leading = min(layout.leading, font.leading)
-            }
-            index += 1
-            if character != TextLayout.carriageReturn {
-                layout.width += width
-            }
-            if index != text.string.length && attributeIndex+1 < text.attributes.count && index == text.attributes[attributeIndex+1].index {
-                attributeIndex += 1
-            }
+            /* Step */
+            let switchToNewAttribute: Bool = state.endIndex < text.string.length - 1 && state.endAttributeIndex < text.attributes.count - 1 && text.attributes[state.endAttributeIndex + 1].index == state.endIndex + 1
+            let newAttribute: RichText.Attribute? = switchToNewAttribute ? text.attributes[state.endAttributeIndex + 1] : nil
+            state.step(endCharacterWidth: characterWidth, newEndAttribute: newAttribute)
+            
         }
         
-        self.init(text: text, lines: lineLayouts)
+        self.init(text: text, lines: lineLayouts, height: state.top)
     }
     
-    private static func buildEmptyLayout(atIndex index: Int, of text: RichText, attributeIndex: Int) -> LineLayout {
+    private struct State {
+        var startIndex = 0
+        var startAttributeIndex = 0
+        var endIndex = 0
+        var endAttributeIndex = 0
+        var endFont: BitmapFont
+        var top = 0
+        var width = 0
+        var ascent = 0
+        var descent = 0
+        var leading = 0
         
-        let font = text.attributes[attributeIndex].font
-        
-        return LineLayout(textRange: index..<(index+1),
-                          width: 0,
-                          baseLineY: 0,
-                          ascent: font.maximumAscent,
-                          descent: font.maximumDescent,
-                          leading: font.leading,
-                          bottom: 0,
-                          initialAttributeIndex: attributeIndex)
-        
-    }
-    
-    private static func computeCharacterLength(atIndex index: Int, of content: RichText, attributeIndex: Int) -> Int {
-        
-        var string = HString(stringLiteral: " ")
-        string[0] = content.string[index]
-        
-        let font = content.attributes[attributeIndex].font
-        return font.computeSizeOfString(string)
-        
-    }
-    
-    private static func finalizeLayout(_ layout: inout LineLayout, lineHeight possibleLineHeight: Int?, content: RichText, previousLayout: LineLayout?) {
-        
-        /* Get the current height of the text */
-        let textBottom: Int
-        if let lastLayout = previousLayout {
-            textBottom = lastLayout.bottom
-        }
-        else {
-            textBottom = 0
+        init(endFont: BitmapFont) {
+            self.endFont = endFont
+            self.ascent = self.endFont.maximumAscent
+            self.descent = self.endFont.maximumDescent
+            self.leading = self.endFont.leading
         }
         
-        /* Compute the vertical position of the layout */
-        if let lineHeight = possibleLineHeight {
-            layout.bottom = textBottom + lineHeight
-            layout.baseLineY = textBottom + lineHeight - lineHeight / 4
-        }
-        else {
-            layout.bottom = textBottom + layout.ascent + layout.descent + layout.leading
-            layout.baseLineY = textBottom + layout.ascent
+        mutating func step(endCharacterWidth: Int, newEndAttribute: RichText.Attribute?) {
+            self.endIndex += 1
+            self.width += endCharacterWidth
+            
+            if let attribute = newEndAttribute {
+                
+                self.endAttributeIndex += 1
+                self.endFont = attribute.font
+                self.ascent = max(self.ascent, attribute.font.maximumAscent)
+                self.descent = max(self.descent, attribute.font.maximumDescent)
+                self.leading = min(self.leading, attribute.font.leading)
+            }
         }
         
-        /* Trim final whitespaces */
-        var lastIndex = layout.textRange.upperBound - 1
-        while lastIndex >= layout.textRange.lowerBound && (content.string[lastIndex] == space || content.string[lastIndex] == carriageReturn) {
-            lastIndex -= 1
+        mutating func moveToNextLine(text: RichText, textWidth: Int, alignment: TextAlign, dontWrap: Bool, lineHeight possibleLineHeight: Int?) -> LineLayout {
+            
+            /* Compute the horizontal position of the layout */
+            let originX: Int
+            switch alignment {
+            case .left:
+                originX = 0
+            case .center:
+                originX = textWidth/2 - self.width/2
+            case .right:
+                originX = textWidth - self.width
+            }
+            
+            /* Compute the vertical position of the layout */
+            let bottom: Int
+            let originY: Int
+            if let lineHeight = possibleLineHeight {
+                bottom = self.top + lineHeight
+                originY = self.top + lineHeight - lineHeight / 4
+            }
+            else {
+                bottom = self.top + self.ascent + self.descent + self.leading
+                originY = self.top + self.ascent
+            }
+            
+            /* Do not include a trailing carriage return, and also trim all spaces to save time */
+            var lineEndIndex = self.endIndex
+            var lastCharacter = text.string[lineEndIndex-1]
+            while lastCharacter == space || lastCharacter == carriageReturn {
+                lineEndIndex -= 1
+                guard lineEndIndex > self.startIndex else {
+                    break
+                }
+                lastCharacter = text.string[lineEndIndex-1]
+            }
+            
+            /* Buid the layout */
+            let lineLayout = LineLayout(startIndex: self.startIndex, endIndex: lineEndIndex, initialAttributeIndex: self.startAttributeIndex, origin: Point(x: originX, y: originY))
+            
+            /* Update the state */
+            self.startIndex = self.endIndex
+            self.startAttributeIndex = self.endAttributeIndex
+            self.top = bottom
+            self.width = 0
+            self.ascent = self.endFont.maximumAscent
+            self.descent = self.endFont.maximumDescent
+            self.leading = self.endFont.leading
+            
+            return lineLayout
         }
-        layout.textRange = layout.textRange.lowerBound..<(lastIndex + 1)
         
     }
     

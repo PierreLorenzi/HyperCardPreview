@@ -90,9 +90,9 @@ public class FieldView: View, MouseResponder {
         /* line layouts */
         self.textLayoutComputation = Computation<TextLayout> {
             let text = richTextComputation.value
-            let textWidth: Int? = field.dontWrap ? nil : FieldView.computeTextRectangle(of: field).width
+            let textWidth = FieldView.computeTextRectangle(of: field).width
             let lineHeight: Int? = field.fixedLineHeight ? field.textHeight : nil
-            return TextLayout(text: text, width: textWidth, lineHeight: lineHeight)
+            return TextLayout(for: text, textWidth: textWidth, alignment: field.textAlign, dontWrap: field.dontWrap, lineHeight: lineHeight)
         }
         
         super.init()
@@ -232,9 +232,8 @@ public class FieldView: View, MouseResponder {
         
         let textRectangle = FieldView.computeTextRectangle(of: field)
         
-        let lastLineLayout = self.textLayout.lines.last!
         let contentHeight = field.rectangle.height - 2
-        let totalTextHeight = textRectangle.top - field.rectangle.top + lastLineLayout.bottom
+        let totalTextHeight = textRectangle.top - field.rectangle.top + self.textLayout.height
         
         return max(0, totalTextHeight - contentHeight)
         
@@ -351,7 +350,7 @@ public class FieldView: View, MouseResponder {
         }
         
         /* Draw the text */
-        textLayout.draw(in: drawing, at: Point(x: textRectangle.left, y: textRectangle.top - field.scroll), width: textRectangle.width, alignment: field.textAlign, clipRectangle: contentRectangle)
+        textLayout.draw(in: drawing, at: Point(x: textRectangle.left, y: textRectangle.top - field.scroll), clipRectangle: contentRectangle)
         
     }
     
@@ -365,7 +364,7 @@ public class FieldView: View, MouseResponder {
             /* While there is text, stick to the baselines, elsewhere, continue till the bottom of the field */
             if lineIndex < layout.lines.count {
                 let layout = layout.lines[lineIndex]
-                baseLineY = textRectangle.top + layout.baseLineY - field.scroll
+                baseLineY = textRectangle.top + layout.origin.y - field.scroll
                 lineIndex += 1
             }
             else {

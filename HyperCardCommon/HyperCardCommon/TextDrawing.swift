@@ -10,43 +10,62 @@
 public extension TextLayout {
     
     /// Draws the laid-out text in the given drawing
-    public func draw(in drawing: Drawing, at origin: Point, width: Int, alignment: TextAlign, clipRectangle: Rectangle) {
+    public func draw(in drawing: Drawing, at textOrigin: Point, clipRectangle: Rectangle) {
         
-        for lineLayout in self.lines {
+        var lineIndex = 0
+        
+        /* Skip the lines above the clip rectangle */
+        while lineIndex < self.lines.count {
             
-            /* Compute the absolute baseline */
-            let baseLineY = origin.y + lineLayout.baseLineY
+            let line = self.lines[lineIndex]
             
-            /* Check if the lines start being visible */
-            if baseLineY + lineLayout.descent <= clipRectangle.top {
-                continue
-            }
+            /* Compute the origin of the line */
+            let lineOrigin = Point(x: textOrigin.x + line.origin.x, y: textOrigin.y + line.origin.y)
             
-            /* Check if the lines stop being visible */
-            if baseLineY - lineLayout.ascent >= clipRectangle.bottom {
+            /* Check if the line start being visible */
+            if lineOrigin.y >= clipRectangle.top {
                 break
             }
             
+            lineIndex += 1
+        }
+        
+        /* If there were invisible lines, draw the last one because it may be partially visible */
+        if lineIndex > 0 {
+            lineIndex -= 1
+        }
+        
+        /* Draw the lines */
+        while lineIndex < self.lines.count {
+            
+            let line = self.lines[lineIndex]
+            
+            /* Compute the origin of the line */
+            let lineOrigin = Point(x: textOrigin.x + line.origin.x, y: textOrigin.y + line.origin.y)
+            
             /* Draw the line */
-            let lineOrigin = Point(x: origin.x, y: baseLineY)
-            drawLine(layout: lineLayout, in: drawing, at: lineOrigin, width: width, alignment: alignment, clipRectangle: clipRectangle)
+            drawLine(layout: line, in: drawing, at: lineOrigin, clipRectangle: clipRectangle)
+            
+            /* If the lines start being below the clip rectangle, stop */
+            if lineOrigin.y >= clipRectangle.bottom {
+                break
+            }
+            
+            lineIndex += 1
         }
     }
     
-    private func drawLine(layout: LineLayout, in drawing: Drawing, at origin: Point, width: Int, alignment: TextAlign, clipRectangle: Rectangle) {
-        
-        /* Apply alignment */
-        let lineX = computeLineStartX(lineWidth: layout.width, origin: origin, textWidth: width, alignment: alignment)
-        var point = Point(x: lineX, y: origin.y)
+    private func drawLine(layout: LineLayout, in drawing: Drawing, at origin: Point, clipRectangle: Rectangle) {
         
         /* Initialize the state */
-        var characterIndex = layout.textRange.lowerBound
+        var point = origin
+        var characterIndex = layout.startIndex
         var attributeIndex = layout.initialAttributeIndex
         
-        while characterIndex < layout.textRange.upperBound {
+        while characterIndex < layout.endIndex {
             
             /* Get the extent of the current run */
-            let runCharacterEndIndex = (attributeIndex == self.text.attributes.count-1) ? layout.textRange.upperBound : min(layout.textRange.upperBound, self.text.attributes[attributeIndex+1].index)
+            let runCharacterEndIndex = (attributeIndex == self.text.attributes.count-1) ? layout.endIndex : min(layout.endIndex, self.text.attributes[attributeIndex+1].index)
             let runFont = self.text.attributes[attributeIndex].font
             let runWidth = runFont.computeSizeOfString(self.text.string, index: characterIndex, length: runCharacterEndIndex - characterIndex)
             
@@ -58,19 +77,6 @@ public extension TextLayout {
             
         }
         
-        
-    }
-    
-    private func computeLineStartX(lineWidth: Int, origin: Point, textWidth: Int, alignment: TextAlign) -> Int {
-        
-        switch alignment {
-        case .left:
-            return origin.x
-        case .center:
-            return origin.x + textWidth/2 - lineWidth/2
-        case .right:
-            return origin.x + textWidth - lineWidth
-        }
         
     }
     
