@@ -356,7 +356,8 @@ public class FieldView: View, MouseResponder {
     
     private func drawLines(drawing: Drawing, layout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
         
-        var baseLineY = 0
+        /* Init the baseline where it should be if there is no text */
+        var baseLineY = textRectangle.top - field.scroll - field.textHeight/4
         var lineIndex = 0
         
         while true {
