@@ -284,8 +284,11 @@ public class ButtonView: View, MouseResponder {
             drawCornerImage(standardCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: standardBorderThickness, composition: backgroundComposition)
         }
         
-        /* Draw title & icon (if an icon is set but not found, the button is layout as if had an icon) */
-        if button.showName && button.iconIdentifier == 0 {
+        /* (if an icon is set but not found, the button is layout as if had an icon) */
+        let hasIcon = (button.iconIdentifier != 0)
+        
+        /* Draw title */
+        if button.showName && !hasIcon {
             let nameWidth = font.computeSizeOfString(button.name)
             let nameX = computeNameX(nameWidth: nameWidth)
             let nameY = rectangle.y + rectangle.height / 2 + font.maximumAscent / 2 - font.maximumAscent / 6
@@ -294,7 +297,7 @@ public class ButtonView: View, MouseResponder {
                 drawing.drawRectangle(Rectangle(top: nameY - font.maximumAscent, left: nameX, bottom: nameY + font.maximumDescent, right: nameX + nameWidth), clipRectangle: rectangle, composition: blackToGrayComposition)
             }
         }
-        else {
+        else if hasIcon {
             let iconAndTitleHeight = (button.showName) ? Icon.size + iconNameButtonMargin + font.maximumAscent + font.maximumDescent + 1 : Icon.size + 2
             let iconAndTitleOrigin = rectangle.height / 2 - iconAndTitleHeight / 2 + 1
             if button.showName {
