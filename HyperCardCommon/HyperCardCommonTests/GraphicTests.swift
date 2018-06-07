@@ -58,11 +58,13 @@ class GraphicTests: XCTestCase {
                 }
                 
                 /* XOR: un-comment to see the result of a test */
-//                let drawing = Drawing(image: expectedImage)
-//                drawing.drawImage(browser.image, position: Point(x: 0, y: 0), composition: Drawing.XorComposition)
-//                let cgimage = RgbConverter.convertImage(drawing.image)
-//                let nsimage = NSImage(cgImage: cgimage, size: NSSize(width: 512, height: 342))
-//                print("breakpoint here")
+//                if browser.image != expectedImage {
+//                    let drawing = Drawing(image: expectedImage)
+//                    drawing.drawImage(browser.image, position: Point(x: 0, y: 0), composition: Drawing.XorComposition)
+//                    let cgimage = RgbConverter.convertImage(drawing.image)
+//                    let nsimage = NSImage(cgImage: cgimage, size: NSSize(width: 512, height: 342))
+//                    print("breakpoint here")
+//                }
                 
                 /* Check the card graphic */
                 XCTAssert(browser.image == expectedImage, "Graphic test failed in stack \"\(stackName)\" at card \(cardIndex + 1)")

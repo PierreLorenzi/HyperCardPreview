@@ -444,7 +444,7 @@ public class ButtonView: View, MouseResponder {
             return button.rectangle.x + button.rectangle.width / 2 - nameWidth / 2
             
         case .right:
-            return button.rectangle.right - buttonMargin - nameWidth
+            return button.rectangle.right - buttonMargin - nameWidth + 1
             
         }
         
