@@ -71,8 +71,7 @@ public class FontManager {
         
         /* If the style is not plain, look for a plain version on which to apply the style */
         if descriptor.style != PlainTextStyle {
-            let plainDescriptor = FontDescriptor(identifier: descriptor.identifier, size: descriptor.size, style: PlainTextStyle)
-            let plainFont = retrieveFont(forDescriptor: plainDescriptor)
+            let plainFont = findFont(withIdentifier: descriptor.identifier, size: descriptor.size, style: PlainTextStyle)
             return BitmapFont(decorate: plainFont, with: descriptor.style, in: possibleFamily, size: descriptor.size)
         }
         
