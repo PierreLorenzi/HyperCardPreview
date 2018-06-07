@@ -18,15 +18,24 @@ public class ClassicFile {
     /// The resource fork
     public let resourceFork: Data?
     
+    public init(dataFork: Data?, resourceFork: Data?) {
+        self.dataFork = dataFork
+        self.resourceFork = resourceFork
+    }
+}
+
+public extension ClassicFile {
+    
     /// Reads a file at the specified path. Reads the resource fork as an X_ATTR attribute.
-    public init(path: String) {
+    public convenience init(path: String) {
         
         /* Register the data */
-        self.dataFork = ClassicFile.loadDataFork(path)
+        let dataFork = ClassicFile.loadDataFork(path)
         
         /* Read the resources */
-        self.resourceFork = ClassicFile.loadResourceFork(path)
+        let resourceFork = ClassicFile.loadResourceFork(path)
         
+        self.init(dataFork: dataFork, resourceFork: resourceFork)
     }
     
     private static func loadResourceFork(_ path: String) -> Data? {

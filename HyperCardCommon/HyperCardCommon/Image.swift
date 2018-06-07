@@ -12,7 +12,7 @@ import AppKit
 /// A 1-bit image without mask
 /// <p>
 /// We don't use a Cocoa image because there are a lot of specific processes in 1-bit images.
-public struct Image {
+public struct Image: Equatable {
     
     /// The underlying integer type used to store the pixel data. Can be UInt32 or UInt64.
     public typealias Integer = UInt64
@@ -70,6 +70,37 @@ public struct Image {
             let newInteger = (newValue) ? integer | mask : integer & ~mask
             data[integerIndex] = newInteger
         }
+    }
+    
+    public static func ==(image1: Image, image2: Image) -> Bool {
+        
+        /* Check size */
+        guard image1.width == image2.width && image1.height == image2.height else {
+            return false
+        }
+        
+        /* Check the complete integers */
+        var integerIndex = 0
+        for _ in 0..<image1.height {
+            for _ in 0..<(image1.integerCountInRow - 1) {
+                guard image1.data[integerIndex] == image2.data[integerIndex] else {
+                    return false
+                }
+            }
+            integerIndex += 1
+        }
+        
+        /* Check the last integers of the rows */
+        let mask = Image.Integer.max << (image1.integerCountInRow * Image.Integer.bitWidth - image1.width)
+        integerIndex = image1.integerCountInRow - 1
+        for _ in 0..<image1.height {
+            guard image1.data[integerIndex] & mask == image2.data[integerIndex] & mask else {
+                return false
+            }
+            integerIndex += image1.integerCountInRow
+        }
+        
+        return true
     }
     
 }
