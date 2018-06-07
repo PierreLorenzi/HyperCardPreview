@@ -13,6 +13,8 @@ public class Computation<T> {
     
     private let compute: () -> T
     
+    private var valueIsRead: Bool
+    
     public var value: T {
         get { return valueProperty.value }
         set { valueProperty.value = newValue }
@@ -21,10 +23,23 @@ public class Computation<T> {
     
     public init(_ compute: @escaping () -> T) {
         self.compute = compute
+        self.valueIsRead = false
         self.valueProperty = Property<T>(lazy: compute)
+        
+        /* The previous initialization was fake because we need self capture */
+        self.valueProperty.lazyCompute { () -> T in
+            self.valueIsRead = true
+            return compute()
+        }
     }
     
     public func recompute() {
+        
+        /* If the value has still not been read, keep on waiting for lazy initialization */
+        guard self.valueIsRead else {
+            return
+        }
+        
         self.valueProperty.value = compute()
     }
     
