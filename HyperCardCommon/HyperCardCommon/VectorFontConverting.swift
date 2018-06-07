@@ -25,6 +25,7 @@ public extension BitmapFont {
         self.maximumKerning = Int(round(boundingBox.origin.x))
         self.maximumAscent = Int(round(CTFontGetAscent(vectorFont)))
         self.maximumDescent = Int(round(CTFontGetDescent(vectorFont)))
+        self.leading = Int(round(CTFontGetLeading(vectorFont)))
         self.fontRectangleWidth = Int(round(boundingBox.size.width))
         self.fontRectangleHeight = Int(round(boundingBox.size.height))
         
