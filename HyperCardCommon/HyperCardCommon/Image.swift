@@ -81,13 +81,16 @@ public struct Image: Equatable {
         
         /* Check the complete integers */
         var integerIndex = 0
-        for _ in 0..<image1.height {
-            for _ in 0..<(image1.integerCountInRow - 1) {
-                guard image1.data[integerIndex] == image2.data[integerIndex] else {
-                    return false
+        if image1.integerCountInRow > 1 {
+            for _ in 0..<image1.height {
+                for _ in 0..<(image1.integerCountInRow - 1) {
+                    guard image1.data[integerIndex] == image2.data[integerIndex] else {
+                        return false
+                    }
+                    integerIndex += 1
                 }
+                integerIndex += 1
             }
-            integerIndex += 1
         }
         
         /* Check the last integers of the rows */
