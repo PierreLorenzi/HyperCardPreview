@@ -101,9 +101,7 @@ public extension TextLayout {
             }
             
             /* Step */
-            let switchToNewAttribute: Bool = state.endIndex < text.string.length - 1 && state.endAttributeIndex < text.attributes.count - 1 && text.attributes[state.endAttributeIndex + 1].index == state.endIndex + 1
-            let newAttribute: RichText.Attribute? = switchToNewAttribute ? text.attributes[state.endAttributeIndex + 1] : nil
-            state.step(endCharacterWidth: characterWidth, newEndAttribute: newAttribute)
+            state.step(endCharacterWidth: characterWidth, text: text)
             
         }
         
@@ -129,18 +127,31 @@ public extension TextLayout {
             self.leading = self.endFont.leading
         }
         
-        mutating func step(endCharacterWidth: Int, newEndAttribute: RichText.Attribute?) {
-            self.endIndex += 1
-            self.width += endCharacterWidth
+        mutating func step(endCharacterWidth: Int, text: RichText) {
             
-            if let attribute = newEndAttribute {
+            /* Check if the state integrates a new attribute */
+            if text.attributes[self.endAttributeIndex].index == self.endIndex {
                 
-                self.endAttributeIndex += 1
-                self.endFont = attribute.font
+                let attribute = text.attributes[self.endAttributeIndex]
+                
                 self.ascent = max(self.ascent, attribute.font.maximumAscent)
                 self.descent = max(self.descent, attribute.font.maximumDescent)
                 self.leading = min(self.leading, attribute.font.leading)
             }
+            
+            /* Step */
+            self.endIndex += 1
+            self.width += endCharacterWidth
+            
+            /* Check if the end index comes to a new attribute */
+            if self.endIndex < text.string.length && self.endAttributeIndex < text.attributes.count - 1 && text.attributes[self.endAttributeIndex + 1].index == self.endIndex {
+                
+                let attribute = text.attributes[self.endAttributeIndex + 1]
+                
+                self.endAttributeIndex += 1
+                self.endFont = attribute.font
+            }
+            
         }
         
         mutating func moveToNextLine(text: RichText, textWidth: Int, alignment: TextAlign, dontWrap: Bool, lineHeight possibleLineHeight: Int?) -> LineLayout {
