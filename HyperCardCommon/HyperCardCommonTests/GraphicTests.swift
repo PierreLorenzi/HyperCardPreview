@@ -73,5 +73,9 @@ class GraphicTests: XCTestCase {
         self.makeTestOfStack(withName: "Home")
     }
     
+    func testBitmap() {
+        self.makeTestOfStack(withName: "TestBitmap")
+    }
+    
     
 }
