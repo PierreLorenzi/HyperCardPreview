@@ -1,4 +1,4 @@
-**[Screenshot](http://www.hostingpics.net/viewer.php?id=554516HyperCardPreview.png)**
+**[Screenshot](http://pierrelorenzi.fr/HyperCardPreview.png)**
 
 **[Download v1.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.2.0/HyperCardPreview.app.zip)** (November 14, 2017)
 
