@@ -1,4 +1,4 @@
-**[Screenshot](http://pierrelorenzi.fr/HyperCardPreview.png)**
+**[Screenshot](http://pierrelorenzi.fr/hypercard/screenshot.png)**
 
 **[Download v1.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.2.0/HyperCardPreview.app.zip)** (November 14, 2017)
 
@@ -6,7 +6,7 @@ Mac OS 10.12 minimum
 
 This application displays HyperCard stacks in Mac OS X.
 
-The binary format of HyperCard stacks has been retro-engineered by numerous people, and now it is known with pretty good reliability. If you want to learn more about it, see the site [hypercard.org](http://hypercard.org).
+The binary format of HyperCard stacks has been retro-engineered by numerous people, and now it is known with pretty good reliability. If you want to learn more about it, see the [format description](http://pierrelorenzi.fr/hypercard/stack_format.html).
 
 HyperCardPreview only displays the stacks, it does not edit them, it does not execute them. To do that you have to use a emulator: SheepShaver, Basilisk or vMac.
 
