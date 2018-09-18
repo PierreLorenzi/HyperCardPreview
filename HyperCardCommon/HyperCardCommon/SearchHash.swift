@@ -10,11 +10,11 @@
 /// A hash used in HyperCard for word search in a card
 public struct SearchHash {
     
-    private var ints: [UInt32]
+    public var ints: [UInt32]
     
     private let size: Int
     
-    private let valueCount: Int
+    public let valueCount: Int
     
     public init(ints: [UInt32], valueCount: Int) {
         self.ints = ints

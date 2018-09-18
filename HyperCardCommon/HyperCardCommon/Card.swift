@@ -40,11 +40,11 @@ public class Card: Layer {
     public var markedProperty = Property<Bool>(false)
     
     /// The hash used to check if a word is present in a card
-    public var searchHash: SearchHash? {
+    public var searchHash: SearchHash {
         get { return self.searchHashProperty.value }
         set { self.searchHashProperty.value = newValue }
     }
-    public var searchHashProperty = Property<SearchHash?>(nil)
+    public var searchHashProperty = Property<SearchHash>(SearchHash(ints: [], valueCount: 0))
     
     /// The texts displayed in the fields of the background, and the hilites of the background buttons
     public var backgroundPartContents: [BackgroundPartContent] {

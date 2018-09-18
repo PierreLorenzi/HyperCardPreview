@@ -638,6 +638,51 @@ class Document: NSDocument, NSAnimationDelegate {
         return controller
     }
     
+    @objc func exportStackAsText(_ sender: AnyObject) {
+        
+        /* Choose a file */
+        let savePanel = NSSavePanel()
+        savePanel.title = "Export stack as text"
+        savePanel.prompt = "Export"
+        savePanel.message = "Choose a JSON file to export the stack data."
+        savePanel.isExtensionHidden = false
+        savePanel.allowedFileTypes = ["public.json"]
+        savePanel.allowsOtherFileTypes = false
+        savePanel.nameFieldStringValue = "\(self.fileURL!.lastPathComponent).json"
+        
+        savePanel.begin { (response: NSApplication.ModalResponse) in
+            
+            /* Check the user clicked "OK" */
+            guard response == NSApplication.ModalResponse.OK else {
+                return
+            }
+            
+            /* Get the requested url */
+            guard let url = savePanel.url else {
+                return
+            }
+            
+            /* Prepare the JSON encoder */
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            encoder.keyEncodingStrategy = JSONEncoder.KeyEncodingStrategy.convertToSnakeCase
+            
+            do {
+                
+                /* Export to JSON */
+                let data = try encoder.encode(self.browser.stack)
+                try data.write(to: url)
+            }
+            catch let error {
+                
+                /* Show the alert to the user */
+                let alert = NSAlert(error: error)
+                alert.messageText = "Can't export stack as text"
+                alert.runModal()
+            }
+        }
+    }
+    
 }
 
 
