@@ -183,12 +183,11 @@ public struct StackBlockReader {
         return StackBlockReader.readPrivateAccess(in: self.data)
     }
     
-    /// Private Access
     private static func readPrivateAccess(in data: DataRange) -> Bool {
         return data.readFlag(at: 0x4C, bitOffset: 13)
     }
     
-    /// Private Access
+    /// Version at creation
     public func readVersionAtCreation() -> Version? {
         let code = data.readUInt32(at: 0x60)
         guard code != 0 else {
