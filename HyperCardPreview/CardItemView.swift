@@ -71,11 +71,11 @@ class CardItemView: NSView {
         titleLayer.autoresizingMask = [.layerWidthSizable, .layerMaxYMargin]
         
         /* Give the title an appearance */
-        titleLayer.alignmentMode = kCAAlignmentCenter
+        titleLayer.alignmentMode = CATextLayerAlignmentMode.center
         titleLayer.font = NSFont.systemFont(ofSize: 10.0)
         titleLayer.fontSize = 10.0
         titleLayer.foregroundColor = CGColor(red: 0.25, green: 0.25, blue: 0.25, alpha: 1.0)
-        titleLayer.truncationMode = kCATruncationEnd
+        titleLayer.truncationMode = CATextLayerTruncationMode.end
         
     }
     

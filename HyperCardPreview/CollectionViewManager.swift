@@ -45,7 +45,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
         super.init()
         
         /* Register as data source */
-        let nib = NSNib(nibNamed: NSNib.Name(rawValue: "CardItem"), bundle: nil)
+        let nib = NSNib(nibNamed: "CardItem", bundle: nil)
         collectionView.register(nib, forItemWithIdentifier: NSUserInterfaceItemIdentifier(rawValue: CollectionViewManager.itemIdentifier))
         collectionView.dataSource = self
         collectionView.delegate = self

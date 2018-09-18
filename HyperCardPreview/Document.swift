@@ -28,7 +28,7 @@ class Document: NSDocument, NSAnimationDelegate {
     private var collectionViewManager: CollectionViewManager? = nil
     
     override var windowNibName: NSNib.Name? {
-        return NSNib.Name(rawValue: "Document")
+        return "Document"
     }
     
     override func read(from url: URL, ofType typeName: String) throws {
@@ -631,7 +631,7 @@ class Document: NSDocument, NSAnimationDelegate {
         removeScriptBorders()
         
         let controller = InfoPanelController()
-        Bundle.main.loadNibNamed(NSNib.Name(rawValue: "InfoPanel"), owner: controller, topLevelObjects: nil)
+        Bundle.main.loadNibNamed("InfoPanel", owner: controller, topLevelObjects: nil)
         controller.setup()
         controller.window.makeKeyAndOrderFront(nil)
         panels.append(controller)

@@ -202,7 +202,7 @@
 					6C26B8C11E6D7520006C314B = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 4635GNGBF8;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -426,7 +426,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.pierrelorenzi.HyperCardPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -443,7 +443,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = fr.pierrelorenzi.HyperCardPreview;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};

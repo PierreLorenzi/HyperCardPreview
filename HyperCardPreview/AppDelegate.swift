@@ -56,7 +56,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         if helpPanel == nil {
             
             /* Load the nib */
-            let nib = NSNib(nibNamed: NSNib.Name(rawValue: "Help"), bundle: nil)
+            let nib = NSNib(nibNamed: "Help", bundle: nil)
             nib!.instantiate(withOwner: self, topLevelObjects: nil)
             
             /* Load the HTML content into the WebView */

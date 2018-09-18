@@ -51,28 +51,28 @@ class DocumentView: NSView, NSMenuDelegate {
             }
             
             /* Page Down */
-            if character == NSPageDownFunctionKey {
+            if character == NSEvent.SpecialKey.pageDown.rawValue {
                 
                 document.goToNextPage(self)
                 return
             }
             
             /* Page Up */
-            if character == NSPageUpFunctionKey {
+            if character == NSEvent.SpecialKey.pageUp.rawValue {
                 
                 document.goToPreviousPage(self)
                 return
             }
             
             /* Begin */
-            if character == NSBeginFunctionKey || character == NSHomeFunctionKey {
+            if character == NSEvent.SpecialKey.begin.rawValue || character == NSEvent.SpecialKey.home.rawValue {
                 
                 document.goToFirstPage(self)
                 return
             }
             
             /* End */
-            if character == NSEndFunctionKey {
+            if character == NSEvent.SpecialKey.end.rawValue {
                 
                 document.goToLastPage(self)
                 return
@@ -94,9 +94,9 @@ class DocumentView: NSView, NSMenuDelegate {
             let character = Int(characters.utf16[String.UTF16View.Index(encodedOffset: 0)])
             
             switch character {
-            case NSRightArrowFunctionKey:
+            case NSEvent.SpecialKey.rightArrow.rawValue:
                 NSApp.sendAction(#selector(Document.goToNextPage), to: nil, from: nil)
-            case NSLeftArrowFunctionKey:
+            case NSEvent.SpecialKey.leftArrow.rawValue:
                 NSApp.sendAction(#selector(Document.goToPreviousPage), to: nil, from: nil)
             default:
                 break;

@@ -38,7 +38,7 @@ class GraphicTests: XCTestCase {
             
             /* Load the expected image */
             let expectedImageName = "\(stackName) \(cardIndex + 1)"
-            guard let path = bundle.pathForImageResource(NSImage.Name(rawValue: expectedImageName)),
+            guard let path = bundle.pathForImageResource(expectedImageName),
                 let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
                 let representation = NSBitmapImageRep(data: data) else {
                     XCTFail()
