@@ -430,7 +430,11 @@ public struct Version: CustomStringConvertible, Equatable {
         if release == 0 {
             return ""
         }
-        return " release \(release)"
+        
+        /* In HyperTalk, the release is given in hexadecimal, so I stick to that */
+        let releaseInHex = String(release, radix: 16, uppercase: true)
+        let prefix = (releaseInHex.count == 1) ? "0" : ""
+        return " release \(prefix)\(releaseInHex)"
     }
 }
 
