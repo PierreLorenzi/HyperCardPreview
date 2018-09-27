@@ -642,9 +642,8 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Choose a file */
         let savePanel = NSSavePanel()
-        savePanel.title = "Export stack as text"
-        savePanel.prompt = "Export"
-        savePanel.message = "Choose a JSON file to export the stack data."
+        savePanel.title = "Export stack"
+        savePanel.message = "Export to JSON (learn about it in the ReadMe):"
         savePanel.isExtensionHidden = false
         savePanel.allowedFileTypes = ["public.json"]
         savePanel.allowsOtherFileTypes = false
