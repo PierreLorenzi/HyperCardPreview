@@ -76,7 +76,6 @@ extension Card: Encodable {
         
         try container.encode(self.background.identifier, forKey: .backgroundIdentifier)
         try container.encode(self.marked, forKey: .marked)
-        try container.encode(self.searchHash, forKey: .searchHash)
         try container.encode(self.backgroundPartContents, forKey: .backgroundPartContents)
     }
     
@@ -92,7 +91,6 @@ extension Card: Encodable {
         
         case backgroundIdentifier
         case marked
-        case searchHash
         case backgroundPartContents
     }
 }
@@ -103,22 +101,6 @@ extension HString: Encodable {
         
         var container = encoder.singleValueContainer()
         try container.encode(self.description)
-    }
-}
-
-extension SearchHash: Encodable {
-    
-    public func encode(to encoder: Encoder) throws {
-        
-        var container = encoder.container(keyedBy: CodingKeys.self)
-        
-        try container.encode(self.ints, forKey: .ints)
-        try container.encode(self.valueCount, forKey: .valueCount)
-    }
-    
-    enum CodingKeys: String, CodingKey {
-        case ints
-        case valueCount
     }
 }
 
@@ -333,13 +315,13 @@ extension PartStyle: Encodable {
             try container.encode("rectangle")
             
         case .roundRect:
-            try container.encode("roundRect")
+            try container.encode("round_rect")
             
         case .shadow:
             try container.encode("shadow")
             
         case .checkBox:
-            try container.encode("checkBox")
+            try container.encode("check_box")
             
         case .radio:
             try container.encode("radio")
