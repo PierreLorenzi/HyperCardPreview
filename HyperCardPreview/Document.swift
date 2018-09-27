@@ -17,8 +17,6 @@ class Document: NSDocument, NSAnimationDelegate {
     
     var browser: Browser!
     
-    var panels: [InfoPanelController] = []
-    
     @IBOutlet weak var view: DocumentView!
     
     @IBOutlet weak var collectionView: CollectionView!
@@ -113,6 +111,8 @@ class Document: NSDocument, NSAnimationDelegate {
     
     override func windowControllerDidLoadNib(_ windowController: NSWindowController) {
         super.windowControllerDidLoadNib(windowController)
+        
+        windowController.shouldCloseDocument = true
         
         let window = self.windowControllers[0].window!
         let currentFrame = window.frame
@@ -630,11 +630,11 @@ class Document: NSDocument, NSAnimationDelegate {
     func displayInfo() -> InfoPanelController {
         removeScriptBorders()
         
-        let controller = InfoPanelController()
-        Bundle.main.loadNibNamed("InfoPanel", owner: controller, topLevelObjects: nil)
+        let controller = InfoPanelController(windowNibName: "InfoPanel")
+        _ = controller.window // Load the nib
         controller.setup()
-        controller.window.makeKeyAndOrderFront(nil)
-        panels.append(controller)
+        controller.showWindow(nil)
+        self.addWindowController(controller)
         return controller
     }
     

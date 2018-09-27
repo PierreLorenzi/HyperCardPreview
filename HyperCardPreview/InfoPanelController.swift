@@ -10,9 +10,8 @@ import AppKit
 import HyperCardCommon
 
 
-class InfoPanelController {
+class InfoPanelController: NSWindowController {
     
-    @IBOutlet var window: NSWindow!
     @IBOutlet weak var infoView: NSTextView!
     @IBOutlet weak var contentView: NSTextView!
     @IBOutlet weak var scriptView: NSTextView!
@@ -33,7 +32,7 @@ class InfoPanelController {
     }
     
     func displayStack(_ hyperCardFile: HyperCardFile) {
-        window.title = "Stack Info"
+        self.window!.title = "Stack Info"
         let stack = hyperCardFile.stack
         displayScript(stack.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
@@ -57,7 +56,7 @@ class InfoPanelController {
     }
     
     func displayBackground(_ background: Background) {
-        window.title = "Background ID \(background.identifier)"
+        self.window!.title = "Background ID \(background.identifier)"
         displayScript(background.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
@@ -69,7 +68,7 @@ class InfoPanelController {
     }
     
     func displayCard(_ card: Card) {
-        window.title = "Card ID \(card.identifier)"
+        self.window!.title = "Card ID \(card.identifier)"
         displayScript(card.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
@@ -82,7 +81,7 @@ class InfoPanelController {
     }
     
     func displayButton(_ button: Button, withContent content: HString) {
-        window.title = "Button ID \(button.identifier)"
+        self.window!.title = "Button ID \(button.identifier)"
         displayScript(button.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
@@ -99,7 +98,7 @@ class InfoPanelController {
     }
     
     func displayField(_ field: Field, withContent content: HString) {
-        window.title = "Field ID \(field.identifier)"
+        self.window!.title = "Field ID \(field.identifier)"
         displayScript(field.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
