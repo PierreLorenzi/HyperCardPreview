@@ -95,6 +95,13 @@
                                                 <action selector="exportStackAsText:" target="-1" id="GKD-h5-wFs"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem isSeparatorItem="YES" id="FNV-i0-KZU"/>
+                                        <menuItem title="Export card images…" id="d6L-h7-rbv">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportCardImages:" target="-1" id="V6G-fu-G7U"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>

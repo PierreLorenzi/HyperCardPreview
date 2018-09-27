@@ -683,6 +683,64 @@ class Document: NSDocument, NSAnimationDelegate {
         }
     }
     
+    @objc func exportCardImages(_ sender: AnyObject) {
+        
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Export Images"
+        openPanel.message = "Choose a directory where to export the images:"
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        
+        openPanel.begin { (response: NSApplication.ModalResponse) in
+            
+            /* Check the user clicked "OK" */
+            guard response == NSApplication.ModalResponse.OK else {
+                return
+            }
+            
+            /* Get the requested url */
+            guard let url = openPanel.url else {
+                return
+            }
+            
+            let stack = self.browser.stack
+            
+            for cardIndex in 0 ..< self.browser.stack.cards.count {
+            
+                /* Create an image of the card, and if it doesn't exist, a transparent image */
+                let image = stack.cards[cardIndex].image ?? MaskedImage(width: stack.size.width, height: stack.size.height, image: MaskedImage.Layer.clear, mask: MaskedImage.Layer.clear)
+                let cgImage = RgbConverter.convertMaskedImage(image)
+                
+                /* Build the PNG data */
+                let nsImageRep = NSBitmapImageRep(cgImage: cgImage)
+                guard let data = nsImageRep.representation(using: NSBitmapImageRep.FileType.png, properties: [:]) else {
+                    
+                    /* Show the alert to the user */
+                    let alert = NSAlert()
+                    alert.messageText = "Can't represent the image as PNG"
+                    alert.runModal()
+                    return
+                }
+                
+                do {
+                    
+                    /* Save the PNG data */
+                    try data.write(to: url.appendingPathComponent("\(self.fileURL!.lastPathComponent)-cd\(cardIndex+1).png"))
+                }
+                catch let error {
+                
+                    /* Show the alert to the user */
+                    let alert = NSAlert(error: error)
+                    alert.messageText = "Can't export card image"
+                    alert.runModal()
+                }
+                
+            }
+            
+        }
+    }
+    
 }
 
 
