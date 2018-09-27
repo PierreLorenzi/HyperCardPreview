@@ -16,6 +16,7 @@ import QuickLook
 class Document: NSDocument, NSAnimationDelegate {
     
     var browser: Browser!
+    var resourceFork: Data?
     
     @IBOutlet weak var view: DocumentView!
     
@@ -40,6 +41,7 @@ class Document: NSDocument, NSAnimationDelegate {
             let file = ClassicFile(path: path)
             let hyperCardFile = try HyperCardFile(file: file, password: password)
             self.browser = Browser(hyperCardFile: hyperCardFile)
+            self.resourceFork = file.resourceFork
         }
         catch OpeningError.notStack {
             
@@ -690,6 +692,16 @@ class Document: NSDocument, NSAnimationDelegate {
     @objc func exportBackgroundImages(_ sender: AnyObject) {
         
         ImageExporter.export(stack: self.browser.stack, layerType: LayerType.background)
+    }
+    
+    @objc func displayResources(_ sender: AnyObject) {
+        
+        let controller = ResourceController(windowNibName: "ResourceWindow")
+        _ = controller.window // Load the nib
+        controller.setup(resourceFork: self.resourceFork)
+        controller.showWindow(nil)
+        self.addWindowController(controller)
+        
     }
     
 }
