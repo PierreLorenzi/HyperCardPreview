@@ -102,6 +102,12 @@
                                                 <action selector="exportCardImages:" target="-1" id="V6G-fu-G7U"/>
                                             </connections>
                                         </menuItem>
+                                        <menuItem title="Export background images…" id="Q1G-hg-r0I">
+                                            <modifierMask key="keyEquivalentModifierMask"/>
+                                            <connections>
+                                                <action selector="exportBackgroundImages:" target="-1" id="Gjv-iB-ZaY"/>
+                                            </connections>
+                                        </menuItem>
                                     </items>
                                 </menu>
                             </menuItem>
