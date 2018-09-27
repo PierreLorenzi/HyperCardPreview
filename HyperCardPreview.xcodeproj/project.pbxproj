@@ -100,6 +100,7 @@
 		6CC2F9482150F3C2007A7008 /* Stack Encoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stack Encoding.swift"; sourceTree = "<group>"; };
 		6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoPanel.xib; sourceTree = "<group>"; };
 		6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoPanelController.swift; sourceTree = "<group>"; };
+		6CD58724215D176C00482A56 /* HyperCardPreview.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HyperCardPreview.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +136,7 @@
 		6C26B8C41E6D7520006C314B /* HyperCardPreview */ = {
 			isa = PBXGroup;
 			children = (
+				6CD58724215D176C00482A56 /* HyperCardPreview.entitlements */,
 				6C26B8C51E6D7520006C314B /* AppDelegate.swift */,
 				6C26B8C71E6D7520006C314B /* Document.swift */,
 				6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */,
@@ -216,6 +218,14 @@
 						DevelopmentTeam = 4635GNGBF8;
 						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.HardenedRuntime = {
+								enabled = 1;
+							};
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -433,10 +443,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HyperCardPreview/HyperCardPreview.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 4635GNGBF8;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = HyperCardPreview/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.pierrelorenzi.HyperCardPreview;
@@ -450,10 +462,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = HyperCardPreview/HyperCardPreview.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = 4635GNGBF8;
+				ENABLE_HARDENED_RUNTIME = YES;
 				INFOPLIST_FILE = HyperCardPreview/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fr.pierrelorenzi.HyperCardPreview;
