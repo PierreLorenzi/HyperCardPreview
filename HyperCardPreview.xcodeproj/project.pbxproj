@@ -17,6 +17,7 @@
 		6C26B8D01E6D7520006C314B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6C26B8CE1E6D7520006C314B /* MainMenu.xib */; };
 		6C26B8DB1E6D7577006C314B /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8DA1E6D7577006C314B /* DocumentView.swift */; };
 		6C3682AE1E735EFF00EDF16D /* ScriptBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */; };
+		6C36D801215E1CD3003AA45F /* SoundResourceIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */; };
 		6C3FF056215CEC6300BCEC81 /* ExportAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6C3FF055215CEC6300BCEC81 /* ExportAccessoryView.xib */; };
 		6C3FF05A215CEF0200BCEC81 /* ImageExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3FF059215CEF0200BCEC81 /* ImageExporter.swift */; };
 		6C3FF05C215CF73400BCEC81 /* ExportProgress.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6C3FF05B215CF73400BCEC81 /* ExportProgress.xib */; };
@@ -89,6 +90,7 @@
 		6C26B8D11E6D7520006C314B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C26B8DA1E6D7577006C314B /* DocumentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
 		6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptBorderView.swift; sourceTree = "<group>"; };
+		6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SoundResourceIcon.png; sourceTree = "<group>"; };
 		6C3FF055215CEC6300BCEC81 /* ExportAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExportAccessoryView.xib; sourceTree = "<group>"; };
 		6C3FF059215CEF0200BCEC81 /* ImageExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageExporter.swift; sourceTree = "<group>"; };
 		6C3FF05B215CF73400BCEC81 /* ExportProgress.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ExportProgress.xib; sourceTree = "<group>"; };
@@ -171,6 +173,7 @@
 				6CCE9262215D6C1A00A93935 /* ResourceItem.xib */,
 				6C4FE2661E75A4CE00E2BF12 /* Application.icns */,
 				6C4FE2561E75849700E2BF12 /* Stack.icns */,
+				6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */,
 				6CA554AA1F602FD8005914E2 /* Shortcuts.html */,
 				6C26B8D11E6D7520006C314B /* Info.plist */,
 			);
@@ -295,6 +298,7 @@
 				6CA554AB1F602FD8005914E2 /* Shortcuts.html in Resources */,
 				6CCC93A11E73483D0059C8D8 /* InfoPanel.xib in Resources */,
 				6CCE9263215D6C1A00A93935 /* ResourceItem.xib in Resources */,
+				6C36D801215E1CD3003AA45F /* SoundResourceIcon.png in Resources */,
 				6CCE925F215D692100A93935 /* ResourceWindow.xib in Resources */,
 				6CB8B98D1F4B16BC0070116D /* CardItem.xib in Resources */,
 				6C4FE2671E75A4CE00E2BF12 /* Application.icns in Resources */,
