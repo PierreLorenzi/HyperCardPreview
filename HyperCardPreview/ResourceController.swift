@@ -213,7 +213,55 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
         
         view.displayResource(image: image, type: element.type, identifier: element.identifier, name: element.name)
         
+        if view.doubleClickAction == nil {
+            view.doubleClickAction = {
+                [unowned self] in
+                self.openSelectedResources()
+            }
+        }
+        
         return item
+    }
+    
+    private func openSelectedResources() {
+        
+        for indexPath in self.collectionView.selectionIndexPaths {
+            
+            let element = self.resources[indexPath.item]
+            
+            switch element.readContent() {
+                
+            case .picture(let image):
+                let controller = ResourceImageController(windowNibName: "ResourceImageWindow")
+                _ = controller.window // Load the nib
+                controller.displayImage(image: image)
+                controller.showWindow(nil)
+                self.document!.addWindowController(controller)
+                
+            case .icon(let image):
+                let controller = ResourceImageController(windowNibName: "ResourceImageWindow")
+                _ = controller.window // Load the nib
+                controller.displayImage(image: image)
+                controller.showWindow(nil)
+                self.document!.addWindowController(controller)
+                
+            case .sound(let possibleSound):
+                if let sound = possibleSound {
+                    sound.play()
+                }
+                else {
+                    NSSound.beep()
+                }
+                
+            case .generic(let data):
+                let controller = ResourceBinaryController(windowNibName: "ResourceBinaryWindow")
+                _ = controller.window // Load the nib
+                controller.displayData(data)
+                controller.showWindow(nil)
+                self.document!.addWindowController(controller)
+                
+            }
+        }
     }
     
 }

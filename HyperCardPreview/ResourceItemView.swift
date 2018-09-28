@@ -21,6 +21,8 @@ class ResourceItemView: NSView {
     
     var selectionLayer: CALayer? = nil
     
+    var doubleClickAction: (() -> Void)?
+    
     private static let lineHeight = CGFloat(18.0)
     private static let iconTextMargin = CGFloat(5.0)
     
@@ -144,6 +146,16 @@ class ResourceItemView: NSView {
         
         return self.bounds
         
+    }
+    
+    override func mouseUp(with event: NSEvent) {
+
+        /* Detect double-clicks */
+        if let action = self.doubleClickAction, event.clickCount == 2 {
+            action()
+        }
+        
+        super.mouseUp(with: event)
     }
     
 }
