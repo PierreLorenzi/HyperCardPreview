@@ -56,7 +56,7 @@
                         </scroller>
                     </scrollView>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZgJ-kH-KvO">
-                        <rect key="frame" x="4" y="2" width="40" height="25"/>
+                        <rect key="frame" x="4" y="3" width="40" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" autoenablesItems="NO" selectedItem="UB1-Rl-1Z4" id="Bqy-rL-qf5">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
@@ -83,7 +83,7 @@
                         </connections>
                     </searchField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kua-Hs-myv">
-                        <rect key="frame" x="53" y="8" width="144" height="17"/>
+                        <rect key="frame" x="53" y="9" width="144" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="eGc-6s-nrN">
                             <font key="font" metaFont="system"/>
