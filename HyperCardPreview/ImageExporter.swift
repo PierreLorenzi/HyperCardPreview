@@ -165,12 +165,9 @@ class ImageExporter {
                 
                 /* It's completed */
                 DispatchQueue.main.async {
-                    guard let exportBar = self.exportBar, let exportLabel = self.exportLabel, let exportWindow = self.exportWindow else {
-                        return
+                    if let window = self.exportWindow {
+                        window.close()
                     }
-                    exportBar.isHidden = true
-                    exportLabel.stringValue = "\(exportMessage): completed"
-                    exportWindow.title = "Export"
                 }
             }
             
