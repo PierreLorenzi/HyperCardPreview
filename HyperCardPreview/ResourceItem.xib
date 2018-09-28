@@ -6,15 +6,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner">
-            <connections>
-                <outlet property="identifierLabel" destination="A15-q6-Xvc" id="ci2-OY-giM"/>
-                <outlet property="imageView" destination="fAK-jk-yR0" id="2EZ-wk-ZLO"/>
-                <outlet property="nameLabel" destination="GLK-QB-7nr" id="6vr-zw-Ygk"/>
-                <outlet property="typeLabel" destination="xBQ-n5-nKl" id="u4N-hZ-lcH"/>
-                <outlet property="view" destination="c22-O7-iKe" id="Keo-L9-ji0"/>
-            </connections>
-        </customObject>
+        <customObject id="-2" userLabel="File's Owner"/>
         <customObject id="NmV-Cy-yLy" customClass="ResourceItem" customModule="HyperCardPreview" customModuleProvider="target">
             <connections>
                 <outlet property="identifierLabel" destination="A15-q6-Xvc" id="JZJ-yx-aXS"/>
