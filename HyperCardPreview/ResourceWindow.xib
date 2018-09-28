@@ -64,8 +64,16 @@
                             <menu key="menu" autoenablesItems="NO" id="VKB-Tx-pWo">
                                 <items>
                                     <menuItem state="on" image="NSActionTemplate" hidden="YES" id="UB1-Rl-1Z4"/>
-                                    <menuItem title="Item 2" id="11X-wu-EUv"/>
-                                    <menuItem title="Item 3" id="c7c-Nb-Keg"/>
+                                    <menuItem title="Show contents" id="11X-wu-EUv" userLabel="Open resources">
+                                        <connections>
+                                            <action selector="openSelectedResources" target="-2" id="oAK-nE-lYH"/>
+                                        </connections>
+                                    </menuItem>
+                                    <menuItem title="Export…" id="c7c-Nb-Keg">
+                                        <connections>
+                                            <action selector="exportSelectedResources:" target="-2" id="qdn-A1-MhX"/>
+                                        </connections>
+                                    </menuItem>
                                 </items>
                             </menu>
                         </popUpButtonCell>

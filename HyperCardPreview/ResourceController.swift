@@ -22,6 +22,12 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     private static let resourceItemIdentifier = NSUserInterfaceItemIdentifier("ResourceItem")
     
+    private static let queue = DispatchQueue(label: "Resource Export", qos: DispatchQoS.background, attributes: [DispatchQueue.Attributes.concurrent], autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: nil)
+    
+    private enum ExportError: Error {
+        case error
+    }
+    
     private class ResourceElement {
         
         let type: String
@@ -82,7 +88,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             }
         }
         
-        private static func convertSndToAIFF(data: DataRange) -> Data? {
+        static func convertSndToAIFF(data: DataRange) -> Data? {
             
             /* This is a very limited and messy function to make an AIFF
              out of a snd resource. It is the fastest way I've found to play an old sound. */
@@ -185,7 +191,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         self.collectionView.register(NSNib(nibNamed: "ResourceItem", bundle: nil), forItemWithIdentifier: ResourceController.resourceItemIdentifier)
         self.collectionView.mainAction = {
             [unowned self] in
-            self.openSelectedResources()
+            self.openSelectedResources(nil)
         }
         self.collectionView.setDraggingSourceOperationMask(NSDragOperation.copy, forLocal: false)
         
@@ -245,14 +251,14 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         if view.doubleClickAction == nil {
             view.doubleClickAction = {
                 [unowned self] in
-                self.openSelectedResources()
+                self.openSelectedResources(nil)
             }
         }
         
         return item
     }
     
-    private func openSelectedResources() {
+    @objc @IBAction func openSelectedResources(_ sender: AnyObject?) {
         
         for indexPath in self.collectionView.selectionIndexPaths {
             
@@ -378,6 +384,110 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         }
         
         return false
+    }
+    
+    @objc @IBAction func exportSelectedResources(_ sender: AnyObject?) {
+        
+        /* Set up the open panel */
+        let openPanel = NSOpenPanel()
+        openPanel.title = "Export Resources"
+        openPanel.message = "Choose a directory where to export the resources:"
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = true
+        openPanel.canChooseFiles = false
+        
+        /* Open panel */
+        openPanel.begin { (response: NSApplication.ModalResponse) in
+            
+            /* Check the user clicked "OK" */
+            guard response == NSApplication.ModalResponse.OK else {
+                return
+            }
+            
+            /* Get the requested url */
+            guard let url = openPanel.url else {
+                return
+            }
+            
+            /* Get the selected elements */
+            let selectedResources = self.collectionView.selectionIndexPaths.map({ (index: IndexPath) -> ResourceElement in
+                
+                return self.listedResources[index.item]
+            })
+            
+            guard !selectedResources.isEmpty else {
+                return
+            }
+            
+            ResourceController.queue.async {
+                
+                var failedResources: [ResourceElement] = []
+                
+                /* Save every resource */
+                for resource in selectedResources {
+                    
+                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)"
+                    
+                    do {
+                        
+                        switch resource.readContent() {
+                            
+                        case .generic:
+                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName)", relativeTo: url)
+                            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
+                            let data = Data(slice)
+                            try data.write(to: resourceUrl)
+                            
+                        case .picture:
+                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).pict", relativeTo: url)
+                            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
+                            let data = Data(slice)
+                            try data.write(to: resourceUrl)
+                            
+                        case .sound:
+                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).aiff", relativeTo: url)
+                            if let data = ResourceElement.convertSndToAIFF(data: resource.data) {
+                                try data.write(to: resourceUrl)
+                            }
+                            else {
+                                throw ExportError.error
+                            }
+                            
+                        case .icon:
+                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).tif", relativeTo: url)
+                            let icon = Icon(loadFromData: resource.data)
+                            let image = icon.image
+                            let cgimage = RgbConverter.convertImage(image)
+                            let nsimagerep = NSBitmapImageRep(cgImage: cgimage)
+                            if let data = nsimagerep.tiffRepresentation {
+                                try data.write(to: resourceUrl)
+                            }
+                            else {
+                                throw ExportError.error
+                            }
+                        }
+                        
+                    }
+                    catch _ {
+                        failedResources.append(resource)
+                    }
+                }
+                
+                if !failedResources.isEmpty {
+                    DispatchQueue.main.async {
+                        var resourceString = failedResources.map({ "\($0.type) \($0.identifier), " }).reduce("", +)
+                        resourceString = String(resourceString.prefix(resourceString.count - 2))
+                        
+                        let alert = NSAlert()
+                        alert.alertStyle = .warning
+                        alert.messageText = "Can't export some resources"
+                        alert.informativeText = "The following resources couldn't be exported: \(resourceString)"
+                        alert.runModal()
+                    }
+                }
+            }
+            
+        }
     }
     
 }
