@@ -14,7 +14,11 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     private var resources: [ResourceElement] = []
     
+    private var listedResources: [ResourceElement] = []
+    
     @IBOutlet weak var collectionView: CollectionView!
+    @IBOutlet weak var searchField: NSSearchField!
+    @IBOutlet weak var footerLabel: NSTextField!
     
     private static let resourceItemIdentifier = NSUserInterfaceItemIdentifier("ResourceItem")
     
@@ -26,6 +30,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         let data: DataRange
         
         private var cachedContent: ResourceContent?
+        private var cachedSearchString: String?
         
         init(type: String, identifier: Int, name: String, data: DataRange) {
             self.type = type
@@ -150,6 +155,22 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             let finalData = Data(bytesNoCopy: aiffData, count: fileLength, deallocator: Data.Deallocator.free)
             return finalData
         }
+        
+        func readSearchString() -> String {
+            
+            if let searchString = self.cachedSearchString {
+                return searchString
+            }
+            
+            let newSearchString = self.buildSearchString()
+            self.cachedSearchString = newSearchString
+            return newSearchString
+        }
+        
+        private func buildSearchString() -> String {
+            
+            return "\(self.type) \(self.identifier) \(self.name)".uppercased()
+        }
     }
     
     private enum ResourceContent {
@@ -182,6 +203,9 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             let dataRange = forkReader.extractResourceData(at: reference.dataOffset)
             return ResourceElement(type: reference.type.description, identifier: reference.identifier, name: reference.name.description, data: dataRange)
         })
+        self.listedResources = self.resources
+        self.refreshFooterLabel()
+        
         DispatchQueue.main.async {
             self.collectionView.selectionIndexPaths = [IndexPath(item: 0, section: 0)]
         }
@@ -193,14 +217,14 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return self.resources.count
+        return self.listedResources.count
     }
     
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         
         let item = collectionView.makeItem(withIdentifier: ResourceController.resourceItemIdentifier, for: indexPath) as! ResourceItem
         
-        let element = self.resources[indexPath.item]
+        let element = self.listedResources[indexPath.item]
         
         let view = item.view as! ResourceItemView
         
@@ -232,7 +256,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         
         for indexPath in self.collectionView.selectionIndexPaths {
             
-            let element = self.resources[indexPath.item]
+            let element = self.listedResources[indexPath.item]
             
             switch element.readContent() {
                 
@@ -276,7 +300,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
         
-        let element = self.resources[indexPath.item]
+        let element = self.listedResources[indexPath.item]
         switch element.readContent() {
             
         case .generic:
@@ -291,6 +315,69 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         case .sound(let possibleSound):
             return possibleSound ?? NSSound(named: "EmptySound")!
         }
+    }
+    
+    @objc @IBAction func search(_ sender: AnyObject) {
+        
+        let query = self.searchField.stringValue
+        let uppercaseQuery = query.uppercased()
+        let terms = uppercaseQuery.components(separatedBy: CharacterSet.whitespaces)
+        
+        self.listedResources = self.resources.filter({ (element: ResourceController.ResourceElement) -> Bool in
+            
+            for term in terms {
+                
+                guard !term.isEmpty else {
+                    continue
+                }
+                
+                guard self.doesStringContainString(element.readSearchString(), substring: term) else {
+                    return false
+                }
+            }
+            
+            return true
+        })
+        
+        self.refreshFooterLabel()
+        self.collectionView.reloadData()
+    }
+    
+    private func refreshFooterLabel() {
+        
+        self.footerLabel.stringValue = "\(self.listedResources.count) resources"
+    }
+    
+    private func doesStringContainString(_ string: String, substring: String) -> Bool {
+        
+        var index = 0
+        let stringCount = string.count
+        let substringCount = substring.count
+        
+        for char in string {
+            if stringCount - index < substringCount {
+                break
+            }
+            if substring.first == char {
+                // Create a start and end index to ultimately creata range
+                //
+                // Hello Agnosticdev, I love Tutorials
+                //       6   ->   17 - rage of substring from 7 to 18
+                //
+                let startOfFoundCharacter = string.index(string.startIndex, offsetBy: index)
+                let lengthOfFoundCharacter = string.index(string.startIndex, offsetBy: (substringCount + index))
+                
+                // Grab the substring from the parent string and compare it against substring
+                // Essentially, looking for the needle in a haystack
+                if string[startOfFoundCharacter..<lengthOfFoundCharacter] == substring {
+                    return true
+                }
+                
+            }
+            index += 1
+        }
+        
+        return false
     }
     
 }
