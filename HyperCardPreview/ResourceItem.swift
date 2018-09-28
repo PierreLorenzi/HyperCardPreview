@@ -15,5 +15,16 @@ class ResourceItem: NSCollectionViewItem {
     @IBOutlet weak var identifierLabel: NSTextField!
     @IBOutlet weak var nameLabel: NSTextField!
     
+    override var isSelected: Bool {
+        get {
+            return super.isSelected
+        }
+        set {
+            super.isSelected = newValue
+            
+            
+        }
+    }
+    
 }
 

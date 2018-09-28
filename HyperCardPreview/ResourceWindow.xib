@@ -30,11 +30,11 @@
                             <rect key="frame" x="1" y="1" width="480" height="270"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
-                                <collectionView ambiguous="YES" id="G8E-U0-Klr">
+                                <collectionView ambiguous="YES" selectable="YES" allowsEmptySelection="NO" allowsMultipleSelection="YES" id="G8E-U0-Klr">
                                     <rect key="frame" x="0.0" y="0.0" width="480" height="158"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="6cZ-YF-8zZ">
-                                        <size key="itemSize" width="118" height="118"/>
+                                        <size key="itemSize" width="90" height="118"/>
                                     </collectionViewFlowLayout>
                                     <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <connections>

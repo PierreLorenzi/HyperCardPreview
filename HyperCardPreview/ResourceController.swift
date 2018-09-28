@@ -182,6 +182,10 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
         })
     }
     
+    override func windowTitle(forDocumentDisplayName displayName: String) -> String {
+        return "Resources"
+    }
+    
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return self.resources.count
@@ -199,7 +203,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
         
         switch element.readContent() {
         case .generic:
-            item.imageView!.image = nil
+            item.imageView!.image = NSImage(named: "BinaryResourceIcon")
         case .icon(let image):
             item.imageView!.image = image
         case .picture(let image):
