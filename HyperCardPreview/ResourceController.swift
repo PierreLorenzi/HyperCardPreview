@@ -82,18 +82,25 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
             /* This is a very limited and messy function to make an AIFF
              out of a snd resource. It is the fastest way I've found to play an old sound. */
             
-            /* We only accept format 2 'snd ' resources, because HyperCard did (and it's easier that way) */
-            guard data.readUInt16(at: 0x0) == 2 else {
+            /* There are two format of sdn resources, the data is not in the same place */
+            let format = data.readUInt16(at: 0x0)
+            let commandOffset: Int
+            switch format {
+            case 1:
+                commandOffset = 0xC
+            case 2:
+                commandOffset = 0x6
+            default:
                 return nil
             }
             
             /* The first command of a format 2 resource should be bufferCmd or soundCmd */
-            guard data.readUInt16(at: 0x6) == 0x8050 || data.readUInt16(at: 0x6) == 0x8051 else {
+            guard data.readUInt16(at: commandOffset) == 0x8050 || data.readUInt16(at: commandOffset) == 0x8051 else {
                 return nil
             }
             
             /* Get the offset of the sampled sound */
-            let soundOffset = data.readUInt32(at: 0xA)
+            let soundOffset = data.readUInt32(at: commandOffset + 0x4)
             
             /* Check that the sampled sound is in the data */
             guard data.readUInt32(at: soundOffset + 0x0) == 0 else {
@@ -103,17 +110,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
             /* Read the header of the sampled sound, which contain the parameters */
             let byteCount = data.readUInt32(at: soundOffset + 0x4)
             let sampleRateValue = data.readUInt32(at: soundOffset + 0x8)
-            let sampleRate: Double
-            switch sampleRateValue {
-            case 0xAC440000:
-                sampleRate = 44100.0
-            case 0x56EE8BA3:
-                sampleRate = 22254.54545
-            case 0x2B7745D1:
-                sampleRate = 11127.27273
-            default:
-                sampleRate = 11127.27273 //Double(sampleRateValue)
-            }
+            let sampleRate = Double(sampleRateValue) / 65536.0
             guard data.readUInt8(at: soundOffset + 0x14) == 0 else {
                 return nil
             }
