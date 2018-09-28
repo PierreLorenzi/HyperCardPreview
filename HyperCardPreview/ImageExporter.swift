@@ -138,7 +138,7 @@ class ImageExporter {
                     
                     do {
                         /* Save the PNG data */
-                        try data.write(to: url.appendingPathComponent("\(filePrefix) \(index+1).png"))
+                        try data.write(to: url.appendingPathComponent("\(filePrefix)\(index+1).png"))
                     }
                     catch let error {
                         
