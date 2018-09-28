@@ -19,8 +19,13 @@ class ResourceItemView: NSView {
     
     let nameLayer: CATextLayer
     
+    var selectionLayer: CALayer? = nil
+    
     private static let lineHeight = CGFloat(18.0)
     private static let iconTextMargin = CGFloat(5.0)
+    
+    static let selectionMargin: CGFloat = 10.0
+    static let selectionColor = CGColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 0.8)
     
     required init?(coder: NSCoder) {
         
@@ -96,6 +101,49 @@ class ResourceItemView: NSView {
         let imageX = maxWidth / 2 - imageWidth / 2
         let imageY = 3*ResourceItemView.lineHeight + ResourceItemView.iconTextMargin
         return NSRect(x: imageX, y: imageY, width: imageWidth, height: imageHeight)
+    }
+    
+    func displaySelected(_ selected: Bool) {
+        
+        if selected {
+            
+            /* Do not re-create a layer if there is already one */
+            guard self.selectionLayer == nil else {
+                return
+            }
+            
+            let layer = buildSelectionLayer()
+            self.selectionLayer = layer
+            self.layer!.insertSublayer(layer, below: imageLayer)
+        }
+        else {
+            if let layer = self.selectionLayer {
+                layer.removeFromSuperlayer()
+                self.selectionLayer = nil
+            }
+        }
+        
+    }
+    
+    private func buildSelectionLayer() -> CALayer {
+        
+        /* Create the layer */
+        let layer = CALayer()
+        
+        /* Position it around the image */
+        layer.frame = computeSelectionFrame()
+        
+        /* Set appearance */
+        layer.backgroundColor = ResourceItemView.selectionColor
+        layer.cornerRadius = ResourceItemView.selectionMargin
+        
+        return layer
+    }
+    
+    private func computeSelectionFrame() -> NSRect {
+        
+        return self.bounds
+        
     }
     
 }

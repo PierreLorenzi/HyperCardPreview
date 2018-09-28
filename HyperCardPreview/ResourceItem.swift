@@ -18,7 +18,7 @@ class ResourceItem: NSCollectionViewItem {
         set {
             super.isSelected = newValue
             
-            
+            (self.view as! ResourceItemView).displaySelected(isSelected)
         }
     }
     
