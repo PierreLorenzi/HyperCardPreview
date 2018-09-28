@@ -22,6 +22,11 @@ class ResourceBinaryController: NSWindowController {
         }))
     }
     
+    override func awakeFromNib() {
+        
+        self.textView.font = NSFont(name: "Courier", size: 16.0)
+    }
+    
     func displayData(_ data: DataRange) {
         
         self.textView.string = self.hexEncodedString(data)

@@ -14,7 +14,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
     
     private var resources: [ResourceElement] = []
     
-    @IBOutlet weak var collectionView: NSCollectionView!
+    @IBOutlet weak var collectionView: CollectionView!
     
     private static let resourceItemIdentifier = NSUserInterfaceItemIdentifier("ResourceItem")
     
@@ -162,6 +162,10 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
     func setup(resourceFork possibleResourceFork: Data?) {
         
         self.collectionView.register(NSNib(nibNamed: "ResourceItem", bundle: nil), forItemWithIdentifier: ResourceController.resourceItemIdentifier)
+        self.collectionView.mainAction = {
+            [unowned self] in
+            self.openSelectedResources()
+        }
         
         guard let resourceFork = possibleResourceFork else {
             return
@@ -177,6 +181,9 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
             let dataRange = forkReader.extractResourceData(at: reference.dataOffset)
             return ResourceElement(type: reference.type.description, identifier: reference.identifier, name: reference.name.description, data: dataRange)
         })
+        DispatchQueue.main.async {
+            self.collectionView.selectionIndexPaths = [IndexPath(item: 0, section: 0)]
+        }
     }
     
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {

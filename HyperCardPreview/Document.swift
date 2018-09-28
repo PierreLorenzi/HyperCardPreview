@@ -25,6 +25,7 @@ class Document: NSDocument, NSAnimationDelegate {
     @IBOutlet weak var imageView: NSImageView!
     
     private var collectionViewManager: CollectionViewManager? = nil
+    private var resourceController: ResourceController? = nil
     
     override var windowNibName: NSNib.Name? {
         return "Document"
@@ -146,7 +147,12 @@ class Document: NSDocument, NSAnimationDelegate {
         })
         
         view.document = self
-        collectionView.document = self
+        collectionView.mainAction =  {
+            [unowned self] in
+            
+            /* Display the selected card */
+            self.warnCardWasSelected(atIndex: self.collectionView.selectionIndexPaths.first!.item)
+        }
         
         goToCard(at: 0, transition: .none)
     }
@@ -696,12 +702,32 @@ class Document: NSDocument, NSAnimationDelegate {
     
     @objc func displayResources(_ sender: AnyObject) {
         
+        /* Get the controller */
+        let controller: ResourceController
+        if let existingController = self.resourceController {
+            controller = existingController
+        }
+        else {
+            controller = self.buildResourceController()
+            self.resourceController = controller
+        }
+        
+        /* Display the window */
+        controller.showWindow(nil)
+        
+        /* Append the window to the document hierarchy if necessary */
+        if controller.document == nil {
+            self.addWindowController(controller)
+        }
+    }
+    
+    private func buildResourceController() -> ResourceController {
+        
         let controller = ResourceController(windowNibName: "ResourceWindow")
         _ = controller.window // Load the nib
         controller.setup(resourceFork: self.resourceFork)
-        controller.showWindow(nil)
-        self.addWindowController(controller)
         
+        return controller
     }
     
 }

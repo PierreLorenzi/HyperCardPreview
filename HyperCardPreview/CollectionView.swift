@@ -13,6 +13,7 @@ import Cocoa
 class CollectionView: NSCollectionView {
     
     weak var document: Document!
+    var mainAction: (() -> Void)? = nil
     
     override func keyDown(with event: NSEvent) {
         
@@ -20,11 +21,13 @@ class CollectionView: NSCollectionView {
         if let characters = event.charactersIgnoringModifiers {
             let character = characters.utf16[characters.utf16.indices.first!]
             
-            /* Check if the character is return or enter */
+            /* Check if the character is return or enter or space */
             if (character == 13 || character == 3){
                 
-                /* Display the selected card */
-                self.document.warnCardWasSelected(atIndex: self.selectionIndexPaths.first!.item)
+                /* Apply the action */
+                if let action = mainAction {
+                    action()
+                }
                 return
             }
         }
