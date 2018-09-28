@@ -31,4 +31,15 @@ class ResourceImageController: NSWindowController {
         return "Picture"
     }
     
+    @objc func copy(_ sender: AnyObject) {
+        
+        guard let image = self.imageView.image else {
+            return
+        }
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.writeObjects([image])
+    }
+    
 }
