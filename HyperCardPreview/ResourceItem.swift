@@ -11,10 +11,6 @@ import Cocoa
 
 class ResourceItem: NSCollectionViewItem {
     
-    @IBOutlet weak var typeLabel: NSTextField!
-    @IBOutlet weak var identifierLabel: NSTextField!
-    @IBOutlet weak var nameLabel: NSTextField!
-    
     override var isSelected: Bool {
         get {
             return super.isSelected

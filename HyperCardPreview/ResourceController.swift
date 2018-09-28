@@ -197,20 +197,21 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
         
         let element = self.resources[indexPath.item]
         
-        item.typeLabel.stringValue = element.type
-        item.identifierLabel.intValue = Int32(truncatingIfNeeded: element.identifier)
-        item.nameLabel.stringValue = element.name
+        let view = item.view as! ResourceItemView
         
+        let image: NSImage
         switch element.readContent() {
         case .generic:
-            item.imageView!.image = NSImage(named: "BinaryResourceIcon")
-        case .icon(let image):
-            item.imageView!.image = image
-        case .picture(let image):
-            item.imageView!.image = image
+            image = NSImage(named: "BinaryResourceIcon")!
+        case .icon(let icon):
+            image = icon
+        case .picture(let picture):
+            image = picture
         case .sound:
-            item.imageView!.image = NSImage(named: "SoundResourceIcon")
+            image = NSImage(named: "SoundResourceIcon")!
         }
+        
+        view.displayResource(image: image, type: element.type, identifier: element.identifier, name: element.name)
         
         return item
     }
