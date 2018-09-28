@@ -66,6 +66,7 @@ class ResourceItemView: NSView {
             layer.alignmentMode = CATextLayerAlignmentMode.center
             layer.font = NSFont.systemFont(ofSize: 12.0)
             layer.fontSize = 12.0
+            layer.foregroundColor = NSColor.textColor.cgColor
             layer.autoresizingMask = [.layerMaxYMargin, .layerWidthSizable]
         }
 
