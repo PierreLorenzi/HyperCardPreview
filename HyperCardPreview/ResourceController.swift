@@ -10,7 +10,7 @@ import Cocoa
 import HyperCardCommon
 
 
-class ResourceController: NSWindowController, NSCollectionViewDataSource {
+class ResourceController: NSWindowController, NSCollectionViewDataSource, NSCollectionViewDelegate {
     
     private var resources: [ResourceElement] = []
     
@@ -166,6 +166,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
             [unowned self] in
             self.openSelectedResources()
         }
+        self.collectionView.setDraggingSourceOperationMask(NSDragOperation.copy, forLocal: false)
         
         guard let resourceFork = possibleResourceFork else {
             return
@@ -268,5 +269,30 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource {
         }
     }
     
+    func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
+        
+        return true
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
+        
+        let element = self.resources[indexPath.item]
+        switch element.readContent() {
+            
+        case .generic:
+            return nil
+            
+        case .icon(let image):
+            return image
+            
+        case .picture(let image):
+            return image
+            
+        case .sound(let possibleSound):
+            return possibleSound ?? NSSound(named: "EmptySound")!
+        }
+    }
+    
 }
+
 

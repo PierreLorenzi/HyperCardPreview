@@ -16,6 +16,7 @@
 		6C26B8CD1E6D7520006C314B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C26B8CC1E6D7520006C314B /* Assets.xcassets */; };
 		6C26B8D01E6D7520006C314B /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6C26B8CE1E6D7520006C314B /* MainMenu.xib */; };
 		6C26B8DB1E6D7577006C314B /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C26B8DA1E6D7577006C314B /* DocumentView.swift */; };
+		6C2E0621215E61830071DE26 /* EmptySound.wav in Resources */ = {isa = PBXBuildFile; fileRef = 6C2E061E215E61830071DE26 /* EmptySound.wav */; };
 		6C3682AE1E735EFF00EDF16D /* ScriptBorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */; };
 		6C36D801215E1CD3003AA45F /* SoundResourceIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */; };
 		6C36D803215E25B7003AA45F /* BinaryResourceIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C36D802215E25B7003AA45F /* BinaryResourceIcon.png */; };
@@ -95,6 +96,7 @@
 		6C26B8CF1E6D7520006C314B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		6C26B8D11E6D7520006C314B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C26B8DA1E6D7577006C314B /* DocumentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
+		6C2E061E215E61830071DE26 /* EmptySound.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = EmptySound.wav; sourceTree = "<group>"; };
 		6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScriptBorderView.swift; sourceTree = "<group>"; };
 		6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SoundResourceIcon.png; sourceTree = "<group>"; };
 		6C36D802215E25B7003AA45F /* BinaryResourceIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = BinaryResourceIcon.png; sourceTree = "<group>"; };
@@ -192,6 +194,7 @@
 				6C4FE2561E75849700E2BF12 /* Stack.icns */,
 				6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */,
 				6C36D802215E25B7003AA45F /* BinaryResourceIcon.png */,
+				6C2E061E215E61830071DE26 /* EmptySound.wav */,
 				6CA554AA1F602FD8005914E2 /* Shortcuts.html */,
 				6C26B8D11E6D7520006C314B /* Info.plist */,
 			);
@@ -324,6 +327,7 @@
 				6CB8B98D1F4B16BC0070116D /* CardItem.xib in Resources */,
 				6C4FE2671E75A4CE00E2BF12 /* Application.icns in Resources */,
 				6C4FE2571E75849700E2BF12 /* Stack.icns in Resources */,
+				6C2E0621215E61830071DE26 /* EmptySound.wav in Resources */,
 				6C26B8D01E6D7520006C314B /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -39,6 +39,7 @@
                                     <color key="primaryBackgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <connections>
                                         <outlet property="dataSource" destination="-2" id="Drl-DU-HFD"/>
+                                        <outlet property="delegate" destination="-2" id="4U8-Qy-AHM"/>
                                     </connections>
                                 </collectionView>
                             </subviews>
