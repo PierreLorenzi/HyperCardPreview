@@ -4,7 +4,7 @@ The exported JSON is just a reproduction of the inner data model of HyperCardPre
 
 Only the structure of the file is given here. If you want further documentation, see the [stack format description](StackFormat.md).
 
-In strings, the characters `\p` are not converted to `\n`. If you make that conversion, beware that script can theoretically contain `\n` characters, which don't act as line separators, though it is highly unlikely.
+Strings are converted to UTF-8, but the characters `\p` are not converted to `\n`. If you make that conversion, beware that script can theoretically contain `\n` characters, which don't act as line separators, though it is highly unlikely.
 
 The root object of the file is a Stack object.
 
