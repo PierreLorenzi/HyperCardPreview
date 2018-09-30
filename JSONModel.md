@@ -11,7 +11,7 @@ The root object of the file is a Stack object.
 ## Stack
 - "cards": an array of the Card objects, in right order
 - "backgrounds": an array of the Background objects, in right order
-- "password_hash": a PasswordHash object. May be null.
+- "password_hash": an integer. May be null.
 - "user_level": an integer from 1 to 5
 - "cant_abort": a boolean
 - "cant_delete": a boolean
