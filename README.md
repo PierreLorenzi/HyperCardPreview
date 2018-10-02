@@ -73,7 +73,7 @@ That means that old APIs had to be partially re-coded: resource fork reading, re
 
 **HyperCardPreview signing**
 
-It seems that I can't have a developer ID without paying a fee to Apple. And I'm not ready to do it just yet.
+It seems that I can't have a developer ID without paying a fee to Apple. And I'm not ready to do it just for that little soft.
 
 ## Changes since version 1.0
 
