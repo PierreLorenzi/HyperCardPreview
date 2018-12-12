@@ -8,7 +8,7 @@ This application displays HyperCard stacks in Mac OS X.
 
 The binary format of HyperCard stacks has been retro-engineered by numerous people, and now it is known with pretty good reliability. If you want to learn more about it, see the [format description](StackFormat.md).
 
-HyperCardPreview only displays the stacks, it does not edit them, it does not execute them. To do that you have to use a emulator: SheepShaver, Basilisk or vMac. Or try stacks in the [HyperCard Stack Archive](https://archive.org/details/hypercardstacks)
+HyperCardPreview only displays the stacks, it does not edit them, it does not execute them. To do that you have to use a emulator: SheepShaver, Basilisk or vMac. Or try stacks in the [HyperCard Stack Archive](https://archive.org/details/hypercardstacks). Or install [SuperCard](https://www.supercard.us/), a HyperCard clone still maintained today.
 
 It makes the seeing the stacks an experience of the old days. The look is very close to the original one, with bitmap fonts, old-style scrollers, aliasing. In the Home stacks the look is accurate to the pixel, as in most Apple stacks, but less so if there are colors, and not at all if there are XCMDs.
 
