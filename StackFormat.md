@@ -3,7 +3,7 @@
 
 This is a description of the format of HyperCard stacks.
 
-Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were deduced by looking at various stacks and by comparing them.
+Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them.
 
 This description covers nearly all the data of a stack. But it is not complete enough to update stacks and create new ones.
 
@@ -61,7 +61,7 @@ This block contains the global parameters of the stack.
 Offset | Type | Content
 --- | --- | ---
 0x0 | Block Header | Header of the block. Type is `STAK` and ID is `-1`
-0x10 | UInt32 | Format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
+0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
 0x18 | UInt32 | Size of the `STAK` block
 0x1C | UInt32 | Unknown. Small value if the stack is large, close to the result of the division (size of file / 32 ko), but not exactly equal. It is probably the number of segments needed to open the stack, a segment being a unit of 32 ko in the old memory management. It seems that it depends not only on the size of the file, but also on the position of certain blocks.
@@ -91,8 +91,8 @@ Offset | Type | Content
 0x88 | Point | Point at the origin of the scroll of the card window
 0x8C | *292 bytes* | *=0*
 0x1B0 | SInt32 | ID of the `FTBL` block (Font Table). If zero, the block doesn't exist.
-0x1B4 | SInt32 | ID of the `STBL` block (Decoration Table) If zero, the block doesn't exist.
-0x1B8 | Size | Size of the cards of the stack. If zero, they are 342 pixels wide and 512 high.
+0x1B4 | SInt32 | ID of the `STBL` block (Decoration Table). If zero, the block doesn't exist.
+0x1B8 | Size | Size of the cards of the stack. If zero, they are 512 pixels wide and 342 pixels high.
 0x1BC | *260 bytes* | *=0*
 0x2C0 | Pattern Image[40] | The 40 patterns of the stack
 0x400 | Free Block Reference[] | Table of the `FREE` blocks. There is one reference for every `FREE` block, and the number of `FREE` blocks is given above.
@@ -107,11 +107,11 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | Block Header | Header of the block. Type is `MAST` and ID is `-1`.
 0x10 | *16 bytes* | *=0*
-0x20 | Block Reference[] | The references to the blocks. The array spans till the end of the block.
+0x20 | Block Reference[] | The references of the blocks. The array spans till the end of the block. To read it, cf the procedure.
 
 ### List
 
-This block contains the ordered list of the cards. It is unique in the file but has no defined position. To speed up insertions/deletions, the list is segmented in sections called pages. 
+This block contains the ordered list of the cards. It is unique in the file but has no defined position. To speed up insertions and deletions, the list is segmented in sections called pages. 
 
 Offset | Type | Content
 --- | --- | ---
@@ -124,7 +124,7 @@ Offset | Type | Content
 0x20 | UInt16 | Number of hash integers in a card entry in the pages, equal to (entry size - 4)/4
 0x22 | UInt16 | Search hash value count, this value is used in search hash computations
 0x24 | UInt32 | Checksum (to check it, cf the procedure)
-0x28 | UInt32 | Total number of cards again. Both values must be computed differently and checked for equality.
+0x28 | UInt32 | Total number of cards again. Both values are probably computed differently and checked for equality.
 0x2C | *4 bytes* | *=0*
 0x30 | Page Reference[] | The references of the pages
 
@@ -137,17 +137,17 @@ Offset | Type | Content
 0x0 | Block Header | Header of the block. Type is `PAGE`
 0x10 | SInt32 | ID of the list
 0x14 | UInt32 | Checksum (to check it, cf the procedure)
-0x18 | Card Reference[] | The references to the cards
+0x18 | Card Reference[] | The references of the cards
 
 ### Card
 
-A card block contains the properties of a card, followed by a list of the parts (buttons and fields mixed), followed by a list of the text contents of the parts (including buttons), followed by the card name, followed by the card script.
+A card block contains the properties of a card, followed by the list of the parts (buttons and fields mixed), followed by a list of the text contents of the parts (including buttons), followed by the card name, followed by the card script.
 
 Offset | Type | Content
 --- | --- | ---
 0x0 | Block Header | Header of the block. Type is `CARD`, and the ID of the block is the same as the ID of the card in HyperCard
 0x10 | SInt32 | ID of the bitmap block storing the card picture. If zero, the card is transparent.
-0x14 | UInt16 | Flags, Bit 14: cantDelete, Bit 13: (not showPict), Bit 11: dontSearch
+0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
 0x18 | *8 bytes* | *=0*
 0x20 | SInt32 | ID of the page referencing this card
@@ -170,18 +170,18 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | Block Header | Header of the block. Type is `BKGD`, and the ID of the block is the same as the ID of the background in HyperCard
 0x10 | SInt32 | ID of the bitmap block storing the background picture. If zero, the background is transparent.
-0x14 | UInt16 | Flags, Bit 14: cantDelete, Bit 13: (not showPict), Bit 11: dontSearch
+0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
 0x18 | UInt32 | Number of cards in this background
 0x1C | SInt32 | ID of the next background
 0x20 | SInt32 | ID of the previous background
 0x24 | UInt16 | Number of parts
 
-The end is like a card block, starting from the "Number of parts" field.
+The rest is like a card block, starting from the "Number of parts" field.
 
 ### BitMap
 
-A bitmap stores the picture of a card or of a background. It has two layers: an image and a mask.
+A bitmap stores the picture of a card or of a background. It has two layers: an image and a mask. To decode it, cf the procedure.
 
 Offset | Type | Content
 --- | --- | ---
@@ -240,7 +240,7 @@ This block is the Mac OS print setting.
 Offset | Type | Content
 --- | --- | ---
 0x0 | Block Header | Header of the block. Type is `PRST`
-0x10 | TPrint | TPrint is a QuickDraw structure that stores the settings of a Page Set-Up dialog. It is documented in "Inside Macintosh: Imaging with QuickDraw", at the section "Printing Manager". It is not described here because it contains very specific data, reserved fields and because it wasn't supposed to be used by an application but just given as arguments to the routines of the System.
+0x10 | TPrint | TPrint is a QuickDraw structure that stores the settings of a Page Set-Up dialog. It is documented in "Inside Macintosh: Imaging with QuickDraw", at the section "Printing Manager". It is not described here because it contains very specific data, reserved fields and because it wasn't supposed to be used by an application, just given as arguments to the routines of the System.
 
 ### Report Template
 
@@ -248,7 +248,7 @@ This block contains the setting of a "Print Report" dialog.
 
 The lengths measured in pixels are not always the same in the data and in the dialog. They may be multiplied by a factor in-betweem.
 
-Some settings in the dialog are not saved in the file: "Print all cards" / "Print marked cards", and "Precision Adjustments".
+These settings in the dialog are not saved in the file: "Print all cards" / "Print marked cards", and "Precision Adjustments".
 
 Offset | Type | Content
 --- | --- | ---
@@ -259,7 +259,7 @@ Offset | Type | Content
 0x1A | Size | Spacing between the cells, in points
 0x1E | Size | Size of a cell, in points
 0x22 | UInt16 | Flags, Bit 8: left to right (as opposed to top to bottom), Bit 0: dynamic height
-0x24 | Pascal String | Header (string on top of the page). The following control characters can be embedded: 0x01 (control-A): date, 0x02 (control-B): time, 0x03 (control-C): stack name, 0x04 (control-D): page number.
+0x24 | Pascal String | Header (string on top of the page). The following control characters can be embedded: `0x01`: date, `0x02`: time, `0x03`: stack name, `0x04`: page number.
 *variable* | *bytes* | *Unknown values*
 0x124 | UInt16 | Number of reports items
 0x126 | Report Item[] | The report items
@@ -277,11 +277,11 @@ Offset | Type | Content
 
 ### Block Header
 
-A header for the data blocks.
+The header of the data blocks.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | UInt32 | The size of the block, including the header. Beware: in the stack "Stack Templates" of HyperCard 2.4.1, in the Master block, a unkown flag is set at the 2nd highest bit, so the greatest bits mustn't be read.
+0x0 | UInt32 | The size of the block, including the header. Beware: in the stack "Stack Templates" of HyperCard 2.4.1, in the Master block, a unkown flag is set at the 2nd highest bit, so the highest bits mustn't be read.
 0x4 | UInt32 | The type of the block
 0x8 | SInt32 | The ID of the block
 0xC | UInt32 | *Alignment bytes, =0*
@@ -299,7 +299,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | SInt32 | ID of the referenced `CARD` block
 0x4 | UInt8 | Flags, Bit 4: marked card, Bit 5: has text content, Bit 6: is the start of a background, Bit 7: has a name
-0x5 | *bytes* | Word search hash. The total size of the card references of the stack is given in the list, from which the size of this hash can be computed.
+0x5 | *bytes* | Word search hash. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
 
 ### Decoration
 
@@ -356,13 +356,13 @@ Offset | Type | Content
 0x2 | UInt16 | ID of the part
 0x4 | UInt16 | Flags, Bit 8: Type of the part (`0` is "field", `1` is "button"), Bit 7: (not visible), Bit 5: dont wrap, Bit 4: dont search, Bit 3: shared text, Bit 2: (not fixed line height), Bit 1: auto tab, Bit 0: (not enabled) / lock text
 0x6 | Rectangle | Rectangle of the part
-0xE | UInt8 | Flags, Bit 7: show name / autoSelect, Bit 6: highlight / show lines, Bit 5: auto highlight / wide margins, Bit 4: (not shared highlight)/ multiple lines, Bits 3-0: family
+0xE | UInt8 | Flags, Bit 7: show name / auto select, Bit 6: highlight / show lines, Bit 5: auto highlight / wide margins, Bit 4: (not shared highlight)/ multiple lines, Bits 3-0: family
 0xF | UInt8 | Style of the part: `0` is "transparent", `1` is "opaque", `2` is "rectangle", `3` is "round rect", `4` is "shadow", `5` is "check box", `6` is "radio", `7` is "scrolling", `8` is "standard", `9` is "default", `10` is "oval", `11` is "pop-up"
 0x10 | UInt16 | `button`: title width, `field`: last of the selected lines
 0x12 | SInt16 | `button`: ID of the icon, if zero there is no icon, `pop-up button`: selected line, `field`: first of the selected lines
 0x14 | SInt16 | Text alignment: `0` is "left", `1` is "center", `-1` is "right". Sometimes there are other values, which are rendered as "left".
 0x16 | SInt16 | ID of the font. For unknown reasons it can be negative, in that case the ID is `-value-1`
-0x18 | UInt16 | Text Size
+0x18 | UInt16 | Text Size, in points
 0x1A | UInt8 | Text style flags, Bit 7: group, Bit 6: extend, Bit 5: condense, Bit 4: shadow, Bit 3: outline, Bit 2: underline, Bit 1: italic, Bit 0: bold
 0x1B | UInt8 | *Alignment byte, =0*
 0x1C | UInt16 | Line Height
@@ -481,8 +481,7 @@ Offset | Type | Content
 0x1 | UInt8 | Minor: first minor in the upper 4 bits, second minor in the lower 4 bits
 0x2 | UInt8 | State: `0x80` is "final", `0x60` is "beta", `0x40` is "alpha", `0x20` is "development"
 0x3 | UInt8 | Release
-
-For example, `0x02206044` is "version 2.2 beta release 44" (the release is given in hexa), and `0x02418000` is "version 2.4.1 final".
+For example, `0x02206044` is "version 2.2 beta release 44" (the release is written in hexa), and `0x02418000` is "version 2.4.1 final".
 
 ## Procedures
 
@@ -540,7 +539,9 @@ After this procedure, the password hash is decrypted. It must then be checked ag
 
 ### Check a password
 
-If a stack has a password hash different from zero, the password must (theoretically) be asked to the user. A stack can have a password without being Private Access, that is, without being encrypted. The password given by the user is hashed, and if the result hash not equal to the hash in the stack, the stack can't be opened.
+If a stack has a password hash different from zero, the password must (theoretically) be asked to the user. A stack can have a password without being Private Access, that is, without being encrypted.
+
+The password given by the user is hashed, and if the result hash not equal to the hash in the stack, the stack can't be opened.
 
 To hash a password, here is the procedure:
 
@@ -556,7 +557,7 @@ function hashPassword(password: String):
 
 It is possible to decrypt an encrypted Stack Block without the password. We describe roughly how to do it.
 
-The first encrypted 32-bit integer of the Stack Block, at offset 0x18, is a big weakness because it contains the size of the Stack Block, that we know anyway because it is given in the header. So by XORing the size of the Stack Block with that integer, we get `h`, the value used to XOR the integer.
+The first encrypted 32-bit integer of the Stack Block, at offset 0x18, is a big weakness because it contains the size of the Stack Block, which we know anyway because it is given in the header. So by XORing the size of the Stack Block with that integer, we get `h`, the value used to XOR the integer.
 
 According to the function `decryptStackBlock`, the value `h` is equal to `x XOR (hashNumber(x) >> 16)`, `x` being an unknown 32-bit integer. But, as we see, the first 16 bits of `h` are the same first 16 bits of `x`, so we already know half of `x`. For the remaining 16 bits, we just have to check them all: for every possible value of `x`, we compute `x XOR (hashNumber(x) >> 16)` and check if it is equal to `h`.
 
@@ -574,7 +575,7 @@ To find a block, you must read the Master.
 
 Loop on all the block references of the Master until the end of the block. If a block reference is equal to 0, ignore it but don't stop, there may be others further. Check if the ID byte matches, and if it does, check the complete block type and ID in the block itself.
 
-Note: it is theoretically possible to find a block by looping on the blocks of the files. In real life it is less reliable because sometimes there are corrupted blocks.
+Note: it is theoretically possible to find a block by looping directly on the blocks of the files. In real life it is less reliable because sometimes there are corrupted blocks.
 
 ### Check the checksum of the list
 
@@ -616,7 +617,7 @@ Both the mask and the image have a bounding rectangle (which can be zero) and a 
 - if the content data is not present but the bounding rectangle is not zero, the pixels in the bounding rectangle are 1.
 - if the content data is not present and the bounding rectangle is zero, the pixels everywhere are 0.
 
-Before decompressing the data, the bounding rectangles of the mask and of the image must be rounded down to a multiple of 32 bits to the left side, and rounded up to a multiple of 32-bits to the right side. The result rectangles enclose white pixels on each side but are much more fit for the decompression.
+Before decompressing the data, the bounding rectangles of the mask and of the image must be rounded down to a multiple of 32 bits to the left side, and rounded up to a multiple of 32-bits to the right side. The result rectangles enclose white pixels on each side but it makes the decompression easier.
 
 The compressed data is a series of instructions of various lengths. The first byte of an instruction, the opcode, indicates how long the instruction is and what it does. The remaining bytes, if any, are data needed for that instruction. Rows can be compressed with a single instruction (with opcodes in the range 0x80-0x87) or a sequence of multiple instructions (with opcodes in the ranges of 0x00-0x7F and 0xC0-0xFF). Some operations change the manner in which rows are decompressed (opcodes in the range 0x88-0xBF). The end of a row comes either when the row has been filled (when the number of bytes in a row, determined by the mask or image's bounding rectangle, has been reached) or when an opcode in the range 0x80-0xBF is encountered.
 
@@ -659,41 +660,41 @@ About `dh` and `dv`: these values are used apply transformations to a row, initi
 
 ## Stacks of HyperCard 1.xx
 
-In HyperCard 1.xx, the stacks had a slightly different format. We list all the differences.
+In HyperCard 1.xx, the stacks have a slightly different format. We list all the differences.
 
 ### General Differences
 
-A text could only have one style, so there were no Decoration Table nor Font Table.
+A text can only have one style, so there are no Decoration Table nor Font Table.
 
-Some fields were absent, but as they were set to zero, they can be parsed like v2.xx fields and then be considered as empty or default values.
+Some fields are absent, but as they are set to zero, they can be parsed like v2.xx fields and then be considered as empty or default values.
 
-The empty integers in the block headers at offset 0xC were not counted in the headers, they were used in the blocks. So, some fields weren't at the same place because at v2.xx they had to move values out of that integer and sometimes it caused a little mess.
+The empty integers in the block headers at offset 0xC are not counted in the headers, they are used in the blocks. So, some fields aren't at the same place because at v2.xx they had to move values out of that integer and sometimes it caused a little mess.
 
 ### Stack Block
 
-The checksum was at offset 0xC (in the header).
+The checksum is at offset 0xC (in the header).
 
-Note: the card size, window rectangle, screen rectangle, scroll origin, decoration table, font table, were always set to zero. But it can be parsed *as is* in v2.xx.
+Note: the card size, window rectangle, screen rectangle, scroll origin, decoration table, font table, don't exist and are set to zero. But they can be parsed *as is* in v2.xx.
 
 ### List Block
 
-All values at offsets between 0x10 and 0x28 were moved 4 bytes to the left (into the header). The page references remained at offset 0x30.
+All values at offsets between 0x10 and 0x28 are moved 4 bytes to the left (into the header). The page references remain at offset 0x30.
 
 ### Page Block
 
-Both values at offsets 0x10 and 0x14 were moved 4 bytes to the left (into the header). The card references remained at offset 0x18.
+Both values at offsets 0x10 and 0x14 are moved 4 bytes to the left (into the header). The card references remain at offset 0x18.
 
 ### Card Block
 
-Except the header, all the values were shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left (into the header).
 
 ### Background Block
 
-Except the header, all the values were shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left (into the header).
 
 ### Part Content
 
-Part contents were always plain strings. They were not aligned to 16-bits, they could be off by 1 byte depending on the strings.
+Part contents are always plain strings. They are not aligned to 16-bits, they can be off by 1 byte.
 
 Offset | Type | Content
 --- | --- | ---
@@ -702,4 +703,4 @@ Offset | Type | Content
 
 ### Bitmap Block
 
-Except the header, all the values were shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left (into the header).
