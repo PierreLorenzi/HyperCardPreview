@@ -63,7 +63,7 @@ Offset | Type | Content
 0x0 | Block Header | Header of the block. Type is `STAK` and ID is `-1`
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
-0x18 | UInt32 | Size of the `STAK` block
+0x18 | UInt32 | Size of the `STAK` block, or maybe the offset of the `MAST` block, we can't know for sure
 0x1C | UInt32 | Unknown. Small value if the stack is large, close to the result of the division (size of file / 32 ko), but not exactly equal. It is probably the number of segments needed to open the stack, a segment being a unit of 32 ko in the old memory management. It seems that it depends not only on the size of the file, but also on the position of certain blocks.
 0x20 | UInt32 | Maximum ever of previous value
 0x24 | UInt32 | Number of backgrounds in the stack
