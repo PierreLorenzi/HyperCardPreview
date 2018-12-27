@@ -299,7 +299,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | SInt32 | ID of the referenced `CARD` block
 0x4 | UInt8 | Flags, Bit 4: marked card, Bit 5: has text content, Bit 6: is the start of a background, Bit 7: has a name
-0x5 | *bytes* | Word search hash. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
+0x5 | *bytes* | Word search hash, to decode it cf the procedure. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
 
 ### Decoration
 
