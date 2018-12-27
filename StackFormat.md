@@ -3,7 +3,7 @@
 
 This is a description of the format of HyperCard stacks.
 
-Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them.
+Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work and I warmly thank them: Rebecca Bettencourt, Tyler Vano. With special thanks to Michael Nichols and Bill Atkinson.
 
 This description covers nearly all the data of a stack. But it is not complete enough to update stacks and create new ones.
 
@@ -77,7 +77,7 @@ Offset | Type | Content
 0x44 | UInt32 | Hash of the password (cf the procedures about the password). If zero, there is no password.
 0x48 | UInt16 | User Level (1 ... 5) of the stack. If zero, it is `5`
 0x4A | UInt16 | *Alignment bytes, =0*
-0x4C | UInt16 | Protection flags, Bit 10: Can't Peek, Bit 11: Can't Abort, Bit 13: Private Access, Bit 14: Can't Delete, Bit 15: Can't Modify.
+0x4C | UInt16 | Protection flags, Bit 10: can't peek, Bit 11: can't abort, Bit 13: private access, Bit 14: can't delete, Bit 15: can't modify.
 0x4E | UInt16 | *Alignment bytes, =0*
 0x50 | *16 bytes* | *=0*
 0x60 | Version | HyperCard version at stack creation. If zero, it is unknown.
@@ -481,6 +481,7 @@ Offset | Type | Content
 0x1 | UInt8 | Minor: first minor in the upper 4 bits, second minor in the lower 4 bits
 0x2 | UInt8 | State: `0x80` is "final", `0x60` is "beta", `0x40` is "alpha", `0x20` is "development"
 0x3 | UInt8 | Release
+
 For example, `0x02206044` is "version 2.2 beta release 44" (the release is written in hexa), and `0x02418000` is "version 2.4.1 final".
 
 ## Procedures
