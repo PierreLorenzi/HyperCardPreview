@@ -3,7 +3,7 @@
 
 This is a description of the format of HyperCard stacks.
 
-Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work and I warmly thank them: Rebecca Bettencourt, Tyler Vano. With special thanks to Michael Nichols and Bill Atkinson.
+Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work and I warmly thank them: Rebecca Bettencourt, Tyler Vano, Uli Kusterer. With special thanks to Michael Nichols and Bill Atkinson.
 
 This description covers nearly all the data of a stack. But it is not complete enough to update stacks and create new ones.
 
