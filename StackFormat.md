@@ -689,33 +689,33 @@ In HyperCard 1.xx, the stacks have a slightly different format. We list all the 
 
 ### General Differences
 
-A text can only have one style, so there are no Decoration Table nor Font Table.
+A text in a field can only have one style, so there are neither Style Block nor Font Block.
 
-Some fields are absent, but as they are set to zero, they can be parsed like v2.xx fields and then be considered as empty or default values.
+Some values are absent, but as they are set to zero, they can be parsed like v2.xx values and then be considered as empty or default.
 
-The empty integers in the block headers at offset 0xC are not counted in the headers, they are used in the blocks. So, some fields aren't at the same place because at v2.xx they had to move values out of that integer and sometimes it caused a little mess.
+The block headers are shorter because they don't have the empty alignment integers at 0xC. So, some fields aren't at the same place because at v2.xx they had to move values to let room and sometimes it caused a little mess.
 
 ### Stack Block
 
-The checksum is at offset 0xC (in the header).
+The checksum is at offset 0xC
 
-Note: the card size, window rectangle, screen rectangle, scroll origin, decoration table, font table, don't exist and are set to zero. But they can be parsed *as is* in v2.xx.
+Note: the card size, window rectangle, screen rectangle, scroll origin, style block, font block, don't exist and are set to zero. But they can be parsed *as is* in v2.xx.
 
 ### List Block
 
-All values at offsets between 0x10 and 0x28 are moved 4 bytes to the left (into the header). The page references remain at offset 0x30.
+All values at offsets between 0x10 and 0x28 are moved 4 bytes to the left. The page references remain at offset 0x30.
 
 ### Page Block
 
-Both values at offsets 0x10 and 0x14 are moved 4 bytes to the left (into the header). The card references remain at offset 0x18.
+Both values at offsets 0x10 and 0x14 are moved 4 bytes to the left. The card references remain at offset 0x18.
 
 ### Card Block
 
-Except the header, all the values are shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left.
 
 ### Background Block
 
-Except the header, all the values are shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left.
 
 ### Part Content
 
@@ -728,4 +728,4 @@ Offset | Type | Content
 
 ### Bitmap Block
 
-Except the header, all the values are shifted 4 bytes to the left (into the header).
+Except the header, all the values are shifted 4 bytes to the left.
