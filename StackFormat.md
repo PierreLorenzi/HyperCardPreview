@@ -441,7 +441,7 @@ Offset | Type | Content
 0x12 | UInt16 | Text style, Bit 15: group, Bit 14: extend, Bit 13: condense, Bit 12: shadow, Bit 11: outline, Bit 10: underline, Bit 9: italic, Bit 8: bold
 0x14 | SInt16 | Text alignment, 0: left, 1: center, -1: right
 0x16 | [String](#string) | Content (it is a text string or a HyperTalk expression)
-*variable* | String | Font name
+*variable* | [String](#string) | Font name
 *variable* | *0 or 1 byte* | *Alignment to 16 bits*
 
 
