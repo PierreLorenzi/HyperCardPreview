@@ -221,7 +221,7 @@ Since font IDs were not consistent across Macintosh installations, HyperCard sto
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | [Block Header](#block-header) | Header of the block. Type is `FTBL`, meaning "Font Block"
+0x0 | [Block Header](#block-header) | Header of the block. Type is `FTBL`
 0x10 | UInt32 | Number of font records
 0x14 | UInt32 | *=0*
 0x18 | [Font Record](#font-record)[] | List of the font records
