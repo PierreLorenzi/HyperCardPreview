@@ -342,7 +342,7 @@ Offset | Type | Content
 Offset | Type | Content
 --- | --- | ---
 0x0 | SInt16 | ID of the font
-0x2 | String | Name of the font
+0x2 | [String](#string) | Name of the font
 *variable* | *0 or 1 byte* | Alignment to 16 bits
 
 ### Free Block Reference
