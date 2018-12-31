@@ -40,7 +40,7 @@ Here are the possible block types:
 * [Print Setting Block](#print-setting-block): the printing parameters (at most one in the file)
 * [Page Set-Up Block](#page-set-up-block): the Page Setup settings (at most one in the file)
 * [Report Template Block](#report-template-block): a report template
-* Free Block: a free space inside the file
+* [Free Block](#free-block): a free space inside the file
 * [Tail Block](#tail-block): the ending block (one in the file)
 
 ### General Structure
@@ -75,8 +75,8 @@ Offset | Type | Content
 0x2C | UInt32 | Number of cards in the stack
 0x30 | SInt32 | ID of the first card
 0x34 | SInt32 | ID of the [List Block](#list-block) of the stack
-0x38 | UInt32 | Number of Free Blocks
-0x3C | UInt32 | Total size of all the Free Blocks (=`the free size of this stack`)
+0x38 | UInt32 | Number of [Free Blocks](#free-block)
+0x3C | UInt32 | Total size of all the [Free Blocks](#free-block) (=`the free size of this stack`)
 0x40 | SInt32 | ID of the [Print Setting Block](#print-setting-block) of the stack. If zero, the block doesn't exist.
 0x44 | UInt32 | Hash of the password (cf the procedures about the password). If zero, there is no password.
 0x48 | UInt16 | User Level (1 ... 5) of the stack. If zero, it is `5`
@@ -99,13 +99,13 @@ Offset | Type | Content
 0x1B8 | Size | Size of the cards of the stack. If zero, they are 512 pixels wide and 342 pixels high.
 0x1BC | *260 bytes* | *=0*
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
-0x400 | [Free Block Reference](#free-block-reference)[] | Table of the Free blocks. There is one reference for every Free block, and the number of Free blocks is given earlier.
+0x400 | [Free Block Reference](#free-block-reference)[] | Table of the [Free Blocks](#free-block), there is one reference for every [Free Blocks](#free-block). The number of [Free Blocks](#free-block) is given earlier.
 *variable* | *bytes* | *=0*
 0x600 | [String](#string) | Script of the stack
 
 ### Master Block
 
-This block is an index of all the blocks present in the file (excluding [Stack Block](#stack-block), [Master Block](#master-block), Free Blocks, and [Tail Block](#tail-block)).
+This block is an index of all the blocks present in the file (excluding [Stack Block](#stack-block), [Master Block](#master-block), [Free Blocks](#free-block), and [Tail Block](#tail-block)).
 
 Offset | Type | Content
 --- | --- | ---
@@ -267,6 +267,15 @@ Offset | Type | Content
 *variable* | *bytes* | *Unknown values*
 0x124 | UInt16 | Number of reports items
 0x126 | [Report Item](#report-item)[] | The report items
+
+### Free Block
+
+A free block is a space in the file available for new blocks, it contains garbage and doesn't represent anything.
+
+Offset | Type | Content
+--- | --- | ---
+0x0 | [Block Header](#block-header) | Header of the block. Type is `FREE`, ID is `0`
+0x10 | *bytes* | Unused data
 
 ### Tail Block
 
