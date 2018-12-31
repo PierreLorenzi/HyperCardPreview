@@ -22,7 +22,7 @@ In flags, bits are counted from 0.
 ### Blocks
 
 A HyperCard stack is a sequence of data blocks. Every block has:
-* a type: four-character code, like `STAK`, `CARD`, `BKGD`.
+* a type: four-character code, like [`STAK`](#stack), [`CARD`](#card), [`BKGD`](#background).
 * an ID that makes it unique among all the blocks of the same type in the stack.
 
 ### Block types
@@ -49,12 +49,12 @@ The blocks in the stack are in the following order:
 
 | Blocks |
 | --- |
-| `STAK` |
-| `MAST` |
+| [`STAK`](#stack) |
+| [`MAST`](#master) |
 | *Whatever blocks in any order* |
-| `TAIL` |
+| [`TAIL`](#tail) |
 
-The `STAK` and `MAST` blocks contain the information necessary to retrieve the other blocks.
+The [`STAK`](#stack) and [`MAST`](#master) blocks contain the information necessary to retrieve the other blocks.
 
 ## Block Layouts
 
