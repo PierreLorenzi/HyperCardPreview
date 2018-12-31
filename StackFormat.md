@@ -513,7 +513,7 @@ This section contains the procedures necessary to decode some of the data.
 
 ### Open a Private Access stack
 
-When a stack is private access, a part of the Stack Block is encrypted (from offset 0x18 to 0x4A). To decrypt it, you must ask the user for a password (if you want to hack the encryption, see [the procedure about it](#hack-a-private-access-stack)).
+When a stack is Private Access, a part of the [Stack Block](#stack-block) is encrypted (from offset 0x18 to 0x4A). To decrypt it, you must ask the user for a password (if you want to hack the encryption, see [the procedure about it](#hack-a-private-access-stack)).
 
 First, here are two utility functions: 
 
@@ -547,7 +547,7 @@ function hash(string: String):
     return h
 ```
 
-To decrypt the stack block, here is the prodecure:
+To decrypt the [Stack Block](#stack-block), here is the prodecure:
 
 ```
 function decryptStackBlock(password: String):
@@ -559,7 +559,7 @@ function decryptStackBlock(password: String):
         (stackBlock[i] as UInt32) := h XOR (stackBlock[i] as UInt32)
 ```
 
-After this procedure, the password hash is decrypted. It must then be checked against the passord given by the user (cf the procedure), and only then it can be certified as valid.
+After this procedure, the password hash is decrypted. It must then be checked against the passord given by the user (see [the procedure to do it](#check-a-password)), and only then it can be certified as valid.
 
 ### Check a password
 
@@ -579,9 +579,9 @@ function hashPassword(password: String):
 
 ### Hack a Private Access stack
 
-It is possible to decrypt an encrypted Stack Block without the password. We describe roughly how to do it.
+It is possible to decrypt an encrypted [Stack Block](#stack-block) without the password. We describe roughly how to do it.
 
-The first encrypted 32-bit integer of the Stack Block, at offset 0x18, is a big weakness because it contains the size of the Stack Block, which we know anyway because it is given in the header. So by XORing the size of the Stack Block with that integer, we get `h`, the value used to XOR the integer.
+The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset 0x18, is a big weakness because it contains the size of the [Stack Block](#stack-block), which we know anyway because it is given in the header. So by XORing the size of the [Stack Block](#stack-block) with that integer, we get `h`, the value used to XOR the integer.
 
 According to the function `decryptStackBlock`, the value `h` is equal to `x XOR (hashNumber(x) >> 16)`, `x` being an unknown 32-bit integer. But, as we see, the first 16 bits of `h` are the same first 16 bits of `x`, so we already know half of `x`. For the remaining 16 bits, we just have to check them all: for every possible value of `x`, we compute `x XOR (hashNumber(x) >> 16)` and check if it is equal to `h`.
 
@@ -589,15 +589,15 @@ There may be more than one `x` that works (there can be two), so every time a va
 
 ### Check the check-sum of the Stack Block
 
-To check it: cast as `UInt32[384]` the whole `STAK` block (up to offset 0x600, until the script). The sum of the ints must be zero.
+To check it: cast as `UInt32[384]` the whole [Stack Block](#stack-block) (up to offset 0x600, until the script). The sum of the ints must be zero.
 
 If the stack is private access, the checksum must be computed on the decrypted data.
 
 ### Find a block in the file
 
-To find a block, you must read the Master.
+To find a block, you must read the [Master Block](#master-block).
 
-Loop on all the block references of the Master until the end of the block. If a block reference is equal to 0, ignore it but don't stop, there may be others further. Check if the ID byte matches, and if it does, check the complete block type and ID in the block itself.
+Loop on all the block references of the [Master Block](#master-block) until the end of the block. If a block reference is equal to 0, ignore it but don't stop, there may be others further. Check if the ID byte matches, and if it does, check the complete block type and ID in the block itself.
 
 Note: it is theoretically possible to find a block by looping directly on the blocks of the files. In real life it is less reliable because sometimes there are corrupted blocks.
 
@@ -689,7 +689,7 @@ In HyperCard 1.xx, the stacks have a slightly different format. We list all the 
 
 ### General Differences
 
-A text in a field can only have one style, so there are neither Style Block nor Font Block.
+A text in a field can only have one style, so there are neither [Style Block](#style-block) nor [Font Block](#font-block).
 
 Some values are absent, but as they are set to zero, they can be parsed like v2.xx values and then be considered as empty or default.
 
