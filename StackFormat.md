@@ -3,7 +3,7 @@
 
 This is a description of the format of HyperCard stacks.
 
-Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work and I warmly thank them: Rebecca Bettencourt, Tyler Vano, Uli Kusterer. With special thanks to Michael Nichols and Bill Atkinson.
+Although originally intended by Bill Atkinson, the HyperCard file format has never been officially published. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work: Rebecca Bettencourt, Tyler Vano, Uli Kusterer. With special thanks to Michael Nichols and Bill Atkinson.
 
 This description covers nearly all the data of a stack. But it is not complete enough to update stacks and create new ones.
 
@@ -22,26 +22,26 @@ In flags, bits are counted from 0.
 ### Blocks
 
 A HyperCard stack is a sequence of data blocks. Every block has:
-* a type: four-character code, like [`STAK`](#stack), [`CARD`](#card), [`BKGD`](#background).
+* a type: four-character code, like `STAK`, `CARD`, `BKGD`.
 * an ID that makes it unique among all the blocks of the same type in the stack.
 
 ### Block types
 
 Here are the possible block types:
-* [`STAK`](#stack): stack (one in the file), the global parameters of the stack
-* [`MAST`](#master): master (one in the file), the list of the blocks in the stack
-* [`LIST`](#list): the list of the cards (one in the file)
-* [`PAGE`](#list-page): sub-section of the list of the cards
-* [`CARD`](#card): card
-* [`BKGD`](#background): background
-* [`BMAP`](#bitmap): bitmap of a card or of a background
-* [`STBL`](#decoration-table): style block, table of the text decorations used in the stack (at most one in the file)
-* [`FTBL`](#font-name-table): font block, table of the font names used in the stack (at most one in the file)
-* [`PRNT`](#print-setting): printing parameters (at most one in the file)
-* [`PRST`](#page-set-up): Page Setup settings (at most one in the file)
-* [`PRFT`](#report-template): Report Template settings
-* `FREE`: some free space inside the file
-* [`TAIL`](#tail): ending block (one in the file)
+* [Stack Block](#stack-block): the global parameters of the stack (one in the file)
+* [Master Block](#master-block): the index of the blocks in the file (one in the file)
+* [List Block](#list-block): the list of the cards (one in the file)
+* [Page Block](#page-block): a sub-section of the list of the cards
+* [Card Block](#card-block): a card
+* [Background Block](#background-block): a background
+* [Bitmap Block](#bitmap-block): an picture of a card or of a background
+* [Decoration Block](#decoration-block): the table of the text decorations used in the stack (at most one in the file)
+* [Font Block](#font-block): the table of the font names used in the stack (at most one in the file)
+* [Print Setting Block](#print-setting-block): the printing parameters (at most one in the file)
+* [Page Set-Up Block](#page-set-up-block): the Page Setup settings (at most one in the file)
+* [Report Template Block](#report-template-block): a report template
+* Free Block: a free space inside the file
+* [Tail Block](#tail-block): the ending block (one in the file)
 
 ### General Structure
 
@@ -49,16 +49,16 @@ The blocks in the stack are in the following order:
 
 | Blocks |
 | --- |
-| [`STAK`](#stack) |
-| [`MAST`](#master) |
+| [Stack Block](#stack-block) |
+| [Master Block](#master-block) |
 | *Whatever blocks in any order* |
-| [`TAIL`](#tail) |
+| [Tail Block](#tail-block) |
 
-The [`STAK`](#stack) and [`MAST`](#master) blocks contain the information necessary to retrieve the other blocks.
+The [Stack Block](#stack-block) and [Master Block](#master-block) contain the information necessary to retrieve the other blocks.
 
 ## Block Layouts
 
-### Stack
+### Stack Block
 
 This block contains the global parameters of the stack. 
 
@@ -67,17 +67,17 @@ Offset | Type | Content
 0x0 | [Block Header](#block-header) | Header of the block. Type is `STAK` and ID is `-1`
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
-0x18 | UInt32 | Size of the `STAK` block, or maybe the offset of the `MAST` block, we can't know for sure
+0x18 | UInt32 | Size of the Stack block, or maybe the offset of the [Master Block](#master-block), we can't know for sure
 0x1C | UInt32 | Unknown. Small value if the stack is large, close to the result of the division (size of file / 32 ko), but not exactly equal. It is probably the number of segments needed to open the stack, a segment being a unit of 32 ko in the old memory management. It seems that it depends not only on the size of the file, but also on the position of certain blocks.
 0x20 | UInt32 | Maximum ever of previous value
 0x24 | UInt32 | Number of backgrounds in the stack
 0x28 | SInt32 | ID of the first background
 0x2C | UInt32 | Number of cards in the stack
 0x30 | SInt32 | ID of the first card
-0x34 | SInt32 | ID of the `LIST` block of the stack
-0x38 | UInt32 | Number of `FREE` blocks
-0x3C | UInt32 | Total size of all the `FREE` blocks (=`the free size of this stack`)
-0x40 | SInt32 | ID of the `PRNT` block of the stack. If zero, the block doesn't exist.
+0x34 | SInt32 | ID of the [List Block](#list-block) of the stack
+0x38 | UInt32 | Number of Free Blocks
+0x3C | UInt32 | Total size of all the Free Blocks (=`the free size of this stack`)
+0x40 | SInt32 | ID of the [Print Setting Block](#print-setting-block) of the stack. If zero, the block doesn't exist.
 0x44 | UInt32 | Hash of the password (cf the procedures about the password). If zero, there is no password.
 0x48 | UInt16 | User Level (1 ... 5) of the stack. If zero, it is `5`
 0x4A | UInt16 | *Alignment bytes, =0*
@@ -94,18 +94,18 @@ Offset | Type | Content
 0x80 | [Rectangle](#rectangle) | Rectangle of the screen when the card window was measured
 0x88 | [Point](#point) | Point at the origin of the scroll of the card window
 0x8C | *292 bytes* | *=0*
-0x1B0 | SInt32 | ID of the `FTBL` block (Font Table). If zero, the block doesn't exist.
-0x1B4 | SInt32 | ID of the `STBL` block (Decoration Table). If zero, the block doesn't exist.
+0x1B0 | SInt32 | ID of the [Font Block](#font-block). If zero, the block doesn't exist.
+0x1B4 | SInt32 | ID of the [Decoration Block](#decoration-block). If zero, the block doesn't exist.
 0x1B8 | Size | Size of the cards of the stack. If zero, they are 512 pixels wide and 342 pixels high.
 0x1BC | *260 bytes* | *=0*
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
-0x400 | [Free Block Reference](#free-block-reference)[] | Table of the `FREE` blocks. There is one reference for every `FREE` block, and the number of `FREE` blocks is given above.
+0x400 | [Free Block Reference](#free-block-reference)[] | Table of the Free blocks. There is one reference for every Free block, and the number of Free blocks is given earlier.
 *variable* | *bytes* | *=0*
 0x600 | [String](#string) | Script of the stack
 
-### Master
+### Master Block
 
-This block is an index of all the blocks present in the file (excluding `STAK`, `MAST`, `FREE`, and `TAIL` blocks).
+This block is an index of all the blocks present in the file (excluding [Stack Block](#stack-block), [Master Block](#master-block), Free Blocks, and [Tail Block](#tail-block)).
 
 Offset | Type | Content
 --- | --- | ---
@@ -113,7 +113,7 @@ Offset | Type | Content
 0x10 | *16 bytes* | *=0*
 0x20 | [Block Reference](#block-reference)[] | The references of the blocks. The array spans till the end of the block. To read it, cf the procedure.
 
-### List
+### List Block
 
 This block contains the ordered list of the cards. It is unique in the file but has no defined position. To speed up insertions and deletions, the list is segmented in sections called pages. 
 
@@ -132,29 +132,29 @@ Offset | Type | Content
 0x2C | *4 bytes* | *=0*
 0x30 | [Page Reference](#page-reference)[] | The references of the pages
 
-### List Page
+### Page Block
 
 A page block contains a section of the card list.
 
 Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `PAGE`
-0x10 | SInt32 | ID of the list
+0x10 | SInt32 | ID of the [List Block](#list-block)
 0x14 | UInt32 | Checksum (to check it, cf the procedure)
 0x18 | [Card Reference](#card-reference)[] | The references of the cards
 
-### Card
+### Card Block
 
 A card block contains the properties of a card, followed by the list of the parts (buttons and fields mixed), followed by a list of the text contents of the parts (including buttons), followed by the card name, followed by the card script.
 
 Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `CARD`, and the ID of the block is the same as the ID of the card in HyperCard
-0x10 | SInt32 | ID of the bitmap block storing the card picture. If zero, the card is transparent.
+0x10 | SInt32 | ID of the [Bitmap Block](#bitmap-block) storing the card picture. If zero, the card is transparent.
 0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
 0x18 | *8 bytes* | *=0*
-0x20 | SInt32 | ID of the page referencing this card
+0x20 | SInt32 | ID of the [Page Block](#page-block) referencing this card
 0x24 | SInt32 | ID of the background of this card
 0x28 | UInt16 | Number of parts
 0x2A | UInt16 | ID available for the next created part
@@ -166,14 +166,14 @@ Offset | Type | Content
 *variable* | [String](#string) | Name of the card
 *variable* | [String](#string) | Script of the card
 
-### Background
+### Background Block
 
 A background block contains the properties of a background. It has the same structure as a card block except that it has fewer properties.
 
 Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `BKGD`, and the ID of the block is the same as the ID of the background in HyperCard
-0x10 | SInt32 | ID of the bitmap block storing the background picture. If zero, the background is transparent.
+0x10 | SInt32 | ID of the [Bitmap Block](#bitmap-block) storing the background picture. If zero, the background is transparent.
 0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
 0x18 | UInt32 | Number of cards in this background
@@ -183,7 +183,7 @@ Offset | Type | Content
 
 The rest is like a card block, starting from the "Number of parts" field.
 
-### BitMap
+### BitMap Block
 
 A bitmap stores the picture of a card or of a background. It has two layers: an image and a mask. To decode it, cf the procedure.
 
@@ -202,9 +202,9 @@ Offset | Type | Content
 0x40 | *bytes* | Mask data
 *variable* | *bytes* | Image data
 
-### Decoration Table
+### Decoration Block
 
-The Decoration Table stores the decorations used in the texts of the stack.
+This block stores a table of the decorations used in the texts of the stack.
 
 Offset | Type | Content
 --- | --- | ---
@@ -213,18 +213,18 @@ Offset | Type | Content
 0x14 | UInt32 | ID available for the next created decoration
 0x18 | [Decoration](#decoration)[] | The list of the decorations
 
-### Font Name Table
+### Font Block
 
 Since font IDs were not consistent across Macintosh installations, HyperCard stores a table of the names of the fonts used in the stack.
 
 Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `FTBL`, meaning "Font Block"
-0x10 | UInt32 | Number of font name records
+0x10 | UInt32 | Number of font records
 0x14 | UInt32 | *=0*
-0x18 | [Font Name Record](#font-name-record)[] | List of the font name records
+0x18 | [Font Record](#font-record)[] | List of the font records
 
-### Print Setting
+### Print Setting Block
 
 This blocks contains the HyperCard print settings and template indexes.
 
@@ -232,12 +232,12 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `PRNT`
 0x10 | *32 bytes* | *Unknown Data*
-0x30 | UInt16 | ID of the page set-up (`PRST` block)
+0x30 | UInt16 | ID of the [Page Set-Up Block](#page-set-up-block)
 0x32 | *258 bytes* | *Unknown Data*
 0x134 | UInt16 | Number of report template references
 0x136 | [Report Template Reference](#report-template-reference)[] | List of the report template references
 
-### Page Set-Up
+### Page Set-Up Block
 
 This block is the Mac OS print setting. 
 
@@ -246,7 +246,7 @@ Offset | Type | Content
 0x0 | [Block Header](#block-header) | Header of the block. Type is `PRST`
 0x10 | TPrint | TPrint is a QuickDraw structure that stores the settings of a Page Set-Up dialog. It is documented in "Inside Macintosh: Imaging with QuickDraw", at the section "Printing Manager". It is not described here because it contains very specific data, reserved fields and because it wasn't supposed to be used by an application, just given as arguments to the routines of the System.
 
-### Report Template
+### Report Template Block
 
 This block contains the setting of a "Print Report" dialog.
 
@@ -268,7 +268,7 @@ Offset | Type | Content
 0x124 | UInt16 | Number of reports items
 0x126 | [Report Item](#report-item)[] | The report items
 
-### Tail
+### Tail Block
 
 This block contains no information, it just marks the end of the file. 
 
@@ -301,7 +301,7 @@ Offset | Type | Content
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | SInt32 | ID of the referenced `CARD` block
+0x0 | SInt32 | ID of the referenced [Card Block](#card-block)
 0x4 | UInt8 | Flags, Bit 4: marked card, Bit 5: has text content, Bit 6: is the start of a background, Bit 7: has a name
 0x5 | *bytes* | Word search hash, to decode it cf the procedure. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
 
@@ -322,7 +322,7 @@ Offset | Type | Content
 0x14 | UInt16 | *should be green component, but never used*
 0x16 | UInt16 | *should be blue component, but never used*
 
-### Font Name Record
+### Font Record
 
 Offset | Type | Content
 --- | --- | ---
@@ -341,7 +341,7 @@ Offset | Type | Content
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | SInt32 | ID of the `PAGE` block
+0x0 | SInt32 | ID of the [Page Block](#page-block)
 0x4 | UInt16 | Number of cards in the page
 
 ### Pattern Image
@@ -451,7 +451,7 @@ Offset | Type | Content
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | SInt32 | ID of the Report Template block (`PRFT`)
+0x0 | SInt32 | ID of the [Report Template Block](#report-template-block)
 0x4 | [Pascal String](#pascal-string) | Name of the template
 *variable* | *bytes* | Filling bytes to make the whole entry 36 bytes long
 
