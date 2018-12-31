@@ -11,10 +11,6 @@ This description covers nearly all the data of a stack. But it is not complete e
 
 All the integers are big-endian.
 
-The Character type is a UInt8.
-
-All text is encoded in the MacRoman text encoding.
-
 In flags, bits are counted from 0.
 
 ## File Layout
@@ -35,7 +31,7 @@ Here are the possible block types:
 * [Card Block](#card-block): a card
 * [Background Block](#background-block): a background
 * [Bitmap Block](#bitmap-block): an picture of a card or of a background
-* [Decoration Block](#decoration-block): the table of the text decorations used in the stack (at most one in the file)
+* [Style Block](#style-block): the table of the text decorations used in the stack (at most one in the file)
 * [Font Block](#font-block): the table of the font names used in the stack (at most one in the file)
 * [Print Setting Block](#print-setting-block): the printing parameters (at most one in the file)
 * [Page Set-Up Block](#page-set-up-block): the Page Setup settings (at most one in the file)
@@ -67,7 +63,7 @@ Offset | Type | Content
 0x0 | [Block Header](#block-header) | Header of the block. Type is `STAK` and ID is `-1`
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
-0x18 | UInt32 | Size of the Stack block, or maybe the offset of the [Master Block](#master-block), we can't know for sure
+0x18 | UInt32 | Size of the Stack Block, or maybe the offset of the [Master Block](#master-block), we can't know for sure
 0x1C | UInt32 | Unknown. Small value if the stack is large, close to the result of the division (size of file / 32 ko), but not exactly equal. It is probably the number of segments needed to open the stack, a segment being a unit of 32 ko in the old memory management. It seems that it depends not only on the size of the file, but also on the position of certain blocks.
 0x20 | UInt32 | Maximum ever of previous value
 0x24 | UInt32 | Number of backgrounds in the stack
@@ -95,7 +91,7 @@ Offset | Type | Content
 0x88 | [Point](#point) | Point at the origin of the scroll of the card window
 0x8C | *292 bytes* | *=0*
 0x1B0 | SInt32 | ID of the [Font Block](#font-block). If zero, the block doesn't exist.
-0x1B4 | SInt32 | ID of the [Decoration Block](#decoration-block). If zero, the block doesn't exist.
+0x1B4 | SInt32 | ID of the [Style Block](#style-block). If zero, the block doesn't exist.
 0x1B8 | Size | Size of the cards of the stack. If zero, they are 512 pixels wide and 342 pixels high.
 0x1BC | *260 bytes* | *=0*
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
@@ -208,13 +204,13 @@ Offset | Type | Content
 0x40 | *bytes* | Mask data
 *variable* | *bytes* | Image data
 
-### Decoration Block
+### Style Block
 
 This block stores a table of the decorations used in the texts of the stack.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | [Block Header](#block-header) | Header of the block. Type is `STBL`, meaning "Style Block"
+0x0 | [Block Header](#block-header) | Header of the block. Type is `STBL`
 0x10 | UInt32 | Number of decorations
 0x14 | UInt32 | ID available for the next created decoration
 0x18 | [Decoration](#decoration)[] | The list of the decorations
@@ -319,6 +315,10 @@ Offset | Type | Content
 0x0 | SInt32 | ID of the referenced [Card Block](#card-block)
 0x4 | UInt8 | Flags, Bit 4: marked card, Bit 5: has text content, Bit 6: is the start of a background, Bit 7: has a name
 0x5 | *bytes* | Word search hash, to decode it cf the procedure. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
+
+### Character
+
+Character is a 8-bit unsigned integer, storing a character from the Mac OS Roman encoding. It spans from 0 to 255.
 
 ### Decoration
 
