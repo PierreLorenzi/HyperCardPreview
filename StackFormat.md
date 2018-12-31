@@ -13,6 +13,8 @@ All the integers are big-endian.
 
 All text is encoded in the MacRoman text encoding.
 
+In flags, bits are counted from 0.
+
 ## File Layout
 
 ### Blocks
@@ -609,9 +611,10 @@ The word search hash has been largely retro-engineered but it is complex and the
 
 Bitmaps are compressed in a proprietary format designed by Bill Atkinson. This part is dedicated to Rebecca Bettencourt, who retro-engineered this format and christened it "WOBA", Wrath of Bill Atkinson, for its tortuous complexity.
 
-A bitmap has two layers, that are both decompressed as a raw data with 1 bit per pixel with rows aligned to 32 bits.
-
-If a pixel is 1 in the image, it is black. Elsewhere, if it is 1 in the mask, it is blank. Elsewhere it is transparent.
+A bitmap has two layers: an image and a mask. Both are decompressed to a raw data with 1 bit per pixel, aligned to 32 bits. The color of a pixel is given by:
+- if the pixel has a value of 1 in the image, it is black.
+- elsewhere, if it has a value of 1 in the mask, it is blank.
+- elsewhere, it is transparent.
 
 Both the mask and the image have a bounding rectangle (which can be zero) and a content data (which can be present or not). Here is how they interact:
 - if the content data is present, it is decompressed and displayed in the bounding rectangle.
