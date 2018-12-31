@@ -74,7 +74,7 @@ Offset | Type | Content
 0x38 | UInt32 | Number of [Free Blocks](#free-block)
 0x3C | UInt32 | Total size of all the [Free Blocks](#free-block) (=`the free size of this stack`)
 0x40 | SInt32 | ID of the [Print Setting Block](#print-setting-block) of the stack. If zero, the block doesn't exist.
-0x44 | UInt32 | Hash of the password (cf the procedures about the password). If zero, there is no password.
+0x44 | UInt32 | Hash of the password (see the procedures to [check a password](#check-a-password), [open a Private Access stack](#open-a-private-access-stack), and [hack a Private Access stack](#hack-a-private-access-stack)). If zero, there is no password.
 0x48 | UInt16 | User Level (1 ... 5) of the stack. If zero, it is `5`
 0x4A | UInt16 | *Alignment bytes, =0*
 0x4C | UInt16 | Protection flags, Bit 10: can't peek, Bit 11: can't abort, Bit 13: private access, Bit 14: can't delete, Bit 15: can't modify.
@@ -84,7 +84,7 @@ Offset | Type | Content
 0x64 | [Version](#version) | HyperCard version at last compacting. If zero, it is unknown.
 0x68 | [Version](#version) | HyperCard version at last modification since last compacting. If zero, it is unknown.
 0x6C | [Version](#version) | HyperCard version at last modification. If zero, it is unknown.
-0x70 | UInt32 | Checksum of the stack block (to check it, cf the procedure)
+0x70 | UInt32 | Checksum of the stack block (see [the procedure to check it](#check-the-check-sum-of-the-stack-block))
 0x74 | UInt32 | Number of marked cards
 0x78 | [Rectangle](#rectangle) | Rectangle of the card window
 0x80 | [Rectangle](#rectangle) | Rectangle of the screen when the card window was measured
@@ -107,7 +107,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `MAST` and ID is `-1`.
 0x10 | *16 bytes* | *=0*
-0x20 | [Block Reference](#block-reference)[] | The references of the blocks. The array spans till the end of the block. To read it, cf the procedure.
+0x20 | [Block Reference](#block-reference)[] | The references of the blocks. The array spans till the end of the block. See [the procedure to find a block](#find-a-block-in-the-file).
 
 ### List Block
 
@@ -123,7 +123,7 @@ Offset | Type | Content
 0x1E | UInt16 | *always 2*
 0x20 | UInt16 | Number of hash integers in a card entry in the pages, equal to (entry size - 4)/4
 0x22 | UInt16 | Search hash value count, this value is used in search hash computations
-0x24 | UInt32 | Checksum (to check it, cf the procedure)
+0x24 | UInt32 | Checksum (see [the procedure to check it](#check-the-checksum-of-the-list))
 0x28 | UInt32 | Total number of cards again. Both values are probably computed differently and checked for equality.
 0x2C | *4 bytes* | *=0*
 0x30 | [Page Reference](#page-reference)[] | The references of the pages
@@ -136,7 +136,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `PAGE`
 0x10 | SInt32 | ID of the [List Block](#list-block)
-0x14 | UInt32 | Checksum (to check it, cf the procedure)
+0x14 | UInt32 | Checksum (see [the procedure to check it](#check-the-checksum-of-a-page))
 0x18 | [Card Reference](#card-reference)[] | The references of the cards
 
 ### Card Block
@@ -187,7 +187,7 @@ Offset | Type | Content
 
 ### BitMap Block
 
-A bitmap stores the picture of a card or of a background. It has two layers: an image and a mask. To decode it, cf the procedure.
+A bitmap stores the picture of a card or of a background. It has two layers: an image and a mask. See [the procedure to decode a bitmap](#decompress-a-bitmap-image).
 
 Offset | Type | Content
 --- | --- | ---
@@ -314,7 +314,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | SInt32 | ID of the referenced [Card Block](#card-block)
 0x4 | UInt8 | Flags, Bit 4: marked card, Bit 5: has text content, Bit 6: is the start of a background, Bit 7: has a name
-0x5 | *bytes* | Word search hash, to decode it cf the procedure. All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
+0x5 | *bytes* | Word search hash, see [the procedure to decode it](#check-a-word-in-a-word-search-hash). All the card references in a stack have the same size, which is given in the list, from which the size of this hash can be computed.
 
 ### Character
 
@@ -513,7 +513,7 @@ This section contains the procedures necessary to decode some of the data.
 
 ### Open a Private Access stack
 
-When a stack is private access, a part of the Stack Block is encrypted (from offset 0x18 to 0x4A). To decrypt it, you must ask the user for a password (if you want to hack the encryption, cf the procedure about it).
+When a stack is private access, a part of the Stack Block is encrypted (from offset 0x18 to 0x4A). To decrypt it, you must ask the user for a password (if you want to hack the encryption, see [the procedure about it](#hack-a-private-access-stack)).
 
 First, here are two utility functions: 
 
