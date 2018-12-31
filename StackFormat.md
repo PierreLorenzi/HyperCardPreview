@@ -11,6 +11,8 @@ This description covers nearly all the data of a stack. But it is not complete e
 
 All the integers are big-endian.
 
+The Character type is a UInt8.
+
 All text is encoded in the MacRoman text encoding.
 
 In flags, bits are counted from 0.
@@ -474,6 +476,10 @@ Offset | Type | Content
 ### String
 
 A string is a null-terminated sequence of characters.
+
+Offset | Type | Content
+--- | --- | ---
+0x0 | Character[] | The characters, *null terminated*
 
 ### Version
 
