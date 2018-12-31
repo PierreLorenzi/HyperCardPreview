@@ -406,7 +406,7 @@ If the content is a plain string, the rest is:
 Offset | Type | Content
 --- | --- | ---
 0x4 | UInt8 | *=0*. Plain string marker.
-0x5 | Character[] | String content, *not null terminated*, finishes at the end of the Part Content entry
+0x5 | [Character](#character)[] | String content, *not null terminated*, finishes at the end of the Part Content entry
 
 If the content is a decorated string, the rest is:
 
@@ -414,7 +414,7 @@ Offset | Type | Content
 --- | --- | ---
 0x4 | UInt16 | Size of the list of the runs, also including this field, that is, equal to the size of the list of the runs + 2. The highest bit is always set, it must be ignored.
 0x6 | [Run](#run)[] | List of the runs
-*variable* | Character[] | String content, *not null terminated*, finishes at the end of the Part Content entry
+*variable* | [Character](#character)[] | String content, *not null terminated*, finishes at the end of the Part Content entry
 
 ### Pascal String
 
@@ -423,7 +423,7 @@ A Pascal String is an old representation of strings. It was less and less used a
 Offset | Type | Content
 --- | --- | ---
 0x0 | UInt8 | Size of the string
-0x1 | Character[] | The string, *not null terminated*
+0x1 | [Character](#character)[] | The string, *not null terminated*
 
 ### Point
 
@@ -494,7 +494,7 @@ A string is a null-terminated sequence of characters.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Character[] | The characters, *null terminated*
+0x0 | [Character](#character)[] | The characters, *null terminated*
 
 ### Version
 
