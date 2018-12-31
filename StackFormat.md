@@ -62,7 +62,7 @@ This block contains the global parameters of the stack.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `STAK` and ID is `-1`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `STAK` and ID is `-1`
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
 0x18 | UInt32 | Size of the `STAK` block, or maybe the offset of the `MAST` block, we can't know for sure
@@ -82,24 +82,24 @@ Offset | Type | Content
 0x4C | UInt16 | Protection flags, Bit 10: can't peek, Bit 11: can't abort, Bit 13: private access, Bit 14: can't delete, Bit 15: can't modify.
 0x4E | UInt16 | *Alignment bytes, =0*
 0x50 | *16 bytes* | *=0*
-0x60 | Version | HyperCard version at stack creation. If zero, it is unknown.
-0x64 | Version | HyperCard version at last compacting. If zero, it is unknown.
-0x68 | Version | HyperCard version at last modification since last compacting. If zero, it is unknown.
-0x6C | Version | HyperCard version at last modification. If zero, it is unknown.
+0x60 | [Version](#version) | HyperCard version at stack creation. If zero, it is unknown.
+0x64 | [Version](#version) | HyperCard version at last compacting. If zero, it is unknown.
+0x68 | [Version](#version) | HyperCard version at last modification since last compacting. If zero, it is unknown.
+0x6C | [Version](#version) | HyperCard version at last modification. If zero, it is unknown.
 0x70 | UInt32 | Checksum of the stack block (to check it, cf the procedure)
 0x74 | UInt32 | Number of marked cards
-0x78 | Rectangle | Rectangle of the card window
-0x80 | Rectangle | Rectangle of the screen when the card window was measured
-0x88 | Point | Point at the origin of the scroll of the card window
+0x78 | [Rectangle](#rectangle) | Rectangle of the card window
+0x80 | [Rectangle](#rectangle) | Rectangle of the screen when the card window was measured
+0x88 | [Point](#point) | Point at the origin of the scroll of the card window
 0x8C | *292 bytes* | *=0*
 0x1B0 | SInt32 | ID of the `FTBL` block (Font Table). If zero, the block doesn't exist.
 0x1B4 | SInt32 | ID of the `STBL` block (Decoration Table). If zero, the block doesn't exist.
 0x1B8 | Size | Size of the cards of the stack. If zero, they are 512 pixels wide and 342 pixels high.
 0x1BC | *260 bytes* | *=0*
-0x2C0 | Pattern Image[40] | The 40 patterns of the stack
-0x400 | Free Block Reference[] | Table of the `FREE` blocks. There is one reference for every `FREE` block, and the number of `FREE` blocks is given above.
+0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
+0x400 | [Free Block Reference](#free-block-reference)[] | Table of the `FREE` blocks. There is one reference for every `FREE` block, and the number of `FREE` blocks is given above.
 *variable* | *bytes* | *=0*
-0x600 | String | Script of the stack
+0x600 | [String](#string) | Script of the stack
 
 ### Master
 
@@ -107,9 +107,9 @@ This block is an index of all the blocks present in the file (excluding `STAK`, 
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `MAST` and ID is `-1`.
+0x0 | [Block Header](#block-header) | Header of the block. Type is `MAST` and ID is `-1`.
 0x10 | *16 bytes* | *=0*
-0x20 | Block Reference[] | The references of the blocks. The array spans till the end of the block. To read it, cf the procedure.
+0x20 | [Block Reference](#block-reference)[] | The references of the blocks. The array spans till the end of the block. To read it, cf the procedure.
 
 ### List
 
@@ -117,7 +117,7 @@ This block contains the ordered list of the cards. It is unique in the file but 
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `LIST`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `LIST`
 0x10 | UInt32 | Number of pages
 0x14 | UInt32 | Size of a page, always `0x800`
 0x18 | UInt32 |	Total number of cards
@@ -128,7 +128,7 @@ Offset | Type | Content
 0x24 | UInt32 | Checksum (to check it, cf the procedure)
 0x28 | UInt32 | Total number of cards again. Both values are probably computed differently and checked for equality.
 0x2C | *4 bytes* | *=0*
-0x30 | Page Reference[] | The references of the pages
+0x30 | [Page Reference](#page-reference)[] | The references of the pages
 
 ### List Page
 
@@ -136,10 +136,10 @@ A page block contains a section of the card list.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `PAGE`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `PAGE`
 0x10 | SInt32 | ID of the list
 0x14 | UInt32 | Checksum (to check it, cf the procedure)
-0x18 | Card Reference[] | The references of the cards
+0x18 | [Card Reference](#card-reference)[] | The references of the cards
 
 ### Card
 
@@ -147,7 +147,7 @@ A card block contains the properties of a card, followed by the list of the part
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `CARD`, and the ID of the block is the same as the ID of the card in HyperCard
+0x0 | [Block Header](#block-header) | Header of the block. Type is `CARD`, and the ID of the block is the same as the ID of the card in HyperCard
 0x10 | SInt32 | ID of the bitmap block storing the card picture. If zero, the card is transparent.
 0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
@@ -159,10 +159,10 @@ Offset | Type | Content
 0x2C | UInt32 | Total size of the part list
 0x30 | UInt16 | Number of part contents
 0x32 | UInt32 | Total size of the part content list
-0x36 | Part[] | List of the parts
-*variable* | Part Content[] | List of the contents of the parts
-*variable* | String | Name of the card
-*variable* | String | Script of the card
+0x36 | [Part](#part)[] | List of the parts
+*variable* | [Part Content](#part-content)[] | List of the contents of the parts
+*variable* | [String](#string) | Name of the card
+*variable* | [String](#string) | Script of the card
 
 ### Background
 
@@ -170,7 +170,7 @@ A background block contains the properties of a background. It has the same stru
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `BKGD`, and the ID of the block is the same as the ID of the background in HyperCard
+0x0 | [Block Header](#block-header) | Header of the block. Type is `BKGD`, and the ID of the block is the same as the ID of the background in HyperCard
 0x10 | SInt32 | ID of the bitmap block storing the background picture. If zero, the background is transparent.
 0x14 | UInt16 | Flags, Bit 14: cant delete, Bit 13: (not show pict), Bit 11: dont search
 0x16 | UInt16 | *Alignment bytes, =0*
@@ -187,12 +187,12 @@ A bitmap stores the picture of a card or of a background. It has two layers: an 
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `BMAP`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `BMAP`
 0x10 | UInt32 | *=0*
 0x14 | UInt32 | *=0x10000*
-0x18 | Rectangle | Rectangle of the whole card
-0x20 | Rectangle | Rectangle of the mask
-0x28 | Rectangle | Rectangle of the image
+0x18 | [Rectangle](#rectangle) | Rectangle of the whole card
+0x20 | [Rectangle](#rectangle) | Rectangle of the mask
+0x28 | [Rectangle](#rectangle) | Rectangle of the image
 0x30 | UInt32 | *=0*
 0x34 | UInt32 | *=0*
 0x38 | UInt32 | Size of the mask data
@@ -206,10 +206,10 @@ The Decoration Table stores the decorations used in the texts of the stack.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `STBL`, meaning "Style Block"
+0x0 | [Block Header](#block-header) | Header of the block. Type is `STBL`, meaning "Style Block"
 0x10 | UInt32 | Number of decorations
 0x14 | UInt32 | ID available for the next created decoration
-0x18 | Decoration[] | The list of the decorations
+0x18 | [Decoration](#decoration)[] | The list of the decorations
 
 ### Font Name Table
 
@@ -217,10 +217,10 @@ Since font IDs were not consistent across Macintosh installations, HyperCard sto
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `FTBL`, meaning "Font Block"
+0x0 | [Block Header](#block-header) | Header of the block. Type is `FTBL`, meaning "Font Block"
 0x10 | UInt32 | Number of font name records
 0x14 | UInt32 | *=0*
-0x18 | Font Name Record[] | List of the font name records
+0x18 | [Font Name Record](#font-name-record)[] | List of the font name records
 
 ### Print Setting
 
@@ -228,12 +228,12 @@ This blocks contains the HyperCard print settings and template indexes.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `PRNT`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `PRNT`
 0x10 | *32 bytes* | *Unknown Data*
 0x30 | UInt16 | ID of the page set-up (`PRST` block)
 0x32 | *258 bytes* | *Unknown Data*
 0x134 | UInt16 | Number of report template references
-0x136 | Report Template Reference[] | List of the report template references
+0x136 | [Report Template Reference](#report-template-reference)[] | List of the report template references
 
 ### Page Set-Up
 
@@ -241,7 +241,7 @@ This block is the Mac OS print setting.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `PRST`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `PRST`
 0x10 | TPrint | TPrint is a QuickDraw structure that stores the settings of a Page Set-Up dialog. It is documented in "Inside Macintosh: Imaging with QuickDraw", at the section "Printing Manager". It is not described here because it contains very specific data, reserved fields and because it wasn't supposed to be used by an application, just given as arguments to the routines of the System.
 
 ### Report Template
@@ -254,17 +254,17 @@ These settings in the dialog are not saved in the file: "Print all cards" / "Pri
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `PRFT`
+0x0 | [Block Header](#block-header) | Header of the block. Type is `PRFT`
 0x10 | UInt8 | 	Displayed unit, `0`: centimeters, `1`: millimeters, `2`: inches, `3`: points/pixels
 0x11 | UInt8 | *Unknown value*
-0x12 | Rectangle | Margins of the page, in points
-0x1A | Size | Spacing between the cells, in points
-0x1E | Size | Size of a cell, in points
+0x12 | [Rectangle](#rectangle) | Margins of the page, in points
+0x1A | [Size](#size) | Spacing between the cells, in points
+0x1E | [Size](#size) | Size of a cell, in points
 0x22 | UInt16 | Flags, Bit 8: left to right (as opposed to top to bottom), Bit 0: dynamic height
-0x24 | Pascal String | Header (string on top of the page). The following control characters can be embedded: `0x01`: date, `0x02`: time, `0x03`: stack name, `0x04`: page number.
+0x24 | [Pascal String](#pascal-string) | Header (string on top of the page). The following control characters can be embedded: `0x01`: date, `0x02`: time, `0x03`: stack name, `0x04`: page number.
 *variable* | *bytes* | *Unknown values*
 0x124 | UInt16 | Number of reports items
-0x126 | Report Item[] | The report items
+0x126 | [Report Item](#report-item)[] | The report items
 
 ### Tail
 
@@ -272,8 +272,8 @@ This block contains no information, it just marks the end of the file.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | Block Header | Header of the block. Type is `TAIL` and ID is `-1`
-0x10 | Pascal String | Tailing string: "Nu är det slut…". This is the closing line of a Swedish children's show called "Five Ants Are More Than Four Elephants", it means "this is the end". In HyperCard 1.x it used to be "That's all folks...", the closing line of Looney Tunes cartoons.
+0x0 | [Block Header](#block-header) | Header of the block. Type is `TAIL` and ID is `-1`
+0x10 | [Pascal String](#pascal-string) | Tailing string: "Nu är det slut…". This is the closing line of a Swedish children's show called "Five Ants Are More Than Four Elephants", it means "this is the end". In HyperCard 1.x it used to be "That's all folks...", the closing line of Looney Tunes cartoons.
 
 ## Other data
 
@@ -357,7 +357,7 @@ Offset | Type | Content
 0x0 | UInt16 | Size of this part structure
 0x2 | UInt16 | ID of the part
 0x4 | UInt16 | Flags, Bit 8: Type of the part (`0` is "field", `1` is "button"), Bit 7: (not visible), Bit 5: dont wrap, Bit 4: dont search, Bit 3: shared text, Bit 2: (not fixed line height), Bit 1: auto tab, Bit 0: (not enabled) / lock text
-0x6 | Rectangle | Rectangle of the part
+0x6 | [Rectangle](#rectangle) | Rectangle of the part
 0xE | UInt8 | Flags, Bit 7: show name / auto select, Bit 6: highlight / show lines, Bit 5: auto highlight / wide margins, Bit 4: (not shared highlight)/ multiple lines, Bits 3-0: family
 0xF | UInt8 | Style of the part: `0` is "transparent", `1` is "opaque", `2` is "rectangle", `3` is "round rect", `4` is "shadow", `5` is "check box", `6` is "radio", `7` is "scrolling", `8` is "standard", `9` is "default", `10` is "oval", `11` is "pop-up"
 0x10 | UInt16 | `button`: title width, `field`: last of the selected lines
@@ -368,9 +368,9 @@ Offset | Type | Content
 0x1A | UInt8 | Text style flags, Bit 7: group, Bit 6: extend, Bit 5: condense, Bit 4: shadow, Bit 3: outline, Bit 2: underline, Bit 1: italic, Bit 0: bold
 0x1B | UInt8 | *Alignment byte, =0*
 0x1C | UInt16 | Line Height
-0x1E | String | Name of the part
+0x1E | [String](#string) | Name of the part
 *variable* | UInt8 | *=0*. If there is no script, this byte is not present and the part data stops after the name.
-*variable* | String | Script of the part
+*variable* | [String](#string) | Script of the part
 *variable* | *0 or 1 byte* | Alignment to 16 bits
 
 ### Part Content
@@ -396,7 +396,7 @@ If the content is a decorated string, the rest is:
 Offset | Type | Content
 --- | --- | ---
 0x4 | UInt16 | Size of the list of the runs, also including this field, that is, equal to the size of the list of the runs + 2. The highest bit is always set, it must be ignored.
-0x6 | Run[] | List of the runs
+0x6 | [Run](#run)[] | List of the runs
 *variable* | Character[] | String content, *not null terminated*, finishes at the end of the Part Content entry
 
 ### Pascal String
@@ -433,14 +433,14 @@ An item is an area in a cell that contains text.
 Offset | Type | Content
 --- | --- | ---
 0x0 | UInt16 | Size of the item, including this field
-0x2 | Rectangle | Rectangle of the item within the cell
+0x2 | [Rectangle](#rectangle) | Rectangle of the item within the cell
 0xA | UInt16 | Number of columns
 0xC | UInt16 | Flags, Bit 13: change height, Bit 12: change style, Bit 11: change size, Bit 10: change font, Bit 4: invert, Bit 3: right frame, Bit 2: bottom frame, Bit 1: left frame, Bit 0: top frame
 0xE | UInt16 | Text size
 0x10 | UInt16 | Text height
 0x12 | UInt16 | Text style, Bit 15: group, Bit 14: extend, Bit 13: condense, Bit 12: shadow, Bit 11: outline, Bit 10: underline, Bit 9: italic, Bit 8: bold
 0x14 | SInt16 | Text alignment, 0: left, 1: center, -1: right
-0x16 | String | Content (it is a text string or a HyperTalk expression)
+0x16 | [String](#string) | Content (it is a text string or a HyperTalk expression)
 *variable* | String | Font name
 *variable* | *0 or 1 byte* | *Alignment to 16 bits*
 
@@ -450,7 +450,7 @@ Offset | Type | Content
 Offset | Type | Content
 --- | --- | ---
 0x0 | SInt32 | ID of the Report Template block (`PRFT`)
-0x4 | Pascal String | Name of the template
+0x4 | [Pascal String](#pascal-string) | Name of the template
 *variable* | *bytes* | Filling bytes to make the whole entry 36 bytes long
 
 ### Run
