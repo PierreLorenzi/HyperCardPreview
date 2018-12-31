@@ -180,8 +180,14 @@ Offset | Type | Content
 0x1C | SInt32 | ID of the next background
 0x20 | SInt32 | ID of the previous background
 0x24 | UInt16 | Number of parts
-
-The rest is like a card block, starting from the "Number of parts" field.
+0x26 | UInt16 | ID available for the next created part
+0x28 | UInt32 | Total size of the part list
+0x2C | UInt16 | Number of part contents
+0x2E | UInt32 | Total size of the part content list
+0x32 | [Part](#part)[] | List of the parts
+*variable* | [Part Content](#part-content)[] | List of the contents of the parts
+*variable* | [String](#string) | Name of the background
+*variable* | [String](#string) | Script of the background
 
 ### BitMap Block
 
