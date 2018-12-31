@@ -28,20 +28,20 @@ A HyperCard stack is a sequence of data blocks. Every block has:
 ### Block types
 
 Here are the possible block types:
-* `STAK`: stack (one in the file), the global parameters of the stack
-* `MAST`: master (one in the file), the list of the blocks in the stack
-* `LIST`: the list of the cards (one in the file)
-* `PAGE`: sub-section of the list of the cards
-* `CARD`: card
-* `BKGD`: background
-* `BMAP`: bitmap of a card or of a background
-* `STBL`: style block, table of the text decorations used in the stack (at most one in the file)
-* `FTBL`: font block, table of the font names used in the stack (at most one in the file)
-* `PRNT`: printing parameters (at most one in the file)
-* `PRST`: Page Setup settings (at most one in the file)
-* `PRFT`: Report Template settings
+* [`STAK`](#stack): stack (one in the file), the global parameters of the stack
+* [`MAST`](#master): master (one in the file), the list of the blocks in the stack
+* [`LIST`](#list): the list of the cards (one in the file)
+* [`PAGE`](#list-page): sub-section of the list of the cards
+* [`CARD`](#card): card
+* [`BKGD`](#background): background
+* [`BMAP`](#bitmap): bitmap of a card or of a background
+* [`STBL`](#decoration-table): style block, table of the text decorations used in the stack (at most one in the file)
+* [`FTBL`](#font-name-table): font block, table of the font names used in the stack (at most one in the file)
+* [`PRNT`](#print-setting): printing parameters (at most one in the file)
+* [`PRST`](#page-set-up): Page Setup settings (at most one in the file)
+* [`PRFT`](#report-template): Report Template settings
 * `FREE`: some free space inside the file
-* `TAIL`: ending block (one in the file)
+* [`TAIL`](#tail): ending block (one in the file)
 
 ### General Structure
 
