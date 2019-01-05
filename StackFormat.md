@@ -61,7 +61,7 @@ Offset | Type | Content
 0x0 | [Block Header](#block-header) | Header of the block. Type is `STAK` and ID is `-1`
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
-0x18 | UInt32 | Size of the Stack Block, or maybe the offset of the [Master Block](#master-block), we can't know for sure
+0x18 | UInt32 | Offset of the [Master Block](#master-block), counted from the start of the file
 0x1C | UInt32 | Number of full tables in the [Master Block](#master-block)
 0x20 | UInt32 | Number of tables in the [Master Block](#master-block) - 1
 0x24 | UInt32 | Number of backgrounds in the stack
