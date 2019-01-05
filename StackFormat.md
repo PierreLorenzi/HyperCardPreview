@@ -300,7 +300,7 @@ The header of the data blocks.
 
 Offset | Type | Content
 --- | --- | ---
-0x0 | UInt32 | The size of the block, including the header. Beware: in the stack "Stack Templates" of HyperCard 2.4.1, in the Master Block, a unkown flag is set at the 2nd highest bit, so the highest bits mustn't be read.
+0x0 | UInt32 | The size of the block, including the header. Don't rely too much on it, it is sometimes corrupted.
 0x4 | UInt32 | The type of the block
 0x8 | SInt32 | The ID of the block
 0xC | UInt32 | *Alignment bytes, =0*
