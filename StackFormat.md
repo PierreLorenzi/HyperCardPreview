@@ -62,8 +62,8 @@ Offset | Type | Content
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
 0x18 | UInt32 | Size of the Stack Block, or maybe the offset of the [Master Block](#master-block), we can't know for sure
-0x1C | UInt32 | Unknown. Small value if the stack is large, close to the result of the division (size of file / 32 ko), but not exactly equal. It is probably the number of segments needed to open the stack, a segment being a unit of 32 ko in the old memory management. It seems that it depends not only on the size of the file, but also on the position of certain blocks.
-0x20 | UInt32 | Maximum ever of previous value
+0x1C | UInt32 | Number of full tables in the [Master Block](#master-block)
+0x20 | UInt32 | Number of tables in the [Master Block](#master-block) - 1
 0x24 | UInt32 | Number of backgrounds in the stack
 0x28 | SInt32 | ID of the first background
 0x2C | UInt32 | Number of cards in the stack
@@ -101,11 +101,17 @@ Offset | Type | Content
 
 This block is an index of all the blocks present in the file (excluding [Stack Block](#stack-block), [Master Block](#master-block), [Free Blocks](#free-block), and [Tail Block](#tail-block)).
 
+It consists of successive tables which are 0x200 bytes long. The first table starts at offset 0, it encloses the block header so contrary to the others, it doesn't have data on its first 0x20 bytes. The other tables follow at offsets 0x200, 0x400, and so on.
+
+The tables consist of slots which are 4 bytes long. Every slot corresponds to a block in the file: the slot contains the position of the block, and on the other hand, the position of the slot can be computed with the ID of the block. So when a program has a block ID and is looking for the position of the block in the file, it just has to compute the position of the corresponding slot, find it and read the position inside. More information in [the procedure to find a block](#find-a-block-in-the-file).
+
+The number of tables is written in the [Stack Block](#stack-block). There is also the number of full tables, to know the first table with available slots.
+
 Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `MAST` and ID is `-1`
 0x10 | *16 bytes* | *=0*
-0x20 | [Block Reference](#block-reference)[] | The references of the blocks. The array spans till the end of the block. See [the procedure to find a block](#find-a-block-in-the-file).
+0x20 | UInt32 | The slots.
 
 ### List Block
 
@@ -298,13 +304,6 @@ Offset | Type | Content
 0x4 | UInt32 | The type of the block
 0x8 | SInt32 | The ID of the block
 0xC | UInt32 | *Alignment bytes, =0*
-
-### Block Reference
-
-Offset | Type | Content
---- | --- | ---
-0x0 | UInt8[3] | When multiplied by 0x20: offset of the block in the file
-0x3 | UInt8 | Lower 8 bits of the block ID
 
 ### Card Reference
 
@@ -593,11 +592,20 @@ If the stack is Private Access, the checksum must be computed on the decrypted d
 
 ### Find a block in the file
 
-To find a block, you must read the [Master Block](#master-block).
+This procedure is to find the position of a block in the file from its ID.
 
-Loop on all the block references of the [Master Block](#master-block) until the end of the block. If a block reference is equal to 0, ignore it but don't stop, there may be others further. Check if the ID byte matches, and if it does, check the complete block type and ID in the block itself.
+To do that, the slot of the block must be found in the [Master Block](#master-block). The position of that slot is computed with the ID of the block.
 
-Note: it is possible to find a block by looping directly on the successive blocks of the file. In real life it is less reliable because sometimes there are corrupted blocks.
+In fact, the ID of a block has three parts:
+- bits 0-7: a random value, to identify the block a little bit,
+- bits 8-14: when multiplied by 4, the offset of the slot in the table,
+- bits 15-31: the index of the table where the slot lies.
+
+So the position of the slot is just extracted from the ID.
+
+The lowest byte of the slot must be equal to the lowest byte of the ID.
+
+Then the position of the block is computed by multiplying the three upper bytes of the slot by 0x20.
 
 ### Check the checksum of the list
 
