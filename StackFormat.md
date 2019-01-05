@@ -3,7 +3,7 @@
 
 This is a description of the format of HyperCard stacks.
 
-The HyperCard file format has never been officially published, though originally intended by Bill Atkinson. The instructions in this file were retro-engineered by looking at various stacks and by comparing them. Several people have contributed to that work: Rebecca Bettencourt, Tyler Vano, Uli Kusterer. With special thanks to Michael Nichols and Bill Atkinson.
+The HyperCard file format has never been officially published, though originally intended by Bill Atkinson. The instructions in this file were retro-engineered by looking at various stacks and by comparing them, and sometimes by reading the assembly. Several people have contributed to that work: Rebecca Bettencourt, Tyler Vano, Uli Kusterer, myself. With special thanks to Michael Nichols and Bill Atkinson.
 
 This description covers nearly all the data of a stack. But it is not complete enough to update stacks and create new ones.
 
@@ -578,7 +578,7 @@ function hashPassword(password: String):
 
 It is possible to decrypt an encrypted [Stack Block](#stack-block) without the password. We describe roughly how to do it.
 
-The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset 0x18, is a big weakness because it contains the size of the [Stack Block](#stack-block), which we know anyway because it is given in the header. So by XORing the size of the [Stack Block](#stack-block) with that integer, we get `h`, the value used to XOR the integer.
+The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset 0x18, is a big weakness because it contains the offset of the [Master Block](#master-block), which is always equal to the size of the [Stack Block](#stack-block), and that one we know because it is written in the header. So by XORing the size of the [Stack Block](#stack-block) with that integer, we get `h`, the value used to XOR the integer.
 
 According to the function `decryptStackBlock`, the value `h` is equal to `x XOR (hashNumber(x) >> 16)`, `x` being an unknown 32-bit integer. But, as we see, the first 16 bits of `h` are the same first 16 bits of `x`, so we already know half of `x`. For the remaining 16 bits, we just have to check them all: for every possible value of `x`, we compute `x XOR (hashNumber(x) >> 16)` and check if it is equal to `h`.
 
