@@ -111,7 +111,7 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | [Block Header](#block-header) | Header of the block. Type is `MAST` and ID is `-1`
 0x10 | *16 bytes* | *=0*
-0x20 | UInt32[] | The slots.
+0x20 | UInt32[] | The slots
 
 ### List Block
 
