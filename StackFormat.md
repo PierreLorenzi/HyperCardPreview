@@ -77,7 +77,10 @@ Offset | Type | Content
 0x4A | UInt16 | *Alignment bytes, =0*
 0x4C | UInt16 | Protection flags, Bit 10: can't peek, Bit 11: can't abort, Bit 13: private access, Bit 14: can't delete, Bit 15: can't modify.
 0x4E | UInt16 | *Alignment bytes, =0*
-0x50 | *16 bytes* | *=0*
+0x50 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
+0x54 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
+0x58 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
+0x5C | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
 0x60 | [Version](#version) | HyperCard version at stack creation. If zero, it is unknown.
 0x64 | [Version](#version) | HyperCard version at last compacting. If zero, it is unknown.
 0x68 | [Version](#version) | HyperCard version at last modification since last compacting. If zero, it is unknown.
