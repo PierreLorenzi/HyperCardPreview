@@ -145,6 +145,13 @@ class DocumentView: NSView, NSMenuDelegate {
     
     override func mouseDown(with event: NSEvent) {
         
+        /* If the user hold the control key, act like for a right click */
+        guard !event.modifierFlags.contains(NSEvent.ModifierFlags.control) else {
+            
+            self.handleRightClick(with: event)
+            return
+        }
+        
         /* Find the stack part responding to the event */
         let browserPosition = extractPosition(from: event)
         let responder = document.browser.findViewRespondingToMouseEvent(at: browserPosition)
@@ -236,7 +243,12 @@ class DocumentView: NSView, NSMenuDelegate {
         let number: Int
     }
     
-    override func rightMouseUp(with event: NSEvent) {
+    override func rightMouseDown(with event: NSEvent) {
+        
+        self.handleRightClick(with: event)
+    }
+    
+    private func handleRightClick(with event: NSEvent) {
         
         /* List the parts where the mouse clicks */
         let position = extractPosition(from: event)
@@ -249,7 +261,6 @@ class DocumentView: NSView, NSMenuDelegate {
         let menu = buildContextualMenu(forParts: partsAtClickPosition)
         menu.delegate = self
         NSMenu.popUpContextMenu(menu, with: event, for: self)
-        
     }
     
     private func listParts(atPoint point: Point) -> [PartInMenu] {
