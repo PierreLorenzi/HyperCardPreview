@@ -614,9 +614,13 @@ In fact, the ID of a block has three parts:
 
 So the position of the slot is just extracted from the ID.
 
-The lowest byte of the slot must be equal to the lowest byte of the ID.
+As for the slot, it is also divided, it has two parts: 
+- bits 0-7: the random value of the corresponding ID, so it can be checked,
+- bits 8-31: when multiplied by 0x20, the offset of the block in the file.
 
-Then the position of the block is computed by multiplying the three upper bytes of the slot by 0x20.
+So the lowest byte of the slot we've found must be equal to the lowest byte of the ID.
+
+Then the position of the block is just extracted from the slot.
 
 ### Check the checksum of the list
 
