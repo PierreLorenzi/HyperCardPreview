@@ -98,7 +98,7 @@ Offset | Type | Content
 0x1C0 | Pascal String | *Field not used* (it is a path, it is still present in the Home stacks but it is never changed and doesn't seem to have any purpose)
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
 0x400 | [Free Block Reference](#free-block-reference)[] | Table of the [Free Blocks](#free-block), there is one reference for every [Free Block](#free-block). The number of [Free Blocks](#free-block) is given earlier.
-0x600 | [String](#string) | Script of the stack
+0x600 | [Script](#script) | Script of the stack
 
 ### Master Block
 
@@ -167,7 +167,7 @@ Offset | Type | Content
 0x36 | [Part](#part)[] | List of the parts, buttons and fields together
 *variable* | [Part Content](#part-content)[] | List of the contents of the parts
 *variable* | [String](#string) | Name of the card
-*variable* | [String](#string) | Script of the card
+*variable* | [Script](#script) | Script of the card
 
 ### Background Block
 
@@ -190,7 +190,7 @@ Offset | Type | Content
 0x32 | [Part](#part)[] | List of the parts, buttons and fields together
 *variable* | [Part Content](#part-content)[] | List of the contents of the parts
 *variable* | [String](#string) | Name of the background
-*variable* | [String](#string) | Script of the background
+*variable* | [Script](#script) | Script of the background
 
 ### Bitmap Block
 
@@ -381,7 +381,7 @@ Offset | Type | Content
 0x1C | UInt16 | Line height
 0x1E | [String](#string) | Name of the part
 *variable* | UInt8 | *=0*. If there is no script, this byte is not present and the part data stops after the name.
-*variable* | [String](#string) | Script of the part
+*variable* | [Script](#script) | Script of the part
 *variable* | *0 or 1 byte* | Alignment to 16 bits
 
 ### Part Content
@@ -478,6 +478,14 @@ Offset | Type | Content
 --- | --- | ---
 0x0 | UInt16 | Offset of the run in the string
 0x2 | UInt16 | ID of the decoration applied to the characters, to be looked in the [Style Block](#style-block)
+
+### Script
+
+If the first byte of a script is non null, the script is a String and is written in HyperTalk.
+
+If the first byte of a script is null, the remaining data is an OSA script displayed and executed by an OSA component. An OSA component is a plug-in of the System that complies to the Open Scripting Architecture, and so that defines a scripting language based on Apple Events that it can compile and execute. AppleScript is an OSA component.
+
+If there is no data, the script is empty.
 
 ### Size
 
