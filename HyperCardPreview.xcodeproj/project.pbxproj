@@ -29,7 +29,6 @@
 		6C6064031F5B14CC00988560 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6064021F5B14CC00988560 /* CollectionView.swift */; };
 		6C9E6D401E75C02700BBF925 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A9B1E75BCCE00BBF925 /* HyperCardCommon.framework */; };
 		6CA554A61F602852005914E2 /* Help.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CA554A51F602852005914E2 /* Help.xib */; };
-		6CA554AB1F602FD8005914E2 /* Shortcuts.html in Resources */ = {isa = PBXBuildFile; fileRef = 6CA554AA1F602FD8005914E2 /* Shortcuts.html */; };
 		6CADCC071F474A3C00B895FB /* VisualEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CADCC061F474A3C00B895FB /* VisualEffects.swift */; };
 		6CB8B9871F4B0E4E0070116D /* CollectionViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB8B9861F4B0E4E0070116D /* CollectionViewManager.swift */; };
 		6CB8B98D1F4B16BC0070116D /* CardItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CB8B98C1F4B16BC0070116D /* CardItem.xib */; };
@@ -109,7 +108,6 @@
 		6C6064021F5B14CC00988560 /* CollectionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		6C9E6A961E75BCCD00BBF925 /* HyperCardCommon.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = HyperCardCommon.xcodeproj; path = HyperCardCommon/HyperCardCommon.xcodeproj; sourceTree = "<group>"; };
 		6CA554A51F602852005914E2 /* Help.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = Help.xib; sourceTree = "<group>"; };
-		6CA554AA1F602FD8005914E2 /* Shortcuts.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Shortcuts.html; sourceTree = "<group>"; };
 		6CADCC061F474A3C00B895FB /* VisualEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffects.swift; sourceTree = "<group>"; };
 		6CB8B9861F4B0E4E0070116D /* CollectionViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewManager.swift; sourceTree = "<group>"; };
 		6CB8B98C1F4B16BC0070116D /* CardItem.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CardItem.xib; sourceTree = "<group>"; };
@@ -195,7 +193,6 @@
 				6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */,
 				6C36D802215E25B7003AA45F /* BinaryResourceIcon.png */,
 				6C2E061E215E61830071DE26 /* EmptySound.wav */,
-				6CA554AA1F602FD8005914E2 /* Shortcuts.html */,
 				6C26B8D11E6D7520006C314B /* Info.plist */,
 			);
 			path = HyperCardPreview;
@@ -316,7 +313,6 @@
 				6C26B8CD1E6D7520006C314B /* Assets.xcassets in Resources */,
 				6C26B8CB1E6D7520006C314B /* Document.xib in Resources */,
 				6C3FF056215CEC6300BCEC81 /* ExportAccessoryView.xib in Resources */,
-				6CA554AB1F602FD8005914E2 /* Shortcuts.html in Resources */,
 				6CCC93A11E73483D0059C8D8 /* InfoPanel.xib in Resources */,
 				6CCE9263215D6C1A00A93935 /* ResourceItem.xib in Resources */,
 				6C36D803215E25B7003AA45F /* BinaryResourceIcon.png in Resources */,
