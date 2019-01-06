@@ -593,9 +593,9 @@ The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset
 
 According to the function `decryptStackBlock`, the value `h` is equal to `x XOR (hashNumber(x) >> 16)`, `x` being an unknown 32-bit integer. But, as we see, the first 16 bits of `h` are the same first 16 bits of `x`, so we already know half of `x`. For the remaining 16 bits, we just have to check them all: for every possible value of `x`, we compute `x XOR (hashNumber(x) >> 16)` and check if it is equal to `h`.
 
-There may be more than one `x` that works (there can be two), so every time a value is found, the consistency of the decrypted header must be checked. The best value to check is the User Level, it must be between `0` and `5`. 
+There may be more than one `x` that works (there can be two), so when a value is found, the checksum of the [Stack Block](#stack-block) must be checked to see if the decrypted data is the right one.
 
-### Check the check-sum of the Stack Block
+### Check the checksum of the Stack Block
 
 To check it: cast as `UInt32[384]` the whole [Stack Block](#stack-block) (up to offset 0x600, until the script). The sum of the ints must be zero.
 
