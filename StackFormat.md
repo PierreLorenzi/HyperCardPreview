@@ -77,10 +77,10 @@ Offset | Type | Content
 0x4A | UInt16 | *Alignment bytes, =0*
 0x4C | UInt16 | Protection flags, Bit 10: can't peek, Bit 11: can't abort, Bit 13: private access, Bit 14: can't delete, Bit 15: can't modify.
 0x4E | UInt16 | *Alignment bytes, =0*
-0x50 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
-0x54 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
-0x58 | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
-0x5C | SInt32 | *Field not used* (it is still read during compacting, as a block ID)
+0x50 | SInt32 | *Field not used* (but it is still read during compacting, as a block ID)
+0x54 | SInt32 | *Field not used* (but it is still read during compacting, as a block ID)
+0x58 | SInt32 | *Field not used* (but it is still read during compacting, as a block ID)
+0x5C | SInt32 | *Field not used* (but it is still read during compacting, as a block ID)
 0x60 | [Version](#version) | HyperCard version at stack creation. If zero, it is unknown.
 0x64 | [Version](#version) | HyperCard version at last compacting. If zero, it is unknown.
 0x68 | [Version](#version) | HyperCard version at last modification since last compacting. If zero, it is unknown.
@@ -94,7 +94,8 @@ Offset | Type | Content
 0x1B0 | SInt32 | ID of the [Font Block](#font-block). If zero, the block doesn't exist.
 0x1B4 | SInt32 | ID of the [Style Block](#style-block). If zero, the block doesn't exist.
 0x1B8 | Size | Size of the stack, in pixels. If zero, it is 512 pixels wide and 342 pixels high.
-0x1BC | *260 bytes* | *=0*
+0x1BC | SInt32 | *Field not used*  (but it is still read sometimes, as a block ID)
+0x1C0 | Pascal String | *Field not used* (it is a path, it is still present in the Home stacks but its purpose is not clear at all)
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
 0x400 | [Free Block Reference](#free-block-reference)[] | Table of the [Free Blocks](#free-block), there is one reference for every [Free Block](#free-block). The number of [Free Blocks](#free-block) is given earlier.
 *variable* | *bytes* | *=0*
