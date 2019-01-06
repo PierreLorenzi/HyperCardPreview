@@ -95,7 +95,7 @@ Offset | Type | Content
 0x1B4 | SInt32 | ID of the [Style Block](#style-block). If zero, the block doesn't exist.
 0x1B8 | Size | Size of the stack, in pixels. If zero, it is 512 pixels wide and 342 pixels high.
 0x1BC | SInt32 | *Field not used*  (but it is still read sometimes, as a block ID)
-0x1C0 | Pascal String | *Field not used* (it is a path, it is still present in the Home stacks but its purpose is not clear at all)
+0x1C0 | Pascal String | *Field not used* (it is a path, it is still present in the Home stacks but it is never changed and doesn't seem to have any purpose)
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
 0x400 | [Free Block Reference](#free-block-reference)[] | Table of the [Free Blocks](#free-block), there is one reference for every [Free Block](#free-block). The number of [Free Blocks](#free-block) is given earlier.
 *variable* | *bytes* | *=0*
