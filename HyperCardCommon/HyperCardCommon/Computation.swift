@@ -13,16 +13,19 @@ public class Computation<T> {
     
     private let compute: () -> T
     
+    private let modify: (T) -> ()
+    
     private var valueIsRead: Bool
     
     public var value: T {
         get { return valueProperty.value }
-        set { valueProperty.value = newValue }
+        set { self.modify(newValue) }
     }
     public var valueProperty: Property<T>
     
-    public init(_ compute: @escaping () -> T) {
+    public init(compute: @escaping () -> T, modify: @escaping (T) -> ()) {
         self.compute = compute
+        self.modify = modify
         self.valueIsRead = false
         self.valueProperty = Property<T>(lazy: compute)
         
@@ -30,6 +33,11 @@ public class Computation<T> {
         self.valueProperty.lazyCompute { () -> T in
             self.valueIsRead = true
             return compute()
+        }
+    }
+    
+    public convenience init(_ compute: @escaping () -> T) {
+        self.init(compute: compute) { (newValue: T) in
         }
     }
     
