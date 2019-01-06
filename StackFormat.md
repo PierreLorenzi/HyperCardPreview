@@ -131,7 +131,7 @@ Offset | Type | Content
 0x20 | UInt16 | Number of hash integers in a card reference in the pages, equal to (reference size - 4)/4
 0x22 | UInt16 | Search hash value count, this value is used in search hash computations
 0x24 | UInt32 | Checksum (see [the procedure to check it](#check-the-checksum-of-the-list))
-0x28 | UInt32 | Total number of cards again. Both values are probably computed differently and checked against each other.
+0x28 | UInt32 | Total number of cards again. From the assembly, it seems the value at 0x18 is simply copied here.
 0x2C | *4 bytes* | *=0*
 0x30 | [Page Reference](#page-reference)[] | The references of the pages
 
