@@ -481,9 +481,9 @@ Offset | Type | Content
 
 ### Script
 
-If the first byte of a script is non null, the script is a String and is written in HyperTalk.
+If the first byte of a script is non null, the script is a [String](#string) and is written in HyperTalk.
 
-If the first byte of a script is null, the remaining data is an OSA script displayed and executed by an OSA component. An OSA component is a plug-in of the System that complies to the Open Scripting Architecture, and so that defines a scripting language based on Apple Events that it can compile and execute. AppleScript is an OSA component.
+If the first byte of a script is null, the remaining data is an OSA script displayed and executed by an OSA component, not by HyperCard. An OSA component is a plug-in of the System that complies to the Open Scripting Architecture, and so that defines a scripting language based on Apple Events that it can compile and execute. AppleScript is an OSA component. 
 
 If there is no data, the script is empty.
 
