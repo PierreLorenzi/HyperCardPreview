@@ -62,7 +62,7 @@ Offset | Type | Content
 0x10 | UInt32 | Version of the file format, `1` to `7`: pre-release HyperCard 1.x, `8`: HyperCard 1.x, `9`: pre-release HyperCard 2.x, `10`: HyperCard 2.x
 0x14 | UInt32 | Total size of the data fork
 0x18 | UInt32 | Offset of the [Master Block](#master-block), counted from the start of the file
-0x1C | UInt32 | Number of full tables in the [Master Block](#master-block)
+0x1C | UInt32 | Index of the first table with available slots in the [Master Block](#master-block)
 0x20 | UInt32 | Number of tables in the [Master Block](#master-block) - 1
 0x24 | UInt32 | Number of backgrounds in the stack
 0x28 | SInt32 | ID of the first background
@@ -108,7 +108,7 @@ It consists of successive tables which are 0x200 bytes long. The first table sta
 
 The tables consist of slots which are 4 bytes long. Every slot corresponds to a block in the file: the slot contains the position of the block, and on the other hand, the position of the slot can be computed with the ID of the block. So when a program has a block ID and is looking for the position of the block in the file, it just has to compute the position of the corresponding slot, find it and read the position inside. More information in [the procedure to find a block](#find-a-block-in-the-file).
 
-The number of tables is written in the [Stack Block](#stack-block). There is also the number of full tables, to know the first table with available slots.
+The number of tables is written in the [Stack Block](#stack-block).
 
 Offset | Type | Content
 --- | --- | ---
