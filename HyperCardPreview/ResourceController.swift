@@ -426,46 +426,14 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
                 /* Save every resource */
                 for resource in selectedResources {
                     
-                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)"
+                    let fileExtension = self.getFileExtensionForResource(resource)
+                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)\(fileExtension)"
+                    let resourceUrl = URL(fileURLWithPath: resourceFileName, relativeTo: url)
+                    
                     
                     do {
                         
-                        switch resource.readContent() {
-                            
-                        case .generic:
-                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName)", relativeTo: url)
-                            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
-                            let data = Data(slice)
-                            try data.write(to: resourceUrl)
-                            
-                        case .picture:
-                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).pict", relativeTo: url)
-                            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
-                            let data = Data(slice)
-                            try data.write(to: resourceUrl)
-                            
-                        case .sound:
-                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).aiff", relativeTo: url)
-                            if let data = ResourceElement.convertSndToAIFF(data: resource.data) {
-                                try data.write(to: resourceUrl)
-                            }
-                            else {
-                                throw ExportError.error
-                            }
-                            
-                        case .icon:
-                            let resourceUrl = URL(fileURLWithPath: "\(resourceFileName).tif", relativeTo: url)
-                            let icon = Icon(loadFromData: resource.data)
-                            let image = icon.image
-                            let cgimage = RgbConverter.convertImage(image)
-                            let nsimagerep = NSBitmapImageRep(cgImage: cgimage)
-                            if let data = nsimagerep.tiffRepresentation {
-                                try data.write(to: resourceUrl)
-                            }
-                            else {
-                                throw ExportError.error
-                            }
-                        }
+                        try self.exportResource(resource, to: resourceUrl)
                         
                     }
                     catch _ {
@@ -487,6 +455,60 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
                 }
             }
             
+        }
+    }
+    
+    private func getFileExtensionForResource(_ resource: ResourceElement) -> String {
+        
+        switch resource.readContent() {
+            
+        case .generic:
+            return ""
+            
+        case .icon:
+            return ".tif"
+            
+        case .picture:
+            return ".pict"
+            
+        case .sound:
+            return ".aiff"
+        }
+    }
+    
+    private func exportResource(_ resource: ResourceElement, to resourceUrl: URL) throws {
+        
+        switch resource.readContent() {
+            
+        case .generic:
+            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
+            let data = Data(slice)
+            try data.write(to: resourceUrl)
+            
+        case .picture:
+            let slice = resource.data.sharedData[resource.data.offset ..< resource.data.offset + resource.data.length]
+            let data = Data(slice)
+            try data.write(to: resourceUrl)
+            
+        case .sound:
+            if let data = ResourceElement.convertSndToAIFF(data: resource.data) {
+                try data.write(to: resourceUrl)
+            }
+            else {
+                throw ExportError.error
+            }
+            
+        case .icon:
+            let icon = Icon(loadFromData: resource.data)
+            let image = icon.image
+            let cgimage = RgbConverter.convertImage(image)
+            let nsimagerep = NSBitmapImageRep(cgImage: cgimage)
+            if let data = nsimagerep.tiffRepresentation {
+                try data.write(to: resourceUrl)
+            }
+            else {
+                throw ExportError.error
+            }
         }
     }
     
