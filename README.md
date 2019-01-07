@@ -1,6 +1,6 @@
 **[Screenshot](http://pierrelorenzi.fr/hypercard/screenshot.png)**
 
-**[Download v1.3](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.3.0/HyperCardPreview.app.zip)** (September 29, 2018)
+**[Download v1.3.1](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.3.1/HyperCardPreview.app.zip)** (January 7, 2019)
 
 Mac OS 10.12 minimum
 
@@ -75,36 +75,13 @@ That means that old APIs had to be partially re-coded: resource fork reading, re
 
 It seems that I can't have a developer ID without paying a fee to Apple. And I'm not ready to do it just for that little soft.
 
-## Changes since version 1.0
+## Changes in v1.3.1
 
-**Changes in v1.3**
+The window of the resources has been improved.
 
-The whole structure of a stack can be exported to a JSON file.
+A bug was corrected where the help didn't show up.
 
-Images of cards and backgrounds can be exported.
-
-The resources of a stack can be inspected and exported (icons, pictures, sounds and the rest).
-
-**Changes in v1.2**
-
-The application is now signed.
-
-Bug fixes in the card list.
-
-**Changes in v1.1**
-
-Now the scroll fields can be scrolled, and the pop-up buttons can be popped up.
-
-The tools to explore the stacks have been added, it is far more convenient.
-
-Glitches corrected in stacks:
-- vector fonts are now well displayed,
-- AddColor is (nearly) handled,
-- stacks with private access can be opened
-
-…plus a lot of other little bug fixes and optimizations.
-
-Unfortunately, the QuickLook plug-in had to be removed because it is not handled in Swift. A Swift plug-in may work but just if it is the only one plug-in in Swift in the OS, elsewhere it crashes the QuickLook platform, so it is risky.
+Minor fixes in the UI.
 
 ## The future of the app
 
