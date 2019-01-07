@@ -388,9 +388,79 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     @objc @IBAction func exportSelectedResources(_ sender: AnyObject?) {
         
+        let selectedIndexes = self.collectionView.selectionIndexPaths
+        let selectionCount = selectedIndexes.count
+        
+        if selectionCount == 1 {
+            
+            self.exportSingleResource(at: selectedIndexes.first!)
+        }
+        else if selectionCount > 1 {
+            
+            self.exportMultipleResources(at: selectedIndexes)
+        }
+    }
+    
+    private func exportSingleResource(at index: IndexPath) {
+        
+        let resource = self.listedResources[index.item]
+        
+        /* Make a list of the single possible file extension */
+        let allowedFileExtensions: [String]
+        if let fileExtension = self.getFileExtensionForResource(resource) {
+            allowedFileExtensions = [fileExtension]
+        }
+        else {
+            allowedFileExtensions = []
+        }
+        
+        
+        /* Set up the save panel */
+        let savePanel = NSSavePanel()
+        savePanel.title = "Export Resource"
+        savePanel.message = "Choose a file where to export the resource:"
+        savePanel.allowedFileTypes = allowedFileExtensions
+        savePanel.allowsOtherFileTypes = false
+        
+        /* Open panel */
+        savePanel.begin { (response: NSApplication.ModalResponse) in
+            
+            /* Check the user clicked "OK" */
+            guard response == NSApplication.ModalResponse.OK else {
+                return
+            }
+            
+            /* Get the requested url */
+            guard let url = savePanel.url else {
+                return
+            }
+            
+            ResourceController.queue.async {
+                
+                do {
+                    
+                    try self.exportResource(resource, to: url)
+                    
+                }
+                catch _ {
+                    DispatchQueue.main.async {
+                        let alert = NSAlert()
+                        alert.alertStyle = .warning
+                        alert.messageText = "Can't export the resource"
+                        alert.informativeText = "The selected resource couldn't be exported"
+                        alert.runModal()
+                    }
+                }
+            }
+            
+        }
+    }
+    
+    private func exportMultipleResources(at indexes: Set<IndexPath>) {
+        
         /* Set up the open panel */
         let openPanel = NSOpenPanel()
-        openPanel.title = "Export Resources"
+        openPanel.title = "Export Multiple Resources"
         openPanel.message = "Choose a directory where to export the resources:"
         openPanel.allowsMultipleSelection = false
         openPanel.canChooseDirectories = true
@@ -410,7 +480,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             }
             
             /* Get the selected elements */
-            let selectedResources = self.collectionView.selectionIndexPaths.map({ (index: IndexPath) -> ResourceElement in
+            let selectedResources = indexes.map({ (index: IndexPath) -> ResourceElement in
                 
                 return self.listedResources[index.item]
             })
@@ -427,7 +497,8 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
                 for resource in selectedResources {
                     
                     let fileExtension = self.getFileExtensionForResource(resource)
-                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)\(fileExtension)"
+                    let fileSuffix = (fileExtension != nil) ? ".\(fileExtension!)" : ""
+                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)\(fileSuffix)"
                     let resourceUrl = URL(fileURLWithPath: resourceFileName, relativeTo: url)
                     
                     
@@ -458,21 +529,21 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         }
     }
     
-    private func getFileExtensionForResource(_ resource: ResourceElement) -> String {
+    private func getFileExtensionForResource(_ resource: ResourceElement) -> String? {
         
         switch resource.readContent() {
             
         case .generic:
-            return ""
+            return nil
             
         case .icon:
-            return ".tif"
+            return "tif"
             
         case .picture:
-            return ".pict"
+            return "pict"
             
         case .sound:
-            return ".aiff"
+            return "aiff"
         }
     }
     
