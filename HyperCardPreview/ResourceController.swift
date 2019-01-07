@@ -213,6 +213,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         self.refreshFooterLabel()
         
         DispatchQueue.main.async {
+            self.collectionView.reloadData()
             self.collectionView.selectionIndexPaths = [IndexPath(item: 0, section: 0)]
         }
     }
@@ -351,7 +352,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     private func refreshFooterLabel() {
         
-        self.footerLabel.stringValue = "\(self.listedResources.count) resources"
+        self.footerLabel.stringValue = "\(self.listedResources.count) resource\(self.listedResources.count > 1 ? "s" : "")"
     }
     
     private func doesStringContainString(_ string: String, substring: String) -> Bool {

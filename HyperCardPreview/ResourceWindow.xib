@@ -10,7 +10,7 @@
             <connections>
                 <outlet property="collectionView" destination="G8E-U0-Klr" id="eYp-rS-2Cr"/>
                 <outlet property="footerLabel" destination="kua-Hs-myv" id="fqQ-qK-tfo"/>
-                <outlet property="searchField" destination="Dit-3M-CAS" id="e95-1x-kfb"/>
+                <outlet property="searchField" destination="Eru-ib-JWG" id="Eug-6a-QFf"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="kfB-EF-S4Y"/>
             </connections>
         </customObject>
@@ -26,14 +26,14 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView wantsLayer="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pJ5-5g-UpU">
-                        <rect key="frame" x="-1" y="34" width="536" height="268"/>
+                        <rect key="frame" x="-1" y="20" width="536" height="282"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" ambiguous="YES" id="k6h-U4-ags">
-                            <rect key="frame" x="1" y="1" width="534" height="266"/>
+                            <rect key="frame" x="1" y="1" width="534" height="280"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <collectionView ambiguous="YES" selectable="YES" allowsMultipleSelection="YES" id="G8E-U0-Klr" customClass="CollectionView" customModule="HyperCardPreview" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="534" height="266"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="534" height="280"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="6cZ-YF-8zZ">
                                         <size key="itemSize" width="90" height="118"/>
@@ -51,60 +51,86 @@
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                         <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" doubleValue="1" horizontal="NO" id="5zH-2D-AaE">
-                            <rect key="frame" x="465" y="1" width="16" height="235"/>
+                            <rect key="frame" x="519" y="1" width="16" height="280"/>
                             <autoresizingMask key="autoresizingMask"/>
                         </scroller>
                     </scrollView>
-                    <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZgJ-kH-KvO">
-                        <rect key="frame" x="4" y="3" width="59" height="25"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxX" autoenablesItems="NO" selectedItem="UB1-Rl-1Z4" id="Bqy-rL-qf5">
-                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
-                            <font key="font" metaFont="menu"/>
-                            <menu key="menu" autoenablesItems="NO" id="VKB-Tx-pWo">
-                                <items>
-                                    <menuItem state="on" image="NSActionTemplate" hidden="YES" id="UB1-Rl-1Z4"/>
-                                    <menuItem title="Show contents" id="11X-wu-EUv" userLabel="Open resources">
-                                        <connections>
-                                            <action selector="openSelectedResources" target="-2" id="oAK-nE-lYH"/>
-                                        </connections>
-                                    </menuItem>
-                                    <menuItem title="Export…" id="c7c-Nb-Keg">
-                                        <connections>
-                                            <action selector="exportSelectedResources:" target="-2" id="qdn-A1-MhX"/>
-                                        </connections>
-                                    </menuItem>
-                                </items>
-                            </menu>
-                        </popUpButtonCell>
-                    </popUpButton>
-                    <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dit-3M-CAS">
-                        <rect key="frame" x="356" y="6" width="158" height="22"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                        <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="9cn-Vi-Sum">
-                            <font key="font" metaFont="system"/>
-                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
-                        </searchFieldCell>
-                        <connections>
-                            <action selector="search:" target="-2" id="obS-7o-nts"/>
-                        </connections>
-                    </searchField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kua-Hs-myv">
-                        <rect key="frame" x="72" y="8" width="144" height="17"/>
+                        <rect key="frame" x="18" y="3" width="144" height="14"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="eGc-6s-nrN">
-                            <font key="font" metaFont="system"/>
+                            <font key="font" metaFont="smallSystem"/>
                             <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="166" y="162.5"/>
+            <toolbar key="toolbar" implicitIdentifier="7F135949-1C38-444C-B12D-250A40D41948" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="Ggo-3Q-yV3">
+                <allowedToolbarItems>
+                    <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="oIT-Vh-iLt"/>
+                    <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="2dv-wJ-GYt"/>
+                    <toolbarItem implicitItemIdentifier="1D25B215-F66B-46E5-89A4-29114C2F53A8" label="Open" paletteLabel="Open" image="NSEnterFullScreenTemplate" id="hZL-iV-ZxF">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="44" height="25"/>
+                        <size key="maxSize" width="44" height="25"/>
+                        <button key="view" verticalHuggingPriority="750" id="xFL-U8-o0A">
+                            <rect key="frame" x="0.0" y="14" width="44" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSEnterFullScreenTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="h0f-Gp-tq0">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="openSelectedResources:" target="-2" id="650-GL-OXD"/>
+                            </connections>
+                        </button>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="3409727D-B44E-4A87-A724-DCFDA376D602" label="Export" paletteLabel="Export" image="NSShareTemplate" id="8YJ-G1-YCl">
+                        <nil key="toolTip"/>
+                        <size key="minSize" width="44" height="25"/>
+                        <size key="maxSize" width="44" height="25"/>
+                        <button key="view" verticalHuggingPriority="750" id="hno-ig-PPJ">
+                            <rect key="frame" x="0.0" y="14" width="44" height="25"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <buttonCell key="cell" type="roundTextured" bezelStyle="texturedRounded" image="NSShareTemplate" imagePosition="only" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Ib0-5C-OOl">
+                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                <font key="font" metaFont="system"/>
+                            </buttonCell>
+                            <connections>
+                                <action selector="exportSelectedResources:" target="-2" id="0fU-jB-qNr"/>
+                            </connections>
+                        </button>
+                    </toolbarItem>
+                    <toolbarItem implicitItemIdentifier="24E4B9DF-5891-4AB1-A223-74A9BA121180" label="Filter" paletteLabel="Filter Field" sizingBehavior="auto" autovalidates="NO" id="9eS-5P-WTc">
+                        <nil key="toolTip"/>
+                        <searchField key="view" wantsLayer="YES" verticalHuggingPriority="750" textCompletion="NO" id="Eru-ib-JWG">
+                            <rect key="frame" x="0.0" y="14" width="96" height="22"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                            <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="UKQ-nE-81g">
+                                <font key="font" metaFont="system"/>
+                                <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                            </searchFieldCell>
+                            <connections>
+                                <action selector="search:" target="-2" id="IDg-5E-cOQ"/>
+                            </connections>
+                        </searchField>
+                    </toolbarItem>
+                </allowedToolbarItems>
+                <defaultToolbarItems>
+                    <toolbarItem reference="2dv-wJ-GYt"/>
+                    <toolbarItem reference="hZL-iV-ZxF"/>
+                    <toolbarItem reference="8YJ-G1-YCl"/>
+                    <toolbarItem reference="2dv-wJ-GYt"/>
+                    <toolbarItem reference="9eS-5P-WTc"/>
+                </defaultToolbarItems>
+            </toolbar>
+            <point key="canvasLocation" x="165" y="229.5"/>
         </window>
     </objects>
     <resources>
-        <image name="NSActionTemplate" width="14" height="14"/>
+        <image name="NSEnterFullScreenTemplate" width="15" height="15"/>
+        <image name="NSShareTemplate" width="11" height="16"/>
     </resources>
 </document>
