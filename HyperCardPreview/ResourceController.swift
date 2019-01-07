@@ -304,30 +304,6 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         }
     }
     
-    func collectionView(_ collectionView: NSCollectionView, canDragItemsAt indexPaths: Set<IndexPath>, with event: NSEvent) -> Bool {
-        
-        return true
-    }
-    
-    func collectionView(_ collectionView: NSCollectionView, pasteboardWriterForItemAt indexPath: IndexPath) -> NSPasteboardWriting? {
-        
-        let element = self.listedResources[indexPath.item]
-        switch element.readContent() {
-            
-        case .generic:
-            return nil
-            
-        case .icon(let image):
-            return image
-            
-        case .picture(let image):
-            return image
-            
-        case .sound(let possibleSound):
-            return possibleSound ?? NSSound(named: "EmptySound")!
-        }
-    }
-    
     func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
         
         self.refreshSizeLabel()
