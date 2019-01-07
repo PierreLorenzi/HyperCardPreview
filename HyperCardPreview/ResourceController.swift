@@ -362,6 +362,8 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         })
         
         self.refreshFooterLabel()
+        self.refreshSizeLabel()
+        self.refreshToolbar()
         self.collectionView.reloadData()
     }
     
