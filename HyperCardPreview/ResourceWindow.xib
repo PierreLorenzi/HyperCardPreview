@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,21 +19,21 @@
         <window title="Resources" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="QvC-M9-y7g">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
-            <rect key="contentRect" x="196" y="240" width="480" height="270"/>
+            <rect key="contentRect" x="196" y="240" width="534" height="301"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="900"/>
             <view key="contentView" wantsLayer="YES" id="EiT-Mj-1SZ">
-                <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                <rect key="frame" x="0.0" y="0.0" width="534" height="301"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <scrollView wantsLayer="YES" fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" hasHorizontalScroller="NO" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pJ5-5g-UpU">
-                        <rect key="frame" x="-1" y="34" width="482" height="237"/>
+                        <rect key="frame" x="-1" y="34" width="536" height="268"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" ambiguous="YES" id="k6h-U4-ags">
-                            <rect key="frame" x="1" y="1" width="480" height="235"/>
+                            <rect key="frame" x="1" y="1" width="534" height="266"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <collectionView ambiguous="YES" selectable="YES" allowsMultipleSelection="YES" id="G8E-U0-Klr" customClass="CollectionView" customModule="HyperCardPreview" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="480" height="235"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="534" height="266"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES"/>
                                     <collectionViewFlowLayout key="collectionViewLayout" minimumInteritemSpacing="10" minimumLineSpacing="10" id="6cZ-YF-8zZ">
                                         <size key="itemSize" width="90" height="118"/>
@@ -56,9 +56,9 @@
                         </scroller>
                     </scrollView>
                     <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZgJ-kH-KvO">
-                        <rect key="frame" x="4" y="3" width="40" height="25"/>
+                        <rect key="frame" x="4" y="3" width="59" height="25"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" pullsDown="YES" arrowPosition="noArrow" autoenablesItems="NO" selectedItem="UB1-Rl-1Z4" id="Bqy-rL-qf5">
+                        <popUpButtonCell key="cell" type="push" bezelStyle="rounded" imagePosition="overlaps" alignment="center" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" pullsDown="YES" arrowPosition="arrowAtCenter" preferredEdge="maxX" autoenablesItems="NO" selectedItem="UB1-Rl-1Z4" id="Bqy-rL-qf5">
                             <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                             <font key="font" metaFont="menu"/>
                             <menu key="menu" autoenablesItems="NO" id="VKB-Tx-pWo">
@@ -79,7 +79,7 @@
                         </popUpButtonCell>
                     </popUpButton>
                     <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dit-3M-CAS">
-                        <rect key="frame" x="302" y="6" width="158" height="22"/>
+                        <rect key="frame" x="356" y="6" width="158" height="22"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" id="9cn-Vi-Sum">
                             <font key="font" metaFont="system"/>
@@ -91,7 +91,7 @@
                         </connections>
                     </searchField>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kua-Hs-myv">
-                        <rect key="frame" x="53" y="9" width="144" height="17"/>
+                        <rect key="frame" x="72" y="8" width="144" height="17"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" title="Label" id="eGc-6s-nrN">
                             <font key="font" metaFont="system"/>
@@ -101,6 +101,7 @@
                     </textField>
                 </subviews>
             </view>
+            <point key="canvasLocation" x="166" y="162.5"/>
         </window>
     </objects>
     <resources>
