@@ -196,9 +196,11 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             [unowned self] in
             self.openSelectedResources(nil)
         }
-        self.collectionView.setDraggingSourceOperationMask(NSDragOperation.copy, forLocal: false)
         
         guard let resourceFork = possibleResourceFork else {
+            self.refreshToolbar()
+            self.refreshSizeLabel()
+            self.refreshFooterLabel()
             return
         }
         
@@ -219,6 +221,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             self.collectionView.reloadData()
             self.collectionView.selectionIndexPaths = [IndexPath(item: 0, section: 0)]
             self.refreshSizeLabel()
+            self.refreshToolbar()
         }
     }
     
@@ -264,6 +267,10 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     }
     
     @objc @IBAction func openSelectedResources(_ sender: AnyObject?) {
+        
+        guard !self.listedResources.isEmpty else {
+            return
+        }
         
         for indexPath in self.collectionView.selectionIndexPaths {
             
@@ -318,12 +325,18 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     
     private func refreshToolbar() {
         
-        let areThereElements = !self.collectionView.selectionIndexPaths.isEmpty
+        let areThereElements = !self.listedResources.isEmpty && !self.collectionView.selectionIndexPaths.isEmpty
         self.openButton.isEnabled = areThereElements
         self.exportButton.isEnabled = areThereElements
     }
     
     private func refreshSizeLabel() {
+        
+        /* If there are no resource, stop now because there may be selected rows in an empty table */
+        guard !self.listedResources.isEmpty else {
+            self.sizeLabel.stringValue = ""
+            return
+        }
         
         let selectionIndexes = self.collectionView.selectionIndexPaths
         
@@ -405,6 +418,11 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     }
     
     @objc @IBAction func exportSelectedResources(_ sender: AnyObject?) {
+        
+        /* Security check */
+        guard !self.listedResources.isEmpty else {
+            return
+        }
         
         let selectedIndexes = self.collectionView.selectionIndexPaths
         let selectionCount = selectedIndexes.count
