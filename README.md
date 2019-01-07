@@ -1,6 +1,6 @@
 **[Screenshot](http://pierrelorenzi.fr/hypercard/screenshot.png)**
 
-**[Download v1.3.1](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.3.1/HyperCardPreview.app.zip)** (January 7, 2019)
+**[Download v1.3.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.3.2/HyperCardPreview.app.zip)** (January 7, 2019)
 
 Mac OS 10.12 minimum
 
@@ -75,7 +75,13 @@ That means that old APIs had to be partially re-coded: resource fork reading, re
 
 It seems that I can't have a developer ID without paying a fee to Apple. And I'm not ready to do it just for that little soft.
 
-## Changes in v1.3.1
+## Changes in last version
+
+**Changes in v1.3.2**
+
+Bugs were corrected in the window of the resources.
+
+**Changes in v1.3.1**
 
 The window of the resources has been improved.
 
