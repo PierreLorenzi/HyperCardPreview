@@ -19,6 +19,9 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
     @IBOutlet weak var collectionView: CollectionView!
     @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var footerLabel: NSTextField!
+    @IBOutlet weak var sizeLabel: NSTextField!
+    @IBOutlet weak var openButton: NSButton!
+    @IBOutlet weak var exportButton: NSButton!
     
     private static let resourceItemIdentifier = NSUserInterfaceItemIdentifier("ResourceItem")
     
@@ -215,6 +218,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         DispatchQueue.main.async {
             self.collectionView.reloadData()
             self.collectionView.selectionIndexPaths = [IndexPath(item: 0, section: 0)]
+            self.refreshSizeLabel()
         }
     }
     
@@ -322,6 +326,41 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
         case .sound(let possibleSound):
             return possibleSound ?? NSSound(named: "EmptySound")!
         }
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        
+        self.refreshSizeLabel()
+        self.refreshToolbar()
+    }
+    
+    func collectionView(_ collectionView: NSCollectionView, didDeselectItemsAt indexPaths: Set<IndexPath>) {
+        
+        self.refreshSizeLabel()
+        self.refreshToolbar()
+    }
+    
+    private func refreshToolbar() {
+        
+        let areThereElements = !self.collectionView.selectionIndexPaths.isEmpty
+        self.openButton.isEnabled = areThereElements
+        self.exportButton.isEnabled = areThereElements
+    }
+    
+    private func refreshSizeLabel() {
+        
+        let selectionIndexes = self.collectionView.selectionIndexPaths
+        
+        guard !selectionIndexes.isEmpty else {
+            
+            self.sizeLabel.stringValue = ""
+            return
+        }
+        
+        let totalSize = selectionIndexes.lazy.map { (index: IndexPath) -> Int in
+            return self.listedResources[index.item].data.length
+            }.reduce(0, +)
+        self.sizeLabel.stringValue = ByteCountFormatter.string(fromByteCount: Int64(totalSize), countStyle: ByteCountFormatter.CountStyle.binary)
     }
     
     @objc @IBAction func search(_ sender: AnyObject) {

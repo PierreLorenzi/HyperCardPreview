@@ -9,8 +9,11 @@
         <customObject id="-2" userLabel="File's Owner" customClass="ResourceController" customModule="HyperCardPreview" customModuleProvider="target">
             <connections>
                 <outlet property="collectionView" destination="G8E-U0-Klr" id="eYp-rS-2Cr"/>
+                <outlet property="exportButton" destination="hno-ig-PPJ" id="Nyu-Mi-6Eu"/>
                 <outlet property="footerLabel" destination="kua-Hs-myv" id="fqQ-qK-tfo"/>
+                <outlet property="openButton" destination="xFL-U8-o0A" id="z2o-1f-8g3"/>
                 <outlet property="searchField" destination="Eru-ib-JWG" id="Eug-6a-QFf"/>
+                <outlet property="sizeLabel" destination="aJh-sh-7Aw" id="idX-Ve-Qri"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="kfB-EF-S4Y"/>
             </connections>
         </customObject>
@@ -64,16 +67,34 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                     </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aJh-sh-7Aw">
+                        <rect key="frame" x="461" y="3" width="55" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="left" title="Label" id="WWE-kD-abj">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fFa-ZA-ila">
+                        <rect key="frame" x="307" y="3" width="150" height="14"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                        <textFieldCell key="cell" lineBreakMode="clipping" alignment="right" title="Selected Resource Size:" id="fda-GZ-xdP">
+                            <font key="font" metaFont="smallSystem"/>
+                            <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
                 </subviews>
             </view>
             <toolbar key="toolbar" implicitIdentifier="7F135949-1C38-444C-B12D-250A40D41948" autosavesConfiguration="NO" allowsUserCustomization="NO" displayMode="iconAndLabel" sizeMode="regular" id="Ggo-3Q-yV3">
                 <allowedToolbarItems>
                     <toolbarItem implicitItemIdentifier="NSToolbarSpaceItem" id="oIT-Vh-iLt"/>
                     <toolbarItem implicitItemIdentifier="NSToolbarFlexibleSpaceItem" id="2dv-wJ-GYt"/>
-                    <toolbarItem implicitItemIdentifier="1D25B215-F66B-46E5-89A4-29114C2F53A8" label="Open" paletteLabel="Open" image="NSEnterFullScreenTemplate" id="hZL-iV-ZxF">
+                    <toolbarItem implicitItemIdentifier="1D25B215-F66B-46E5-89A4-29114C2F53A8" label="Open" paletteLabel="Open" image="NSEnterFullScreenTemplate" autovalidates="NO" id="hZL-iV-ZxF">
                         <nil key="toolTip"/>
                         <size key="minSize" width="44" height="25"/>
-                        <size key="maxSize" width="44" height="25"/>
+                        <size key="maxSize" width="45" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="xFL-U8-o0A">
                             <rect key="frame" x="0.0" y="14" width="44" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
@@ -86,10 +107,10 @@
                             </connections>
                         </button>
                     </toolbarItem>
-                    <toolbarItem implicitItemIdentifier="3409727D-B44E-4A87-A724-DCFDA376D602" label="Export" paletteLabel="Export" image="NSShareTemplate" id="8YJ-G1-YCl">
+                    <toolbarItem implicitItemIdentifier="3409727D-B44E-4A87-A724-DCFDA376D602" label="Export" paletteLabel="Export" image="NSShareTemplate" autovalidates="NO" id="8YJ-G1-YCl">
                         <nil key="toolTip"/>
                         <size key="minSize" width="44" height="25"/>
-                        <size key="maxSize" width="44" height="25"/>
+                        <size key="maxSize" width="45" height="25"/>
                         <button key="view" verticalHuggingPriority="750" id="hno-ig-PPJ">
                             <rect key="frame" x="0.0" y="14" width="44" height="25"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
