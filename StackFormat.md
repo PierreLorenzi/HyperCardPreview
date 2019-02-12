@@ -93,7 +93,7 @@ Offset | Type | Content
 0x8C | *292 bytes* | *=0*
 0x1B0 | SInt32 | ID of the [Font Block](#font-block). If zero, the block doesn't exist.
 0x1B4 | SInt32 | ID of the [Style Block](#style-block). If zero, the block doesn't exist.
-0x1B8 | Size | Size of the stack, in pixels. If zero, it is 512 pixels wide and 342 pixels high.
+0x1B8 | [Size](#size) | Size of the stack, in pixels. If zero, it is 512 pixels wide and 342 pixels high.
 0x1BC | SInt32 | *Field not used*  (but it is still read sometimes, as a block ID)
 0x1C0 | [Pascal String](#pascal-string) | *Field not used* (it is a path, it has still a value in Home stacks since HyperCard 1.0 but it is never changed and doesn't seem to have any purpose)
 0x2C0 | [Pattern Image](#pattern-image)[40] | The 40 patterns of the stack
@@ -589,7 +589,7 @@ function hashPassword(password: String):
 
 It is possible to decrypt an encrypted [Stack Block](#stack-block) without the password. We describe roughly how to do it.
 
-The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset 0x18, is a big weakness because it contains the offset of the [Master Block](#master-block), which is always equal to the size of the [Stack Block](#stack-block), and that one we know because it is written in the header. So by XORing the size of the [Stack Block](#stack-block) with that integer, we get `h`, the value used to XOR the integer.
+The first encrypted 32-bit integer of the [Stack Block](#stack-block), at offset 0x18, is a big weakness because it contains the offset of the [Master Block](#master-block), which is always equal to the size of the [Stack Block](#stack-block), and we know that one because it is written in the header. So by XORing the size of the [Stack Block](#stack-block) with that integer, we get `h`, the value used to XOR the integer.
 
 According to the function `decryptStackBlock`, the value `h` is equal to `x XOR (hashNumber(x) >> 16)`, `x` being an unknown 32-bit integer. But, as we see, the first 16 bits of `h` are the same first 16 bits of `x`, so we already know half of `x`. For the remaining 16 bits, we just have to check them all: for every possible value of `x`, we compute `x XOR (hashNumber(x) >> 16)` and check if it is equal to `h`.
 
@@ -745,7 +745,7 @@ Part contents are always plain strings. They are not aligned to 16-bits, they ca
 Offset | Type | Content
 --- | --- | ---
 0x0 | SInt16 | ID of the part that has the content. If the value is < 0, it is a card part with ID (-partID). Otherwise it is a background part.
-0x2 | String | String content
+0x2 | [String](#string) | String content
 
 ### Bitmap Block
 
