@@ -339,17 +339,6 @@ public struct TextStyle: Equatable, CustomStringConvertible, OptionSet, Hashable
 
 public let PlainTextStyle = TextStyle()
 
-public func ==(s1: TextStyle, s2: TextStyle) -> Bool {
-    return s1.bold == s2.bold &&
-        s1.italic == s2.italic &&
-        s1.underline == s2.underline &&
-        s1.shadow == s2.shadow &&
-        s1.outline == s2.outline &&
-        s1.extend == s2.extend &&
-        s1.condense == s2.condense &&
-        s1.group == s2.group
-}
-
 public extension TextStyle {
     
     /// Init a text style from a 8 bit flag
