@@ -159,17 +159,10 @@ private struct FontDescriptor: Equatable, Hashable {
         self.style = style
     }
     
-    public var hashValue: Int {
-        var hash = identifier &* 31 ^ size
-        hash = style.bold ? hash << 3 ^ 80 : hash
-        hash = style.italic ? hash << 3 ^ 70 : hash
-        hash = style.underline ? hash << 3 ^ 60 : hash
-        hash = style.shadow ? hash << 3 ^ 50 : hash
-        hash = style.outline ? hash << 3 ^ 40 : hash
-        hash = style.condense ? hash << 3 ^ 30 : hash
-        hash = style.extend ? hash << 3 ^ 20 : hash
-        hash = style.group ? hash << 3 ^ 10 : hash
-        return hash
+    public func hash(into hasher: inout Hasher) {
+        identifier.hash(into: &hasher)
+        size.hash(into: &hasher)
+        style.hash(into: &hasher)
     }
     
     public static func ==(f1: FontDescriptor, f2: FontDescriptor) -> Bool {
