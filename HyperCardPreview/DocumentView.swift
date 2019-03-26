@@ -91,7 +91,7 @@ class DocumentView: NSView, NSMenuDelegate {
                 return
             }
             
-            let character = Int(characters.utf16[String.UTF16View.Index(encodedOffset: 0)])
+            let character = Int(characters.utf16[characters.utf16.startIndex])
             
             switch character {
             case NSEvent.SpecialKey.rightArrow.rawValue:

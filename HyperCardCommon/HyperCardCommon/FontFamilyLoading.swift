@@ -10,7 +10,7 @@
 public extension FontFamily {
     
     /// Loads a font family from the data of a FOND resource
-    public init(loadFromData data: DataRange, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
+    init(loadFromData data: DataRange, bitmapFonts: [BitmapFontResource], vectorFonts: [VectorFontResource]) {
         
         let reader = FontFamilyResourceReader(data: data)
         

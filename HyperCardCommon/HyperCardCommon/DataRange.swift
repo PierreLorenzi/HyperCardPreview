@@ -64,14 +64,14 @@ public struct DataRange {
 public extension DataRange {
     
     /// Reads a bit inside a big-endian 2-byte integer in the pointed data
-    public func readFlag(at offset: Int, bitOffset: Int) -> Bool {
+    func readFlag(at offset: Int, bitOffset: Int) -> Bool {
         
         let flags = readUInt16(at: offset)
         return (flags & (1 << bitOffset)) != 0
     }
     
     /// Reads a 2D rectangle in the pointed data
-    public func readRectangle(at offset: Int) -> Rectangle {
+    func readRectangle(at offset: Int) -> Rectangle {
         /* Sometimes a flag is added to top bit, so remove it */
         let top = self.readCoordinate(at: offset)
         let left = self.readCoordinate(at: offset + 2)
@@ -100,12 +100,12 @@ public extension DataRange {
     }
     
     /// Reads a null-terminated Mac OS Roman string in the pointed data
-    public func readString(at offset: Int) -> HString {
+    func readString(at offset: Int) -> HString {
         return HString(copyNullTerminatedFrom: sharedData, at: self.offset + offset)
     }
     
     /// Reads a Mac OS Roman string in the pointed data
-    public func readString(at offset: Int, length: Int) -> HString {
+    func readString(at offset: Int, length: Int) -> HString {
         return HString(copyFrom: sharedData, at: self.offset + offset, length: length)
     }
     
@@ -114,12 +114,12 @@ public extension DataRange {
 public extension Data {
     
     /// Reads a unsigned byte
-    public func readUInt8(at offset: Int) -> Int {
+    func readUInt8(at offset: Int) -> Int {
         return Int(self[offset])
     }
     
     /// Reads a signed byte
-    public func readSInt8(at offset: Int) -> Int {
+    func readSInt8(at offset: Int) -> Int {
         let value = readUInt8(at: offset)
         if value > Int(Int8.max) {
             return value - Int(UInt8.max) - 1
@@ -128,12 +128,12 @@ public extension Data {
     }
     
     /// Reads a big-endian unsigned 2-byte integer
-    public func readUInt16(at offset: Int) -> Int {
+    func readUInt16(at offset: Int) -> Int {
         return Int(self[offset]) << 8 | Int(self[offset+1])
     }
     
     /// Reads a big-endian signed 2-byte integer
-    public func readSInt16(at offset: Int) -> Int {
+    func readSInt16(at offset: Int) -> Int {
         let value = readUInt16(at: offset)
         if value > Int(Int16.max) {
             return value - Int(UInt16.max) - 1
@@ -142,13 +142,13 @@ public extension Data {
     }
     
     /// Reads a big-endian unsigned 4-byte integer
-    public func readUInt32(at offset: Int) -> Int {
+    func readUInt32(at offset: Int) -> Int {
         /* If use multiplications because Swift tells "Expression too complex" when I use bit shifts */
         return Int(self[offset])*16777216 | Int(self[offset+1])*65536 | Int(self[offset+2])*256 | Int(self[offset+3])
     }
     
     /// Reads a big-endian signed 4-byte integer
-    public func readSInt32(at offset: Int) -> Int {
+    func readSInt32(at offset: Int) -> Int {
         let value = readUInt32(at: offset)
         if value > Int(Int32.max) {
             return value - Int(UInt32.max) - 1
@@ -161,7 +161,7 @@ public extension Data {
 public extension Image {
     
     /// Reads an uncompressed 1-bit image in a data
-    public init(data: Data, offset: Int, width: Int, height: Int) {
+    init(data: Data, offset: Int, width: Int, height: Int) {
         
         /* Create the image */
         self.init(width: width, height: height)
@@ -197,11 +197,11 @@ public extension Image {
 public extension HString {
     
     /// Init with null-terminated data
-    public init(copyNullTerminatedFrom data: Data, at offset: Int) {
+    init(copyNullTerminatedFrom data: Data, at offset: Int) {
         
         /* Find the null termination */
         let dataFromOffset = data.suffix(from: offset)
-        let nullIndex = dataFromOffset.index(of: UInt8(0))!
+        let nullIndex = dataFromOffset.firstIndex(of: UInt8(0))!
         
         /* Extract the data for the string */
         let stringSlice = data[offset..<nullIndex]
@@ -211,7 +211,7 @@ public extension HString {
     }
     
     /// Init with data
-    public init(copyFrom data: Data, at offset: Int, length: Int) {
+    init(copyFrom data: Data, at offset: Int, length: Int) {
         
         /* Extract the data for the string */
         let stringSlice = data[offset..<offset + length]

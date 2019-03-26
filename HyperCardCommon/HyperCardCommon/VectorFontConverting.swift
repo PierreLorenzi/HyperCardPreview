@@ -12,7 +12,7 @@ import Foundation
 public extension BitmapFont {
     
     /// Builds a bitmap font out of a vector font
-    public convenience init(fromVectorFont vectorFont: CTFont) {
+    convenience init(fromVectorFont vectorFont: CTFont) {
         
         self.init()
         
@@ -64,7 +64,7 @@ public extension BitmapFont {
         
         /* Check if the right font size is present */
         let vectorFontSize = Int(CTFontGetSize(vectorFont))
-        guard let index = fontSizes.index(where: { $0 == vectorFontSize }) else {
+        guard let index = fontSizes.firstIndex(where: { $0 == vectorFontSize }) else {
             return nil
         }
         

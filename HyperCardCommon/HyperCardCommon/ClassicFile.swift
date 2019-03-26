@@ -27,7 +27,7 @@ public class ClassicFile {
 public extension ClassicFile {
     
     /// Reads a file at the specified path. Reads the resource fork as an X_ATTR attribute.
-    public convenience init(path: String) {
+    convenience init(path: String) {
         
         /* Register the data */
         let dataFork = ClassicFile.loadDataFork(path)

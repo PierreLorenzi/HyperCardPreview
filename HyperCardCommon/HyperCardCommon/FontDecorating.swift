@@ -13,7 +13,7 @@
 public extension BitmapFont {
     
     /// Applies a font variation to a bitmap font
-    public convenience init(decorate baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) {
+    convenience init(decorate baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) {
         
         /* Copy the font */
         self.init()

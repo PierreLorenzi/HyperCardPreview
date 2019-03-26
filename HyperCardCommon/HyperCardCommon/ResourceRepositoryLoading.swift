@@ -19,7 +19,7 @@ public extension ResourceRepository {
     private static let pictureTypeName = NumericName(string: "PICT")!
     
     /// Loads a resource repository from the content of a resource fork
-    public init(loadFromData resourceData: Data) {
+    init(loadFromData resourceData: Data) {
         
         /* Build a resource extractor */
         let dataRange = DataRange(sharedData: resourceData, offset: 0, length: resourceData.count)

@@ -43,7 +43,7 @@ public extension TextLayout {
     
     /// Layouts a text within a certain width. If the width is nil, the text is not
     /// wrapped. If a non-nil line height is provided, it is given to all the lines.
-    public init(for text: RichText, textWidth: Int, alignment: TextAlign, dontWrap: Bool, lineHeight: Int?) {
+    init(for text: RichText, textWidth: Int, alignment: TextAlign, dontWrap: Bool, lineHeight: Int?) {
         
         /* The algorithm doesn't handle empty texts */
         guard text.string.length > 0 else {

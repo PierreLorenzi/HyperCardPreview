@@ -11,7 +11,7 @@ public extension Icon {
 
     /// Builds a masked image out of a unmasked icon by making the outer white
     /// pixels transparent. This is what HyperCard does to the icons.
-    public func buildMaskedRepresentation() -> MaskedImage {
+    func buildMaskedRepresentation() -> MaskedImage {
         
         let image = self.image
         

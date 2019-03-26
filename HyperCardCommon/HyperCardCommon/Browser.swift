@@ -403,7 +403,7 @@ public class Browser {
             let hasChangedShape = (view.refreshNeed == .refreshWithNewShape)
             
             /* Find the record */
-            let index = self.viewRecords.index(where: { $0.view === view })!
+            let index = self.viewRecords.firstIndex(where: { $0.view === view })!
             let record = self.viewRecords[index]
             if (!hasChangedShape && record.willRefresh) || (hasChangedShape && record.didUpdateBehind) {
                 return

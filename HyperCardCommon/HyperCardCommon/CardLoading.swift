@@ -10,7 +10,7 @@
 public extension Card {
     
     /// Loads a card from a CARD data block inside the stack file data fork.
-    public convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
+    convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
         
         let cardReader = CardBlockReader(data: data, version: version)
         

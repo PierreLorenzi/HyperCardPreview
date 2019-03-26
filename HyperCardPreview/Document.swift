@@ -267,7 +267,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Launch the animation */
         let animationInfo: [NSViewAnimation.Key: Any] = [
-            NSViewAnimation.Key.target: self.imageView,
+            NSViewAnimation.Key.target: self.imageView!,
             NSViewAnimation.Key.startFrame: NSValue(rect: initialFrame),
             NSViewAnimation.Key.endFrame: NSValue(rect: finalFrame)
         ]

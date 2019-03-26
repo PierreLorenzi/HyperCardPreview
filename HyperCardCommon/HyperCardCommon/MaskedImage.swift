@@ -111,13 +111,13 @@ public extension MaskedImage {
     
     /// Builds a masked image from a simple image, making the black pixels black and the while pixels
     /// transparent
-    public init(image: Image) {
+    init(image: Image) {
         let rectangle = Rectangle(top: 0, left: 0, bottom: image.height, right: image.width)
         self.init(width: image.width, height: image.height, image: .bitmap(image: image, imageRectangle: rectangle, realRectangleInImage: rectangle), mask: .clear)
     }
     
     /// Builds the image from an image in the resources
-    public init?(named name: String) {
+    init?(named name: String) {
         
         /* Load the image with the proper bundle */
         guard let path = HyperCardBundle.pathForImageResource(name),
@@ -131,7 +131,7 @@ public extension MaskedImage {
     }
     
     /// Builds an image from a Cocoa image
-    public init?(representation: NSBitmapImageRep) {
+    init?(representation: NSBitmapImageRep) {
         
         let width = representation.pixelsWide
         let height = representation.pixelsHigh
@@ -171,7 +171,7 @@ public extension MaskedImage {
 public extension Image {
     
     /// Build an image from a image in the resources
-    public init?(named name: String) {
+    init?(named name: String) {
         guard let maskedImage = MaskedImage(named: name) else {
             return nil
         }

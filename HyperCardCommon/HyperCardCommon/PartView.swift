@@ -10,7 +10,7 @@
 public extension Drawing {
     
     /// Draws a rectangle with black borders
-    public func drawBorderedRectangle(_ rectangle: Rectangle, composition: ImageComposition = Drawing.MaskComposition, borderComposition: ImageComposition = Drawing.DirectComposition) {
+    func drawBorderedRectangle(_ rectangle: Rectangle, composition: ImageComposition = Drawing.MaskComposition, borderComposition: ImageComposition = Drawing.DirectComposition) {
         
         /* Draw the background */
         self.drawRectangle(rectangle, composition: composition)
@@ -24,7 +24,7 @@ public extension Drawing {
     }
     
     /// Draws a rectangle with black borders and a shadow
-    public func drawShadowedRectangle(_ rectangle: Rectangle, thickness: Int, shift: Int, composition: ImageComposition = Drawing.MaskComposition) {
+    func drawShadowedRectangle(_ rectangle: Rectangle, thickness: Int, shift: Int, composition: ImageComposition = Drawing.MaskComposition) {
         
         /* Draw the rectangle */
         self.drawBorderedRectangle(Rectangle(x: rectangle.x, y: rectangle.y, width: rectangle.width-thickness, height: rectangle.height-thickness), composition: composition)

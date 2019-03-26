@@ -10,7 +10,7 @@
 public extension TextLayout {
     
     /// Draws the laid-out text in the given drawing
-    public func draw(in drawing: Drawing, at textOrigin: Point, clipRectangle: Rectangle) {
+    func draw(in drawing: Drawing, at textOrigin: Point, clipRectangle: Rectangle) {
         
         var lineIndex = 0
         

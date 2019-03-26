@@ -10,7 +10,7 @@
 public extension BitmapFont {
     
     /// Loads a bitmap font from the data of a NFNT or FONT resource
-    public convenience init(loadFromData data: DataRange) {
+    convenience init(loadFromData data: DataRange) {
         
         let reader = BitmapFontResourceReader(data: data)
         

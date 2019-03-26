@@ -11,7 +11,7 @@ public extension Stack {
     
     /// Loads a stack from the data fork of a stack file. If the stack is private access,
     /// so encrypted, a password can be provided or a hack can be made.
-    public convenience init(loadFromData data: Data, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
+    convenience init(loadFromData data: Data, password possiblePassword: HString? = nil, hackEncryption: Bool = true) throws {
         
         let dataRange = DataRange(sharedData: data, offset: 0, length: data.count)
         let fileReader = StackReader(data: dataRange)
