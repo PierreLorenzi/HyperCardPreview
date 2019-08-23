@@ -43,6 +43,7 @@
 		6CCFE62A215E3D5E000ED882 /* ResourceImageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCFE629215E3D5E000ED882 /* ResourceImageController.swift */; };
 		6CCFE62C215E41FE000ED882 /* ResourceBinaryWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6CCFE62B215E41FE000ED882 /* ResourceBinaryWindow.xib */; };
 		6CCFE62E215E426D000ED882 /* ResourceBinaryController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CCFE62D215E426D000ED882 /* ResourceBinaryController.swift */; };
+		6CEB53182310747800E19841 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CEB53172310747800E19841 /* Sound.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,6 +124,7 @@
 		6CCFE62B215E41FE000ED882 /* ResourceBinaryWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ResourceBinaryWindow.xib; sourceTree = "<group>"; };
 		6CCFE62D215E426D000ED882 /* ResourceBinaryController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceBinaryController.swift; sourceTree = "<group>"; };
 		6CD58724215D176C00482A56 /* HyperCardPreview.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = HyperCardPreview.entitlements; sourceTree = "<group>"; };
+		6CEB53172310747800E19841 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sound.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -180,6 +182,7 @@
 				6C3FF055215CEC6300BCEC81 /* ExportAccessoryView.xib */,
 				6C3FF05B215CF73400BCEC81 /* ExportProgress.xib */,
 				6CCE925A215D547600A93935 /* ResourceController.swift */,
+				6CEB53172310747800E19841 /* Sound.swift */,
 				6CCE925E215D692100A93935 /* ResourceWindow.xib */,
 				6CCE9260215D6C0A00A93935 /* ResourceItem.swift */,
 				6C36D804215E27DA003AA45F /* ResourceItemView.swift */,
@@ -342,6 +345,7 @@
 				6CADCC071F474A3C00B895FB /* VisualEffects.swift in Sources */,
 				6C26B8DB1E6D7577006C314B /* DocumentView.swift in Sources */,
 				6C3FF05A215CEF0200BCEC81 /* ImageExporter.swift in Sources */,
+				6CEB53182310747800E19841 /* Sound.swift in Sources */,
 				6CCFE62E215E426D000ED882 /* ResourceBinaryController.swift in Sources */,
 				6CCFE62A215E3D5E000ED882 /* ResourceImageController.swift in Sources */,
 				6C1763421F572809006E72C7 /* CardItem.swift in Sources */,

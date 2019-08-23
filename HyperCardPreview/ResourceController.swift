@@ -96,41 +96,13 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             /* This is a very limited and messy function to make an AIFF
              out of a snd resource. It is the fastest way I've found to play an old sound. */
             
-            /* There are two format of sdn resources, the data is not in the same place */
-            let format = data.readUInt16(at: 0x0)
-            let commandOffset: Int
-            switch format {
-            case 1:
-                commandOffset = 0xC
-            case 2:
-                commandOffset = 0x6
-            default:
-                return nil
-            }
-            
-            /* The first command of a format 2 resource should be bufferCmd or soundCmd */
-            guard data.readUInt16(at: commandOffset) == 0x8050 || data.readUInt16(at: commandOffset) == 0x8051 else {
-                return nil
-            }
-            
-            /* Get the offset of the sampled sound */
-            let soundOffset = data.readUInt32(at: commandOffset + 0x4)
-            
-            /* Check that the sampled sound is in the data */
-            guard data.readUInt32(at: soundOffset + 0x0) == 0 else {
-                return nil
-            }
-            
-            /* Read the header of the sampled sound, which contain the parameters */
-            let byteCount = data.readUInt32(at: soundOffset + 0x4)
-            let sampleRateValue = data.readUInt32(at: soundOffset + 0x8)
-            let sampleRate = Double(sampleRateValue) / 65536.0
-            guard data.readUInt8(at: soundOffset + 0x14) == 0 else {
+            /* Parse the sound data */
+            guard let sound = Sound(fromResourceData: data) else {
                 return nil
             }
             
             /* Build the buffer */
-            let fileLength = 2*byteCount + 0x36
+            let fileLength = 2*sound.sampleCount + 0x36
             let aiffData = UnsafeMutableRawPointer.allocate(byteCount: fileLength, alignment: 4)
             
             /* Fill the AIFF fields in the data */
@@ -140,22 +112,22 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             aiffData.advanced(by: 0xC).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0x434F4D4D).byteSwapped
             aiffData.advanced(by: 0x10).assumingMemoryBound(to: UInt32.self).pointee = UInt32(18).byteSwapped
             aiffData.advanced(by: 0x14).assumingMemoryBound(to: UInt16.self).pointee = UInt16(1).byteSwapped
-            aiffData.advanced(by: 0x16).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: byteCount).byteSwapped
+            aiffData.advanced(by: 0x16).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: sound.sampleCount).byteSwapped
             aiffData.advanced(by: 0x1A).assumingMemoryBound(to: UInt16.self).pointee = UInt16(16).byteSwapped
-            aiffData.advanced(by: 0x1C).assumingMemoryBound(to: Float80.self).pointee = Float80(sampleRate)
+            aiffData.advanced(by: 0x1C).assumingMemoryBound(to: Float80.self).pointee = Float80(sound.sampleRate)
             for i in 0..<5 {
                 let x = aiffData.advanced(by: 0x1C + i).assumingMemoryBound(to: UInt8.self).pointee
                 aiffData.advanced(by: 0x1C + i).assumingMemoryBound(to: UInt8.self).pointee = aiffData.advanced(by: 0x26 - 1 - i).assumingMemoryBound(to: UInt8.self).pointee
                 aiffData.advanced(by: 0x26 - 1 - i).assumingMemoryBound(to: UInt8.self).pointee = x
             }
             aiffData.advanced(by: 0x26).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0x53534E44).byteSwapped
-            aiffData.advanced(by: 0x2A).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: 2*byteCount + 8).byteSwapped
+            aiffData.advanced(by: 0x2A).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: 2*sound.sampleCount + 8).byteSwapped
             aiffData.advanced(by: 0x2E).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0).byteSwapped
             aiffData.advanced(by: 0x32).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0).byteSwapped
             
             /* Fill the sound data (convert from 8-bit PCM to 16-bit PCM) */
-            for i in 0..<byteCount {
-                let byte = data.sharedData[data.offset + soundOffset + 0x16 + i]
+            for i in 0..<sound.sampleCount {
+                let byte = sound.sampleData.sharedData[data.offset + i]
                 let shiftedByte = byte &+ UInt8(128)
                 aiffData.advanced(by: 0x36 + 2*i).assumingMemoryBound(to: UInt8.self).pointee = shiftedByte
             }
@@ -164,7 +136,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             let finalData = Data(bytesNoCopy: aiffData, count: fileLength, deallocator: Data.Deallocator.free)
             return finalData
         }
-        
+    
         func readSearchString() -> String {
             
             if let searchString = self.cachedSearchString {
