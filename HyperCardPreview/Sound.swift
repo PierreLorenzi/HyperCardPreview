@@ -72,6 +72,9 @@ extension Sound {
         case other(Int)
     }
     
+    /// Frequencies are given by numbers
+    private static let middleCFrequencyNumber = 60
+    
     /// Builds a sound by parsing the content of a 'snd ' resource
     init?(fromResourceData data: DataRange) {
         
@@ -135,11 +138,17 @@ extension Sound {
         
         /* Read the sound parameters */
         let sampleCount = data.readUInt32(at: 0x4)
-        let sampleRateValue = data.readUInt32(at: 0x8)
-        let sampleRate = Double(sampleRateValue) / 65536.0
         let sampleData = DataRange(sharedData: data.sharedData, offset: data.offset + 0x16, length: sampleCount)
         
-        return Sound(sampleCount: sampleCount, sampleRate: sampleRate, sampleData: sampleData)
+        /* Read the sample rate, it must be set so the base frequency is at middle C,
+         as HyperCard played the sounds (it was special to HyperCard). */
+        let sampleRateValue = data.readUInt32(at: 0x8)
+        let sampleRate = Double(sampleRateValue) / 65536.0
+        let baseFrequencyNumber = data.readUInt8(at: 0x15)
+        let frequencyRatio = pow(2.0, Double(Sound.middleCFrequencyNumber - baseFrequencyNumber) / 12.0)
+        let hyperCardSampleRate = sampleRate * frequencyRatio
+        
+        return Sound(sampleCount: sampleCount, sampleRate: hyperCardSampleRate, sampleData: sampleData)
     }
     
     private static func readHeaderFormat(in data: DataRange) -> HeaderFormat {
