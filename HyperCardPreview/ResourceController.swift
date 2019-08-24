@@ -102,7 +102,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             }
             
             /* Build the buffer */
-            let fileLength = 2*sound.sampleCount + 0x36
+            let fileLength = 2*sound.samples.count + 0x36
             let aiffData = UnsafeMutableRawPointer.allocate(byteCount: fileLength, alignment: 4)
             
             /* Fill the AIFF fields in the data */
@@ -112,7 +112,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             aiffData.advanced(by: 0xC).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0x434F4D4D).byteSwapped
             aiffData.advanced(by: 0x10).assumingMemoryBound(to: UInt32.self).pointee = UInt32(18).byteSwapped
             aiffData.advanced(by: 0x14).assumingMemoryBound(to: UInt16.self).pointee = UInt16(1).byteSwapped
-            aiffData.advanced(by: 0x16).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: sound.sampleCount).byteSwapped
+            aiffData.advanced(by: 0x16).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: sound.samples.count).byteSwapped
             aiffData.advanced(by: 0x1A).assumingMemoryBound(to: UInt16.self).pointee = UInt16(16).byteSwapped
             aiffData.advanced(by: 0x1C).assumingMemoryBound(to: Float80.self).pointee = Float80(sound.sampleRate)
             for i in 0..<5 {
@@ -121,15 +121,14 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
                 aiffData.advanced(by: 0x26 - 1 - i).assumingMemoryBound(to: UInt8.self).pointee = x
             }
             aiffData.advanced(by: 0x26).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0x53534E44).byteSwapped
-            aiffData.advanced(by: 0x2A).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: 2*sound.sampleCount + 8).byteSwapped
+            aiffData.advanced(by: 0x2A).assumingMemoryBound(to: UInt32.self).pointee = UInt32(truncatingIfNeeded: 2*sound.samples.count + 8).byteSwapped
             aiffData.advanced(by: 0x2E).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0).byteSwapped
             aiffData.advanced(by: 0x32).assumingMemoryBound(to: UInt32.self).pointee = UInt32(0).byteSwapped
             
             /* Fill the sound data (convert from 8-bit PCM to 16-bit PCM) */
-            for i in 0..<sound.sampleCount {
-                let byte = sound.sampleData.sharedData[data.offset + i]
-                let shiftedByte = byte &+ UInt8(128)
-                aiffData.advanced(by: 0x36 + 2*i).assumingMemoryBound(to: UInt8.self).pointee = shiftedByte
+            let sampleBuffer: UnsafeMutablePointer<Int16> = aiffData.advanced(by: 0x36).assumingMemoryBound(to: Int16.self)
+            for i in 0..<sound.samples.count {
+                sampleBuffer[i] = sound.samples[i].byteSwapped
             }
             
             /* Use the data */
