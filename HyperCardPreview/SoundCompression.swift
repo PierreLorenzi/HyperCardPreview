@@ -34,21 +34,30 @@ extension MaceCompressionType {
                 for k in 0..<frameSize {
                     
                     let index = (i * frameSize) + (j * channelCount * frameSize) + k
-                    let pkt = data.readUInt8(at: index)
+                    let inputByte = Int16(exactly: data.readUInt8(at: index))!
                     
-                    let val: [[Int]] = [[pkt >> 5, (pkt >> 3) & 3, pkt & 7 ],
-                                        [pkt & 7 , (pkt >> 3) & 3, pkt >> 5]]
-                    
-                    for l in 0..<3 {
-                        if (type == MaceCompressionType.threeToOne) {
-                            let sample = chomp3(&channelDatas[i], Int16(exactly: val[1][l])!, l)
-                            samples.append(sample)
-                        }
-                        else {
-                            let (sample1, sample2) = chomp6(&channelDatas[i], Int16(exactly: val[0][l])!, l)
-                            samples.append(sample1)
-                            samples.append(sample2)
-                        }
+                    switch type {
+                        
+                    case .threeToOne:
+                        
+                        let sample1 = chomp3(&channelDatas[i], inputByte & 7, 0)
+                        let sample2 = chomp3(&channelDatas[i], (inputByte >> 3) & 3, 1)
+                        let sample3 = chomp3(&channelDatas[i], inputByte >> 5, 2)
+                        samples.append(sample1)
+                        samples.append(sample2)
+                        samples.append(sample3)
+                        
+                    case .sixToOne:
+                        
+                        let (sample1, sample2) = chomp6(&channelDatas[i], inputByte >> 5, 0)
+                        let (sample3, sample4) = chomp6(&channelDatas[i], (inputByte >> 3) & 3, 1)
+                        let (sample5, sample6) = chomp6(&channelDatas[i], inputByte & 7, 2)
+                        samples.append(sample1)
+                        samples.append(sample2)
+                        samples.append(sample3)
+                        samples.append(sample4)
+                        samples.append(sample5)
+                        samples.append(sample6)
                     }
                     
                 }
