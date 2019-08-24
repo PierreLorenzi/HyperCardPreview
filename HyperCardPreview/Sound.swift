@@ -296,10 +296,12 @@ extension Sound {
             return readRawData(data, sampleCount: frameCount)
             
         case .threeToOne:
-            return uncompressMaceSound(in: data, type: MaceCompressionType.threeToOne, frameCount: frameCount, channelCount: channelCount)[0]
+            /* Take only the first channel */
+            return MaceCompressionType.uncompressSound(in: data, type: MaceCompressionType.threeToOne, frameCount: frameCount, channelCount: channelCount)[0]
             
         case .sixToOne:
-            return uncompressMaceSound(in: data, type: MaceCompressionType.sixToOne, frameCount: frameCount, channelCount: channelCount)[0]
+            /* Take only the first channel */
+            return MaceCompressionType.uncompressSound(in: data, type: MaceCompressionType.sixToOne, frameCount: frameCount, channelCount: channelCount)[0]
             
         default:
             return nil
