@@ -207,7 +207,7 @@ func chomp6(_ chd: inout ChannelData, _ val: Int16, _ tab_idx: Int) -> (Int16, I
     if ((chd.previous ^ current) >= 0) {
         chd.factor = Int16(exactly: min(Int(chd.factor) + 506, 32767))!
     } else {
-        if (chd.factor - 314 < -32768) {
+        if (Int(chd.factor) - 314 < -32768) {
             chd.factor = -32767
         }
         else {

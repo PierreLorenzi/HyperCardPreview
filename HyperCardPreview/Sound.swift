@@ -74,6 +74,16 @@ extension Sound {
     /// Frequencies are given by numbers
     private static let middleCFrequencyNumber = 60
     
+    /// Algorithm used to compress a compressed sound
+    private enum CompressionType {
+        
+        case notCompressed
+        case threeToOne
+        case sixToOne
+        case otherID(Int)
+        case otherFormat(NumericName)
+    }
+    
     /// Builds a sound by parsing the content of a 'snd ' resource
     init?(fromResourceData data: DataRange) {
         
@@ -174,12 +184,7 @@ extension Sound {
         
         /* Read the samples */
         let sampleData = DataRange(sharedData: data.sharedData, offset: data.offset + 0x16, length: sampleCount)
-        let samplesValues = (0..<sampleCount).lazy.map({ sampleData.readUInt8(at: $0) })
-        
-        /* Convert the samples to 16 bits */
-        let zero: Int16 = 0x80
-        let factor: Int16 = 0x100
-        let samples: [Int16] = samplesValues.map({ (Int16(exactly: $0)! - zero) * factor })
+        let samples = readRawData(sampleData, sampleCount: sampleCount)
         
         return Sound(sampleRate: sampleRate, samples: samples)
     }
@@ -199,17 +204,105 @@ extension Sound {
         return hyperCardSampleRate
     }
     
+    private static func readRawData(_ data: DataRange, sampleCount: Int) -> [Int16] {
+        
+        /* Parse the samples */
+        let samplesValues = (0..<sampleCount).lazy.map({ data.readUInt8(at: $0) })
+        
+        /* Convert the samples to 16 bits */
+        let zero: Int16 = 0x80
+        let factor: Int16 = 0x100
+        let samples: [Int16] = samplesValues.map({ (Int16(exactly: $0)! - zero) * factor })
+        
+        return samples
+    }
+    
     private static func readCompressedSound(in data: DataRange) -> Sound? {
         
-        let channelCount = data.readUInt32(at: 0x4)
-        let frameCount = data.readUInt32(at: 0x16)
-        let format = data.readSInt16(at: 0x38) == 3 ? MaceCompressionType.threeToOne : MaceCompressionType.sixToOne
-        guard format == MaceCompressionType.sixToOne else {
+        /* Read the compression algorithm that was used */
+        guard let compressionType = readCompressionType(in: data) else {
             return nil
         }
-        let length = channelCount * frameCount * (format == MaceCompressionType.threeToOne ? 2 : 1)
-        let compressedData = DataRange(sharedData: data.sharedData, offset: data.offset + 0x40, length: length)
-        _ = uncompressMaceSound(in: compressedData, type: format, frameCount: frameCount, channelCount: channelCount)
-        return nil
+        
+        /* Read the sound parameters */
+        let channelCount = data.readUInt32(at: 0x4)
+        let frameCount = data.readUInt32(at: 0x16)
+        let sampleRate = readSampleRate(in: data)
+        
+        /* Decode the samples */
+        let compressedData = DataRange(sharedData: data.sharedData, offset: data.offset + 0x40, length: data.length - 0x40)
+        guard let samples = readCompressedData(compressedData, compressionType: compressionType, channelCount: channelCount, frameCount: frameCount) else {
+            return nil
+        }
+        
+        return Sound(sampleRate: sampleRate, samples: samples)
+    }
+    
+    private static func readCompressionType(in data: DataRange) -> CompressionType? {
+        
+        let compressionID = data.readSInt16(at: 0x38)
+        
+        switch compressionID {
+            
+        case -2:
+            /* variableCompression, it was not managed by the Sound Manager */
+            return nil
+            
+        case -1:
+            /* fixedCompression: it means we must read the algorithm in another
+             redundant field */
+            return readCompressionFormat(in: data)
+            
+        case 0:
+            return .notCompressed
+            
+        case 3:
+            return .threeToOne
+            
+        case 4:
+            return .sixToOne
+            
+        default:
+            return .otherID(compressionID)
+        }
+    }
+    
+    private static func readCompressionFormat(in data: DataRange) -> CompressionType {
+        
+        let compressionFormatValue = data.readUInt32(at: 0x28)
+        let compressionFormat = NumericName(value: compressionFormatValue)
+        
+        switch compressionFormat {
+            
+        case NumericName(string: "NONE"):
+            return CompressionType.notCompressed
+            
+        case NumericName(string: "MAC3"):
+            return CompressionType.threeToOne
+            
+        case NumericName(string: "MAC6"):
+            return CompressionType.sixToOne
+            
+        default:
+            return CompressionType.otherFormat(compressionFormat)
+        }
+    }
+    
+    private static func readCompressedData(_ data: DataRange, compressionType: CompressionType, channelCount: Int, frameCount: Int) -> [Int16]? {
+        
+        switch compressionType {
+            
+        case .notCompressed:
+            return readRawData(data, sampleCount: frameCount)
+            
+        case .threeToOne:
+            return uncompressMaceSound(in: data, type: MaceCompressionType.threeToOne, frameCount: frameCount, channelCount: channelCount)[0]
+            
+        case .sixToOne:
+            return uncompressMaceSound(in: data, type: MaceCompressionType.sixToOne, frameCount: frameCount, channelCount: channelCount)[0]
+            
+        default:
+            return nil
+        }
     }
 }
