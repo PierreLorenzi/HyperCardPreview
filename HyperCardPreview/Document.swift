@@ -153,6 +153,12 @@ class Document: NSDocument, NSAnimationDelegate {
             /* Display the selected card */
             self.warnCardWasSelected(atIndex: self.collectionView.selectionIndexPaths.first!.item)
         }
+        collectionView.cancelAction =  {
+            [unowned self] in
+            
+            /* Move back to the current card */
+            self.warnCardWasSelected(atIndex: self.browser.cardIndex)
+        }
         
         goToCard(at: 0, transition: .none)
     }

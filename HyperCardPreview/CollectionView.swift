@@ -14,6 +14,7 @@ class CollectionView: NSCollectionView {
     
     weak var document: Document!
     var mainAction: (() -> Void)? = nil
+    var cancelAction: (() -> Void)? = nil
     
     override func keyDown(with event: NSEvent) {
         
@@ -26,6 +27,16 @@ class CollectionView: NSCollectionView {
                 
                 /* Apply the action */
                 if let action = mainAction {
+                    action()
+                }
+                return
+            }
+            
+            /* Check if the character escape */
+            if (character == 27){
+                
+                /* Apply the action */
+                if let action = cancelAction {
                     action()
                 }
                 return
