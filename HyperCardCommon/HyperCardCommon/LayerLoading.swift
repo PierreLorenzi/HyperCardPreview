@@ -227,14 +227,22 @@ private extension Layer {
     
     private static func extractContentBlocks(in block: LayerBlock) -> [DataRange] {
         
-        /* Special case for v1 */
-        guard block.fileVersion.isTwo() else {
-            return extractContentBlocksV1(in: block)
+        let contentCount = block.data.readUInt16(at: block.partOffset - 0x6)
+        
+        switch block.fileVersion {
+            
+        case .v1:
+            return extractContentBlocksV1(in: block, contentCount: contentCount)
+            
+        case .v2:
+            return extractContentBlocksV2(in: block, contentCount: contentCount)
         }
+    }
+    
+    private static func extractContentBlocksV2(in block: LayerBlock, contentCount: Int) -> [DataRange] {
         
         var contents = [DataRange]()
         
-        let contentCount = loadContentCount(in: block)
         var offset = block.contentOffset
         
         for _ in 0..<contentCount {
@@ -255,17 +263,11 @@ private extension Layer {
         return contents
     }
     
-    private static func loadContentCount(in block: LayerBlock) -> Int {
-        
-        return block.data.readUInt16(at: block.partOffset - 0x6)
-    }
-    
     /* The contents are all unformatted strings */
-    private static func extractContentBlocksV1(in block: LayerBlock) -> [DataRange] {
+    private static func extractContentBlocksV1(in block: LayerBlock, contentCount: Int) -> [DataRange] {
         
         var contents = [DataRange]()
         
-        let contentCount = loadContentCount(in: block)
         var offset = block.contentOffset
         
         for _ in 0..<contentCount {
