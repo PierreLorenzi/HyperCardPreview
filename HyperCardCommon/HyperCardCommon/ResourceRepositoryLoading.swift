@@ -13,6 +13,21 @@ public extension ResourceRepository {
     private static let mapTypeLength = 8
     private static let mapReferenceLength = 12
     
+    private struct ResourceReference {
+        
+        /// Type of the resource
+        public var type: NumericName
+        
+        /// ID of the resource
+        public var identifier: Int
+        
+        /// Name of the resource
+        public var name: HString
+        
+        /// Offset of the resource in the data section of the resource fork
+        public var dataOffset: Int
+    }
+    
     /// Loads a resource repository from the content of a resource fork
     init(loadFromData resourceData: Data) {
         
