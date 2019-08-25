@@ -38,6 +38,15 @@ public extension Stack {
         var pageReferences: [PageReference]
     }
     
+    private struct PageReference {
+        
+        /// Identifier of the PAGE block
+        var identifier: Int
+        
+        /// Number of cards listed in the PAGE block
+        var cardCount: Int
+    }
+    
     private static func decodeData(_ data: DataRange, password possiblePassword: HString?, hackEncryption: Bool) throws -> DataRange {
         
         /* Check if the stack is encoded */
