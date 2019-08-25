@@ -44,7 +44,7 @@ private extension Layer {
     
     func adjustFromData(_ data: DataRange, layerType: LayerType, version: FileVersion, styles: [IndexedStyle], loadBitmap: @escaping (Int) -> MaskedImage) {
         
-        let partOffset = Layer.computePartOffset(forType: layerType, fileVersion: version)
+        let block = Layer.buildLayerBlock(for: data, layerType: layerType, fileVersion: version)
         let versionOffset = Layer.getVersionShift(of: version)
         
         /* Read now the scalar fields */
@@ -52,7 +52,7 @@ private extension Layer {
         self.cantDelete = data.readFlag(at: 0x14 + versionOffset, bitOffset: 14)
         self.showPict = !data.readFlag(at: 0x14 + versionOffset, bitOffset: 13)
         self.dontSearch =  data.readFlag(at: 0x14 + versionOffset, bitOffset: 11)
-        self.nextAvailablePartIdentifier = data.readUInt16(at: partOffset - 0xC)
+        self.nextAvailablePartIdentifier = data.readUInt16(at: block.partOffset - 0xC)
         
         /* Lazy load name */
         self.nameProperty.lazyCompute { () -> HString in
@@ -75,7 +75,7 @@ private extension Layer {
         /* Lazy load parts */
         self.partsProperty.lazyCompute { () -> [LayerPart] in
             
-            return Layer.loadParts(in: data, layerType: layerType, fileVersion: version, styles: styles)
+            return Layer.loadParts(in: block, styles: styles)
         }
         
         /* Lazy load script */
@@ -83,6 +83,30 @@ private extension Layer {
             
             return Layer.loadScript(in: data, layerType: layerType, fileVersion: version)
         }
+    }
+    
+    private struct LayerBlock {
+        
+        var data: DataRange
+        var layerType: LayerType
+        var fileVersion: FileVersion
+        
+        var partOffset: Int
+        var contentOffset: Int
+        var nameOffset: Int
+    }
+    
+    private static func buildLayerBlock(for data: DataRange, layerType: LayerType, fileVersion: FileVersion) -> LayerBlock {
+        
+        let partOffset = computePartOffset(forType: layerType, fileVersion: fileVersion)
+        
+        let partSize = loadPartSize(in: data, layerType: layerType, fileVersion: fileVersion)
+        let contentOffset = partOffset + partSize
+        
+        let contentSize = loadContentSize(in: data, layerType: layerType, fileVersion: fileVersion)
+        let nameOffset = contentOffset + contentSize
+        
+        return LayerBlock(data: data, layerType: layerType, fileVersion: fileVersion, partOffset: partOffset, contentOffset: contentOffset, nameOffset: nameOffset)
     }
     
     private static func loadName(in data: DataRange, layerType: LayerType, fileVersion: FileVersion) -> HString {
@@ -125,16 +149,16 @@ private extension Layer {
         return data.readUInt32(at: partOffset - 0x4)
     }
     
-    private static func loadParts(in data: DataRange, layerType: LayerType, fileVersion: FileVersion, styles: [IndexedStyle]) -> [LayerPart] {
+    private static func loadParts(in block: LayerBlock, styles: [IndexedStyle]) -> [LayerPart] {
         
         var parts = [LayerPart]()
         
         /* Load the part blocks */
-        let partBlocks = extractPartBlocks(in: data, layerType: layerType, fileVersion: fileVersion)
+        let partBlocks = extractPartBlocks(in: block)
         
         /* Load the content blocks */
-        let contentBlocks = extractContentBlocks(in: data, layerType: layerType, fileVersion: fileVersion)
-        let layerContentBlocks = contentBlocks.lazy.filter({ readContentLayerType(in: $0) == layerType })
+        let contentBlocks = extractContentBlocks(in: block)
+        let layerContentBlocks = contentBlocks.lazy.filter({ readContentLayerType(in: $0) == block.layerType })
         let contentPairs = layerContentBlocks.map({ (readContentIdentifier(in: $0), $0) })
         let contentMap = [Int: DataRange](uniqueKeysWithValues: contentPairs)
         
@@ -156,7 +180,7 @@ private extension Layer {
                         return ""
                     }
                     
-                    return readContentString(in: contentBlock, fileVersion: fileVersion)
+                    return readContentString(in: contentBlock, fileVersion: block.fileVersion)
                 }
                 
                 let button = Button(loadFromData: partBlock, loadContent: loadContent)
@@ -170,7 +194,7 @@ private extension Layer {
                         return PartContent.string("")
                     }
                     
-                    return readContent(in: contentBlock, fileVersion: fileVersion, styles: styles)
+                    return readContent(in: contentBlock, fileVersion: block.fileVersion, styles: styles)
                 }
                 
                 let field = Field(loadFromData: partBlock, loadContent: loadContent)
@@ -208,21 +232,20 @@ private extension Layer {
         }
     }
     
-    private static func extractPartBlocks(in data: DataRange, layerType: LayerType, fileVersion: FileVersion) -> [DataRange] {
+    private static func extractPartBlocks(in block: LayerBlock) -> [DataRange] {
         
         var parts = [DataRange]()
-        let partOffset = computePartOffset(forType: layerType, fileVersion: fileVersion)
-        var offset = partOffset
-        let partCount = data.readUInt16(at: partOffset - 0xE)
+        var offset = block.partOffset
+        let partCount = block.data.readUInt16(at: block.partOffset - 0xE)
         
         /* Read the parts */
         for _ in 0..<partCount {
             
             /* Read the size of the part block */
-            let size = data.readUInt16(at: offset)
+            let size = block.data.readUInt16(at: offset)
             
             /* Build the part block */
-            let dataRange = DataRange(fromData: data, offset: offset, length: size)
+            let dataRange = DataRange(fromData: block.data, offset: offset, length: size)
             parts.append(dataRange)
             
             /* Move to the next part data */
@@ -232,27 +255,25 @@ private extension Layer {
         return parts
     }
     
-    private static func extractContentBlocks(in data: DataRange, layerType: LayerType, fileVersion: FileVersion) -> [DataRange] {
+    private static func extractContentBlocks(in block: LayerBlock) -> [DataRange] {
         
         /* Special case for v1 */
-        guard fileVersion.isTwo() else {
-            return extractContentBlocksV1(in: data, layerType: layerType)
+        guard block.fileVersion.isTwo() else {
+            return extractContentBlocksV1(in: block)
         }
         
         var contents = [DataRange]()
         
-        let partOffset = computePartOffset(forType: layerType, fileVersion: fileVersion)
-        let partSize = loadPartSize(in: data, layerType: layerType, fileVersion: fileVersion)
-        let contentCount = loadContentCount(in: data, layerType: layerType, fileVersion: fileVersion)
-        var offset = partOffset + partSize
+        let contentCount = loadContentCount(in: block.data, layerType: block.layerType, fileVersion: block.fileVersion)
+        var offset = block.contentOffset
         
         for _ in 0..<contentCount {
             
             /* Read the identifier and size */
-            let size = data.readUInt16(at: offset + 2)
+            let size = block.data.readUInt16(at: offset + 2)
             
             /* Build the content block */
-            let dataRange = DataRange(fromData: data, offset: offset, length: size + 4)
+            let dataRange = DataRange(fromData: block.data, offset: offset, length: size + 4)
             contents.append(dataRange)
             
             /* Skip the content */
@@ -279,14 +300,12 @@ private extension Layer {
     }
     
     /* The contents are all unformatted strings */
-    private static func extractContentBlocksV1(in data: DataRange, layerType: LayerType) -> [DataRange] {
+    private static func extractContentBlocksV1(in block: LayerBlock) -> [DataRange] {
         
         var contents = [DataRange]()
         
-        let partOffset = computePartOffset(forType: layerType, fileVersion: FileVersion.v1)
-        let partSize = loadPartSize(in: data, layerType: layerType, fileVersion: FileVersion.v1)
-        let contentCount = loadContentCount(in: data, layerType: layerType, fileVersion: FileVersion.v1)
-        var offset = partOffset + partSize
+        let contentCount = loadContentCount(in: block.data, layerType: block.layerType, fileVersion: FileVersion.v1)
+        var offset = block.contentOffset
         
         for _ in 0..<contentCount {
             
@@ -295,13 +314,13 @@ private extension Layer {
             
             /* Skip the content */
             offset += 2
-            while data.readUInt8(at: offset) != 0 {
+            while block.data.readUInt8(at: offset) != 0 {
                 offset += 1
             }
             offset += 1
             
             /* Build the content block */
-            let dataRange = DataRange(fromData: data, offset: contentOffset, length: offset - contentOffset)
+            let dataRange = DataRange(fromData: block.data, offset: contentOffset, length: offset - contentOffset)
             contents.append(dataRange)
         }
         
@@ -310,7 +329,8 @@ private extension Layer {
     
     static func loadBackgroundPartContents(in data: DataRange, fileVersion: FileVersion, styles: [IndexedStyle]) -> [Card.BackgroundPartContent] {
         
-        let contentBlocks = extractContentBlocks(in: data, layerType: LayerType.card, fileVersion: fileVersion)
+        let block = buildLayerBlock(for: data, layerType: LayerType.card, fileVersion: fileVersion)
+        let contentBlocks = extractContentBlocks(in: block)
         
         let backgroundBlocks = contentBlocks.lazy.filter({ readContentLayerType(in: $0) == LayerType.background })
         let backgroundContents: [Card.BackgroundPartContent] = backgroundBlocks.map({
