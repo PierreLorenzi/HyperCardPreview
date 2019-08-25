@@ -115,39 +115,4 @@ public class Field: Part {
     }
     public var scrollProperty = Property<Int>(0)
     
-    /// How lines of text are aligned in the specified field.
-    public var textAlign: TextAlign {
-        get { return self.textAlignProperty.value }
-        set { self.textAlignProperty.value = newValue }
-    }
-    public var textAlignProperty = Property<TextAlign>(.left)
-    
-    /// The resource identifier of the font in which text in the specified field appears.
-    public var textFontIdentifier: Int {
-        get { return self.textFontIdentifierProperty.value }
-        set { self.textFontIdentifierProperty.value = newValue }
-    }
-    public var textFontIdentifierProperty = Property<Int>(FontIdentifiers.geneva)
-    
-    /// The type size in which text in the specified field appears.
-    public var textFontSize: Int {
-        get { return self.textFontSizeProperty.value }
-        set { self.textFontSizeProperty.value = newValue }
-    }
-    public var textFontSizeProperty = Property<Int>(12)
-    
-    /// The style in which text in the specified field appears.
-    public var textStyle: TextStyle {
-        get { return self.textStyleProperty.value }
-        set { self.textStyleProperty.value = newValue }
-    }
-    public var textStyleProperty = Property<TextStyle>(PlainTextStyle)
-    
-    /// The space between baselines of text in the specified field.
-    public var textHeight: Int {
-        get { return self.textHeightProperty.value }
-        set { self.textHeightProperty.value = newValue }
-    }
-    public var textHeightProperty = Property<Int>(16)
-    
 }

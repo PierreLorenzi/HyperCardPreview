@@ -62,8 +62,6 @@
 		6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */; };
 		6C9E6B141E75BCFA00BBF925 /* StackLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ABA1E75BCFA00BBF925 /* StackLoading.swift */; };
 		6C9E6B321E75BCFA00BBF925 /* LayerLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADC1E75BCFA00BBF925 /* LayerLoading.swift */; };
-		6C9E6B351E75BCFA00BBF925 /* FieldLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6ADF1E75BCFA00BBF925 /* FieldLoading.swift */; };
-		6C9E6B361E75BCFA00BBF925 /* ButtonLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE01E75BCFA00BBF925 /* ButtonLoading.swift */; };
 		6C9E6B381E75BCFA00BBF925 /* FontFamilyLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE31E75BCFA00BBF925 /* FontFamilyLoading.swift */; };
 		6C9E6B391E75BCFA00BBF925 /* BitmapFontLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE41E75BCFA00BBF925 /* BitmapFontLoading.swift */; };
 		6C9E6B3B1E75BCFA00BBF925 /* Image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AE91E75BCFA00BBF925 /* Image.swift */; };
@@ -443,8 +441,6 @@
 		6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataRange.swift; sourceTree = "<group>"; };
 		6C9E6ABA1E75BCFA00BBF925 /* StackLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StackLoading.swift; sourceTree = "<group>"; };
 		6C9E6ADC1E75BCFA00BBF925 /* LayerLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LayerLoading.swift; sourceTree = "<group>"; };
-		6C9E6ADF1E75BCFA00BBF925 /* FieldLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FieldLoading.swift; sourceTree = "<group>"; };
-		6C9E6AE01E75BCFA00BBF925 /* ButtonLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ButtonLoading.swift; sourceTree = "<group>"; };
 		6C9E6AE31E75BCFA00BBF925 /* FontFamilyLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FontFamilyLoading.swift; sourceTree = "<group>"; };
 		6C9E6AE41E75BCFA00BBF925 /* BitmapFontLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitmapFontLoading.swift; sourceTree = "<group>"; };
 		6C9E6AE91E75BCFA00BBF925 /* Image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Image.swift; sourceTree = "<group>"; };
@@ -914,8 +910,6 @@
 				6C9E6ABA1E75BCFA00BBF925 /* StackLoading.swift */,
 				6C9E6ADC1E75BCFA00BBF925 /* LayerLoading.swift */,
 				6C30878C1F48957100CCA9A7 /* PartLoading.swift */,
-				6C9E6ADF1E75BCFA00BBF925 /* FieldLoading.swift */,
-				6C9E6AE01E75BCFA00BBF925 /* ButtonLoading.swift */,
 			);
 			name = Stack;
 			sourceTree = "<group>";
@@ -1821,7 +1815,6 @@
 				6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */,
 				6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */,
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
-				6C9E6B361E75BCFA00BBF925 /* ButtonLoading.swift in Sources */,
 				6C9DF4FA20C7252D0024F61B /* FontFamilyResourceReader.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
@@ -1840,7 +1833,6 @@
 				6C9DF50020C725620024F61B /* ResourceReference.swift in Sources */,
 				6C9E6B471E75BCFA00BBF925 /* FontManager.swift in Sources */,
 				6C9E6B061E75BCFA00BBF925 /* Background.swift in Sources */,
-				6C9E6B351E75BCFA00BBF925 /* FieldLoading.swift in Sources */,
 				6C9DF4D620C703DF0024F61B /* ResourceRepositoryLoading.swift in Sources */,
 				6C9E6B391E75BCFA00BBF925 /* BitmapFontLoading.swift in Sources */,
 			);
