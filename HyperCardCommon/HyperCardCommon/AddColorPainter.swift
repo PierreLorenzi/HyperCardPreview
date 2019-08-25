@@ -25,7 +25,7 @@ public class AddColorPainter {
         }
         
         /* Check if there are AddColor resources */
-        guard repository.resources.first(where: { $0.typeIdentifier == ResourceType.cardColor || $0.typeIdentifier == ResourceType.backgroundColor }) != nil else {
+        guard repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.cardColor || $0.typeIdentifier == ResourceTypes.backgroundColor }) != nil else {
             return
         }
         
@@ -38,16 +38,16 @@ public class AddColorPainter {
         let background = card.background
         
         /* Background */
-        let backgroundResource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.backgroundColor && $0.identifier == background.identifier })
-        if let elements = backgroundResource?.getBackgroundColor().elements {
-            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceType.picture }))
+        let backgroundResource = repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.backgroundColor && $0.identifier == background.identifier })
+        if let elements = backgroundResource?.getColor().elements {
+            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceTypes.picture }))
         }
         
         /* Card */
         if !excludeCardParts {
-            let cardResource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.cardColor && $0.identifier == card.identifier })
-            if let elements = cardResource?.getCardColor().elements {
-                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceType.picture }))
+            let cardResource = repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.cardColor && $0.identifier == card.identifier })
+            if let elements = cardResource?.getColor().elements {
+                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceTypes.picture }))
             }
         }
         

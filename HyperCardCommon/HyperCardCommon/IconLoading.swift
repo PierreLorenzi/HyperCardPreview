@@ -7,10 +7,10 @@
 //
 
 
-public extension Icon {
+extension Icon: ResourceContent {
     
     /// Loads an icon from the data of a ICON resource
-    init(loadFromData data: DataRange) {
+    public init(loadFromData data: DataRange) {
         
         self.image = Image(data: data.sharedData, offset: data.offset, width: Icon.size, height: Icon.size)
     }

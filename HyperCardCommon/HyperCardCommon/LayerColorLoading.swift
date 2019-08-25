@@ -7,10 +7,10 @@
 //
 
 
-public extension LayerColor {
+extension LayerColor: ResourceContent {
     
     /// Loads AddColor declarations from the data of a HCcd or HCbg resource
-    init(loadFromData data: DataRange) {
+    public init(loadFromData data: DataRange) {
         
         let reader = ColorResourceReader(data: data)
         let elements = reader.readElements()

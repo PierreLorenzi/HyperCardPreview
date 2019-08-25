@@ -7,10 +7,10 @@
 //
 
 
-public extension FontFamily {
+extension FontFamily: ResourceContent {
     
     /// Loads a font family from the data of a FOND resource
-    init(loadFromData data: DataRange) {
+    public init(loadFromData data: DataRange) {
         
         let reader = FontFamilyResourceReader(data: data)
         

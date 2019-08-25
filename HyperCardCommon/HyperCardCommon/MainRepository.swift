@@ -34,11 +34,9 @@ private func loadIcons() -> ResourceRepository {
     /* Add the icons */
     let iconIdentifiers = listIconIdentifiers()
     for iconIdentifier in iconIdentifiers {
-        let contentProperty = Property<ResourceContent> { () -> ResourceContent in
-            let icon = loadIcon(withIdentifier: iconIdentifier)
-            return ResourceContent.icon(icon)
+        let icon = Resource(identifier: iconIdentifier, name: "", typeIdentifier: ResourceTypes.icon) { () -> Icon in
+            return loadIcon(withIdentifier: iconIdentifier)
         }
-        let icon = Resource(identifier: iconIdentifier, name: "", typeIdentifier: ResourceType.icon, contentProperty: contentProperty)
         icons.append(icon)
     }
     

@@ -7,10 +7,10 @@
 //
 
 
-public extension VectorFont {
+extension VectorFont: ResourceContent {
     
     /// Loads a vector font from the data of a sfnt resource
-    init(loadFromData dataRange: DataRange) {
+    public init(loadFromData dataRange: DataRange) {
         
         /* Copy the data */
         let slice = dataRange.sharedData[dataRange.offset..<dataRange.offset + dataRange.length]

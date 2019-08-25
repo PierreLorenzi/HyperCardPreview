@@ -11,44 +11,96 @@
 public class Resource {
     
     /// The identifier
-    public var identifier: Int
+    public let identifier: Int
     
     /// The name
-    public var name: HString
+    public let name: HString
     
     /// The type identifier, read in the content
-    public var typeIdentifier: Int
+    public let typeIdentifier: Int
     
     /// The data contained in the resource
-    public var content: ResourceContent {
-        get { return self.contentProperty.value }
-        set { self.contentProperty.value = newValue }
-    }
-    public let contentProperty: Property<ResourceContent>
+    private var content: Content
     
-    /// Main constructor, explicit so it is public
-    public init(identifier: Int, name: HString, typeIdentifier: Int, contentProperty: Property<ResourceContent>) {
+    private enum Content {
+        
+        case value(Any)
+        case notDecoded(DataRange)
+        case notLoaded(() -> Any)
+    }
+    
+    public init(identifier: Int, name: HString, typeIdentifier: Int, data: DataRange) {
         self.identifier = identifier
         self.name = name
         self.typeIdentifier = typeIdentifier
-        self.contentProperty = contentProperty
+        self.content = Content.notDecoded(data)
+    }
+    
+    public init(identifier: Int, name: HString, typeIdentifier: Int, value: Any) {
+        self.identifier = identifier
+        self.name = name
+        self.typeIdentifier = typeIdentifier
+        self.content = Content.value(value)
+    }
+    
+    public init<T>(identifier: Int, name: HString, typeIdentifier: Int, lazyLoad: @escaping () -> T) {
+        self.identifier = identifier
+        self.name = name
+        self.typeIdentifier = typeIdentifier
+        self.content = Content.notLoaded(lazyLoad)
+    }
+    
+    public func isDecoded() -> Bool {
+        
+        switch self.content {
+            
+        case .value:
+            return true
+            
+        case .notLoaded:
+            return true
+            
+        case .notDecoded:
+            return false
+        }
+    }
+    
+    public func getData() -> DataRange {
+        
+        guard case Content.notDecoded(let data) = self.content else {
+            fatalError()
+        }
+        
+        return data
+    }
+    
+    public func getContent<T: ResourceContent>() -> T {
+        
+        switch self.content {
+            
+        case .value(let value):
+            return value as! T
+            
+        case .notDecoded(let data):
+            let value = T(loadFromData: data)
+            self.content = Content.value(value)
+            return value
+            
+        case .notLoaded(let loadAction):
+            let value = loadAction()
+            self.content = Content.value(value)
+            return value as! T
+        }
+        
     }
 }
 
-public enum ResourceContent {
+public protocol ResourceContent {
     
-    case icon(Icon)
-    case fontFamily(FontFamily)
-    case bitmapFont(BitmapFont)
-    case bitmapFontOld(BitmapFont)
-    case vectorFont(VectorFont)
-    case cardColor(LayerColor)
-    case backgroundColor(LayerColor)
-    case picture(Picture)
-    case notParsed(typeIdentifier: Int, data: DataRange)
+    init(loadFromData: DataRange)
 }
 
-public enum ResourceType {
+public enum ResourceTypes {
     
     public static let icon = 0x49434F4E // ICON
     public static let fontFamily = 0x464F4E44 // FOND
@@ -65,78 +117,32 @@ public extension Resource {
     
     func getIcon() -> Icon {
         
-        guard case ResourceContent.icon(let icon) = self.content else {
-            fatalError()
-        }
-        
-        return icon
+        return getContent()
     }
     
     func getFontFamily() -> FontFamily {
         
-        guard case ResourceContent.fontFamily(let fontFamily) = self.content else {
-            fatalError()
-        }
-        
-        return fontFamily
+        return getContent()
     }
     
     func getBitmapFont() -> BitmapFont {
         
-        if case ResourceContent.bitmapFont(let bitmapFont) = self.content {
-            return bitmapFont
-        }
-        
-        if case ResourceContent.bitmapFontOld(let bitmapFontOld) = self.content {
-            return bitmapFontOld
-        }
-        
-        fatalError()
+        return getContent()
     }
     
     func getVectorFont() -> VectorFont {
         
-        guard case ResourceContent.vectorFont(let vectorFont) = self.content else {
-            fatalError()
-        }
-        
-        return vectorFont
+        return getContent()
     }
     
-    func getCardColor() -> LayerColor {
+    func getColor() -> LayerColor {
         
-        guard case ResourceContent.cardColor(let cardColor) = self.content else {
-            fatalError()
-        }
-        
-        return cardColor
-    }
-    
-    func getBackgroundColor() -> LayerColor {
-        
-        guard case ResourceContent.backgroundColor(let backgroundColor) = self.content else {
-            fatalError()
-        }
-        
-        return backgroundColor
+        return getContent()
     }
     
     func getPicture() -> Picture {
         
-        guard case ResourceContent.picture(let picture) = self.content else {
-            fatalError()
-        }
-        
-        return picture
-    }
-    
-    func getDataContent() -> DataRange {
-        
-        guard case ResourceContent.notParsed(_, let data) = self.content else {
-            fatalError()
-        }
-        
-        return data
+        return getContent()
     }
     
 }

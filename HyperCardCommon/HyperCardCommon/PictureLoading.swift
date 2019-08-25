@@ -7,10 +7,10 @@
 //
 
 
-public extension Picture {
+extension Picture: ResourceContent {
     
     /// Loads a picture from the data of a PICT resource
-    init(loadFromData dataRange: DataRange) {
+    public init(loadFromData dataRange: DataRange) {
         
         /* Copy the data */
         let slice = dataRange.sharedData[dataRange.offset..<dataRange.offset + dataRange.length]

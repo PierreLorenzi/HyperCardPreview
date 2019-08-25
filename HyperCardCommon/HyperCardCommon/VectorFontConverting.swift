@@ -12,7 +12,7 @@ import Foundation
 public extension BitmapFont {
     
     /// Builds a bitmap font out of a vector font
-    convenience init(fromVectorFont vectorFont: CTFont) {
+    init(fromVectorFont vectorFont: CTFont) {
         
         self.init()
         

@@ -104,11 +104,10 @@ public extension ResourceRepository {
     
     private static func buildReferencedResource(_ reference: ResourceReference, data: DataRange, globalDataOffset: Int) -> Resource {
         
-        let data = extractResourceData(at: reference.dataOffset, globalDataOffset: globalDataOffset, data: data)
+        let resourceData = extractResourceData(at: reference.dataOffset, globalDataOffset: globalDataOffset, data: data)
         let typeIdentifier = reference.type.value
-        let contentProperty = buildResourceContent(in: data, typeIdentifier: typeIdentifier)
         
-        return Resource(identifier: reference.identifier, name: reference.name, typeIdentifier: typeIdentifier, contentProperty: contentProperty)
+        return Resource(identifier: reference.identifier, name: reference.name, typeIdentifier: typeIdentifier, data: resourceData)
     }
     
     private static func extractResourceData(at dataOffset: Int, globalDataOffset: Int, data: DataRange) -> DataRange {
@@ -116,74 +115,6 @@ public extension ResourceRepository {
         let offset = dataOffset + globalDataOffset
         let length = data.readUInt32(at: offset)
         return DataRange(fromData: data, offset: offset + 4, length: length)
-    }
-    
-    private static func buildResourceContent(in data: DataRange, typeIdentifier: Int) -> Property<ResourceContent> {
-        
-        switch typeIdentifier {
-            
-        case ResourceType.icon:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let icon = Icon(loadFromData: data)
-                return ResourceContent.icon(icon)
-            })
-            
-        case ResourceType.fontFamily:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let fontFamily = FontFamily(loadFromData: data)
-                return ResourceContent.fontFamily(fontFamily)
-            })
-            
-        case ResourceType.bitmapFont, ResourceType.bitmapFontOld:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let bitmapFont = BitmapFont(loadFromData: data)
-                return ResourceContent.bitmapFont(bitmapFont)
-            })
-            
-        case ResourceType.vectorFont:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let vectorFont = VectorFont(loadFromData: data)
-                return ResourceContent.vectorFont(vectorFont)
-            })
-            
-        case ResourceType.cardColor:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let cardColor = LayerColor(loadFromData: data)
-                return ResourceContent.cardColor(cardColor)
-            })
-            
-        case ResourceType.backgroundColor:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let backgroundColor = LayerColor(loadFromData: data)
-                return ResourceContent.backgroundColor(backgroundColor)
-            })
-            
-        case ResourceType.picture:
-            
-            return Property<ResourceContent>(lazy: { () -> ResourceContent in
-                
-                let picture = Picture(loadFromData: data)
-                return ResourceContent.picture(picture)
-            })
-            
-        default:
-            
-            let content = ResourceContent.notParsed(typeIdentifier: typeIdentifier, data: data)
-            return Property<ResourceContent>(content)
-            
-        }
     }
     
 }

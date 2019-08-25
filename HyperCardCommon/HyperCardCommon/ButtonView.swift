@@ -167,7 +167,7 @@ public class ButtonView: View, MouseResponder {
                 return nil
             }
             
-            if let iconResource = resources.findResource(ofType: ResourceType.icon, withIdentifier: iconIdentifier) {
+            if let iconResource = resources.findResource(ofType: ResourceTypes.icon, withIdentifier: iconIdentifier) {
                 return iconResource.getIcon().buildMaskedRepresentation()
             }
             

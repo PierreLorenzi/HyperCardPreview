@@ -8,7 +8,7 @@
 
 
 /// A bitmap font. Contains general measures and a table of the glyphs.
-public class BitmapFont {
+public struct BitmapFont {
     
     /// Maximum width of the characters.
     public var maximumWidth = 0

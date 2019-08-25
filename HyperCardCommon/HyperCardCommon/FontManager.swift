@@ -59,7 +59,7 @@ public class FontManager {
             /* Check if a bitmap font with the right parameters is available */
             if let existingFamilyFont = family.bitmapFonts.first(where: { $0.size == descriptor.size && $0.style == descriptor.style }) {
                 let repositoryIndex = possibleResourceFamily!.repositoryIndex
-                if let font = resources.repositories[repositoryIndex].resources.first(where: { ($0.typeIdentifier == ResourceType.bitmapFont || $0.typeIdentifier == ResourceType.bitmapFontOld) && $0.identifier == existingFamilyFont.resourceIdentifier }) {
+                if let font = resources.repositories[repositoryIndex].resources.first(where: { ($0.typeIdentifier == ResourceTypes.bitmapFont || $0.typeIdentifier == ResourceTypes.bitmapFontOld) && $0.identifier == existingFamilyFont.resourceIdentifier }) {
                     return font.getBitmapFont()
                 }
             }
@@ -68,7 +68,7 @@ public class FontManager {
             if descriptor.style == PlainTextStyle {
                 if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
                     let repositoryIndex = possibleResourceFamily!.repositoryIndex
-                    if let font = resources.repositories[repositoryIndex].resources.first(where: { $0.typeIdentifier == ResourceType.vectorFont &&  $0.identifier == vectorFont.resourceIdentifier }) {
+                    if let font = resources.repositories[repositoryIndex].resources.first(where: { $0.typeIdentifier == ResourceTypes.vectorFont &&  $0.identifier == vectorFont.resourceIdentifier }) {
                         let ctfont = CTFontCreateWithGraphicsFont(font.getVectorFont().cgfont, CGFloat(descriptor.size), nil, nil)
                         return BitmapFont(fromVectorFont: ctfont)
                     }
@@ -127,7 +127,7 @@ public class FontManager {
             
             let repository = resources.repositories[i]
             
-            if let resource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.fontFamily && compareCase($0.name, name) == .equal }) {
+            if let resource = repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.fontFamily && compareCase($0.name, name) == .equal }) {
                 
                 return ResourceFontFamily(fontFamily: resource.getFontFamily(), repositoryIndex: i)
             }
@@ -143,7 +143,7 @@ public class FontManager {
             
             let repository = resources.repositories[i]
             
-            if let resource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.fontFamily && $0.identifier == identifier }) {
+            if let resource = repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.fontFamily && $0.identifier == identifier }) {
                 
                 return ResourceFontFamily(fontFamily: resource.getFontFamily(), repositoryIndex: i)
             }

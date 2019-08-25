@@ -13,7 +13,7 @@
 public extension BitmapFont {
     
     /// Applies a font variation to a bitmap font
-    convenience init(decorate baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) {
+    init(decorate baseFont: BitmapFont, with style: TextStyle, in possibleFamily: FontFamily?, size: Int) {
         
         /* Copy the font */
         self.init()
@@ -33,7 +33,7 @@ public extension BitmapFont {
         
     }
     
-    private func adjustMeasures(for style: TextStyle, properties: FontStyleProperties?, size: Int) {
+    private mutating func adjustMeasures(for style: TextStyle, properties: FontStyleProperties?, size: Int) {
         
         if style.bold {
             self.maximumWidth += computeExtraWidth(byDefault: 1, property: properties?.boldExtraWidth, size: size)

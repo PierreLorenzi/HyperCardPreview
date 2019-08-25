@@ -137,7 +137,7 @@ public class Browser {
             return false
         }
         
-        return repository.resources.first(where: { $0.typeIdentifier == ResourceType.cardColor || $0.typeIdentifier == ResourceType.backgroundColor }) != nil
+        return repository.resources.first(where: { $0.typeIdentifier == ResourceTypes.cardColor || $0.typeIdentifier == ResourceTypes.backgroundColor }) != nil
     }
     
     private func rebuildViews() {
