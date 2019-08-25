@@ -11,6 +11,6 @@
 public struct ResourceRepository {
     
     /// The resources
-    var resources: [Resource]
+    public var resources: [Resource]
 }
 

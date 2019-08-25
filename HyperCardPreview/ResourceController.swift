@@ -175,15 +175,11 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             return
         }
         
-        let dataRange = DataRange(sharedData: resourceFork, offset: 0, length: resourceFork.count)
-        let forkReader = ResourceRepositoryReader(data: dataRange)
-        let mapReader = forkReader.extractResourceMapReader()
-        let references = mapReader.readReferences()
+        let repository = ResourceRepository(loadFromData: resourceFork)
         
-        self.resources = references.map({ (reference: ResourceReference) -> ResourceElement in
+        self.resources = repository.resources.map({ (resource: Resource) -> ResourceElement in
             
-            let dataRange = forkReader.extractResourceData(at: reference.dataOffset)
-            return ResourceElement(type: reference.type.description, identifier: reference.identifier, name: reference.name.description, data: dataRange)
+            return ResourceElement(type: describeResourceType(resource.typeIdentifier), identifier: resource.identifier, name: resource.name.description, data: resource.getData())
         })
         self.listedResources = self.resources
         self.refreshFooterLabel()
@@ -194,6 +190,24 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
             self.refreshSizeLabel()
             self.refreshToolbar()
         }
+    }
+    
+    private func describeResourceType(_ value: Int) -> String {
+        
+        /* Build the string char per char */
+        var string = ""
+        
+        for i in 0..<4 {
+            
+            let value = (value >> ((3-i) * 8)) & 0xFF
+            
+            /* Append the character to the string */
+            let scalar = UnicodeScalar(value)
+            let character = Character(scalar!)
+            string.append(character)
+        }
+        
+        return string
     }
     
     override func windowTitle(forDocumentDisplayName displayName: String) -> String {
