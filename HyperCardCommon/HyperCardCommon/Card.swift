@@ -17,20 +17,6 @@ public class Card: Layer {
     }
     public var backgroundProperty: Property<Background>
     
-    /// The identifier
-    public var identifier: Int {
-        get { return self.identifierProperty.value }
-        set { self.identifierProperty.value = newValue }
-    }
-    public var identifierProperty = Property<Int>(0)
-    
-    /// The name
-    public var name: HString {
-        get { return self.nameProperty.value }
-        set { self.nameProperty.value = newValue }
-    }
-    public var nameProperty = Property<HString>("")
-    
     /// Whether the card is marked. This property is used in HyperCard to filter cards,
     /// for example in "print marked cards"
     public var marked: Bool {
@@ -45,13 +31,6 @@ public class Card: Layer {
         set { self.backgroundPartContentsProperty.value = newValue }
     }
     public var backgroundPartContentsProperty = Property<[BackgroundPartContent]>([])
-    
-    /// The script
-    public var script: HString {
-        get { return self.scriptProperty.value }
-        set { self.scriptProperty.value = newValue }
-    }
-    public var scriptProperty = Property<HString>("")
     
     
     /// To create a card, the background must be provided.

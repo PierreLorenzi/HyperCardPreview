@@ -10,7 +10,7 @@
 public extension Card {
     
     /// Loads a card from a CARD data block inside the stack file data fork.
-    convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
+    convenience init(loadFromDataOld data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
         
         let cardReader = CardBlockReader(data: data, version: version)
         
@@ -46,7 +46,7 @@ public extension Card {
         let result = contentMap.backgroundContents.map({
             (identifier: Int, contentReader: ContentBlockReader) -> Card.BackgroundPartContent in
             
-            let content = Layer.loadContentFromReader(contentReader: contentReader, styles: styles)
+            let content = Layer.loadContentFromReader2(contentReader: contentReader, styles: styles)
             return BackgroundPartContent(partIdentifier: identifier, partContent: content)
         })
         
