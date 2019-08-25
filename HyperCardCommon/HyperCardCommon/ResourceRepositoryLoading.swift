@@ -82,7 +82,7 @@ public extension ResourceRepository {
         })
         
         /* Init */
-        self.init(icons: icons, fontFamilies: fontFamilies, cardColors: cardColors, backgroundColors: backgroundColors, pictures: pictures)
+        self.init(icons: icons, fontFamilies: fontFamilies, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts, cardColors: cardColors, backgroundColors: backgroundColors, pictures: pictures)
     }
     
     private static func readReferences(in data: DataRange) -> [ResourceReference] {

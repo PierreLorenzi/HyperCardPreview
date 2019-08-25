@@ -16,6 +16,12 @@ public struct ResourceRepository {
     /// The font families
     public var fontFamilies: [FontFamilyResource]
     
+    /// The bitmap fonts
+    public var bitmapFonts: [BitmapFontResource]
+    
+    /// The vector fonts
+    public var vectorFonts: [VectorFontResource]
+    
     /// The AddColor resources for the cards
     public var cardColors: [CardColorResource]
     

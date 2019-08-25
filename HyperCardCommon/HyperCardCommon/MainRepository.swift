@@ -28,7 +28,7 @@ private extension ResourceRepository {
 
 private func buildMainRepository() -> ResourceRepository {
     
-    var repository = ResourceRepository(icons: [], fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
+    var repository = ResourceRepository(icons: [], fontFamilies: [], bitmapFonts: [], vectorFonts: [], cardColors: [], backgroundColors: [], pictures: [])
     
     /* Add the icons */
     let icons = loadIcons()
@@ -56,7 +56,7 @@ private func loadIcons() -> ResourceRepository {
         icons.append(icon)
     }
     
-    return ResourceRepository(icons: icons, fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
+    return ResourceRepository(icons: icons, fontFamilies: [], bitmapFonts: [], vectorFonts: [], cardColors: [], backgroundColors: [], pictures: [])
 }
 
 private let IconFilePrefix = "icon_"
@@ -127,7 +127,7 @@ private let classicFontRepositoryNames: [String] = [
 
 private func loadClassicFontResources() -> ResourceRepository {
     
-    var fontRepository = ResourceRepository(icons: [], fontFamilies: [], cardColors: [], backgroundColors: [], pictures: [])
+    var fontRepository = ResourceRepository(icons: [], fontFamilies: [], bitmapFonts: [], vectorFonts: [], cardColors: [], backgroundColors: [], pictures: [])
     let repositories = classicFontRepositoryNames.compactMap(loadClassicFontResources)
     
     for repository in repositories {
