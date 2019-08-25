@@ -369,9 +369,7 @@
 		6CE8F5D620C42C8200B99E39 /* ContentBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D520C42C8200B99E39 /* ContentBlockReader.swift */; };
 		6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */; };
 		6CE8F5DA20C42D1900B99E39 /* BitmapBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D920C42D1900B99E39 /* BitmapBlockReader.swift */; };
-		6CE8F5DC20C42DEA00B99E39 /* StyleBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5DB20C42DEA00B99E39 /* StyleBlockReader.swift */; };
 		6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */; };
-		6CE8F5E020C42E4500B99E39 /* FontBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5DF20C42E4500B99E39 /* FontBlockReader.swift */; };
 		6CE8F5EE20C4330700B99E39 /* LayerBlockCommonReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5ED20C4330700B99E39 /* LayerBlockCommonReader.swift */; };
 		6CEBC0101F4F2E760031BDDC /* TestWindowSize.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CEBC00F1F4F2E760031BDDC /* TestWindowSize.stack */; };
 		6CEBC0121F4F337D0031BDDC /* TestStackScript.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */; };
@@ -765,9 +763,7 @@
 		6CE8F5D520C42C8200B99E39 /* ContentBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedTextFormatting.swift; sourceTree = "<group>"; };
 		6CE8F5D920C42D1900B99E39 /* BitmapBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitmapBlockReader.swift; sourceTree = "<group>"; };
-		6CE8F5DB20C42DEA00B99E39 /* StyleBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedStyle.swift; sourceTree = "<group>"; };
-		6CE8F5DF20C42E4500B99E39 /* FontBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5ED20C4330700B99E39 /* LayerBlockCommonReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayerBlockCommonReader.swift; sourceTree = "<group>"; };
 		6CEBC00F1F4F2E760031BDDC /* TestWindowSize.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestWindowSize.stack; sourceTree = "<group>"; };
 		6CEBC0111F4F337D0031BDDC /* TestStackScript.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestStackScript.stack; sourceTree = "<group>"; };
@@ -1363,8 +1359,6 @@
 				6CE8F5D320C42BAB00B99E39 /* PartBlockReader.swift */,
 				6CE8F5D520C42C8200B99E39 /* ContentBlockReader.swift */,
 				6CE8F5D920C42D1900B99E39 /* BitmapBlockReader.swift */,
-				6CE8F5DB20C42DEA00B99E39 /* StyleBlockReader.swift */,
-				6CE8F5DF20C42E4500B99E39 /* FontBlockReader.swift */,
 			);
 			name = Stack;
 			sourceTree = "<group>";
@@ -1823,7 +1817,6 @@
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
 				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
-				6CE8F5DC20C42DEA00B99E39 /* StyleBlockReader.swift in Sources */,
 				6CE8F5CE20C42A6A00B99E39 /* LayerBlockReader.swift in Sources */,
 				6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */,
 				6CE8F5D020C42B3100B99E39 /* CardBlockReader.swift in Sources */,
@@ -1887,7 +1880,6 @@
 				6C9DF4FE20C7252D0024F61B /* ColorResourceReader.swift in Sources */,
 				6CE8F5D220C42B7400B99E39 /* BackgroundBlockReader.swift in Sources */,
 				6C30E8D11F4D117A00ACB457 /* StringComparison.swift in Sources */,
-				6CE8F5E020C42E4500B99E39 /* FontBlockReader.swift in Sources */,
 				6C9E6B0B1E75BCFA00BBF925 /* ResourceRepository.swift in Sources */,
 				6C30878D1F48957100CCA9A7 /* PartLoading.swift in Sources */,
 				6C9E6B051E75BCFA00BBF925 /* Card.swift in Sources */,
