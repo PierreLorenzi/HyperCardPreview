@@ -16,7 +16,7 @@ public extension ResourceRepository {
     private struct ResourceReference {
         
         /// Type of the resource
-        public var type: NumericName
+        public var type: Int
         
         /// ID of the resource
         public var identifier: Int
@@ -88,7 +88,7 @@ public extension ResourceRepository {
                 let name = (nameOffsetInList == -1) ? "" : readName(data: data, nameListOffset: nameListOffset, nameOffsetInList: nameOffsetInList)
                 
                 /* Build the reference */
-                let reference = ResourceReference(type: NumericName(value: type), identifier: identifier, name: name, dataOffset: dataOffset)
+                let reference = ResourceReference(type: type, identifier: identifier, name: name, dataOffset: dataOffset)
                 references.append(reference)
                 
                 /* Increment */
@@ -120,7 +120,7 @@ public extension ResourceRepository {
     private static func buildReferencedResource(_ reference: ResourceReference, data: DataRange, globalDataOffset: Int) -> Resource {
         
         let resourceData = extractResourceData(at: reference.dataOffset, globalDataOffset: globalDataOffset, data: data)
-        let typeIdentifier = reference.type.value
+        let typeIdentifier = reference.type
         
         return Resource(identifier: reference.identifier, name: reference.name, typeIdentifier: typeIdentifier, data: resourceData)
     }

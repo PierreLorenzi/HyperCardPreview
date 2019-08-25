@@ -37,9 +37,7 @@
 		6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */; };
 		6C9E6AFE1E75BCFA00BBF925 /* Numeric Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6A9F1E75BCFA00BBF925 /* Numeric Functions.swift */; };
 		6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA01E75BCFA00BBF925 /* HyperCardBundle.swift */; };
-		6C9E6B001E75BCFA00BBF925 /* NumericName.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA11E75BCFA00BBF925 /* NumericName.swift */; };
 		6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA21E75BCFA00BBF925 /* HString.swift */; };
-		6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA31E75BCFA00BBF925 /* SearchHash.swift */; };
 		6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA51E75BCFA00BBF925 /* Stack.swift */; };
 		6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA61E75BCFA00BBF925 /* Layer.swift */; };
 		6C9E6B051E75BCFA00BBF925 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9E6AA71E75BCFA00BBF925 /* Card.swift */; };
@@ -408,9 +406,7 @@
 		6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonTypes.swift; sourceTree = "<group>"; };
 		6C9E6A9F1E75BCFA00BBF925 /* Numeric Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Numeric Functions.swift"; sourceTree = "<group>"; };
 		6C9E6AA01E75BCFA00BBF925 /* HyperCardBundle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardBundle.swift; sourceTree = "<group>"; };
-		6C9E6AA11E75BCFA00BBF925 /* NumericName.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumericName.swift; sourceTree = "<group>"; };
 		6C9E6AA21E75BCFA00BBF925 /* HString.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HString.swift; sourceTree = "<group>"; };
-		6C9E6AA31E75BCFA00BBF925 /* SearchHash.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchHash.swift; sourceTree = "<group>"; };
 		6C9E6AA51E75BCFA00BBF925 /* Stack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stack.swift; sourceTree = "<group>"; };
 		6C9E6AA61E75BCFA00BBF925 /* Layer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Layer.swift; sourceTree = "<group>"; };
 		6C9E6AA71E75BCFA00BBF925 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -812,9 +808,7 @@
 				6C9E6A9E1E75BCFA00BBF925 /* CommonTypes.swift */,
 				6C9E6A9F1E75BCFA00BBF925 /* Numeric Functions.swift */,
 				6C9E6AA01E75BCFA00BBF925 /* HyperCardBundle.swift */,
-				6C9E6AA11E75BCFA00BBF925 /* NumericName.swift */,
 				6C9E6AA21E75BCFA00BBF925 /* HString.swift */,
-				6C9E6AA31E75BCFA00BBF925 /* SearchHash.swift */,
 				6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */,
 				6C76AA9720C5956C009A3446 /* Computation.swift */,
 				6C30E8D01F4D117A00ACB457 /* StringComparison.swift */,
@@ -1718,7 +1712,6 @@
 				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
 				6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */,
-				6C9E6B001E75BCFA00BBF925 /* NumericName.swift in Sources */,
 				6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */,
 				6C9E6B071E75BCFA00BBF925 /* Part.swift in Sources */,
 				6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */,
@@ -1737,7 +1730,6 @@
 				6CA2CCBA20C82A500042148A /* HyperCardFile.swift in Sources */,
 				6C8746271F5402E0005A41AB /* Responder.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
-				6C9E6B021E75BCFA00BBF925 /* SearchHash.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
 				6C9E6B141E75BCFA00BBF925 /* StackLoading.swift in Sources */,

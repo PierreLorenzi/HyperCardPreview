@@ -645,3 +645,43 @@ public enum FileVersion {
     }
 }
 
+public extension Int {
+    
+    /// Inits an OSType value from a string representation, in C it would
+    /// convert "STAK" to 'STAK'
+    init(classicType: String) {
+        
+        var shift = 24
+        
+        var identifier = 0
+        
+        for code in classicType.unicodeScalars {
+            
+            /* There must not be more than 4 chars */
+            if shift < 0 {
+                fatalError()
+            }
+            
+            /* The code must be ASCII */
+            if !code.isASCII {
+                fatalError()
+            }
+            
+            /* Append the code to the identifier */
+            let codeValue = Int(code.value)
+            identifier |= codeValue << shift
+            
+            /* Move to the next bits */
+            shift -= 8
+            
+        }
+        
+        /* There must not be less that 4 chars */
+        if shift != -8 {
+            fatalError()
+        }
+        
+        self = identifier
+    }
+}
+

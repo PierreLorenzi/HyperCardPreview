@@ -81,7 +81,7 @@ extension Sound {
         case threeToOne
         case sixToOne
         case otherID(Int)
-        case otherFormat(NumericName)
+        case otherFormat(Int)
     }
     
     /// Builds a sound by parsing the content of a 'snd ' resource
@@ -269,18 +269,17 @@ extension Sound {
     
     private static func readCompressionFormat(in data: DataRange) -> CompressionType {
         
-        let compressionFormatValue = data.readUInt32(at: 0x28)
-        let compressionFormat = NumericName(value: compressionFormatValue)
+        let compressionFormat = data.readUInt32(at: 0x28)
         
         switch compressionFormat {
             
-        case NumericName(string: "NONE"):
+        case Int(classicType: "NONE"):
             return CompressionType.notCompressed
             
-        case NumericName(string: "MAC3"):
+        case Int(classicType: "MAC3"):
             return CompressionType.threeToOne
             
-        case NumericName(string: "MAC6"):
+        case Int(classicType: "MAC6"):
             return CompressionType.sixToOne
             
         default:

@@ -102,14 +102,14 @@ public protocol ResourceContent {
 
 public enum ResourceTypes {
     
-    public static let icon = 0x49434F4E // ICON
-    public static let fontFamily = 0x464F4E44 // FOND
-    public static let bitmapFont = 0x4E464E54 // NFNT
-    public static let bitmapFontOld = 0x464F4E54 // FONT
-    public static let vectorFont = 0x73666E74 // sfnt
-    public static let cardColor = 0x48436364 // HCcd
-    public static let backgroundColor = 0x48436267 // HCbg
-    public static let picture = 0x50494354 // PICT
+    public static let icon = Int(classicType: "ICON")
+    public static let fontFamily = Int(classicType: "FOND")
+    public static let bitmapFont = Int(classicType: "NFNT")
+    public static let bitmapFontOld = Int(classicType: "FONT")
+    public static let vectorFont = Int(classicType: "sfnt")
+    public static let cardColor = Int(classicType: "HCcd")
+    public static let backgroundColor = Int(classicType: "HCbg")
+    public static let picture = Int(classicType: "PICT")
 }
 
 /* The shortcut functions */
