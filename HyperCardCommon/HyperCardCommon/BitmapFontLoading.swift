@@ -12,42 +12,48 @@ extension BitmapFont: ResourceContent {
     /// Loads a bitmap font from the data of a NFNT or FONT resource
     public init(loadFromData data: DataRange) {
         
-        let reader = BitmapFontResourceReader(data: data)
-        
         self.init()
         
         /* Read now the scalar fields */
-        self.maximumWidth = reader.readMaximumWidth()
-        self.maximumKerning = reader.readMaximumKerning()
-        self.fontRectangleWidth = reader.readFontRectangleWidth()
-        self.fontRectangleHeight = reader.readFontRectangleHeight()
-        self.maximumAscent = reader.readMaximumAscent()
-        self.maximumDescent = reader.readMaximumDescent()
-        self.leading = reader.readLeading()
+        self.maximumWidth = data.readUInt16(at: 0x6)
+        self.maximumKerning = data.readSInt16(at: 0x8)
+        self.fontRectangleWidth = data.readUInt16(at: 0xC)
+        self.fontRectangleHeight = data.readUInt16(at: 0xE)
+        self.maximumAscent = data.readUInt16(at: 0x12)
+        self.maximumDescent = data.readUInt16(at: 0x14)
+        self.leading = data.readUInt16(at: 0x16)
         
         /* Lazy load the glyphs */
         self.glyphsProperty.lazyCompute { () -> [Glyph] in
-            return BitmapFont.loadGlyphs(reader: reader)
+            return BitmapFont.loadGlyphs(in: data)
         }
     }
     
-    private static func loadGlyphs(reader: BitmapFontResourceReader) -> [Glyph] {
+    private static func loadGlyphs(in data: DataRange) -> [Glyph] {
         
         var glyphs = [Glyph]()
         
         /* Gather some data */
-        let lastCharacterCode = reader.readLastCharacterCode()
-        let firstCharacterCode = reader.readFirstCharacterCode()
-        let maximumAscent = reader.readMaximumAscent()
-        let maximumKerning = reader.readMaximumKerning()
-        let fontRectangleHeight = reader.readFontRectangleHeight()
-        let widthTable = reader.readWidthTable()
-        let offsetTable = reader.readOffsetTable()
-        let bitmapLocationTable = reader.readBitmapLocationTable()
-        let bitImageProperty = Property<Image> { () -> Image in
-            return reader.readBitImage()
-        }
-        let loadBitImage = { () -> Image in return bitImageProperty.value }
+        let firstCharacterCode = data.readUInt16(at: 0x2)
+        let lastCharacterCode = data.readUInt16(at: 0x4)
+        let maximumAscent = data.readUInt16(at: 0x12)
+        let maximumKerning = data.readSInt16(at: 0x8)
+        let fontRectangleHeight = data.readUInt16(at: 0xE)
+        let bitImageRowWidth = data.readUInt16(at: 0x18)
+        
+        /* Compute some values */
+        let characterCount = lastCharacterCode - firstCharacterCode + 2
+        let bitImageSize = bitImageRowWidth * 2 * fontRectangleHeight
+        let bitmapLocationTableSize = (characterCount + 1) * 2
+        
+        /* Read the font tables */
+        let widthTable = BitmapFont.readWidthTable(in: data, characterCount: characterCount, bitImageSize: bitImageSize, bitmapLocationTableSize: bitmapLocationTableSize)
+        let offsetTable = BitmapFont.readOffsetTable(in: data, characterCount: characterCount, bitImageSize: bitImageSize, bitmapLocationTableSize: bitmapLocationTableSize)
+        let bitmapLocationTable = BitmapFont.readBitmapLocationTable(in: data, characterCount: characterCount, bitImageSize: bitImageSize)
+        
+        // The bit image of the glyphs in the font. The glyph images of every defined glyph in the font are placed sequentially in order of increasing ASCII code. The bit image is one pixel image with no undefined stretches that has a height given by the value of the font rectangle element and a width given by the value of the bit image row width element. The image is padded at the end with extra pixels to make its length a multiple of 16.
+        let loadBitImage = { () -> Image in
+            return Image(data: data.sharedData, offset: data.offset + 0x1A, width: bitImageRowWidth*16, height: fontRectangleHeight) }
         
         /* The special glyph is used outside the character bounds. It is the last in the font */
         let specialGlyphIndex = lastCharacterCode - firstCharacterCode + 1
@@ -68,6 +74,65 @@ extension BitmapFont: ResourceContent {
         }
         
         return glyphs
+    }
+    
+    /// For every character, the width, that is, length in pixels from origin to origin of next glyph
+    private static func readWidthTable(in data: DataRange, characterCount: Int, bitImageSize: Int, bitmapLocationTableSize: Int) -> [Int] {
+        
+        var widths = [Int](repeating: 0, count: characterCount)
+        
+        let startOffset = 0x1A + bitImageSize + bitmapLocationTableSize
+        
+        for i in 0..<characterCount {
+            
+            let value = data.readSInt16(at: startOffset + 2 * i)
+            if value == -1 {
+                continue
+            }
+            
+            widths[i] = value & 255
+        }
+        
+        return widths
+    }
+    
+    /// For every character, the horizontal distance from the glyph origin to the left edge of the bit image of the glyph, in pixels. If it is negative, the glyph origin
+    /// is to the right of the glyph image's left edge, meaning the glyph kerns to the left.
+    /// If it is positive, the origin is to the left of the image's left edge. If the sum equals zero, the glyph origin corresponds with the left edge of the bit image
+    private static func readOffsetTable(in data: DataRange, characterCount: Int, bitImageSize: Int, bitmapLocationTableSize: Int) -> [Int] {
+        
+        var widths = [Int](repeating: 0, count: characterCount)
+        
+        let startOffset = 0x1A + bitImageSize + bitmapLocationTableSize
+        
+        for i in 0..<characterCount {
+            
+            let value = data.readSInt16(at: startOffset + 2 * i)
+            if value == -1 {
+                continue
+            }
+            
+            widths[i] = value >> 8
+        }
+        
+        return widths
+    }
+    
+    /// Bitmap location table. For every glyph in the font, this table contains a word that specifies the bit offset to the location of the bitmap for that glyph in the bit image table. If a glyph is missing from the font, its entry contains the same value for its location as the entry for the next glyph. The missing glyph is the last glyph of the bit image for that font. The last word of the table contains the offset to one bit beyond the end of the bit image. You can determine the image width of each glyph from the bitmap location table by subtracting the bit offset to that glyph from the bit offset to the next glyph in the table.
+    private static func readBitmapLocationTable(in data: DataRange, characterCount: Int, bitImageSize: Int) -> [Int] {
+        
+        let tableCount = characterCount + 1
+        let startOffset = 0x1A + bitImageSize
+        
+        var locations = [Int](repeating: 0, count: tableCount)
+        
+        for i in 0..<tableCount {
+            
+            let value = data.readUInt16(at: startOffset + 2 * i)
+            locations[i] = value
+        }
+        
+        return locations
     }
     
 }
