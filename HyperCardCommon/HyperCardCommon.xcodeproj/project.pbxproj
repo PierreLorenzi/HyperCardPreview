@@ -899,20 +899,12 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
-		6C9E6AE71E75BCFA00BBF925 /* Loading */ = {
+		6C9E6AE81E75BCFA00BBF925 /* File */ = {
 			isa = PBXGroup;
 			children = (
 				6CA2CCBB20C82A6C0042148A /* HyperCardFileLoading.swift */,
 				6C9E6AE11E75BCFA00BBF925 /* Stack */,
 				6C9E6AE61E75BCFA00BBF925 /* Resources */,
-			);
-			name = Loading;
-			sourceTree = "<group>";
-		};
-		6C9E6AE81E75BCFA00BBF925 /* File */ = {
-			isa = PBXGroup;
-			children = (
-				6C9E6AE71E75BCFA00BBF925 /* Loading */,
 				6C9E6AB91E75BCFA00BBF925 /* Common */,
 			);
 			name = File;
