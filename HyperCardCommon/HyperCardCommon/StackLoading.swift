@@ -32,6 +32,22 @@ public extension Stack {
         self.loadStructureFields(in: data, decodedData: decodedData)
     }
     
+    /// Errors raised when loading a stack from a file
+    enum OpeningError: Error {
+        
+        /// The file is not a HyperCard stack
+        case notStack
+        
+        /// The file data is corrupted
+        case corrupted
+        
+        /// You must provide a password
+        case missingPassword
+        
+        /// Your password was wrong.
+        case wrongPassword
+    }
+    
     private struct CardList {
         
         var cardReferenceSize: Int
