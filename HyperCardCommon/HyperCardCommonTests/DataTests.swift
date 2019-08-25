@@ -24,16 +24,14 @@ class DataTests: XCTestCase {
         /* Open stack */
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestStrangeFlags", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = StackReader(data: dataRange)
+        let hyperCardFile = try! HyperCardFile(file: file)
+        let stack = hyperCardFile.stack
         
         /* Check window rectangle */
-        let stackBlock = fileReader.extractStackBlock()
-        let stackReader = try! StackBlockReader(data: stackBlock)
-        XCTAssert(stackReader.readWindowRectangle() == Rectangle(top: 0, left: 0, bottom: 0x156, right: 0x200))
+        XCTAssert(stack.windowRectangle == Rectangle(top: 0, left: 0, bottom: 0x156, right: 0x200))
         
-        /* Check Master Block by loading the list */
-        _ = fileReader.extractListBlock(withIdentifier: 0x114B)
+        /* Load the list by reading the cards */
+        _ = stack.cards
         
     }
     

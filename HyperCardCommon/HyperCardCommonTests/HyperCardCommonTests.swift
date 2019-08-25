@@ -71,20 +71,6 @@ class HyperCardCommonTests: XCTestCase {
         
     }
     
-    /// Test the free size setting of stacks
-    func testFreeSize() {
-        
-        let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestFreeSize", ofType: "stack")!
-        let file = ClassicFile(path: path)
-        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = StackReader(data: dataRange)
-        let stackBlock = fileReader.extractStackBlock()
-        let stackReader = try! StackBlockReader(data: stackBlock)
-        
-        XCTAssert(stackReader.readFreeSize() == 3232)
-        
-    }
-    
     /// Test security settings of the stacks
     func testSecurity() {
         
@@ -192,10 +178,6 @@ class HyperCardCommonTests: XCTestCase {
         
         let path = Bundle(for: HyperCardCommonTests.self).path(forResource: "TestWindowSize", ofType: "stack")!
         let file = ClassicFile(path: path)
-        let dataRange = DataRange(sharedData: file.dataFork!, offset: 0, length: file.dataFork!.count)
-        let fileReader = StackReader(data: dataRange)
-        let stackBlock = fileReader.extractStackBlock()
-        let stackReader = try! StackBlockReader(data: stackBlock)
         
         /* I couldn't test the scroll because it wasn't saved in HyperCard 2.4.1 */
         
@@ -204,16 +186,13 @@ class HyperCardCommonTests: XCTestCase {
         let windowRectangle = Rectangle(top: 200, left: 272, bottom: 584, right: 848)
         let screenRectangle = Rectangle(top: 0, left: 0, bottom: 768, right: 1024)
         
-        /* Check file */
-        XCTAssert(stackReader.readSize() == cardSize)
-        XCTAssert(stackReader.readScrollPoint() == scroll)
-        XCTAssert(stackReader.readWindowRectangle() == windowRectangle)
-        XCTAssert(stackReader.readScreenRectangle() == screenRectangle)
-        
         /* Check data */
         let hyperCardFile = try! HyperCardFile(file: file)
         let stack = hyperCardFile.stack
         XCTAssert(stack.size == cardSize)
+        XCTAssert(stack.scrollPoint == scroll)
+        XCTAssert(stack.windowRectangle == windowRectangle)
+        XCTAssert(stack.screenRectangle == screenRectangle)
         
     }
     
