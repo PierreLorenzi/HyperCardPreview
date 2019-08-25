@@ -20,10 +20,9 @@ public struct ResourceSystem {
     public init() {}
     
     /// Finds a resource by identifier in the forks, respecting the order of precedence
-    public func findResource<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>, withIdentifier identifier: Int) -> Resource<T>? {
+    public func findResource(ofType typeIdentifier: Int, withIdentifier identifier: Int) -> Resource? {
         for repository in repositories {
-            let resources = repository[keyPath: keyPath]
-            if let resource = resources.first(where: { $0.identifier == identifier }) {
+            if let resource = repository.resources.first(where: { $0.typeIdentifier == typeIdentifier && $0.identifier == identifier }) {
                 return resource
             }
         }
@@ -31,26 +30,13 @@ public struct ResourceSystem {
     }
     
     /// Finds a resource by name in the forks, respecting the order of precedence
-    public func findResource<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>, withName name: HString) -> Resource<T>? {
+    public func findResource(ofType typeIdentifier: Int, withName name: HString) -> Resource? {
         for repository in repositories {
-            let resources = repository[keyPath: keyPath]
-            if let resource = resources.first(where: { compareCase($0.name, name) == .equal }) {
+            if let resource = repository.resources.first(where: { $0.typeIdentifier == typeIdentifier && compareCase($0.name, name) == .equal }) {
                 return resource
             }
         }
         return nil
-    }
-    
-    /// Lists all the resources of a certain type. Respects the order of precedence.
-    public func listResources<T: ResourceType>(ofType keyPath: KeyPath<ResourceRepository, [Resource<T>]>) -> [Resource<T>] {
-        var list = [Resource<T>]()
-        var identifiers = Set<Int>()
-        for repository in repositories {
-            let resources = repository[keyPath: keyPath]
-            let resourcesNonRedundant = resources.filter { identifiers.insert($0.identifier).inserted }
-            list.append(contentsOf: resourcesNonRedundant)
-        }
-        return list
     }
     
 }

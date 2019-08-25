@@ -20,12 +20,12 @@ public class AddColorPainter {
     public static func paintAddColor(ofFile hyperCardFile: HyperCardFile, atCardIndex cardIndex: Int, excludeCardParts: Bool, onContext context: CGContext) {
         
         /* Check if there are resources */
-        guard let resources = hyperCardFile.resources else {
+        guard let repository = hyperCardFile.resources else {
             return
         }
         
         /* Check if there are AddColor resources */
-        guard !resources.cardColors.isEmpty || !resources.backgroundColors.isEmpty else {
+        guard repository.resources.first(where: { $0.typeIdentifier == ResourceType.cardColor || $0.typeIdentifier == ResourceType.backgroundColor }) != nil else {
             return
         }
         
@@ -38,22 +38,22 @@ public class AddColorPainter {
         let background = card.background
         
         /* Background */
-        let backgroundResource = resources.backgroundColors.first(where: { $0.identifier == background.identifier })
-        if let elements = backgroundResource?.content.elements {
-            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, pictures: resources.pictures)
+        let backgroundResource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.backgroundColor && $0.identifier == background.identifier })
+        if let elements = backgroundResource?.getBackgroundColor().elements {
+            AddColorPainter.paintAddColorElements(elements, ofLayer: background, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceType.picture }))
         }
         
         /* Card */
         if !excludeCardParts {
-            let cardResource = resources.cardColors.first(where: { $0.identifier == card.identifier })
-            if let elements = cardResource?.content.elements {
-                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, pictures: resources.pictures)
+            let cardResource = repository.resources.first(where: { $0.typeIdentifier == ResourceType.cardColor && $0.identifier == card.identifier })
+            if let elements = cardResource?.getCardColor().elements {
+                AddColorPainter.paintAddColorElements(elements, ofLayer: card, onContext: context, pictures: repository.resources.filter({ $0.typeIdentifier == ResourceType.picture }))
             }
         }
         
     }
     
-    private static func paintAddColorElements(_ elements: [AddColorElement], ofLayer layer: Layer, onContext context: CGContext, pictures: [PictureResource]) {
+    private static func paintAddColorElements(_ elements: [AddColorElement], ofLayer layer: Layer, onContext context: CGContext, pictures: [Resource]) {
         
         for element in elements {
             
@@ -211,10 +211,10 @@ public class AddColorPainter {
         }
     }
     
-    private static func paintPicture(name: HString, rectangle: Rectangle, transparent: Bool, onContext context: CGContext, pictures: [PictureResource]) {
+    private static func paintPicture(name: HString, rectangle: Rectangle, transparent: Bool, onContext context: CGContext, pictures: [Resource]) {
         
         /* Find the resource */
-        guard let image = pictures.first(where: { compareCase($0.name, name) == .equal })?.content.nsimage else {
+        guard let image = pictures.first(where: { compareCase($0.name, name) == .equal })?.getPicture().nsimage else {
             return
         }
         

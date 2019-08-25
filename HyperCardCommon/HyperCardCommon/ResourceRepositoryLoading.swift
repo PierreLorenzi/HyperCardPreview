@@ -9,15 +9,6 @@
 
 public extension ResourceRepository {
     
-    private static let iconTypeName = NumericName(string: "ICON")!
-    private static let fontFamilyTypeName = NumericName(string: "FOND")!
-    private static let bitmapFontTypeName = NumericName(string: "NFNT")!
-    private static let bitmapFontOldTypeName = NumericName(string: "FONT")!
-    private static let vectorFontTypeName = NumericName(string: "sfnt")!
-    private static let cardColorTypeName = NumericName(string: "HCcd")!
-    private static let backgroundColorTypeName = NumericName(string: "HCbg")!
-    private static let pictureTypeName = NumericName(string: "PICT")!
-    
     private static let mapHeaderLength = 30
     private static let mapTypeLength = 8
     private static let mapReferenceLength = 12
@@ -38,51 +29,13 @@ public extension ResourceRepository {
         /* Load the offset of the resource data table */
         let globalDataOffset = data.readUInt32(at: 0x0)
         
-        /* List the icons */
-        let icons = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: IconResourceType.self, typeName: ResourceRepository.iconTypeName, parse: { (data: DataRange) -> Icon in
-            return Icon(loadFromData: data)
-        })
-        
-        /* List the bitmap fonts */
-        let bitmapFontsNew = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontTypeName, parse: { (data: DataRange) -> BitmapFont in
-            return BitmapFont(loadFromData: data)
-        })
-        
-        /* List the bitmap fonts from old format */
-        let bitmapFontsOld = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: BitmapFontResourceType.self, typeName: ResourceRepository.bitmapFontOldTypeName, parse: { (data: DataRange) -> BitmapFont in
-            return BitmapFont(loadFromData: data)
-        })
-        
-        /* List all the bitmap fonts */
-        let bitmapFonts: [BitmapFontResource] = bitmapFontsNew + bitmapFontsOld
-        
-        /* List the vector fonts */
-        let vectorFonts = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: VectorFontResourceType.self, typeName: ResourceRepository.vectorFontTypeName, parse: { (data: DataRange) -> VectorFont in
-            return VectorFont(loadFromData: data)
-        })
-        
-        /* List the font familes */
-        let fontFamilies = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: FontFamilyResourceType.self, typeName: ResourceRepository.fontFamilyTypeName, parse: { (data: DataRange) -> FontFamily in
-            return FontFamily(loadFromData: data)
-        })
-        
-        /* List the card colors */
-        let cardColors = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: CardColorResourceType.self, typeName: ResourceRepository.cardColorTypeName, parse: { (data: DataRange) -> LayerColor in
-            return LayerColor(loadFromData: data)
-        })
-        
-        /* List the background colors */
-        let backgroundColors = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: BackgroundColorResourceType.self, typeName: ResourceRepository.backgroundColorTypeName, parse: { (data: DataRange) -> LayerColor in
-            return LayerColor(loadFromData: data)
-        })
-        
-        /* List the background colors */
-        let pictures = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: PictureResourceType.self, typeName: ResourceRepository.pictureTypeName, parse: { (data: DataRange) -> Picture in
-            return Picture(loadFromData: data)
+        /* List the resources */
+        let resources: [Resource] = references.map({
+            ResourceRepository.buildReferencedResource($0, data: data, globalDataOffset: globalDataOffset)
         })
         
         /* Init */
-        self.init(icons: icons, fontFamilies: fontFamilies, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts, cardColors: cardColors, backgroundColors: backgroundColors, pictures: pictures)
+        self.init(resources: resources)
     }
     
     private static func readReferences(in data: DataRange) -> [ResourceReference] {
@@ -149,18 +102,13 @@ public extension ResourceRepository {
         
     }
     
-    private static func listResources<T: ResourceType>(references: [ResourceReference], data: DataRange, globalDataOffset: Int, withType type: T.Type, typeName: NumericName, parse: @escaping (DataRange) -> T.ContentType) -> [Resource<T>] {
+    private static func buildReferencedResource(_ reference: ResourceReference, data: DataRange, globalDataOffset: Int) -> Resource {
         
-        let typeReferences = references.filter({ $0.type == typeName })
+        let data = extractResourceData(at: reference.dataOffset, globalDataOffset: globalDataOffset, data: data)
+        let typeIdentifier = reference.type.value
+        let contentProperty = buildResourceContent(in: data, typeIdentifier: typeIdentifier)
         
-        return typeReferences.map({ (reference: ResourceReference) -> Resource<T> in
-            
-            let resourceData = extractResourceData(at: reference.dataOffset, globalDataOffset: globalDataOffset, data: data)
-            let contentProperty = Property<T.ContentType>(lazy: { () -> T.ContentType in
-                return parse(resourceData)
-            })
-            return Resource<T>(identifier: reference.identifier, name: reference.name, contentProperty: contentProperty)
-        })
+        return Resource(identifier: reference.identifier, name: reference.name, typeIdentifier: typeIdentifier, contentProperty: contentProperty)
     }
     
     private static func extractResourceData(at dataOffset: Int, globalDataOffset: Int, data: DataRange) -> DataRange {
@@ -168,6 +116,74 @@ public extension ResourceRepository {
         let offset = dataOffset + globalDataOffset
         let length = data.readUInt32(at: offset)
         return DataRange(fromData: data, offset: offset + 4, length: length)
+    }
+    
+    private static func buildResourceContent(in data: DataRange, typeIdentifier: Int) -> Property<ResourceContent> {
+        
+        switch typeIdentifier {
+            
+        case ResourceType.icon:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let icon = Icon(loadFromData: data)
+                return ResourceContent.icon(icon)
+            })
+            
+        case ResourceType.fontFamily:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let fontFamily = FontFamily(loadFromData: data)
+                return ResourceContent.fontFamily(fontFamily)
+            })
+            
+        case ResourceType.bitmapFont, ResourceType.bitmapFontOld:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let bitmapFont = BitmapFont(loadFromData: data)
+                return ResourceContent.bitmapFont(bitmapFont)
+            })
+            
+        case ResourceType.vectorFont:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let vectorFont = VectorFont(loadFromData: data)
+                return ResourceContent.vectorFont(vectorFont)
+            })
+            
+        case ResourceType.cardColor:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let cardColor = LayerColor(loadFromData: data)
+                return ResourceContent.cardColor(cardColor)
+            })
+            
+        case ResourceType.backgroundColor:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let backgroundColor = LayerColor(loadFromData: data)
+                return ResourceContent.backgroundColor(backgroundColor)
+            })
+            
+        case ResourceType.picture:
+            
+            return Property<ResourceContent>(lazy: { () -> ResourceContent in
+                
+                let picture = Picture(loadFromData: data)
+                return ResourceContent.picture(picture)
+            })
+            
+        default:
+            
+            let content = ResourceContent.notParsed(typeIdentifier: typeIdentifier, data: data)
+            return Property<ResourceContent>(content)
+            
+        }
     }
     
 }

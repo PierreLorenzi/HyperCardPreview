@@ -29,19 +29,20 @@ private func buildMainRepositories() -> [ResourceRepository] {
 private func loadIcons() -> ResourceRepository {
     
     /* Create the repository */
-    var icons = [IconResource]()
+    var icons = [Resource]()
     
     /* Add the icons */
     let iconIdentifiers = listIconIdentifiers()
     for iconIdentifier in iconIdentifiers {
-        let contentProperty = Property<Icon> { () -> Icon in
-            return loadIcon(withIdentifier: iconIdentifier)
+        let contentProperty = Property<ResourceContent> { () -> ResourceContent in
+            let icon = loadIcon(withIdentifier: iconIdentifier)
+            return ResourceContent.icon(icon)
         }
-        let icon = IconResource(identifier: iconIdentifier, name: "", contentProperty: contentProperty)
+        let icon = Resource(identifier: iconIdentifier, name: "", typeIdentifier: ResourceType.icon, contentProperty: contentProperty)
         icons.append(icon)
     }
     
-    return ResourceRepository(icons: icons, fontFamilies: [], bitmapFonts: [], vectorFonts: [], cardColors: [], backgroundColors: [], pictures: [])
+    return ResourceRepository(resources: icons)
 }
 
 private let IconFilePrefix = "icon_"
