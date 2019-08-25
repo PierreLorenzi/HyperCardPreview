@@ -29,11 +29,6 @@ public extension Field {
         self.autoSelect = partReader.readAutoSelect()
         self.selectedLine = partReader.readSelectedLine()
         self.lastSelectedLine = partReader.readLastSelectedLine()
-        self.textAlign = partReader.readTextAlign()
-        self.textFontIdentifier = partReader.readTextFontIdentifier()
-        self.textFontSize = partReader.readTextFontSize()
-        self.textStyle = partReader.readTextStyle()
-        self.textHeight = partReader.readTextHeight()
         
         /* Enable lazy initialization */
         self.initPartProperties(partReader: partReader)
@@ -65,11 +60,6 @@ public extension Button {
         self.selectedItem = partReader.readSelectedLine()
         self.family = partReader.readFamily()
         self.titleWidth = partReader.readTitleWidth()
-        self.textAlign = partReader.readTextAlign()
-        self.textFontIdentifier = partReader.readTextFontIdentifier()
-        self.textFontSize = partReader.readTextFontSize()
-        self.textStyle = partReader.readTextStyle()
-        self.textHeight = partReader.readTextHeight()
         
         /* Enable lazy initialization */
         self.initPartProperties(partReader: partReader)
@@ -90,6 +80,11 @@ private extension Part {
         self.style = partReader.readStyle()
         self.visible = partReader.readVisible()
         self.rectangle = partReader.readRectangle()
+        self.textAlign = partReader.readTextAlign()
+        self.textFontIdentifier = partReader.readTextFontIdentifier()
+        self.textFontSize = partReader.readTextFontSize()
+        self.textStyle = partReader.readTextStyle()
+        self.textHeight = partReader.readTextHeight()
         
         /* name */
         self.nameProperty.lazyCompute {
