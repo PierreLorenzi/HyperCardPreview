@@ -304,8 +304,7 @@ public extension Stack {
             
             let bitmapType = Int(classicType: "BMAP")
             let bitmapBlock = loadBlockAction(bitmapType, identifier)
-            let bitmapBlockReader = BitmapBlockReader(data: bitmapBlock, version: fileVersion)
-            return bitmapBlockReader.readImage()
+            return MaskedImage(hyperCardBitmap: bitmapBlock, fileVersion: fileVersion)
         }
     }
     

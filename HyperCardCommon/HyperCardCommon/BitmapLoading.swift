@@ -1,38 +1,72 @@
 //
-//  BitmapBlockReader.swift
+//  BitmapLoading.swift
 //  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 03/06/2018.
-//  Copyright © 2018 Pierre Lorenzi. All rights reserved.
+//  Created by Pierre Lorenzi on 25/08/2019.
+//  Copyright © 2019 Pierre Lorenzi. All rights reserved.
 //
 
 
-/// Reads inside a bitmap (BMAP) data block, which contains the picture of a card
-/// or of a background.
-/// <p>
-/// It is a proprietary image format designed by Bill Atkinson, and retro-engineered
-/// with great pain by Rebecca Bettencourt, who called it Wrath of Bill Atkinson, or
-/// WOBA, for its tortuous complexity
-/// <p>
-/// It has two layers with one bit per pixel: an image, to tell where the black pixels are,
-/// and a mask, to tell where the white pixels are. This is not the classical notion of mask:
-/// the mask is not about transparency, it just tells where the blank pixels are. If a pixel
-/// is activated in the image and not in the mask, it is black. It it is activated only in the
-/// mask, it is blank. If it is activated in both, it is black. The pixels neither activated
-/// in the image and in the mask are transparent.
-/// <p>
-/// The mask and the image both have rectangles where they are enclosed, relative to the card
-/// coordinates. Outside the rectangles, the pixels are transparent. The mask and image
-/// rectangles are not necessarily in the same place.
-public struct BitmapBlockReader {
+public extension MaskedImage {
     
-    private let data: DataRange
-    
-    private let versionOffset: Int
-    
-    public init(data: DataRange, version: FileVersion) {
-        self.data = data
-        self.versionOffset = version.isTwo() ? 0 : BitmapBlockReader.version1Offset
+    /// Reads inside a bitmap (BMAP) data block, which contains the picture of a card
+    /// or of a background.
+    /// <p>
+    /// It is a proprietary image format designed by Bill Atkinson, and retro-engineered
+    /// with great pain by Rebecca Bettencourt, who called it Wrath of Bill Atkinson, or
+    /// WOBA, for its tortuous complexity
+    /// <p>
+    /// It has two layers with one bit per pixel: an image, to tell where the black pixels are,
+    /// and a mask, to tell where the white pixels are. This is not the classical notion of mask:
+    /// the mask is not about transparency, it just tells where the blank pixels are. If a pixel
+    /// is activated in the image and not in the mask, it is black. It it is activated only in the
+    /// mask, it is blank. If it is activated in both, it is black. The pixels neither activated
+    /// in the image and in the mask are transparent.
+    /// <p>
+    /// The mask and the image both have rectangles where they are enclosed, relative to the card
+    /// coordinates. Outside the rectangles, the pixels are transparent. The mask and image
+    /// rectangles are not necessarily in the same place.
+    init(hyperCardBitmap data: DataRange, fileVersion: FileVersion) {
+        
+        /* Get the rectangles */
+        let versionOffset = fileVersion.isTwo() ? 0 : -4
+        let cardRectangle = data.readRectangle(at: 0x18 + versionOffset)
+        let maskRectangle = data.readRectangle(at: 0x20 + versionOffset)
+        let imageRectangle = data.readRectangle(at: 0x28 + versionOffset)
+        let maskLength = data.readUInt32(at: 0x38 + versionOffset)
+        let imageLength = data.readUInt32(at: 0x3C + versionOffset)
+        let dataOffset = 0x40 + versionOffset
+        
+        /* Check if there is data */
+        guard data.length > dataOffset else {
+            
+            self.init(width: cardRectangle.width, height: cardRectangle.height, image: .rectangular(rectangle: imageRectangle), mask: .rectangular(rectangle: maskRectangle))
+            return
+        }
+        
+        /* The data rectangle is 32-bit aligned */
+        let maskRectangle32 = MaskedImage.aligned32Bits(maskRectangle)
+        let imageRectangle32 = MaskedImage.aligned32Bits(imageRectangle)
+        
+        /* Decode mask */
+        var mask: Image? = nil
+        if maskLength > 0 {
+            mask = Image(width: maskRectangle32.width, height: maskRectangle32.height)
+            MaskedImage.decodeLayer(data, dataOffset: dataOffset, dataLength: maskLength, pixels: &mask!.data, rectangle: maskRectangle32)
+        }
+        
+        /* Decode image */
+        var image: Image? = nil
+        if imageLength > 0 {
+            image = Image(width: imageRectangle32.width, height: imageRectangle32.height)
+            MaskedImage.decodeLayer(data, dataOffset: dataOffset + maskLength, dataLength: imageLength, pixels: &image!.data, rectangle: imageRectangle32)
+        }
+        
+        /* Create the masked image */
+        let maskLayer = MaskedImage.buildImageLayer(mask, rectangle: maskRectangle, rectangle32: maskRectangle32)
+        let imageLayer = MaskedImage.buildImageLayer(image, rectangle: imageRectangle, rectangle32: imageRectangle32)
+        self.init(width: cardRectangle.width, height: cardRectangle.height, image: imageLayer, mask: maskLayer)
+        
     }
     
     private static let ZeroRectangle = Rectangle(top: 0, left: 0, bottom: 0, right: 0)
@@ -40,92 +74,10 @@ public struct BitmapBlockReader {
     private static let blackPixelInteger: UInt = 0xFFFF_FFFF_FFFF_FFFF
     private static let blackPixel = Image.Integer(truncatingIfNeeded: blackPixelInteger)
     
-    /// Identifier
-    public func readIdentifier() -> Int {
-        return data.readUInt32(at: 0x8)
-    }
-    
-    /// The size of the card, as a rectangle
-    public func readCardRectangle() -> Rectangle {
-        return data.readRectangle(at: 0x18 + self.versionOffset)
-    }
-    
-    /// The position of the mask
-    public func readMaskRectangle() -> Rectangle {
-        return data.readRectangle(at: 0x20 + self.versionOffset)
-    }
-    
-    /// The position of the image
-    public func readImageRectangle() -> Rectangle {
-        return data.readRectangle(at: 0x28 + self.versionOffset)
-    }
-    
-    /// Size of the mask data
-    public func readMaskLength() -> Int {
-        return data.readUInt32(at: 0x38 + self.versionOffset)
-    }
-    
-    /// Size of the image data
-    public func readImageLength() -> Int {
-        return data.readUInt32(at: 0x3C + self.versionOffset)
-    }
-    
-    /// Offset of the mask data in the block
-    private func computeDataOffset() -> Int {
-        return 0x40 + self.versionOffset
-    }
-    
-    /// The decoded image
-    public func readImage() -> MaskedImage {
-        let dataOffset = self.computeDataOffset()
-        guard data.length > dataOffset else {
-            let cardRectangle = self.readCardRectangle()
-            let maskRectangle = self.readMaskRectangle()
-            let imageRectangle = self.readImageRectangle()
-            return MaskedImage(width: cardRectangle.width, height: cardRectangle.height, image: .rectangular(rectangle: imageRectangle), mask: .rectangular(rectangle: maskRectangle))
-        }
-        return self.decodeImage()
-    }
-    
-    private func decodeImage() -> MaskedImage {
-        
-        /* Get the rectangles */
-        let cardRectangle = self.readCardRectangle()
-        let maskRectangle = self.readMaskRectangle()
-        let imageRectangle = self.readImageRectangle()
-        let maskLength = self.readMaskLength()
-        let imageLength = self.readImageLength()
-        let dataOffset = self.computeDataOffset()
-        
-        /* The data rectangle is 32-bit aligned */
-        let maskRectangle32 = aligned32Bits(maskRectangle)
-        let imageRectangle32 = aligned32Bits(imageRectangle)
-        
-        /* Decode mask */
-        var mask: Image? = nil
-        if maskLength > 0 {
-            mask = Image(width: maskRectangle32.width, height: maskRectangle32.height)
-            self.decodeLayer(dataOffset, dataLength: maskLength, pixels: &mask!.data, rectangle: maskRectangle32)
-        }
-        
-        /* Decode image */
-        var image: Image? = nil
-        if imageLength > 0 {
-            image = Image(width: imageRectangle32.width, height: imageRectangle32.height)
-            self.decodeLayer(dataOffset + maskLength, dataLength: imageLength, pixels: &image!.data, rectangle: imageRectangle32)
-        }
-        
-        /* Create the masked image */
-        let maskLayer = buildImageLayer(mask, rectangle: maskRectangle, rectangle32: maskRectangle32)
-        let imageLayer = buildImageLayer(image, rectangle: imageRectangle, rectangle32: imageRectangle32)
-        return MaskedImage(width: cardRectangle.width, height: cardRectangle.height, image: imageLayer, mask: maskLayer)
-        
-    }
-    
-    private func buildImageLayer(_ data: Image?, rectangle _rectangle: Rectangle, rectangle32: Rectangle) -> MaskedImage.Layer {
+    private static func buildImageLayer(_ data: Image?, rectangle _rectangle: Rectangle, rectangle32: Rectangle) -> MaskedImage.Layer {
         
         /* The rectangle is nil if it is zero */
-        let rectangle: Rectangle? = (_rectangle == BitmapBlockReader.ZeroRectangle) ? nil : _rectangle
+        let rectangle: Rectangle? = (_rectangle == MaskedImage.ZeroRectangle) ? nil : _rectangle
         
         /* If we have a bitmap, it is a bitmap */
         if let data = data, let rectangle = rectangle {
@@ -142,11 +94,11 @@ public struct BitmapBlockReader {
         
     }
     
-    private func aligned32Bits(_ rectangle: Rectangle) -> Rectangle {
+    private static func aligned32Bits(_ rectangle: Rectangle) -> Rectangle {
         return Rectangle(top: rectangle.top, left: downToMultiple(rectangle.left, 32), bottom: rectangle.bottom, right: upToMultiple(rectangle.right, 32))
     }
     
-    private func decodeLayer(_ dataOffset: Int, dataLength: Int, pixels: inout [Image.Integer], rectangle: Rectangle) {
+    private static func decodeLayer(_ data: DataRange, dataOffset: Int, dataLength: Int, pixels: inout [Image.Integer], rectangle: Rectangle) {
         
         var pixelIndex = 0
         let integerLengthImage = upToMultiple(rectangle.width, Image.Integer.bitWidth) / Image.Integer.bitWidth
@@ -216,7 +168,7 @@ public struct BitmapBlockReader {
                     /* One black row */
                     for _ in 0..<repeatCount {
                         for i in 0..<integerLengthImage {
-                            pixels[i + pixelIndex] = BitmapBlockReader.blackPixel
+                            pixels[i + pixelIndex] = MaskedImage.blackPixel
                         }
                         pixelIndex += integerLengthImage
                         y += 1
@@ -358,7 +310,7 @@ public struct BitmapBlockReader {
         
     }
     
-    private func applyDx(_ dx: Int, row: inout [Image.Integer], rowPixelIndex: Int, integerLength: Int) {
+    private static func applyDx(_ dx: Int, row: inout [Image.Integer], rowPixelIndex: Int, integerLength: Int) {
         
         /* dx can only be 1, 2, 4, 8, 16, 32 */
         
@@ -388,12 +340,12 @@ public struct BitmapBlockReader {
         }
     }
     
-    private func writeByteInRow(_ byte: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
+    private static func writeByteInRow(_ byte: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
         
         row[rowPixelIndex + x / Image.Integer.bitWidth] |= (Image.Integer(byte) << (Image.Integer.bitWidth - 8 - x % Image.Integer.bitWidth))
     }
     
-    private func writeInt32InRow(_ int32: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
+    private static func writeInt32InRow(_ int32: Int, row: inout [Image.Integer], rowPixelIndex: Int, x: Int) {
         
         row[rowPixelIndex + x / Image.Integer.bitWidth] |= (Image.Integer(int32) << (Image.Integer.bitWidth - 32 - x % Image.Integer.bitWidth))
     }
