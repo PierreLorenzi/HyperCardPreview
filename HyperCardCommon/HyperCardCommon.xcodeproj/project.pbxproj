@@ -355,7 +355,6 @@
 		6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */; };
 		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
 		6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */; };
-		6CE8F5C620C429C400B99E39 /* CardReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5C520C429C400B99E39 /* CardReference.swift */; };
 		6CE8F5D420C42BAB00B99E39 /* PartBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D320C42BAB00B99E39 /* PartBlockReader.swift */; };
 		6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */; };
 		6CE8F5DA20C42D1900B99E39 /* BitmapBlockReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D920C42D1900B99E39 /* BitmapBlockReader.swift */; };
@@ -738,7 +737,6 @@
 		6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPrivateAccess.stack; sourceTree = "<group>"; };
 		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
 		6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
-		6CE8F5C520C429C400B99E39 /* CardReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReference.swift; sourceTree = "<group>"; };
 		6CE8F5D320C42BAB00B99E39 /* PartBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartBlockReader.swift; sourceTree = "<group>"; };
 		6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedTextFormatting.swift; sourceTree = "<group>"; };
 		6CE8F5D920C42D1900B99E39 /* BitmapBlockReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitmapBlockReader.swift; sourceTree = "<group>"; };
@@ -901,7 +899,6 @@
 			children = (
 				6C9E6AB51E75BCFA00BBF925 /* ClassicFile.swift */,
 				6C9E6AB61E75BCFA00BBF925 /* DataRange.swift */,
-				6CE8F5C520C429C400B99E39 /* CardReference.swift */,
 				6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */,
 				6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */,
 				6C9DF4FF20C725620024F61B /* ResourceReference.swift */,
@@ -1826,7 +1823,6 @@
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
 				6C9E6B361E75BCFA00BBF925 /* ButtonLoading.swift in Sources */,
 				6C9DF4FA20C7252D0024F61B /* FontFamilyResourceReader.swift in Sources */,
-				6CE8F5C620C429C400B99E39 /* CardReference.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* LayerLoading.swift in Sources */,

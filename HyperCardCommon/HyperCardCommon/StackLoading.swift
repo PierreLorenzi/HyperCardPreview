@@ -63,6 +63,16 @@ public extension Stack {
         var cardCount: Int
     }
     
+    /// Record of a card block in a page block
+    private struct CardReference {
+        
+        /// Identifier of the card
+        public var identifier: Int
+        
+        /// Is card marked
+        public var marked: Bool
+    }
+    
     private static func decodeData(_ data: DataRange, password possiblePassword: HString?, hackEncryption: Bool) throws -> DataRange {
         
         /* Check if the stack is encoded */
@@ -279,7 +289,7 @@ public extension Stack {
                 let background = stack.backgrounds.first(where: { $0.identifier == backgroundIdentifier })!
                 
                 /* Load the card */
-                let card = Card(loadFromData: cardData, version: fileVersion, cardReference: cardReference, loadBitmap: loadBitmap, styles: styles, background: background)
+                let card = Card(loadFromData: cardData, version: fileVersion, marked: cardReference.marked, loadBitmap: loadBitmap, styles: styles, background: background)
                 
                 cards.append(card)
             }

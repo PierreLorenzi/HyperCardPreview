@@ -11,7 +11,7 @@
 
 public extension Card {
     
-    convenience init(loadFromData data: DataRange, version: FileVersion, cardReference: CardReference, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
+    convenience init(loadFromData data: DataRange, version: FileVersion, marked: Bool, loadBitmap: @escaping (Int) -> MaskedImage, styles: [IndexedStyle], background: Background) {
         
         self.init(background: background)
         
@@ -19,7 +19,7 @@ public extension Card {
         super.adjustFromData(data, layerType: LayerType.card, version: version, styles: styles, loadBitmap: loadBitmap)
         
         /* Load the card properties */
-        self.marked = cardReference.marked
+        self.marked = marked
         
         /* Lazy load the background contents */
         self.backgroundPartContentsProperty.lazyCompute { () -> [Card.BackgroundPartContent] in
