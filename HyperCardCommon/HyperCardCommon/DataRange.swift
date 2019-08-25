@@ -60,6 +60,30 @@ public struct DataRange {
     
 }
 
+public extension DataRange {
+    
+    init(wholeData data: Data) {
+        
+        self.sharedData = data
+        self.offset = 0
+        self.length = data.count
+    }
+    
+    init(fromData data: DataRange, offset: Int, length: Int) {
+        
+        self.sharedData = data.sharedData
+        self.offset = data.offset + offset
+        self.length = length
+    }
+    
+    init(fromData data: DataRange, offset: Int) {
+        
+        self.sharedData = data.sharedData
+        self.offset = data.offset + offset
+        self.length = data.length - offset
+    }
+}
+
 
 public extension DataRange {
     

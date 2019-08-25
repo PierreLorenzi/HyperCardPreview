@@ -19,7 +19,6 @@ public extension Card {
         /* Read now the scalar fields */
         self.identifier = cardReader.readIdentifier()
         self.marked = cardReference.marked
-        self.searchHash = cardReference.searchHash
         
         /* Enable lazy initialization */
         let contentMapProperty = self.initLayerProperties(layerReader: cardReader, version: version, layerType: LayerType.card, loadBitmap: loadBitmap, styles: styles)

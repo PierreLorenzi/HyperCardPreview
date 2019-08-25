@@ -15,16 +15,4 @@ public struct CardReference {
     
     /// Is card marked
     public var marked: Bool
-    
-    /// If the card has some text content in its fields
-    public var hasTextContent: Bool
-    
-    /// Is the card at the beginning of a background
-    public var isStartOfBackground: Bool
-    
-    /// Has the card a name
-    public var hasName: Bool
-    
-    /// The search hash of the card
-    public var searchHash: SearchHash
 }

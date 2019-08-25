@@ -66,11 +66,7 @@ public struct PageBlockReader {
         for _ in 0..<self.cardCount {
             let identifier = data.readSInt32(at: offset)
             let marked = data.readFlag(at: offset + 4, bitOffset: 12)
-            let hasTextContent = data.readFlag(at: offset + 4, bitOffset: 13)
-            let isStartOfBackground = data.readFlag(at: offset + 4, bitOffset: 14)
-            let hasName = data.readFlag(at: offset + 4, bitOffset: 15)
-            let searchHash = SearchHash(data: self.data.sharedData, offset: data.offset + offset + 4, length: self.cardReferenceSize-4, valueCount: self.hashValueCount)
-            references.append(CardReference(identifier: identifier, marked: marked, hasTextContent: hasTextContent, isStartOfBackground: isStartOfBackground, hasName: hasName, searchHash: searchHash))
+            references.append(CardReference(identifier: identifier, marked: marked))
             offset += self.cardReferenceSize
         }
         
