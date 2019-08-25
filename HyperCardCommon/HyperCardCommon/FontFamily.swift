@@ -29,13 +29,13 @@ public struct FontFamily {
     public struct FamilyBitmapFont {
         public let size: Int
         public let style: TextStyle
-        public let resource: BitmapFontResource
+        public let resourceIdentifier: Int
     }
     
     /// A record of a vector font for a specitif style
     public struct FamilyVectorFont {
         public let style: TextStyle
-        public let resource: VectorFontResource
+        public let resourceIdentifier: Int
     }
     
 }

@@ -101,7 +101,7 @@ public class Browser {
         if let stackResources = hyperCardFile.resources {
             resources.repositories.append(stackResources)
         }
-        resources.repositories.append(ResourceRepository.mainRepository)
+        resources.repositories.append(contentsOf: ResourceRepository.mainRepositories)
         self.resources = resources
         
         self.fontManager = FontManager(resources: resources, fontNameReferences: stack.fontNameReferences)

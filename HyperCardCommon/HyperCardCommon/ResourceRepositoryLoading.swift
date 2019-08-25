@@ -63,7 +63,7 @@ public extension ResourceRepository {
         
         /* List the font familes */
         let fontFamilies = ResourceRepository.listResources(references: references, data: data, globalDataOffset: globalDataOffset, withType: FontFamilyResourceType.self, typeName: ResourceRepository.fontFamilyTypeName, parse: { (data: DataRange) -> FontFamily in
-            return FontFamily(loadFromData: data, bitmapFonts: bitmapFonts, vectorFonts: vectorFonts)
+            return FontFamily(loadFromData: data)
         })
         
         /* List the card colors */

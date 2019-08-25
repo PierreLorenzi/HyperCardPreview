@@ -50,21 +50,28 @@ public class FontManager {
     private func retrieveFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont {
                 
         /* Look for the font family */
-        let possibleFamily = findFontFamily(withIdentifier: descriptor.identifier)
+        let possibleResourceFamily = findFontFamily(withIdentifier: descriptor.identifier)
+        let possibleFamily = possibleResourceFamily?.fontFamily
         
         /* If the family exists, find a font resource */
         if let family = possibleFamily {
             
             /* Check if a bitmap font with the right parameters is available */
             if let existingFamilyFont = family.bitmapFonts.first(where: { $0.size == descriptor.size && $0.style == descriptor.style }) {
-                return existingFamilyFont.resource.content
+                let repositoryIndex = possibleResourceFamily!.repositoryIndex
+                if let font = resources.repositories[repositoryIndex].bitmapFonts.first(where: { $0.identifier == existingFamilyFont.resourceIdentifier }) {
+                    return font.content
+                }
             }
             
             /* Look for a vector font (during tests, it appeared that it is only loaded for plain fonts) */
             if descriptor.style == PlainTextStyle {
                 if let vectorFont = family.vectorFonts.first(where: { $0.style == descriptor.style }) {
-                    let ctfont = CTFontCreateWithGraphicsFont(vectorFont.resource.content.cgfont, CGFloat(descriptor.size), nil, nil)
-                    return BitmapFont(fromVectorFont: ctfont)
+                    let repositoryIndex = possibleResourceFamily!.repositoryIndex
+                    if let font = resources.repositories[repositoryIndex].vectorFonts.first(where: { $0.identifier == vectorFont.resourceIdentifier }) {
+                        let ctfont = CTFontCreateWithGraphicsFont(font.content.cgfont, CGFloat(descriptor.size), nil, nil)
+                        return BitmapFont(fromVectorFont: ctfont)
+                    }
                 }
             }
         }
@@ -85,31 +92,65 @@ public class FontManager {
         return findAnyFont(forDescriptor: descriptor)
     }
     
-    private func findFontFamily(withIdentifier identifier: Int) -> FontFamily? {
+    private func findFontFamily(withIdentifier identifier: Int) -> ResourceFontFamily? {
         
-        /* Look for the resource */
-        let possibleFamilyResource = resources.findResource(ofType: \ResourceRepository.fontFamilies, withIdentifier: identifier)
-        let possibleFamily = possibleFamilyResource?.content
+        /* First, try by name */
+        if let familyByName = findFontFamilyByName(identifier: identifier) {
+            return familyByName
+        }
+        
+        /* Try by identifier */
+        return findResourceFontFamily(withIdentifier: identifier)
+    }
+    
+    private func findFontFamilyByName(identifier: Int) -> ResourceFontFamily? {
         
         /* Get the expected name of the font */
         guard let fontNameReference = fontNameReferences.first(where: { $0.identifier == identifier }) else {
-            return possibleFamily
+            return nil
         }
         let fontName = fontNameReference.name
         
-        /* If the name is right, we're good */
-        if let familyResource = possibleFamilyResource, compareCase(familyResource.name, fontName) == .equal {
-            return possibleFamily
+        /* Search by name */
+        return findResourceFontFamily(withName: fontName)
+        
+    }
+    
+    private struct ResourceFontFamily {
+        var fontFamily: FontFamily
+        var repositoryIndex: Int
+    }
+    
+    private func findResourceFontFamily(withName name: HString) -> ResourceFontFamily? {
+        
+        for i in 0..<resources.repositories.count {
+            
+            let repository = resources.repositories[i]
+            
+            if let resource = repository.fontFamilies.first(where: { compareCase($0.name, name) == .equal }) {
+                
+                return ResourceFontFamily(fontFamily: resource.content, repositoryIndex: i)
+            }
+            
         }
         
-        /* If the name doesn't match, try searching by name */
-        guard let familyResourceByName = resources.findResource(ofType: \ResourceRepository.fontFamilies, withName: fontName) else {
-            return possibleFamily
+        return nil
+    }
+    
+    private func findResourceFontFamily(withIdentifier identifier: Int) -> ResourceFontFamily? {
+        
+        for i in 0..<resources.repositories.count {
+            
+            let repository = resources.repositories[i]
+            
+            if let resource = repository.fontFamilies.first(where: { $0.identifier == identifier }) {
+                
+                return ResourceFontFamily(fontFamily: resource.content, repositoryIndex: i)
+            }
+            
         }
         
-        /* During the tests, I saw that the Font Manager gives precedence to familes with the right name */
-        return familyResourceByName.content
-        
+        return nil
     }
     
     private func findAnyFont(forDescriptor descriptor: FontDescriptor) -> BitmapFont {
