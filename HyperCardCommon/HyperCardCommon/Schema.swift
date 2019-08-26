@@ -232,12 +232,16 @@ public final class Schema<T> {
             self.branchMatchers = []
             
             let value = makeValue()
-            self.bestValue = value
             
             /* Make the first branch matchers */
             for i in 0..<branches.count {
                 
                 self.addBranchMatchersAtSchema(branchIndex: i, schemaIndex: 0, insertionIndex: self.branchMatchers.count, value: value)
+            }
+            
+            /* Register the value as our if there are valid branches */
+            if !branches.isEmpty {
+                self.bestValue = value
             }
         }
         
