@@ -23,23 +23,21 @@ public final class Schema<T> {
         }
     }
     
-    private struct MatchingStatus {
+    public enum MatchingStatus {
         
-        var currentValue: T?
-        var mustStop: Bool
+        case canContinue
+        case mustStop
     }
     
     public class SubMatcher {
         
-        func matchNextCharacter(_ character: HChar) -> SubMatchingStatus {
+        var currentUpdate: ((inout T) -> ())? {
             fatalError()
         }
-    }
-    
-    public struct SubMatchingStatus {
         
-        var currentUpdate: ((inout T) -> ())?
-        var mustStop: Bool
+        func matchNextCharacter(_ character: HChar) -> MatchingStatus {
+            fatalError()
+        }
     }
     
     public class SubSchema {
@@ -86,24 +84,32 @@ public final class Schema<T> {
                 self.update = update
             }
             
-            override func matchNextCharacter(_ character: HChar) -> SubMatchingStatus {
+            override var currentUpdate: ((inout T) -> ())? {
+                
+                guard let currentValue = self.matcher.currentValue else {
+                    return nil
+                }
+                
+                let update = self.update
+                
+                return { (parentValue: inout T) in
+                    update(&parentValue, currentValue)
+                }
+            }
+            
+            override func matchNextCharacter(_ character: HChar) -> MatchingStatus {
                 
                 let status = self.matcher.matchNextCharacter(character)
                 
-                let currentUpdate: ((inout T) -> ())?
-                if let currentValue = status.currentValue {
+                /* We have to convert the status from Schema<U>.MatchingStatus to Schema<T>.MatchingStatus */
+                switch status {
                     
-                    let localUpdate = self.update
+                case .canContinue:
+                    return Schema<T>.MatchingStatus.canContinue
                     
-                    currentUpdate = { (parentValue: inout T) in
-                        localUpdate(&parentValue, currentValue)
-                    }
+                case .mustStop:
+                    return Schema<T>.MatchingStatus.mustStop
                 }
-                else {
-                    currentUpdate = nil
-                }
-                
-                return SubMatchingStatus(currentUpdate: currentUpdate, mustStop: status.mustStop)
             }
         }
     }
@@ -138,29 +144,37 @@ public final class Schema<T> {
                 self.update = update
             }
             
-            override func matchNextCharacter(_ character: HChar) -> SubMatchingStatus {
+            override var currentUpdate: ((inout T) -> ())? {
+                
+                guard self.currentIndex == string.length else {
+                    return nil
+                }
+                
+                let update = self.update
+                let string = self.string
+                
+                return {(parentValue: inout T) in
+                    update(&parentValue, string)
+                }
+            }
+            
+            override func matchNextCharacter(_ character: HChar) -> MatchingStatus {
                 
                 /* If the character is wrong, there is no value */
                 guard character == self.string[self.currentIndex] else {
                     
-                    return SubMatchingStatus(currentUpdate: nil, mustStop: true)
+                    return MatchingStatus.mustStop
                 }
                 
                 self.currentIndex += 1
                 
                 guard self.currentIndex < string.length else {
                     
-                    let localUpdate = self.update
-                    let localString = self.string
-                    let currentUpdate = {(parentValue: inout T) in
-                        localUpdate(&parentValue, localString)
-                    }
-                    
                     /* Parsing is finished */
-                    return SubMatchingStatus(currentUpdate: currentUpdate, mustStop: true)
-                    
+                    return MatchingStatus.mustStop
                 }
-                return SubMatchingStatus(currentUpdate: nil, mustStop: false)
+                
+                return MatchingStatus.canContinue
             }
         }
     }
@@ -174,11 +188,11 @@ public final class Schema<T> {
         }
         
         let matcher = self.buildMatcher()
-        var status = MatchingStatus(currentValue: nil, mustStop: false)
+        var status = MatchingStatus.canContinue
         
         for i in 0..<string.length {
             
-            guard !status.mustStop else {
+            guard status == MatchingStatus.canContinue else {
                 break
             }
             
@@ -186,7 +200,7 @@ public final class Schema<T> {
             status = matcher.matchNextCharacter(character)
         }
         
-        return status.currentValue
+        return matcher.currentValue
     }
     
     private func buildMatcher() -> Matcher {
@@ -197,15 +211,19 @@ public final class Schema<T> {
     private class Matcher {
         
         private let branches: [Branch]
+        
+        /* The branches are sorted from best to worst */
         private var branchMatchers: [BranchMatcher]
+        
+        private var bestValue: T? = nil
         
         private struct BranchMatcher {
             
-            var value: T
-            var subMatcher: SubMatcher
-            var branchIndex: Int
-            var subSchemaIndex: Int
-            var occurrenceIndex: Int
+            let value: T
+            let subMatcher: SubMatcher
+            let branchIndex: Int
+            let subSchemaIndex: Int
+            let occurrenceIndex: Int
         }
         
         init(branches: [Branch], makeValue: () -> T) {
@@ -214,6 +232,7 @@ public final class Schema<T> {
             self.branchMatchers = []
             
             let value = makeValue()
+            self.bestValue = value
             
             /* Make the first branch matchers */
             for i in 0..<branches.count {
@@ -222,39 +241,44 @@ public final class Schema<T> {
             }
         }
         
+        var currentValue: T? {
+            
+            return self.bestValue
+        }
+        
         func matchNextCharacter(_ character: HChar) -> MatchingStatus {
             
-            var bestValue: T? = nil
+            self.bestValue = nil
             
             /* Update the matchers in the reverse order so we can remove and add elements from the list */
             for i in (0 ..< self.branchMatchers.count).reversed() {
                 
-                /* Feed the matcher */
-                let status = self.branchMatchers[i].subMatcher.matchNextCharacter(character)
+                let subMatcher = self.branchMatchers[i].subMatcher
                 
-                /* Update the value if possible */
-                if let update = status.currentUpdate {
+                /* Feed the matcher */
+                let status = subMatcher.matchNextCharacter(character)
+                
+                /* Check if the sub-matcher has a match, and so can update our value */
+                if let update = subMatcher.currentUpdate {
                     
-                    /* To be valid, the branch must have correct schema counts */
-                    if checkBranchMatcherIsValid(at: i) {
-                        
-                        /* As the branch is valid, we can use the value */
-                        update(&self.branchMatchers[i].value)
-                        bestValue = self.branchMatchers[i].value
-                    }
+                    var newValue = self.branchMatchers[i].value
+                    update(&newValue)
+                    
+                    /* Register this value, as ours if the branch is the best one */
+                    self.bestValue = newValue
                     
                     /* As it returns an update, it has a match, so we can consider it ends here */
-                    self.addSubBranchMatchers(branchingFrom: self.branchMatchers[i], index: i)
+                    self.addSubBranchMatchers(branchingFrom: self.branchMatchers[i], index: i, value: newValue)
                 }
                 
                 /* If the matcher is over, remove it */
-                if status.mustStop {
+                if status == MatchingStatus.mustStop {
                     
                     self.branchMatchers.remove(at: i)
                 }
             }
             
-            return MatchingStatus(currentValue: bestValue, mustStop: self.branchMatchers.isEmpty)
+            return self.branchMatchers.isEmpty ? MatchingStatus.mustStop : MatchingStatus.canContinue
         }
         
         private func checkBranchMatcherIsValid(at index: Int) -> Bool {
@@ -287,7 +311,7 @@ public final class Schema<T> {
             return true
         }
         
-        private func addSubBranchMatchers(branchingFrom branchMatcher: BranchMatcher, index: Int) {
+        private func addSubBranchMatchers(branchingFrom branchMatcher: BranchMatcher, index: Int, value: T) {
             
             /* Get the schema of the matcher */
             let branchIndex = branchMatcher.branchIndex
@@ -300,7 +324,7 @@ public final class Schema<T> {
             if subSchema.maxCount == nil || branchMatcher.occurrenceIndex + 1 < subSchema.maxCount! {
                 
                 let newSubMatcher = subSchema.buildSubMatcher()
-                let newBranchMatcher = BranchMatcher(value: branchMatcher.value, subMatcher: newSubMatcher, branchIndex: branchIndex, subSchemaIndex: subSchemaIndex, occurrenceIndex: branchMatcher.occurrenceIndex + 1)
+                let newBranchMatcher = BranchMatcher(value: value, subMatcher: newSubMatcher, branchIndex: branchIndex, subSchemaIndex: subSchemaIndex, occurrenceIndex: branchMatcher.occurrenceIndex + 1)
                 
                 self.branchMatchers.insert(newBranchMatcher, at: insertionIndex)
                 insertionIndex += 1
@@ -310,7 +334,7 @@ public final class Schema<T> {
             if subSchemaIndex + 1 < self.branches[branchIndex].subSchemas.count &&
                branchMatcher.occurrenceIndex+1 >= subSchema.minCount {
                 
-                self.addBranchMatchersAtSchema(branchIndex: branchIndex, schemaIndex: subSchemaIndex+1, insertionIndex: insertionIndex, value: branchMatcher.value)
+                self.addBranchMatchersAtSchema(branchIndex: branchIndex, schemaIndex: subSchemaIndex+1, insertionIndex: insertionIndex, value: value)
             }
         }
         
