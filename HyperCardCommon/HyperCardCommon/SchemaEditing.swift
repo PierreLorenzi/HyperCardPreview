@@ -7,7 +7,7 @@
 //
 
 
-extension Schema {
+public extension Schema {
     
     func build(_ initFields: @escaping () -> ()) {
         

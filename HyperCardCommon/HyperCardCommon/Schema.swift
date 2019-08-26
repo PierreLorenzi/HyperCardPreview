@@ -7,14 +7,20 @@
 //
 
 
-final class Schema<T> {
+public final class Schema<T> {
     
-    var branches: [Branch] = []
-    var makeValue: (() -> T)! = nil
-    var initFields: (() -> ())? = nil
+    public var branches: [Branch] = []
+    public var makeValue: (() -> T)! = nil
+    public var initFields: (() -> ())? = nil
     
-    struct Branch {
-        var subSchemas: [SubSchema]
+    public init() {}
+    
+    public struct Branch {
+        public var subSchemas: [SubSchema]
+        
+        public init(subSchemas: [SubSchema]) {
+            self.subSchemas = subSchemas
+        }
     }
     
     private struct MatchingStatus {
@@ -23,25 +29,25 @@ final class Schema<T> {
         var mustStop: Bool
     }
     
-    class SubMatcher {
+    public class SubMatcher {
         
         func matchNextCharacter(_ character: HChar) -> SubMatchingStatus {
             fatalError()
         }
     }
     
-    struct SubMatchingStatus {
+    public struct SubMatchingStatus {
         
         var currentUpdate: ((inout T) -> ())?
         var mustStop: Bool
     }
     
-    class SubSchema {
+    public class SubSchema {
         
-        var minCount: Int
-        var maxCount: Int
+        public var minCount: Int
+        public var maxCount: Int?
         
-        init(minCount: Int, maxCount: Int) {
+        public init(minCount: Int, maxCount: Int?) {
             self.minCount = minCount
             self.maxCount = maxCount
         }
@@ -51,12 +57,12 @@ final class Schema<T> {
         }
     }
     
-    class TypedSubSchema<U>: SubSchema {
+    public class TypedSubSchema<U>: SubSchema {
         
-        var schema: Schema<U>
-        var update: (inout T,U) -> ()
+        public var schema: Schema<U>
+        public var update: (inout T,U) -> ()
         
-        init(schema: Schema<U>, minCount: Int, maxCount: Int, update: @escaping (inout T,U) -> ()) {
+        public init(schema: Schema<U>, minCount: Int, maxCount: Int?, update: @escaping (inout T,U) -> ()) {
             
             self.schema = schema
             self.update = update
@@ -102,12 +108,12 @@ final class Schema<T> {
         }
     }
     
-    class StringSubSchema: SubSchema {
+    public class StringSubSchema: SubSchema {
         
-        private let string: HString
-        private let update: (inout T, HString) -> ()
+        public var string: HString
+        public var update: (inout T, HString) -> ()
         
-        init(string: HString, minCount: Int, maxCount: Int, update: @escaping (inout T, HString) -> ()) {
+        public init(string: HString, minCount: Int, maxCount: Int?, update: @escaping (inout T, HString) -> ()) {
             
             self.string = string
             self.update = update
@@ -159,7 +165,7 @@ final class Schema<T> {
         }
     }
     
-    func parse(_ string: HString) -> T? {
+    public func parse(_ string: HString) -> T? {
         
         /* Lazy init */
         if let action = self.initFields {
@@ -199,7 +205,7 @@ final class Schema<T> {
             var subMatcher: SubMatcher
             var branchIndex: Int
             var subSchemaIndex: Int
-            var occurrenceCount: Int
+            var occurrenceIndex: Int
         }
         
         init(branches: [Branch], makeValue: () -> T) {
@@ -229,10 +235,13 @@ final class Schema<T> {
                 /* Update the value if possible */
                 if let update = status.currentUpdate {
                     
-                    update(&self.branchMatchers[i].value)
-                    
-                    /* Register for the global value */
-                    bestValue = self.branchMatchers[i].value
+                    /* To be valid, the branch must have correct schema counts */
+                    if checkBranchMatcherIsValid(at: i) {
+                        
+                        /* As the branch is valid, we can use the value */
+                        update(&self.branchMatchers[i].value)
+                        bestValue = self.branchMatchers[i].value
+                    }
                     
                     /* As it returns an update, it has a match, so we can consider it ends here */
                     self.addSubBranchMatchers(branchingFrom: self.branchMatchers[i], index: i)
@@ -248,6 +257,36 @@ final class Schema<T> {
             return MatchingStatus(currentValue: bestValue, mustStop: self.branchMatchers.isEmpty)
         }
         
+        private func checkBranchMatcherIsValid(at index: Int) -> Bool {
+            
+            /* Get the schema of the matcher */
+            let branchMatcher = self.branchMatchers[index]
+            let branchIndex = branchMatcher.branchIndex
+            let subSchemaIndex = branchMatcher.subSchemaIndex
+            let subSchemas = self.branches[branchIndex].subSchemas
+            let subSchema = subSchemas[subSchemaIndex]
+            
+            /* Check the current matcher */
+            guard branchMatcher.occurrenceIndex+1 >= subSchema.minCount else {
+                return false
+            }
+            guard subSchema.maxCount == nil || branchMatcher.occurrenceIndex < subSchema.maxCount! else {
+                return false
+            }
+            
+            /* We assume the previous ones were good */
+            
+            /* Check if the following schemas can be absent */
+            for i in (subSchemaIndex+1)..<subSchemas.count {
+                
+                guard subSchemas[i].minCount == 0 else {
+                    return false
+                }
+            }
+            
+            return true
+        }
+        
         private func addSubBranchMatchers(branchingFrom branchMatcher: BranchMatcher, index: Int) {
             
             /* Get the schema of the matcher */
@@ -258,17 +297,18 @@ final class Schema<T> {
             var insertionIndex = index + 1
             
             /* Consider the same schema restarts */
-            if branchMatcher.occurrenceCount + 1 < subSchema.maxCount {
+            if subSchema.maxCount == nil || branchMatcher.occurrenceIndex + 1 < subSchema.maxCount! {
                 
                 let newSubMatcher = subSchema.buildSubMatcher()
-                let newBranchMatcher = BranchMatcher(value: branchMatcher.value, subMatcher: newSubMatcher, branchIndex: branchIndex, subSchemaIndex: subSchemaIndex, occurrenceCount: branchMatcher.occurrenceCount + 1)
+                let newBranchMatcher = BranchMatcher(value: branchMatcher.value, subMatcher: newSubMatcher, branchIndex: branchIndex, subSchemaIndex: subSchemaIndex, occurrenceIndex: branchMatcher.occurrenceIndex + 1)
                 
                 self.branchMatchers.insert(newBranchMatcher, at: insertionIndex)
                 insertionIndex += 1
             }
             
             /* Consider the next schema starts */
-            if subSchemaIndex + 1 < self.branches[branchIndex].subSchemas.count {
+            if subSchemaIndex + 1 < self.branches[branchIndex].subSchemas.count &&
+               branchMatcher.occurrenceIndex+1 >= subSchema.minCount {
                 
                 self.addBranchMatchersAtSchema(branchIndex: branchIndex, schemaIndex: subSchemaIndex+1, insertionIndex: insertionIndex, value: branchMatcher.value)
             }
@@ -284,13 +324,13 @@ final class Schema<T> {
                 let subSchema = subSchemas[i]
                 
                 /* Very small precaution */
-                guard subSchema.maxCount > 0 else {
+                guard subSchema.maxCount == nil || subSchema.maxCount! > 0 else {
                     continue
                 }
                 
                 /* Create a matcher starting that sub-schema */
                 let subMatcher = subSchema.buildSubMatcher()
-                let branchMatcher = BranchMatcher(value: value, subMatcher: subMatcher, branchIndex: branchIndex, subSchemaIndex: i, occurrenceCount: 1)
+                let branchMatcher = BranchMatcher(value: value, subMatcher: subMatcher, branchIndex: branchIndex, subSchemaIndex: i, occurrenceIndex: 0)
                 
                 /* Insert */
                 self.branchMatchers.insert(branchMatcher, at: currentInsertionIndex)

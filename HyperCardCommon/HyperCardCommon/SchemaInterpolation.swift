@@ -10,10 +10,10 @@
 
 extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
     
-    typealias StringInterpolation = SchemaInterpolation
-    typealias StringLiteralType = String
+    public typealias StringInterpolation = SchemaInterpolation
+    public typealias StringLiteralType = String
     
-    convenience init(stringLiteral: String) {
+    public convenience init(stringLiteral: String) {
         
         self.init()
         
@@ -23,7 +23,7 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         ]
     }
     
-    convenience init(stringInterpolation: SchemaInterpolation) {
+    public convenience init(stringInterpolation: SchemaInterpolation) {
         
         self.init()
         
@@ -34,9 +34,9 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
     }
 }
 
-struct SchemaInterpolation: StringInterpolationProtocol {
+public struct SchemaInterpolation: StringInterpolationProtocol {
     
-    typealias StringLiteralType = String
+    public typealias StringLiteralType = String
     
     fileprivate var creators: [SubSchemaCreator] = []
     
@@ -89,11 +89,11 @@ struct SchemaInterpolation: StringInterpolationProtocol {
         }
     }
     
-    init(literalCapacity: Int, interpolationCount: Int) {
+    public init(literalCapacity: Int, interpolationCount: Int) {
         
     }
     
-    mutating func appendLiteral(_ literal: String) {
+    public mutating func appendLiteral(_ literal: String) {
         
         let string = HString(converting: literal)!
         let creator = StringSubSchemaCreator(string: string, minCount: 1, maxCount: 1)
@@ -101,7 +101,7 @@ struct SchemaInterpolation: StringInterpolationProtocol {
         self.creators.append(creator)
     }
     
-    mutating func appendInterpolation<U>(_ schema: Schema<U>) {
+    public mutating func appendInterpolation<U>(_ schema: Schema<U>) {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
         
