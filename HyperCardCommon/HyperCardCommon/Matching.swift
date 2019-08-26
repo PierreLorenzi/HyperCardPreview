@@ -32,41 +32,37 @@ class Match {
     let sequenceIndex: Int
     
     let startIndex: Int
-    let endIndex: Int?
     
-    init(schema: Schema, parent: Match, sequenceIndex: Int, startIndex: Int, endIndex: Int?) {
+    init(schema: Schema, parent: Match, sequenceIndex: Int, startIndex: Int) {
         
         self.schema = schema
         self.parent = parent
         self.sequenceIndex = sequenceIndex
         self.startIndex = startIndex
-        self.endIndex = endIndex
     }
 }
 
-class MatchInProgress: Match {
+struct MatchingStatus {
     
-    var branches: [Branch] = []
+    var isMatching: Bool
+    var mustStop: Bool
 }
 
-struct Branch {
+protocol Matcher {
     
-    var currentMatch: MatchInProgress
-    var oldMatches: [Match]
+    func matchNextCharacter(_ character: HChar, index: Int) -> MatchingStatus
+    
+    // remove all the lower branches (in a complex matcher, the best branch is the one with
+    // the longest first matches).
+    // can only be called if the matcher is matching
+    // the matcher becomes unamgibuous and over, as all its descendants
+    func endMatch()
+    
+    // capture the unambiguous matches that are over (children in order then parent),
+    // then delete them
+    func capture(_: (Match) -> ())
 }
 
-extension MatchInProgress {
-    
-    func matchNextCharacter(_ character: HChar, index: Int, warnMatchFinished: (Match) -> ()) -> MatchingResult {
-        
-        // TODO
-        return MatchingResult(isMatchValid: false, canContinue: false)
-    }
-}
 
-struct MatchingResult {
-    
-    var isMatchValid: Bool
-    var canContinue: Bool
-}
+
 
