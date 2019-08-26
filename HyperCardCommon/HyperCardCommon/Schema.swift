@@ -7,13 +7,13 @@
 //
 
 
-class Schema<T> {
+final class Schema<T> {
     
-    private var branches: [Branch] = []
-    private var makeValue: (() -> T)! = nil
-    private var initFields: (() -> ())? = nil
+    var branches: [Branch] = []
+    var makeValue: (() -> T)! = nil
+    var initFields: (() -> ())? = nil
     
-    private struct Branch {
+    struct Branch {
         var subSchemas: [SubSchema]
     }
     
@@ -23,20 +23,20 @@ class Schema<T> {
         var mustStop: Bool
     }
     
-    private class SubMatcher {
+    class SubMatcher {
         
         func matchNextCharacter(_ character: HChar) -> SubMatchingStatus {
             fatalError()
         }
     }
     
-    private struct SubMatchingStatus {
+    struct SubMatchingStatus {
         
         var currentUpdate: ((inout T) -> ())?
         var mustStop: Bool
     }
     
-    private class SubSchema {
+    class SubSchema {
         
         var minCount: Int
         var maxCount: Int
@@ -51,7 +51,7 @@ class Schema<T> {
         }
     }
     
-    private class TypedSubSchema<U>: SubSchema {
+    class TypedSubSchema<U>: SubSchema {
         
         var schema: Schema<U>
         var update: (inout T,U) -> ()
@@ -102,7 +102,7 @@ class Schema<T> {
         }
     }
     
-    private class StringSubSchema: SubSchema {
+    class StringSubSchema: SubSchema {
         
         private let string: HString
         private let update: (inout T, HString) -> ()
@@ -304,35 +304,6 @@ class Schema<T> {
         }
     }
     
-    func build(_ initFields: @escaping () -> ()) {
-        
-        self.initFields = initFields
-    }
-    
-    func initial(_ makeValue: @escaping () -> T) {
-        
-        self.makeValue = makeValue
-    }
-    
-    func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) {
-        
-        for i in 0..<self.branches.count {
-            
-            let subSchemas = self.branches[i].subSchemas
-            
-            for subSchema in subSchemas {
-                
-                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
-                    continue
-                }
-                
-                typeSubSchema.update = update
-            }
-        }
-    }
 }
-
-
-
 
 
