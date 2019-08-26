@@ -48,6 +48,12 @@ struct MatchingStatus {
     var mustStop: Bool
 }
 
+// We can make two classes: character matcher and complex matcher.
+// I've done it and it is a little mess, but it could be made simple
+// with string interpolations like (in a namespace):
+//      let procedure = "on \(identifier) \(return) \(multiple: statement) end \(identifier) \(return)"
+//      let card = "\(maybe: "the") \(either: "card", either: "cd")"
+// The space would match to any sequence of whitespace.
 protocol Matcher {
     
     func matchNextCharacter(_ character: HChar, index: Int) -> MatchingStatus
