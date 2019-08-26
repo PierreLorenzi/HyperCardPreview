@@ -752,13 +752,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6C18F1E2231405E6002B0D85 /* Script */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Script;
-			sourceTree = "<group>";
-		};
 		6C9DF50520C732860024F61B /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -804,7 +797,6 @@
 				6C9E6AB41E75BCFA00BBF925 /* Data */,
 				6C9E6AE81E75BCFA00BBF925 /* File */,
 				6C9E6AFA1E75BCFA00BBF925 /* Graphics */,
-				6C18F1E2231405E6002B0D85 /* Script */,
 				6C9E6A8F1E75BCCD00BBF925 /* Info.plist */,
 			);
 			path = HyperCardCommon;
