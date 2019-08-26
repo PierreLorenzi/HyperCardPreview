@@ -240,7 +240,7 @@ public final class Schema<T> {
             }
             
             /* Register the value as our if there are valid branches */
-            if !branches.isEmpty {
+            if !(0..<self.branchMatchers.count).allSatisfy({ !self.checkBranchMatcherIsValid(at: $0) }) {
                 self.bestValue = value
             }
         }
