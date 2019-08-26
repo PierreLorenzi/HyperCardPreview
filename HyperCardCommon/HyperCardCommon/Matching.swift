@@ -11,6 +11,7 @@ class Schema<T> {
     
     private var branches: [Branch] = []
     private var makeValue: (() -> T)! = nil
+    private var initFields: (() -> ())? = nil
     
     private struct Branch {
         var subSchemas: [SubSchema]
@@ -160,6 +161,12 @@ class Schema<T> {
     
     func parse(_ string: HString) -> T? {
         
+        /* Lazy init */
+        if let action = self.initFields {
+            action()
+            self.initFields = nil
+        }
+        
         let matcher = self.buildMatcher()
         var status = MatchingStatus(currentValue: nil, mustStop: false)
         
@@ -293,6 +300,33 @@ class Schema<T> {
                 guard subSchema.minCount == 0 else {
                     break
                 }
+            }
+        }
+    }
+    
+    func build(_ initFields: @escaping () -> ()) {
+        
+        self.initFields = initFields
+    }
+    
+    func initial(_ makeValue: @escaping () -> T) {
+        
+        self.makeValue = makeValue
+    }
+    
+    func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) {
+        
+        for i in 0..<self.branches.count {
+            
+            let subSchemas = self.branches[i].subSchemas
+            
+            for subSchema in subSchemas {
+                
+                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
+                    continue
+                }
+                
+                typeSubSchema.update = update
             }
         }
     }

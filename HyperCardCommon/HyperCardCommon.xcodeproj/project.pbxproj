@@ -797,11 +797,19 @@
 				6C89A2E22314082800F394D8 /* HandlerLocating.swift */,
 				6C89A2E12314082800F394D8 /* HyperCard Objects.swift */,
 				6C89A2E32314082800F394D8 /* HyperCard.swift */,
-				6C89A2DE2314082800F394D8 /* Matching.swift */,
+				6C2FB5702314806000824D73 /* Matching */,
 				6C89A2DD2314082800F394D8 /* Token.swift */,
 				6C89A2DC2314082800F394D8 /* Tokenizer.swift */,
 			);
 			name = Script;
+			sourceTree = "<group>";
+		};
+		6C2FB5702314806000824D73 /* Matching */ = {
+			isa = PBXGroup;
+			children = (
+				6C89A2DE2314082800F394D8 /* Matching.swift */,
+			);
+			name = Matching;
 			sourceTree = "<group>";
 		};
 		6C89A2EC231408E500F394D8 /* Data */ = {
