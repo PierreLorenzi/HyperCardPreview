@@ -121,9 +121,9 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         self.creators.append(creator)
     }
     
-    public mutating func appendInterpolation<U>(multiple schema: Schema<U>) {
+    public mutating func appendInterpolation<U>(multiple schema: Schema<U>, atLeast minCount: Int = 0, atMost maxCount: Int? = nil) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: nil)
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: minCount, maxCount: maxCount)
         
         self.creators.append(creator)
     }
@@ -153,6 +153,21 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         let globalSchema = Schema<U>()
         globalSchema.branches = schemas.map({ (schema: Schema<U>) -> Schema<U>.Branch in
             Schema<U>.Branch(subSchemas: [Schema<U>.TypedSubSchema<U>(schema: schema, minCount: 1, maxCount: 1, update: Schema<U>.Update<U>.initialization({ (u: U) -> U in return u }))])
+        })
+        
+        let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
+        
+        self.creators.append(creator)
+    }
+    
+    public mutating func appendInterpolation(variants schemas: [Schema<Void>]) {
+        
+        // intended for string literal schemas, because they lack types
+        
+        // We can't make a typed disjunction in a string literal
+        let globalSchema = Schema<Void>()
+        globalSchema.branches = schemas.map({ (schema: Schema<Void>) -> Schema<Void>.Branch in
+            Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<Void>(schema: schema, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none)])
         })
         
         let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
