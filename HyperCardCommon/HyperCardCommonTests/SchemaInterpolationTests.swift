@@ -14,9 +14,22 @@ import HyperCardCommon
 
 class SchemaInterpolationTests: XCTestCase {
     
-    func test() {
+    func testLiteral() {
         
         let schema: Schema<Void> = "coucou"
+        schema.initialValue = ()
+        
+        XCTAssert(schema.parse("coucou") != nil)
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("couco") == nil)
+        XCTAssert(schema.parse("coucouc") == nil)
+    }
+    
+    func testSimple() {
+        
+        let schemaLiteral: Schema<Void> = "coucou"
+        schemaLiteral.initialValue = ()
+        let schema: Schema<Void> = "\(schemaLiteral)"
         schema.initialValue = ()
         
         XCTAssert(schema.parse("coucou") != nil)

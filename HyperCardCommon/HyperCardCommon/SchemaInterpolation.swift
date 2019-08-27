@@ -66,7 +66,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
             super.init(minCount: minCount, maxCount: maxCount)
         }
         
-        func create<T>(for _: Schema<T>, minCount: Int, maxCount: Int) -> Schema<T>.SubSchema {
+        override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
             return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: { (_: inout T, _: U) in })
         }
@@ -83,7 +83,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
             super.init(minCount: minCount, maxCount: maxCount)
         }
         
-        func create<T>(for _: Schema<T>, minCount: Int, maxCount: Int) -> Schema<T>.SubSchema {
+        override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
             return Schema<T>.StringSubSchema(string: self.string, minCount: self.minCount, maxCount: self.maxCount, update: { (_: inout T, _: HString) in })
         }

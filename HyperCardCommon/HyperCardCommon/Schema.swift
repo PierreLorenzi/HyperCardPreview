@@ -53,6 +53,14 @@ public final class Schema<T> {
         func buildSubMatcher() -> SubMatcher {
             fatalError() // abstract
         }
+        
+        func matchesEmpty() -> Bool {
+            fatalError()
+        }
+        
+        func matchesNotEmpty() -> Bool {
+            fatalError()
+        }
     }
     
     public class TypedSubSchema<U>: SubSchema {
@@ -71,6 +79,34 @@ public final class Schema<T> {
         override func buildSubMatcher() -> SubMatcher {
             
             return TypedSubMatcher(schema: self.schema, update: self.update)
+        }
+        
+        override func matchesEmpty() -> Bool {
+            
+            /* It matches empty if one of the branch matches empty */
+            for branch in self.schema.branches {
+                
+                let matchesEmpty = branch.subSchemas.allSatisfy({ $0.minCount == 0 || $0.matchesEmpty() })
+                if matchesEmpty {
+                    return true
+                }
+            }
+            
+            return false
+        }
+        
+        override func matchesNotEmpty() -> Bool {
+            
+            /* It matches not empty if one of the branch matches not empty */
+            for branch in self.schema.branches {
+                
+                let matchesNotEmpty = branch.subSchemas.first(where: { $0.minCount > 0 && !$0.matchesEmpty() }) != nil
+                if matchesNotEmpty {
+                    return true
+                }
+            }
+            
+            return false
         }
         
         private class TypedSubMatcher: SubMatcher {
@@ -130,6 +166,14 @@ public final class Schema<T> {
         override func buildSubMatcher() -> SubMatcher {
             
             return StringSubMatcher(string: self.string, update: self.update)
+        }
+        
+        override func matchesEmpty() -> Bool {
+            return self.string.length == 0
+        }
+        
+        override func matchesNotEmpty() -> Bool {
+            return self.string.length > 0
         }
         
         class StringSubMatcher: SubMatcher {
@@ -248,7 +292,7 @@ public final class Schema<T> {
             for branch in self.branches {
                 
                 /* Check that all min counts are 0 */
-                let isNullable = branch.subSchemas.map({ $0.minCount }).allSatisfy({ $0 == 0 })
+                let isNullable = branch.subSchemas.allSatisfy({ $0.minCount == 0 || $0.matchesEmpty() })
                 if isNullable {
                     return true
                 }
@@ -321,7 +365,9 @@ public final class Schema<T> {
             /* Check if the following schemas can be absent */
             for i in (subSchemaIndex+1)..<subSchemas.count {
                 
-                guard subSchemas[i].minCount == 0 else {
+                let subSchema = subSchemas[i]
+                
+                guard subSchema.minCount == 0 || subSchema.matchesEmpty() else {
                     return false
                 }
             }
@@ -365,6 +411,16 @@ public final class Schema<T> {
                 
                 let subSchema = subSchemas[i]
                 
+                /* If it doesn't match anything, skip it */
+                if !subSchema.matchesNotEmpty() {
+                    
+                    guard subSchema.matchesEmpty() else {
+                        break
+                    }
+                    
+                    continue
+                }
+                
                 /* Very small precaution */
                 guard subSchema.maxCount == nil || subSchema.maxCount! > 0 else {
                     continue
@@ -379,7 +435,7 @@ public final class Schema<T> {
                 currentInsertionIndex += 1
                 
                 /* If the minCount is 0, we must consider the next schema starts */
-                guard subSchema.minCount == 0 else {
+                guard subSchema.minCount == 0 || subSchema.matchesEmpty() else {
                     break
                 }
             }
