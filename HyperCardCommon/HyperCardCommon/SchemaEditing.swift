@@ -61,6 +61,26 @@ public extension Schema {
             }
         }
     }
+    
+    func initWhen<U>(_ schema: Schema<U>, _ initialization: @escaping (U) -> T) {
+        
+        for i in 0..<self.branches.count {
+            
+            let subSchemas = self.branches[i].subSchemas
+            
+            for subSchema in subSchemas {
+                
+                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
+                    continue
+                }
+                guard typeSubSchema.schema === schema else {
+                    continue
+                }
+                
+                typeSubSchema.update = Update<U>.initialization(initialization)
+            }
+        }
+    }
 }
 
 
