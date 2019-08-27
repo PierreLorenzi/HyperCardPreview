@@ -46,42 +46,20 @@ public extension HChar {
         return self == HChar.space || self == HChar.tabulation
     }
     
-    private static let isSymbol: [Bool] =
-        [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false,  true, false, false, false, false,  true, false,  true,  true,  true,  true,  true,  true, false,  true,
-         false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true,  true, false,
-          true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false,  true, false,  true,  true, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false,  true, false, false,
-         false, false,  true,  true, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-    ]
+    private static let isSymbol: [Bool] = buildTable(with: "!&()*+,-/:<=>@[]^{|}≠≤≥")
     
-    private static let isLetter: [Bool] =
-        [false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-          true,  true,  true,  true,  true,  true,  true,  true,  true,  true, true, false, false, false, false, false,
-         false,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-          true,  true,  true,  true,  true,  true,  true,  true,  true,  true, true, false, false, false, false, false,
-          true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-          true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,  true,
-         false, false, false, false, false, false, false,  true, false, false, false, false, false, false,  true,  true,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false,  true,  true,
-         false, false, false, false, false, false, false, false, false, false, false,  true,  true,  true,  true,  true,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
-         false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
-    ]
+    private static let isLetter: [Bool] = buildTable(with: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûüßÆØæøÀÃÕŒœ")
+    
+    private static func buildTable(with string: HString) -> [Bool] {
+        
+        var table = [Bool](repeating: false, count: 256)
+        
+        for i in 0..<string.length {
+            
+            table[Int(string[i])] = true
+        }
+        
+        return table
+    }
     
 }
