@@ -43,9 +43,9 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     fileprivate class SubSchemaCreator {
         
         var minCount: Int
-        var maxCount: Int
+        var maxCount: Int?
         
-        init(minCount: Int, maxCount: Int) {
+        init(minCount: Int, maxCount: Int?) {
             self.minCount = minCount
             self.maxCount = maxCount
         }
@@ -59,7 +59,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         var schema: Schema<U>
         
-        init(schema: Schema<U>, minCount: Int, maxCount: Int) {
+        init(schema: Schema<U>, minCount: Int, maxCount: Int?) {
             
             self.schema = schema
             
@@ -104,6 +104,32 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public mutating func appendInterpolation<U>(_ schema: Schema<U>) {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
+        
+        self.creators.append(creator)
+    }
+    
+    public mutating func appendInterpolation<U>(multiple schema: Schema<U>) {
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: nil)
+        
+        self.creators.append(creator)
+    }
+    
+    public mutating func appendInterpolation<U>(maybe schema: Schema<U>) {
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
+        
+        self.creators.append(creator)
+    }
+    
+    public mutating func appendInterpolation<U,V>(either schema1: Schema<U>, either schema2: Schema<V>) {
+        
+        // We can't make a typed disjunction in a string literal
+        let schema = Schema<Void>()
+        schema.initialValue = ()
+        schema.branches = [Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<U>(schema: schema1, minCount: 1, maxCount: 1, update: { (_: inout Void, _: U) in })]), Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<V>(schema: schema2, minCount: 1, maxCount: 1, update: { (_: inout Void, _: V) in })])]
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
         
         self.creators.append(creator)
     }

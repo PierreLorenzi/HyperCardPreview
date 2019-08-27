@@ -55,6 +55,31 @@ class SchemaInterpolationTests: XCTestCase {
         XCTAssert(schema.parse("coucou  pierre") == nil)
     }
     
+    func testMultiple() {
+        
+        let schemaLiteral: Schema<Void> = "pierre"
+        schemaLiteral.initialValue = ()
+        
+        let schema: Schema<Void> = "\(maybe: schemaLiteral)ppp"
+        schema.initialValue = ()
+        XCTAssert(schema.parse("pierreppp") != nil)
+        XCTAssert(schema.parse("ppp") != nil)
+        XCTAssert(schema.parse("pierrepierreppp") == nil)
+        
+        let schema2: Schema<Void> = "\(multiple: schemaLiteral)ppp"
+        schema2.initialValue = ()
+        XCTAssert(schema2.parse("pierrepierrepierreppp") != nil)
+        XCTAssert(schema2.parse("pierrepierreppp") != nil)
+        XCTAssert(schema2.parse("pierreppp") != nil)
+        XCTAssert(schema2.parse("ppp") != nil)
+        
+        let schemaLiteral2: Schema<Void> = "coucou"
+        schemaLiteral2.initialValue = ()
+        let schema3: Schema<Void> = "\(either: schemaLiteral, either: schemaLiteral2)ppp"
+        schema3.initialValue = ()
+        XCTAssert(schema3.parse("pierreppp") != nil)
+        XCTAssert(schema3.parse("coucouppp") != nil)
+    }
     
     
 }
