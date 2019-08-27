@@ -10,7 +10,7 @@
 public final class Schema<T> {
     
     public var branches: [Branch] = []
-    public var initialValue: T! = nil
+    public var initialValue: T? = nil
     public var initFields: (() -> ())? = nil
     
     public init() {}
@@ -277,14 +277,14 @@ public final class Schema<T> {
         
         private struct BranchMatcher {
             
-            let value: T
+            let value: T?
             let subMatcher: SubMatcher
             let branchIndex: Int
             let subSchemaIndex: Int
             let occurrenceIndex: Int
         }
         
-        init(branches: [Branch], initialValue: T) {
+        init(branches: [Branch], initialValue: T?) {
             
             self.branches = branches
             self.branchMatchers = []
@@ -338,8 +338,15 @@ public final class Schema<T> {
                 /* Check if the sub-matcher has a match, and so can update our value */
                 if let update = subMatcher.currentUpdate {
                     
-                    var newValue = self.branchMatchers[i].value
-                    update(&newValue)
+                    let newValue: T?
+                    if let oldValue = self.branchMatchers[i].value {
+                        var changingValue = oldValue
+                        update(&changingValue)
+                        newValue = changingValue
+                    }
+                    else {
+                        newValue = nil
+                    }
                     
                     /* Register this value, as ours if the branch is the best one */
                     if checkBranchMatcherIsValid(at: i) {
@@ -393,7 +400,7 @@ public final class Schema<T> {
             return true
         }
         
-        private func addSubBranchMatchers(branchingFrom branchMatcher: BranchMatcher, index: Int, value: T) {
+        private func addSubBranchMatchers(branchingFrom branchMatcher: BranchMatcher, index: Int, value: T?) {
             
             /* Get the schema of the matcher */
             let branchIndex = branchMatcher.branchIndex
@@ -420,7 +427,7 @@ public final class Schema<T> {
             }
         }
         
-        private func addBranchMatchersAtSchema(branchIndex: Int, schemaIndex: Int, insertionIndex: Int, value: T) {
+        private func addBranchMatchersAtSchema(branchIndex: Int, schemaIndex: Int, insertionIndex: Int, value: T?) {
             
             let subSchemas = self.branches[branchIndex].subSchemas
             var currentInsertionIndex = insertionIndex
