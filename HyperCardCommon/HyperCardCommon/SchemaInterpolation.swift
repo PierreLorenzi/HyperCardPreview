@@ -19,8 +19,13 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         
         let string = HString(stringLiteral: stringLiteral)
         self.branches = [
-            Branch(subSchemas: [StringSubSchema(string: string, minCount: 1, maxCount: 1, update: { (_: inout T, _: HString) in })])
+            Branch(subSchemas: [StringSubSchema(string: string, minCount: 1, maxCount: 1, update: Update<HString>.none)])
         ]
+        
+        /* If the schema must return a string, let's return itself */
+        if let stringValue = string as? T {
+            self.initialValue = stringValue
+        }
     }
     
     public convenience init(stringInterpolation: SchemaInterpolation) {
@@ -68,7 +73,15 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
-            return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: { (_: inout T, _: U) in })
+            if T.self == U.self {
+                
+                /* So, if an interpolation has a type, the strings will pass the values */
+                return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<U>.initialization({ (value: U) -> T in
+                    return value as! T
+                }))
+            }
+            
+            return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<U>.none)
         }
     }
     
@@ -85,7 +98,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
-            return Schema<T>.StringSubSchema(string: self.string, minCount: self.minCount, maxCount: self.maxCount, update: { (_: inout T, _: HString) in })
+            return Schema<T>.StringSubSchema(string: self.string, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<HString>.none)
         }
     }
     
@@ -127,7 +140,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         // We can't make a typed disjunction in a string literal
         let schema = Schema<Void>()
         schema.initialValue = ()
-        schema.branches = [Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<U>(schema: schema1, minCount: 1, maxCount: 1, update: { (_: inout Void, _: U) in })]), Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<V>(schema: schema2, minCount: 1, maxCount: 1, update: { (_: inout Void, _: V) in })])]
+        schema.branches = [Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<U>(schema: schema1, minCount: 1, maxCount: 1, update: Schema<Void>.Update<U>.none)]), Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<V>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<V>.none)])]
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
         
@@ -139,7 +152,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         // We can't make a typed disjunction in a string literal
         let globalSchema = Schema<U>()
         globalSchema.branches = schemas.map({ (schema: Schema<U>) -> Schema<U>.Branch in
-            Schema<U>.Branch(subSchemas: [Schema<U>.TypedSubSchema<U>(schema: schema, minCount: 1, maxCount: 1, update: { (parentValue: inout U, value: U) in parentValue = value })])
+            Schema<U>.Branch(subSchemas: [Schema<U>.TypedSubSchema<U>(schema: schema, minCount: 1, maxCount: 1, update: Schema<U>.Update<U>.initialization({ (u: U) -> U in return u }))])
         })
         
         let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)

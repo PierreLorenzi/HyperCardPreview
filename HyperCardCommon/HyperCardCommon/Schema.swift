@@ -35,7 +35,7 @@ public final class Schema<T> {
             fatalError()
         }
         
-        var currentUpdate: ((inout T) -> ())? {
+        var currentUpdate: SubUpdate {
             fatalError()
         }
         
@@ -67,12 +67,26 @@ public final class Schema<T> {
         }
     }
     
+    public enum Update<U> {
+        
+        case none
+        case change((inout T,U) -> ())
+        case initialization((U) -> T)
+    }
+    
+    public enum SubUpdate {
+        
+        case none
+        case change((inout T) -> ())
+        case initialization(() -> T)
+    }
+    
     public class TypedSubSchema<U>: SubSchema {
         
         public var schema: Schema<U>
-        public var update: (inout T,U) -> ()
+        public var update: Update<U>
         
-        public init(schema: Schema<U>, minCount: Int, maxCount: Int?, update: @escaping (inout T,U) -> ()) {
+        public init(schema: Schema<U>, minCount: Int, maxCount: Int?, update: Update<U>) {
             
             self.schema = schema
             self.update = update
@@ -116,9 +130,9 @@ public final class Schema<T> {
         private class TypedSubMatcher: SubMatcher {
             
             private let matcher: Schema<U>.Matcher
-            private let update: (inout T,U) -> ()
+            private let update: Update<U>
             
-            init(schema: Schema<U>, update: @escaping (inout T,U) -> ()) {
+            init(schema: Schema<U>, update: Update<U>) {
                 
                 self.matcher = schema.buildMatcher()
                 self.update = update
@@ -128,16 +142,29 @@ public final class Schema<T> {
                 return matcher.isMatching
             }
             
-            override var currentUpdate: ((inout T) -> ())? {
+            override var currentUpdate: SubUpdate {
                 
                 guard let currentValue = self.matcher.currentValue else {
-                    return nil
+                    return SubUpdate.none
                 }
                 
                 let update = self.update
                 
-                return { (parentValue: inout T) in
-                    update(&parentValue, currentValue)
+                switch update {
+                    
+                case .none:
+                    return SubUpdate.none
+                    
+                case .change(let change):
+                    return SubUpdate.change({ (parentValue: inout T) in
+                        change(&parentValue, currentValue)
+                    })
+                    
+                case .initialization(let initialization):
+                    return SubUpdate.initialization({ () -> T in
+                        return initialization(currentValue)
+                    })
+                    
                 }
             }
             
@@ -161,9 +188,9 @@ public final class Schema<T> {
     public class StringSubSchema: SubSchema {
         
         public var string: HString
-        public var update: (inout T, HString) -> ()
+        public var update: Update<HString>
         
-        public init(string: HString, minCount: Int, maxCount: Int?, update: @escaping (inout T, HString) -> ()) {
+        public init(string: HString, minCount: Int, maxCount: Int?, update: Update<HString>) {
             
             self.string = string
             self.update = update
@@ -187,10 +214,10 @@ public final class Schema<T> {
         class StringSubMatcher: SubMatcher {
             
             private let string: HString
-            private let update: (inout T, HString) -> ()
+            private let update: Update<HString>
             private var currentIndex = 0
             
-            init(string: HString, update: @escaping (inout T, HString) -> ()) {
+            init(string: HString, update: Update<HString>) {
                 
                 self.string = string
                 self.update = update
@@ -201,17 +228,29 @@ public final class Schema<T> {
                 return self.currentIndex == string.length
             }
             
-            override var currentUpdate: ((inout T) -> ())? {
+            override var currentUpdate: SubUpdate {
                 
                 guard self.isMatching else {
-                    return nil
+                    return SubUpdate.none
                 }
                 
                 let update = self.update
                 let string = self.string
                 
-                return {(parentValue: inout T) in
-                    update(&parentValue, string)
+                switch update {
+                    
+                case .none:
+                    return SubUpdate.none
+                    
+                case .change(let change):
+                    return SubUpdate.change({ (parentValue: inout T) in
+                        return change(&parentValue, string)
+                    })
+                    
+                case .initialization(let initialization):
+                    return SubUpdate.initialization({ () -> T in
+                        return initialization(string)
+                    })
                 }
             }
             
@@ -336,20 +375,13 @@ public final class Schema<T> {
                 let status = subMatcher.matchNextCharacter(character)
                 
                 /* Check if the sub-matcher has a match, and so can update our value */
-                if let update = subMatcher.currentUpdate {
+                if subMatcher.isMatching {
                     
-                    let newValue: T?
-                    if let oldValue = self.branchMatchers[i].value {
-                        var changingValue = oldValue
-                        update(&changingValue)
-                        newValue = changingValue
-                    }
-                    else {
-                        newValue = nil
-                    }
+                    let newValue: T? = self.updateValue(self.branchMatchers[i].value, with: subMatcher.currentUpdate)
                     
                     /* Register this value, as ours if the branch is the best one */
                     if checkBranchMatcherIsValid(at: i) {
+                        
                         self.isMatching = true
                         self.bestValue = newValue
                     }
@@ -366,6 +398,31 @@ public final class Schema<T> {
             }
             
             return self.branchMatchers.isEmpty ? MatchingStatus.mustStop : MatchingStatus.canContinue
+        }
+        
+        private func updateValue(_ possibleValue: T?, with update: SubUpdate) -> T? {
+            
+            switch update {
+                
+            case .none:
+                
+                return possibleValue
+                
+            case .change(let change):
+                
+                guard let value = possibleValue else {
+                    return nil
+                }
+                
+                var changingValue = value
+                change(&changingValue)
+                return changingValue
+                
+            case .initialization(let initialization):
+                
+                return initialization()
+                
+            }
         }
         
         private func checkBranchMatcherIsValid(at index: Int) -> Bool {

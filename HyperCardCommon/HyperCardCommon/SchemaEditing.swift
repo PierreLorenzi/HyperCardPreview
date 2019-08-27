@@ -29,7 +29,7 @@ public extension Schema {
                     continue
                 }
                 
-                typeSubSchema.update = update
+                typeSubSchema.update = Update<U>.change(update)
             }
         }
     }
@@ -56,7 +56,7 @@ public extension Schema {
                     continue
                 }
                 
-                typeSubSchema.update = update
+                typeSubSchema.update = Update<U>.change(update)
                 return
             }
         }

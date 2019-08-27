@@ -18,7 +18,7 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
         })])]
@@ -36,7 +36,7 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 4, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 4, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -57,7 +57,7 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 3, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 3, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -78,9 +78,9 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 10
-        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -104,9 +104,9 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 2, maxCount: 2, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 2, maxCount: 2, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 10
-        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 1, maxCount: 1, update: { (count: inout Int, _: HString) in
+        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 1, maxCount: 1, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -130,9 +130,9 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 10
-        }), Schema<Int>.StringSubSchema(string: "pier", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        }), Schema<Int>.StringSubSchema(string: "pier", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -156,16 +156,16 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
-        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        }), Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "roc")
             count += 2
-        }), Schema<Int>.StringSubSchema(string: "ciseau", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        }), Schema<Int>.StringSubSchema(string: "ciseau", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "ciseau")
             count += 3
-        }), Schema<Int>.StringSubSchema(string: "crayon", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        }), Schema<Int>.StringSubSchema(string: "crayon", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "crayon")
             count += 4
         })])]
@@ -180,9 +180,9 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 10
-        }), Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
+        }), Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, _: HString) in
             count += 1
         })])]
         
@@ -199,10 +199,10 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
-        })]), Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        })]), Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update:  Schema<Int>.Update<HString>.change{ (count: inout Int, s: HString) in
             XCTAssert(s == "roc")
             count -= 1
         })])]
@@ -221,10 +221,10 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.initialValue = 0
-        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
-        })]), Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
+        })]), Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: Schema<Int>.Update<HString>.change { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count -= 1
         })])]

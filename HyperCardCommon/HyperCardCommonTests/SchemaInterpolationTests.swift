@@ -79,6 +79,27 @@ class SchemaInterpolationTests: XCTestCase {
         schema3.initialValue = ()
         XCTAssert(schema3.parse("pierreppp") != nil)
         XCTAssert(schema3.parse("coucouppp") != nil)
+        
+        let schemaOne: Schema<Int> = "one"
+        let schemaTwo: Schema<Int> = "two"
+        let schemaThree: Schema<Int> = "three"
+        schemaOne.initialValue = 1
+        schemaTwo.initialValue = 2
+        schemaThree.initialValue = 3
+        let schema4: Schema<Int> = "\(oneOf: [schemaOne, schemaTwo, schemaThree])"
+        XCTAssert(schema4.parse("one") == 1)
+        XCTAssert(schema4.parse("two") == 2)
+        XCTAssert(schema4.parse("three") == 3)
+        
+        let schemaA: Schema<HString> = "a"
+        let schemaB: Schema<HString> = "b"
+        let schemaC: Schema<HString> = "c"
+        let schema5: Schema<HString> = "\(oneOf: [schemaA, schemaB, schemaC])"
+        XCTAssert(compare(schema5.parse("a") ?? "", HString(stringLiteral: "a")) == .equal)
+        XCTAssert(compare(schema5.parse("b") ?? "", HString(stringLiteral: "b")) == .equal)
+        XCTAssert(compare(schema5.parse("c") ?? "", HString(stringLiteral: "c")) == .equal)
+        XCTAssert(schema5.parse("d") == nil)
+        
     }
     
     
