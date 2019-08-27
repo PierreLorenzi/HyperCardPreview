@@ -133,6 +133,19 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         self.creators.append(creator)
     }
+    
+    public mutating func appendInterpolation<U>(oneOf schemas: [Schema<U>]) {
+        
+        // We can't make a typed disjunction in a string literal
+        let globalSchema = Schema<U>()
+        globalSchema.branches = schemas.map({ (schema: Schema<U>) -> Schema<U>.Branch in
+            Schema<U>.Branch(subSchemas: [Schema<U>.TypedSubSchema<U>(schema: schema, minCount: 1, maxCount: 1, update: { (parentValue: inout U, value: U) in parentValue = value })])
+        })
+        
+        let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
+        
+        self.creators.append(creator)
+    }
 }
 
 

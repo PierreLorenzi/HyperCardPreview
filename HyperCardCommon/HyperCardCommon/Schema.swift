@@ -31,6 +31,10 @@ public final class Schema<T> {
     
     public class SubMatcher {
         
+        var isMatching: Bool {
+            fatalError()
+        }
+        
         var currentUpdate: ((inout T) -> ())? {
             fatalError()
         }
@@ -120,6 +124,10 @@ public final class Schema<T> {
                 self.update = update
             }
             
+            override var isMatching: Bool {
+                return matcher.isMatching
+            }
+            
             override var currentUpdate: ((inout T) -> ())? {
                 
                 guard let currentValue = self.matcher.currentValue else {
@@ -188,9 +196,14 @@ public final class Schema<T> {
                 self.update = update
             }
             
+            override var isMatching: Bool {
+                
+                return self.currentIndex == string.length
+            }
+            
             override var currentUpdate: ((inout T) -> ())? {
                 
-                guard self.currentIndex == string.length else {
+                guard self.isMatching else {
                     return nil
                 }
                 
@@ -259,6 +272,7 @@ public final class Schema<T> {
         /* The branches are sorted from best to worst */
         private var branchMatchers: [BranchMatcher]
         
+        var isMatching: Bool
         private var bestValue: T? = nil
         
         private struct BranchMatcher {
@@ -274,6 +288,7 @@ public final class Schema<T> {
             
             self.branches = branches
             self.branchMatchers = []
+            self.isMatching = false
             
             /* Make the first branch matchers */
             for i in 0..<branches.count {
@@ -283,6 +298,7 @@ public final class Schema<T> {
             
             /* Register the value as our if there are valid branches */
             if isThereNullableBranch() {
+                self.isMatching = true
                 self.bestValue = initialValue
             }
         }
@@ -308,6 +324,7 @@ public final class Schema<T> {
         
         func matchNextCharacter(_ character: HChar) -> MatchingStatus {
             
+            self.isMatching = false
             self.bestValue = nil
             
             /* Update the matchers in the reverse order so we can remove and add elements from the list */
@@ -326,6 +343,7 @@ public final class Schema<T> {
                     
                     /* Register this value, as ours if the branch is the best one */
                     if checkBranchMatcherIsValid(at: i) {
+                        self.isMatching = true
                         self.bestValue = newValue
                     }
                     
