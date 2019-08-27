@@ -193,7 +193,7 @@ public final class Schema<T> {
         for i in 0..<string.length {
             
             guard status == MatchingStatus.canContinue else {
-                break
+                return nil
             }
             
             let character = string[i]
@@ -269,7 +269,9 @@ public final class Schema<T> {
                     update(&newValue)
                     
                     /* Register this value, as ours if the branch is the best one */
-                    self.bestValue = newValue
+                    if checkBranchMatcherIsValid(at: i) {
+                        self.bestValue = newValue
+                    }
                     
                     /* As it returns an update, it has a match, so we can consider it ends here */
                     self.addSubBranchMatchers(branchingFrom: self.branchMatchers[i], index: i, value: newValue)
