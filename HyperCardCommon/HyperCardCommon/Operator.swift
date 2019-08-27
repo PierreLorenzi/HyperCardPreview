@@ -17,6 +17,7 @@ public enum Operator {
 public enum ArithmeticOperator {
     case addition(Expression, Expression)  // +
     case substraction(Expression, Expression)  // -
+    case opposite(Expression) // -
     case multiplication(Expression, Expression)  // *
     case division(Expression, Expression)  // /
     case exponentiation(Expression, Expression)  // ^
