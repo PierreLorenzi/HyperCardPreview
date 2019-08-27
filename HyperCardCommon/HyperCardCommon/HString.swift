@@ -12,11 +12,7 @@ public typealias HChar = UInt8
 
 
 /// A Mac OS Roman string
-/// <p>
-/// It is not equatable because string comparisons in old Mac OS are always
-/// case-insensitive or even diacritics-insensitive, so the byte-to-byte comparison
-/// it not an option.
-public struct HString: ExpressibleByStringLiteral, CustomStringConvertible {
+public struct HString: Equatable, ExpressibleByStringLiteral, CustomStringConvertible {
     
     /// The bytes of the string, without null terminator
     public private(set) var data: Data
@@ -97,6 +93,10 @@ public struct HString: ExpressibleByStringLiteral, CustomStringConvertible {
             hashValue *= 31
         }
         return hashValue
+    }
+    
+    public static func ==(string1: HString, string2: HString) -> Bool {
+        return compareCaseDiacritics(string1, string2) == .equal
     }
     
     public static func ==(hstring: HString, string: String) -> Bool {

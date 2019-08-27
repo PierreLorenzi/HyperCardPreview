@@ -159,8 +159,7 @@ public class Tokenizer {
         let integer = self.readInteger()
         
         let digitCount = self.index - startIndex
-        let factor = 10 ^ digitCount
-        let fractional = Double(integer) / Double(factor)
+        let fractional = Double(integer) / pow(10.0, Double(digitCount))
         
         return fractional
     }

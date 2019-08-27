@@ -9,7 +9,7 @@
 
 public enum Schemas {
     
-    static let word = Schema<HString>(initialValue: nil, branches: [
+    public static let word = Schema<HString>(initialValue: nil, branches: [
             Schema<HString>.Branch(subSchemas: [
                 Schema<HString>.ValueSubSchema(accept: { (token: Token) -> Bool in
                     
@@ -29,7 +29,7 @@ public enum Schemas {
                 ])
         ])
     
-    static let quotedString = Schema<HString>(initialValue: nil, branches: [
+    public static let quotedString = Schema<HString>(initialValue: nil, branches: [
         Schema<HString>.Branch(subSchemas: [
             Schema<HString>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -49,7 +49,7 @@ public enum Schemas {
             ])
         ])
     
-    static let integer = Schema<Int>(initialValue: nil, branches: [
+    public static let integer = Schema<Int>(initialValue: nil, branches: [
         Schema<Int>.Branch(subSchemas: [
             Schema<Int>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -69,7 +69,7 @@ public enum Schemas {
             ])
         ])
     
-    static let realNumber = Schema<Double>(initialValue: nil, branches: [
+    public static let realNumber = Schema<Double>(initialValue: nil, branches: [
         Schema<Double>.Branch(subSchemas: [
             Schema<Double>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -89,7 +89,7 @@ public enum Schemas {
             ])
         ])
     
-    static let _r = Schema<Void>(initialValue: (), branches: [
+    public static let _r = Schema<Void>(initialValue: (), branches: [
         Schema<Void>.Branch(subSchemas: [
             Schema<Void>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -102,7 +102,7 @@ public enum Schemas {
             ])
         ])
     
-    static let trueLiteral = Schema<Bool>(initialValue: nil, branches: [
+    public static let trueLiteral = Schema<Bool>(initialValue: nil, branches: [
         Schema<Bool>.Branch(subSchemas: [
             Schema<Bool>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -114,7 +114,7 @@ public enum Schemas {
             ])
         ])
     
-    static let falseLiteral = Schema<Bool>(initialValue: nil, branches: [
+    public static let falseLiteral = Schema<Bool>(initialValue: nil, branches: [
         Schema<Bool>.Branch(subSchemas: [
             Schema<Bool>.ValueSubSchema(accept: { (token: Token) -> Bool in
                 
@@ -126,15 +126,11 @@ public enum Schemas {
             ])
         ])
     
-    static let boolean = Schema<Bool>("\(equal: trueLiteral)\(orEqual: falseLiteral)")
+    public static let boolean = Schema<Bool>("\(equal: trueLiteral)\(orEqual: falseLiteral)")
     
-    static let expression = Schema<Literal>("\(quotedString)\(or: word)\(or: boolean)\(or: integer)\(or: realNumber)")
+    public static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
         
         .initWhen(quotedString) {
-            Literal.string($0)
-        }
-        
-        .initWhen(word) {
             Literal.string($0)
         }
         
@@ -149,6 +145,10 @@ public enum Schemas {
         .initWhen(realNumber) {
             Literal.floatingPoint($0)
         }
+        
+        .initWhen(word) {
+            Literal.string($0)
+    }
 
 }
 

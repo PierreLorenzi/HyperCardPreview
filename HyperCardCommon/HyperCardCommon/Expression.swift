@@ -16,7 +16,7 @@ public indirect enum Expression {
     case chunk(ExpressionChunk)
 }
 
-public enum Literal {
+public enum Literal: Equatable {
     case boolean(Bool)
     case integer(Int)
     case floatingPoint(Double)

@@ -19,7 +19,7 @@ public struct HandlerLocation: Equatable {
     }
     
     public static func ==(h1: HandlerLocation, h2: HandlerLocation) -> Bool {
-        return compareCaseDiacritics(h1.name, h2.name) == .equal && h1.type == h2.type && h1.offset == h2.offset
+        return h1.name == h2.name && h1.type == h2.type && h1.offset == h2.offset
     }
 }
 
@@ -117,7 +117,7 @@ public extension HString {
         }
         
         let followingCharacters = self[index ..< (index + word.length)]
-        guard compareCaseDiacritics(followingCharacters, word) == .equal else {
+        guard followingCharacters == word else {
             return false
         }
         

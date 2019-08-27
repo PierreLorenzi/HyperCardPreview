@@ -150,7 +150,7 @@ class InfoPanelController: NSWindowController {
                 return false
             }
             let indexBefore = realIndex - string.length + 1
-            if indexBefore >= 0 && compareCaseDiacritics(script[indexBefore..<(realIndex + 1)], string) == .equal {
+            if indexBefore >= 0 && script[indexBefore..<(realIndex + 1)] == string {
                 if indexBefore == 0 {
                     return true
                 }
@@ -165,7 +165,7 @@ class InfoPanelController: NSWindowController {
         
         func isWordAfterIndex(_ index: Int, _ string: HString) -> Bool {
             let indexAfter = index + string.length + 1
-            if indexAfter <= script.length && compareCaseDiacritics(script[(index + 1)..<indexAfter], string) == .equal {
+            if indexAfter <= script.length && script[(index + 1)..<indexAfter] == string {
                 if indexAfter == script.length {
                    return true
                 }
