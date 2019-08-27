@@ -221,4 +221,51 @@ class SchemaTests: XCTestCase {
         
     }
     
+    func testEmptyBranch() {
+        
+        /* Schemas with empty branches happen during interpolations */
+        
+        let schema = Schema<Void>()
+        schema.initialValue = ()
+        schema.branches = [ Schema<Void>.Branch(subSchemas: [])]
+        
+        XCTAssert(schema.parse("") != nil)
+        XCTAssert(schema.parse("pierre") == nil)
+        
+    }
+    
+    func testEmptyBranch2() {
+        
+        /* Schemas with empty branches happen during interpolations */
+        
+        let schema = Schema<Void>()
+        let schema2 = Schema<Void>()
+        schema.initialValue = ()
+        schema2.initialValue = ()
+        schema.branches = [ Schema<Void>.Branch(subSchemas: [Schema<Void>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Token>.none), Schema<Void>.TypedSubSchema<Void>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none)])]
+        schema2.branches = [ Schema.Branch(subSchemas: []) ]
+        
+        XCTAssert(schema.parse("pierre") != nil)
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("pierre pierre") == nil)
+        
+    }
+    
+    func testEmptyBranch3() {
+        
+        /* Schemas with empty branches happen during interpolations */
+        
+        let schema = Schema<Void>()
+        let schema2 = Schema<Void>()
+        schema.initialValue = ()
+        schema2.initialValue = ()
+        schema.branches = [ Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<Void>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none), Schema<Void>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Token>.none)])]
+        schema2.branches = [ Schema.Branch(subSchemas: []) ]
+        
+        XCTAssert(schema.parse("pierre") != nil)
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("pierre pierre") == nil)
+        
+    }
+    
 }

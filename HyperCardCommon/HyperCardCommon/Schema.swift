@@ -23,6 +23,34 @@ public final class Schema<T> {
         }
     }
     
+    private var matchesEmpty: Bool {
+        
+        /* The schema can match empty if one of the branch can */
+        for branch in self.branches {
+            
+            let branchMatchesEmpty = branch.subSchemas.allSatisfy({ $0.minCount == 0 || $0.matchesEmpty })
+            if branchMatchesEmpty {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    private var matchesNotEmpty: Bool {
+        
+        /* The schema can match not empty if one of the branch can */
+        for branch in self.branches {
+            
+            let branchMatchesNotEmpty = branch.subSchemas.first(where: { $0.matchesNotEmpty }) != nil
+            if branchMatchesNotEmpty {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     public enum MatchingStatus {
         
         case canContinue
@@ -52,6 +80,13 @@ public final class Schema<T> {
         public init(minCount: Int, maxCount: Int?) {
             self.minCount = minCount
             self.maxCount = maxCount
+        }
+        
+        var matchesEmpty: Bool {
+            fatalError()
+        }
+        var matchesNotEmpty: Bool {
+            fatalError()
         }
         
         func buildSubMatcher() -> SubMatcher {
@@ -84,6 +119,13 @@ public final class Schema<T> {
             self.update = update
             
             super.init(minCount: minCount, maxCount: maxCount)
+        }
+        
+        override var matchesEmpty: Bool {
+            return schema.matchesEmpty
+        }
+        override var matchesNotEmpty: Bool {
+            return schema.matchesNotEmpty
         }
         
         override func buildSubMatcher() -> SubMatcher {
@@ -160,6 +202,13 @@ public final class Schema<T> {
             self.update = update
             
             super.init(minCount: minCount, maxCount: maxCount)
+        }
+        
+        override var matchesEmpty: Bool {
+            return false
+        }
+        override var matchesNotEmpty: Bool {
+            return true
         }
         
         override func buildSubMatcher() -> SubMatcher {
@@ -250,7 +299,7 @@ public final class Schema<T> {
     
     private func buildMatcher() -> Matcher {
         
-        return Matcher(branches: self.branches, initialValue: self.initialValue)
+        return Matcher(branches: self.branches, initialValue: self.initialValue, matchesEmpty: self.matchesEmpty)
     }
     
     private class Matcher {
@@ -272,37 +321,21 @@ public final class Schema<T> {
             let occurrenceIndex: Int
         }
         
-        init(branches: [Branch], initialValue: T?) {
+        init(branches: [Branch], initialValue: T?, matchesEmpty: Bool) {
             
             self.branches = branches
             self.branchMatchers = []
-            self.isMatching = false
+            
+            self.isMatching = matchesEmpty
+            if matchesEmpty {
+                self.bestValue = initialValue
+            }
             
             /* Make the first branch matchers */
             for i in 0..<branches.count {
                 
                 self.addBranchMatchersAtSchema(branchIndex: i, schemaIndex: 0, insertionIndex: self.branchMatchers.count, value: initialValue)
             }
-            
-            /* Register the value as our if there are valid branches */
-            if isThereNullableBranch() {
-                self.isMatching = true
-                self.bestValue = initialValue
-            }
-        }
-        
-        private func isThereNullableBranch() -> Bool {
-            
-            for branch in self.branches {
-                
-                /* Check that all min counts are 0 */
-                let isNullable = branch.subSchemas.allSatisfy({ $0.minCount == 0 })
-                if isNullable {
-                    return true
-                }
-            }
-            
-            return false
         }
         
         var currentValue: T? {
@@ -398,7 +431,7 @@ public final class Schema<T> {
                 
                 let subSchema = subSchemas[i]
                 
-                guard subSchema.minCount == 0 else {
+                guard subSchema.minCount == 0 || subSchema.matchesEmpty else {
                     return false
                 }
             }
@@ -442,6 +475,16 @@ public final class Schema<T> {
                 
                 let subSchema = subSchemas[i]
                 
+                /* If the schema doesn't match anything, skip it */
+                guard subSchema.matchesNotEmpty else {
+                    
+                    guard subSchema.matchesEmpty else {
+                        break
+                    }
+                    
+                    continue
+                }
+                
                 /* Very small precaution */
                 guard subSchema.maxCount == nil || subSchema.maxCount! > 0 else {
                     continue
@@ -456,7 +499,7 @@ public final class Schema<T> {
                 currentInsertionIndex += 1
                 
                 /* If the minCount is 0, we must consider the next schema starts */
-                guard subSchema.minCount == 0 else {
+                guard subSchema.minCount == 0 || subSchema.matchesEmpty else {
                     break
                 }
             }
