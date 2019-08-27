@@ -9,6 +9,13 @@
 
 public extension Schema {
     
+    func setTo(_ value: T) -> Schema<T> {
+        
+        self.initialValue = value
+        
+        return self
+    }
+    
     func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) -> Schema<T> {
         
         for i in 0..<self.branches.count {
