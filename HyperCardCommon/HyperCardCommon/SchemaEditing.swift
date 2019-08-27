@@ -14,11 +14,6 @@ public extension Schema {
         self.initFields = initFields
     }
     
-    func initial(_ makeValue: @escaping () -> T) {
-        
-        self.makeValue = makeValue
-    }
-    
     func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) {
         
         for i in 0..<self.branches.count {

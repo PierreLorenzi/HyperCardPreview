@@ -10,7 +10,7 @@
 public final class Schema<T> {
     
     public var branches: [Branch] = []
-    public var makeValue: (() -> T)! = nil
+    public var initialValue: T! = nil
     public var initFields: (() -> ())? = nil
     
     public init() {}
@@ -205,7 +205,7 @@ public final class Schema<T> {
     
     private func buildMatcher() -> Matcher {
         
-        return Matcher(branches: self.branches, makeValue: self.makeValue)
+        return Matcher(branches: self.branches, initialValue: self.initialValue)
     }
     
     private class Matcher {
@@ -226,23 +226,35 @@ public final class Schema<T> {
             let occurrenceIndex: Int
         }
         
-        init(branches: [Branch], makeValue: () -> T) {
+        init(branches: [Branch], initialValue: T) {
             
             self.branches = branches
             self.branchMatchers = []
             
-            let value = makeValue()
-            
             /* Make the first branch matchers */
             for i in 0..<branches.count {
                 
-                self.addBranchMatchersAtSchema(branchIndex: i, schemaIndex: 0, insertionIndex: self.branchMatchers.count, value: value)
+                self.addBranchMatchersAtSchema(branchIndex: i, schemaIndex: 0, insertionIndex: self.branchMatchers.count, value: initialValue)
             }
             
             /* Register the value as our if there are valid branches */
-            if !(0..<self.branchMatchers.count).allSatisfy({ !self.checkBranchMatcherIsValid(at: $0) }) {
-                self.bestValue = value
+            if isThereNullableBranch() {
+                self.bestValue = initialValue
             }
+        }
+        
+        private func isThereNullableBranch() -> Bool {
+            
+            for branch in self.branches {
+                
+                /* Check that all min counts are 0 */
+                let isNullable = branch.subSchemas.map({ $0.minCount }).allSatisfy({ $0 == 0 })
+                if isNullable {
+                    return true
+                }
+            }
+            
+            return false
         }
         
         var currentValue: T? {

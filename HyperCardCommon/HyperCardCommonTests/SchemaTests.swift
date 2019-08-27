@@ -17,7 +17,7 @@ class SchemaTests: XCTestCase {
     func testStringRepeat() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
@@ -35,7 +35,7 @@ class SchemaTests: XCTestCase {
     func testStringRepeat2() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 4, update: { (count: inout Int, _: HString) in
             count += 1
         })])]
@@ -56,7 +56,7 @@ class SchemaTests: XCTestCase {
     func testStringRepeat3() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 3, maxCount: 3, update: { (count: inout Int, _: HString) in
             count += 1
         })])]
@@ -77,7 +77,7 @@ class SchemaTests: XCTestCase {
     func testTwoStringRepeat() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
             count += 10
         }), Schema<Int>.StringSubSchema(string: "roc", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
@@ -103,7 +103,7 @@ class SchemaTests: XCTestCase {
     func testTwoStringRepeat2() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 2, maxCount: 2, update: { (count: inout Int, _: HString) in
             count += 10
         }), Schema<Int>.StringSubSchema(string: "roc", minCount: 1, maxCount: 1, update: { (count: inout Int, _: HString) in
@@ -129,7 +129,7 @@ class SchemaTests: XCTestCase {
     func testTwoStringRepeat3() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
             count += 10
         }), Schema<Int>.StringSubSchema(string: "pier", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
@@ -155,7 +155,7 @@ class SchemaTests: XCTestCase {
     func testSeveralStringRepeat() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
@@ -179,7 +179,7 @@ class SchemaTests: XCTestCase {
     func testRepeatAmbiguity() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
             count += 10
         }), Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, _: HString) in
@@ -198,7 +198,7 @@ class SchemaTests: XCTestCase {
     func testDisjunction() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1
@@ -220,7 +220,7 @@ class SchemaTests: XCTestCase {
     func testDisjunctionAmbiguity() {
         
         let schema = Schema<Int>()
-        schema.initial { 0 }
+        schema.initialValue = 0
         schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.StringSubSchema(string: "pierre", minCount: 0, maxCount: nil, update: { (count: inout Int, s: HString) in
             XCTAssert(s == "pierre")
             count += 1

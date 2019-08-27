@@ -47,6 +47,7 @@
 		6C89A2FE231408EF00F394D8 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F4231408EE00F394D8 /* Chunk.swift */; };
 		6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F5231408EF00F394D8 /* Operator.swift */; };
 		6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */; };
+		6C969DB12314B4790062B039 /* SchemaInterpolationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */; };
 		6C9DF4D620C703DF0024F61B /* ResourceRepositoryLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */; };
 		6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D720C708A80024F61B /* MainRepository.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
@@ -435,6 +436,7 @@
 		6C89A2F4231408EE00F394D8 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
 		6C89A2F5231408EF00F394D8 /* Operator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
 		6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectDescriptor.swift; sourceTree = "<group>"; };
+		6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaInterpolationTests.swift; sourceTree = "<group>"; };
 		6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRepositoryLoading.swift; sourceTree = "<group>"; };
 		6C9DF4D720C708A80024F61B /* MainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRepository.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
@@ -1316,6 +1318,7 @@
 				6C56FD091F56BC2B0036FF8A /* DataTests.swift */,
 				6CEED1F820C9A83900A0DBE0 /* GraphicTests.swift */,
 				6C2FB5772314906C00824D73 /* SchemaTests.swift */,
+				6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */,
 				6CB025501F4ED7A700B57D87 /* Resources */,
 				6CB025491F4ED75700B57D87 /* Info.plist */,
 			);
@@ -1881,6 +1884,7 @@
 				6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */,
 				6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */,
 				6CEED1F920C9A83900A0DBE0 /* GraphicTests.swift in Sources */,
+				6C969DB12314B4790062B039 /* SchemaInterpolationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
