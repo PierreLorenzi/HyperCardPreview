@@ -118,36 +118,51 @@ public class Tokenizer {
     private func readNumber() -> Token {
         
         /* Read the following digits */
-        let digits = self.readDigits()
+        let integer = self.readInteger()
         
         /* Check if there is a fractional part */
         if index < string.length && string[index] == HChar.point {
             
             index += 1
-            let fractionalDigits = self.readDigits()
-            return Token.realNumber(digits, fractional: fractionalDigits)
+            let fractional = self.readFractional()
+            let number = Double(integer) + fractional
+            return Token.realNumber(number)
         }
         
         /* If there is no fractional part, the number is an integer */
-        return Token.integer(digits)
+        return Token.integer(integer)
     }
     
-    private func readDigits() -> [Digit] {
+    private func readInteger() -> Int {
         
-        var digits: [Digit] = []
+        var integer = 0
         
         while index < string.length && string[index].isDigit() {
             
             /* Read the character as a digit */
             let character = string[index]
             let digitValue = character.digitValue()
-            let digit = Digit(rawValue: digitValue)!
-            digits.append(digit)
+            
+            /* Update number */
+            integer *= 10
+            integer += digitValue
             
             index += 1
         }
         
-        return digits
+        return integer
+    }
+    
+    private func readFractional() -> Double {
+        
+        let startIndex = self.index
+        let integer = self.readInteger()
+        
+        let digitCount = self.index - startIndex
+        let factor = 10 ^ digitCount
+        let fractional = Double(integer) / Double(factor)
+        
+        return fractional
     }
     
     private func readQuotedString() -> HString {

@@ -11,8 +11,8 @@ public enum Token: Equatable {
     case word(HString)
     case quotedString(HString)
     case symbol(HString)
-    case integer([Digit])
-    case realNumber([Digit], fractional: [Digit])
+    case integer(Int)
+    case realNumber(Double)
     case lineSeparator
     
     public static func ==(token1: Token, token2: Token) -> Bool {
@@ -28,11 +28,11 @@ public enum Token: Equatable {
         case (.symbol(let symbol1), .symbol(let symbol2)):
             return compareCaseDiacritics(symbol1, symbol2) == .equal
             
-        case (.integer(let digits1), .integer(let digits2)):
-            return digits1 == digits2
+        case (.integer(let value1), .integer(let value2)):
+            return value1 == value2
             
-        case (.realNumber(let digits1, let fractionalDigits1), .realNumber(let digits2, let fractionalDigits2)):
-            return digits1 == digits2 && fractionalDigits1 == fractionalDigits2
+        case (.realNumber(let value1), .realNumber(let value2)):
+            return value1 == value2
             
         case (.lineSeparator, .lineSeparator):
             return true
@@ -41,18 +41,5 @@ public enum Token: Equatable {
             return false
         }
     }
-}
-
-public enum Digit: Int {
-    case zero = 0
-    case one = 1
-    case two = 2
-    case three = 3
-    case four = 4
-    case five = 5
-    case six = 6
-    case seven = 7
-    case eight = 8
-    case nine = 9
 }
 

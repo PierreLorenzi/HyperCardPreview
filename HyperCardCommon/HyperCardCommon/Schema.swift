@@ -11,9 +11,18 @@ public final class Schema<T> {
     
     public var branches: [Branch] = []
     public var initialValue: T? = nil
-    public var initFields: (() -> ())? = nil
     
     public init() {}
+    
+    public init(initialValue: T?, branches: [Branch]) {
+        self.initialValue = initialValue
+        self.branches = branches
+    }
+    
+    public init(_ schema: Schema<T>) {
+        self.branches = schema.branches
+        self.initialValue = schema.initialValue
+    }
     
     public struct Branch {
         public var subSchemas: [SubSchema]
@@ -273,12 +282,6 @@ public final class Schema<T> {
     }
     
     public func parse(_ string: HString) -> T? {
-        
-        /* Lazy init */
-        if let action = self.initFields {
-            action()
-            self.initFields = nil
-        }
         
         let tokenizer = Tokenizer(string: string)
         

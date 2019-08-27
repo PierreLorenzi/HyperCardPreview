@@ -9,12 +9,7 @@
 
 public extension Schema {
     
-    func build(_ initFields: @escaping () -> ()) {
-        
-        self.initFields = initFields
-    }
-    
-    func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) {
+    func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) -> Schema<T> {
         
         for i in 0..<self.branches.count {
             
@@ -32,9 +27,11 @@ public extension Schema {
                 typeSubSchema.update = Update<U>.change(update)
             }
         }
+        
+        return self
     }
     
-    func when<U>(_ schema: Schema<U>, number: Int, _ update: @escaping (inout T,U) -> ()) {
+    func when<U>(_ schema: Schema<U>, number: Int, _ update: @escaping (inout T,U) -> ()) -> Schema<T> {
         
         var metCount = 0
         
@@ -57,12 +54,13 @@ public extension Schema {
                 }
                 
                 typeSubSchema.update = Update<U>.change(update)
-                return
             }
         }
+        
+        return self
     }
     
-    func initWhen<U>(_ schema: Schema<U>, _ initialization: @escaping (U) -> T) {
+    func initWhen<U>(_ schema: Schema<U>, _ initialization: @escaping (U) -> T) -> Schema<T> {
         
         for i in 0..<self.branches.count {
             
@@ -80,6 +78,8 @@ public extension Schema {
                 typeSubSchema.update = Update<U>.initialization(initialization)
             }
         }
+        
+        return self
     }
 }
 

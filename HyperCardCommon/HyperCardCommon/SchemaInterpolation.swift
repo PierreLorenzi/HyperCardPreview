@@ -35,10 +35,8 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         
         self.init()
         
-        let subSchemas: [SubSchema] = stringInterpolation.creators.map({ $0.create(for: self) })
-        let branch = Branch(subSchemas: subSchemas)
+        self.branches = stringInterpolation.creators.map({ Branch(subSchemas: $0.map({ $0.create(for: self) })) })
         
-        self.branches = [branch]
     }
 }
 
@@ -46,7 +44,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     
     public typealias StringLiteralType = String
     
-    fileprivate var creators: [SubSchemaCreator] = []
+    fileprivate var creators: [[SubSchemaCreator]] = [[]]
     
     fileprivate class SubSchemaCreator {
         
@@ -66,25 +64,21 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     private class TypedSubSchemaCreator<U>: SubSchemaCreator {
         
         var schema: Schema<U>
+        var equal: Bool
         
-        init(schema: Schema<U>, minCount: Int, maxCount: Int?) {
+        init(schema: Schema<U>, minCount: Int, maxCount: Int?, equal: Bool = false) {
             
             self.schema = schema
+            self.equal = equal
             
             super.init(minCount: minCount, maxCount: maxCount)
         }
         
         override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
-            if T.self == U.self {
-                
-                /* So, if an interpolation has a type, the strings will pass the values */
-                return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<U>.initialization({ (value: U) -> T in
-                    return value as! T
-                }))
-            }
+            let update = self.equal ? Schema<T>.Update<U>.initialization({ $0 as! T }) : Schema<T>.Update<U>.none
             
-            return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<U>.none)
+            return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: update)
         }
     }
     
@@ -117,7 +111,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         while let token = tokenizer.readNextToken() {
             
             let creator = ValueSubSchemaCreator(token: token)
-            self.creators.append(creator)
+            self.creators[0].append(creator)
         }
         
     }
@@ -126,21 +120,21 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
         
-        self.creators.append(creator)
+        self.creators[0].append(creator)
     }
     
     public mutating func appendInterpolation<U>(multiple schema: Schema<U>, atLeast minCount: Int = 0, atMost maxCount: Int? = nil) {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: minCount, maxCount: maxCount)
         
-        self.creators.append(creator)
+        self.creators[0].append(creator)
     }
     
     public mutating func appendInterpolation<U>(maybe schema: Schema<U>) {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
         
-        self.creators.append(creator)
+        self.creators[0].append(creator)
     }
     
     public mutating func appendInterpolation(variants schemas: [Schema<Void>]) {
@@ -155,7 +149,28 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
         
-        self.creators.append(creator)
+        self.creators[0].append(creator)
+    }
+    
+    public mutating func appendInterpolation<U>(or schema: Schema<U>) {
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
+        
+        self.creators.append([creator])
+    }
+    
+    public mutating func appendInterpolation<U>(equal schema: Schema<U>) {
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1, equal: true)
+        
+        self.creators[0].append(creator)
+    }
+    
+    public mutating func appendInterpolation<U>(orEqual schema: Schema<U>) {
+        
+        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1, equal: true)
+        
+        self.creators.append([creator])
     }
 }
 
