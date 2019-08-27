@@ -25,8 +25,39 @@ public extension Schema {
                 guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
                     continue
                 }
+                guard typeSubSchema.schema === schema else {
+                    continue
+                }
                 
                 typeSubSchema.update = update
+            }
+        }
+    }
+    
+    func when<U>(_ schema: Schema<U>, number: Int, _ update: @escaping (inout T,U) -> ()) {
+        
+        var metCount = 0
+        
+        for i in 0..<self.branches.count {
+            
+            let subSchemas = self.branches[i].subSchemas
+            
+            for subSchema in subSchemas {
+                
+                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
+                    continue
+                }
+                guard typeSubSchema.schema === schema else {
+                    continue
+                }
+                
+                metCount += 1
+                guard metCount == number else {
+                    continue
+                }
+                
+                typeSubSchema.update = update
+                return
             }
         }
     }
