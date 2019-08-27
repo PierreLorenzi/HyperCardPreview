@@ -18,14 +18,17 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         self.init()
         
         let string = HString(stringLiteral: stringLiteral)
-        self.branches = [
-            Branch(subSchemas: [StringSubSchema(string: string, minCount: 1, maxCount: 1, update: Update<HString>.none)])
-        ]
+        let tokenizer = Tokenizer(string: string)
+        var subSchemas: [SubSchema] = []
         
-        /* If the schema must return a string, let's return itself */
-        if let stringValue = string as? T {
-            self.initialValue = stringValue
+        while let token = tokenizer.readNextToken() {
+            
+            let subSchema = ValueSubSchema(accept: { $0 == token }, minCount: 1, maxCount: 1, update: Schema<T>.Update<Token>.none)
+            
+            subSchemas.append(subSchema)
         }
+        
+        self.branches = [ Branch(subSchemas: subSchemas) ]
     }
     
     public convenience init(stringInterpolation: SchemaInterpolation) {
@@ -85,20 +88,20 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         }
     }
     
-    private class StringSubSchemaCreator: SubSchemaCreator {
+    private class ValueSubSchemaCreator: SubSchemaCreator {
         
-        var string: HString
+        var token: Token
         
-        init(string: HString, minCount: Int, maxCount: Int) {
+        init(token: Token) {
             
-            self.string = string
-            
-            super.init(minCount: minCount, maxCount: maxCount)
+            self.token = token
+            super.init(minCount: 1, maxCount: 1)
         }
         
         override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
             
-            return Schema<T>.StringSubSchema(string: self.string, minCount: self.minCount, maxCount: self.maxCount, update: Schema<T>.Update<HString>.none)
+            let token = self.token
+            return Schema<T>.ValueSubSchema(accept: { $0 == token }, minCount: 1, maxCount: 1, update: Schema<T>.Update<Token>.none)
         }
     }
     
@@ -109,9 +112,14 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public mutating func appendLiteral(_ literal: String) {
         
         let string = HString(converting: literal)!
-        let creator = StringSubSchemaCreator(string: string, minCount: 1, maxCount: 1)
+        let tokenizer = Tokenizer(string: string)
         
-        self.creators.append(creator)
+        while let token = tokenizer.readNextToken() {
+            
+            let creator = ValueSubSchemaCreator(token: token)
+            self.creators.append(creator)
+        }
+        
     }
     
     public mutating func appendInterpolation<U>(_ schema: Schema<U>) {
@@ -131,31 +139,6 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public mutating func appendInterpolation<U>(maybe schema: Schema<U>) {
         
         let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
-        
-        self.creators.append(creator)
-    }
-    
-    public mutating func appendInterpolation<U,V>(either schema1: Schema<U>, either schema2: Schema<V>) {
-        
-        // We can't make a typed disjunction in a string literal
-        let schema = Schema<Void>()
-        schema.initialValue = ()
-        schema.branches = [Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<U>(schema: schema1, minCount: 1, maxCount: 1, update: Schema<Void>.Update<U>.none)]), Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<V>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<V>.none)])]
-        
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
-        
-        self.creators.append(creator)
-    }
-    
-    public mutating func appendInterpolation<U>(oneOf schemas: [Schema<U>]) {
-        
-        // We can't make a typed disjunction in a string literal
-        let globalSchema = Schema<U>()
-        globalSchema.branches = schemas.map({ (schema: Schema<U>) -> Schema<U>.Branch in
-            Schema<U>.Branch(subSchemas: [Schema<U>.TypedSubSchema<U>(schema: schema, minCount: 1, maxCount: 1, update: Schema<U>.Update<U>.initialization({ (u: U) -> U in return u }))])
-        })
-        
-        let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
         
         self.creators.append(creator)
     }

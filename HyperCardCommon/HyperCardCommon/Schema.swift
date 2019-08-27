@@ -39,7 +39,7 @@ public final class Schema<T> {
             fatalError()
         }
         
-        func matchNextCharacter(_ character: HChar) -> MatchingStatus {
+        func matchNextToken(_ token: Token) -> MatchingStatus {
             fatalError()
         }
     }
@@ -56,14 +56,6 @@ public final class Schema<T> {
         
         func buildSubMatcher() -> SubMatcher {
             fatalError() // abstract
-        }
-        
-        func matchesEmpty() -> Bool {
-            fatalError()
-        }
-        
-        func matchesNotEmpty() -> Bool {
-            fatalError()
         }
     }
     
@@ -97,34 +89,6 @@ public final class Schema<T> {
         override func buildSubMatcher() -> SubMatcher {
             
             return TypedSubMatcher(schema: self.schema, update: self.update)
-        }
-        
-        override func matchesEmpty() -> Bool {
-            
-            /* It matches empty if one of the branch matches empty */
-            for branch in self.schema.branches {
-                
-                let matchesEmpty = branch.subSchemas.allSatisfy({ $0.minCount == 0 || $0.matchesEmpty() })
-                if matchesEmpty {
-                    return true
-                }
-            }
-            
-            return false
-        }
-        
-        override func matchesNotEmpty() -> Bool {
-            
-            /* It matches not empty if one of the branch matches not empty */
-            for branch in self.schema.branches {
-                
-                let matchesNotEmpty = branch.subSchemas.first(where: { $0.minCount > 0 && !$0.matchesEmpty() }) != nil
-                if matchesNotEmpty {
-                    return true
-                }
-            }
-            
-            return false
         }
         
         private class TypedSubMatcher: SubMatcher {
@@ -168,9 +132,9 @@ public final class Schema<T> {
                 }
             }
             
-            override func matchNextCharacter(_ character: HChar) -> MatchingStatus {
+            override func matchNextToken(_ token: Token) -> MatchingStatus {
                 
-                let status = self.matcher.matchNextCharacter(character)
+                let status = self.matcher.matchNextToken(token)
                 
                 /* We have to convert the status from Schema<U>.MatchingStatus to Schema<T>.MatchingStatus */
                 switch status {
@@ -185,14 +149,14 @@ public final class Schema<T> {
         }
     }
     
-    public class StringSubSchema: SubSchema {
+    public class ValueSubSchema: SubSchema {
         
-        public var string: HString
-        public var update: Update<HString>
+        public var accept: (Token) -> Bool
+        public var update: Update<Token>
         
-        public init(string: HString, minCount: Int, maxCount: Int?, update: Update<HString>) {
+        public init(accept: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?, update: Update<Token>) {
             
-            self.string = string
+            self.accept = accept
             self.update = update
             
             super.init(minCount: minCount, maxCount: maxCount)
@@ -200,32 +164,29 @@ public final class Schema<T> {
         
         override func buildSubMatcher() -> SubMatcher {
             
-            return StringSubMatcher(string: self.string, update: self.update)
+            return ValueSubMatcher(accept: self.accept, update: self.update)
         }
         
-        override func matchesEmpty() -> Bool {
-            return self.string.length == 0
-        }
-        
-        override func matchesNotEmpty() -> Bool {
-            return self.string.length > 0
-        }
-        
-        class StringSubMatcher: SubMatcher {
+        class ValueSubMatcher: SubMatcher {
             
-            private let string: HString
-            private let update: Update<HString>
-            private var currentIndex = 0
+            private let accept: (Token) -> Bool
+            private let update: Update<Token>
             
-            init(string: HString, update: Update<HString>) {
+            private var token: Token? = nil
+            
+            init(accept: @escaping (Token) -> Bool, update: Update<Token>) {
                 
-                self.string = string
+                self.accept = accept
                 self.update = update
             }
             
             override var isMatching: Bool {
                 
-                return self.currentIndex == string.length
+                guard let token = self.token else {
+                    return false
+                }
+                
+                return self.accept(token)
             }
             
             override var currentUpdate: SubUpdate {
@@ -235,7 +196,7 @@ public final class Schema<T> {
                 }
                 
                 let update = self.update
-                let string = self.string
+                let token = self.token!
                 
                 switch update {
                     
@@ -244,33 +205,20 @@ public final class Schema<T> {
                     
                 case .change(let change):
                     return SubUpdate.change({ (parentValue: inout T) in
-                        return change(&parentValue, string)
+                        return change(&parentValue, token)
                     })
                     
                 case .initialization(let initialization):
                     return SubUpdate.initialization({ () -> T in
-                        return initialization(string)
+                        return initialization(token)
                     })
                 }
             }
             
-            override func matchNextCharacter(_ character: HChar) -> MatchingStatus {
+            override func matchNextToken(_ token: Token) -> MatchingStatus {
                 
-                /* If the character is wrong, there is no value */
-                guard character == self.string[self.currentIndex] else {
-                    
-                    return MatchingStatus.mustStop
-                }
-                
-                self.currentIndex += 1
-                
-                guard self.currentIndex < string.length else {
-                    
-                    /* Parsing is finished */
-                    return MatchingStatus.mustStop
-                }
-                
-                return MatchingStatus.canContinue
+                self.token = token
+                return MatchingStatus.mustStop
             }
         }
     }
@@ -283,17 +231,18 @@ public final class Schema<T> {
             self.initFields = nil
         }
         
+        let tokenizer = Tokenizer(string: string)
+        
         let matcher = self.buildMatcher()
         var status = MatchingStatus.canContinue
         
-        for i in 0..<string.length {
+        while let token = tokenizer.readNextToken() {
             
             guard status == MatchingStatus.canContinue else {
                 return nil
             }
             
-            let character = string[i]
-            status = matcher.matchNextCharacter(character)
+            status = matcher.matchNextToken(token)
         }
         
         return matcher.currentValue
@@ -347,7 +296,7 @@ public final class Schema<T> {
             for branch in self.branches {
                 
                 /* Check that all min counts are 0 */
-                let isNullable = branch.subSchemas.allSatisfy({ $0.minCount == 0 || $0.matchesEmpty() })
+                let isNullable = branch.subSchemas.allSatisfy({ $0.minCount == 0 })
                 if isNullable {
                     return true
                 }
@@ -361,7 +310,7 @@ public final class Schema<T> {
             return self.bestValue
         }
         
-        func matchNextCharacter(_ character: HChar) -> MatchingStatus {
+        func matchNextToken(_ token: Token) -> MatchingStatus {
             
             self.isMatching = false
             self.bestValue = nil
@@ -372,7 +321,7 @@ public final class Schema<T> {
                 let subMatcher = self.branchMatchers[i].subMatcher
                 
                 /* Feed the matcher */
-                let status = subMatcher.matchNextCharacter(character)
+                let status = subMatcher.matchNextToken(token)
                 
                 /* Check if the sub-matcher has a match, and so can update our value */
                 if subMatcher.isMatching {
@@ -449,7 +398,7 @@ public final class Schema<T> {
                 
                 let subSchema = subSchemas[i]
                 
-                guard subSchema.minCount == 0 || subSchema.matchesEmpty() else {
+                guard subSchema.minCount == 0 else {
                     return false
                 }
             }
@@ -493,16 +442,6 @@ public final class Schema<T> {
                 
                 let subSchema = subSchemas[i]
                 
-                /* If it doesn't match anything, skip it */
-                if !subSchema.matchesNotEmpty() {
-                    
-                    guard subSchema.matchesEmpty() else {
-                        break
-                    }
-                    
-                    continue
-                }
-                
                 /* Very small precaution */
                 guard subSchema.maxCount == nil || subSchema.maxCount! > 0 else {
                     continue
@@ -517,7 +456,7 @@ public final class Schema<T> {
                 currentInsertionIndex += 1
                 
                 /* If the minCount is 0, we must consider the next schema starts */
-                guard subSchema.minCount == 0 || subSchema.matchesEmpty() else {
+                guard subSchema.minCount == 0 else {
                     break
                 }
             }

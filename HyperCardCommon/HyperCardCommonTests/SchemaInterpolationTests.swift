@@ -60,45 +60,18 @@ class SchemaInterpolationTests: XCTestCase {
         let schemaLiteral: Schema<Void> = "pierre"
         schemaLiteral.initialValue = ()
         
-        let schema: Schema<Void> = "\(maybe: schemaLiteral)ppp"
+        let schema: Schema<Void> = "\(maybe: schemaLiteral) ppp"
         schema.initialValue = ()
-        XCTAssert(schema.parse("pierreppp") != nil)
+        XCTAssert(schema.parse("pierre ppp") != nil)
         XCTAssert(schema.parse("ppp") != nil)
-        XCTAssert(schema.parse("pierrepierreppp") == nil)
+        XCTAssert(schema.parse("pierre pierre ppp") == nil)
         
         let schema2: Schema<Void> = "\(multiple: schemaLiteral)ppp"
         schema2.initialValue = ()
-        XCTAssert(schema2.parse("pierrepierrepierreppp") != nil)
-        XCTAssert(schema2.parse("pierrepierreppp") != nil)
-        XCTAssert(schema2.parse("pierreppp") != nil)
+        XCTAssert(schema2.parse("pierre pierre pierre ppp") != nil)
+        XCTAssert(schema2.parse("pierre pierre ppp") != nil)
+        XCTAssert(schema2.parse("pierre ppp") != nil)
         XCTAssert(schema2.parse("ppp") != nil)
-        
-        let schemaLiteral2: Schema<Void> = "coucou"
-        schemaLiteral2.initialValue = ()
-        let schema3: Schema<Void> = "\(either: schemaLiteral, either: schemaLiteral2)ppp"
-        schema3.initialValue = ()
-        XCTAssert(schema3.parse("pierreppp") != nil)
-        XCTAssert(schema3.parse("coucouppp") != nil)
-        
-        let schemaOne: Schema<Int> = "one"
-        let schemaTwo: Schema<Int> = "two"
-        let schemaThree: Schema<Int> = "three"
-        schemaOne.initialValue = 1
-        schemaTwo.initialValue = 2
-        schemaThree.initialValue = 3
-        let schema4: Schema<Int> = "\(oneOf: [schemaOne, schemaTwo, schemaThree])"
-        XCTAssert(schema4.parse("one") == 1)
-        XCTAssert(schema4.parse("two") == 2)
-        XCTAssert(schema4.parse("three") == 3)
-        
-        let schemaA: Schema<HString> = "a"
-        let schemaB: Schema<HString> = "b"
-        let schemaC: Schema<HString> = "c"
-        let schema5: Schema<HString> = "\(oneOf: [schemaA, schemaB, schemaC])"
-        XCTAssert(compare(schema5.parse("a") ?? "", HString(stringLiteral: "a")) == .equal)
-        XCTAssert(compare(schema5.parse("b") ?? "", HString(stringLiteral: "b")) == .equal)
-        XCTAssert(compare(schema5.parse("c") ?? "", HString(stringLiteral: "c")) == .equal)
-        XCTAssert(schema5.parse("d") == nil)
         
     }
     
