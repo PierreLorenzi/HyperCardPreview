@@ -88,6 +88,7 @@ public enum FunctionCall {
 // In fact the argument of 'number' is a string which is parsed,
 // for example the following works: the number of "cards in this stack"
 // or number("cards in this stack"), or even number(cards in this stack).
+// The last two notations can be intercepted.
 public enum NumberFunction {
     
     case numberOfButtons(inLayerWithType: LayerType)
