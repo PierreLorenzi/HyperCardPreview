@@ -201,6 +201,14 @@ public final class Schema<T> {
                 return self.sequenceElements[0].createSchemaSameType()
             }
             
+            /* If there is only one value with the same type as us, get it */
+            if self.computation == nil, self.sequenceElements.filter({ !$0.isConstant }).count == 1, let index = self.sequenceElements.firstIndex(where: { !$0.isConstant }), self.sequenceElements[index].isSameType, self.sequenceElements[index].minCount == 1, self.sequenceElements[index].maxCount == 1 {
+                
+                self.computeSequenceBySingle { (value: T) -> T in
+                    return value
+                }
+            }
+            
             let subSchemas = self.sequenceElements.map({ $0.createSubSchema() })
             let sequenceSchema = SequenceSchema<T>(subSchemas: subSchemas, initialComputation: self.computation!)
             return sequenceSchema

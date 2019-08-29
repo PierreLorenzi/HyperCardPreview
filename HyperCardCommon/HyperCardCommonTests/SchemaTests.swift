@@ -43,11 +43,11 @@ class SchemaTests: XCTestCase {
         
     }
     
-    func testCCC() {
+    func testSingleArgumentSameType() {
         
         let schema = Schema<Int>("here it is \(Schemas.integer) is the value")
-        schema.computeSequenceBySingle { (value: Int) -> Int in return value }
         
+        XCTAssert(schema.parse("here it is 123 is the value") == 123)
     }
 
 //    func testStringRepeat() {
