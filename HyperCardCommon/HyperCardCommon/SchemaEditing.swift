@@ -9,84 +9,52 @@
 
 public extension Schema {
     
-    func setTo(_ value: T) -> Schema<T> {
+    func returnsSingle<A>(_ compute: @escaping (A) -> T) -> Schema<T> {
         
-        self.initialValue = value
-        
+        self.computeSequenceBySingle(compute)
         return self
     }
     
-    func when<U>(_ schema: Schema<U>, _ update: @escaping (inout T,U) -> ()) -> Schema<T> {
+    func returns<A,B>(_ compute: @escaping (A,B) -> T) -> Schema<T> {
         
-        for i in 0..<self.branches.count {
-            
-            let subSchemas = self.branches[i].subSchemas
-            
-            for subSchema in subSchemas {
-                
-                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
-                    continue
-                }
-                guard typeSubSchema.schema === schema else {
-                    continue
-                }
-                
-                typeSubSchema.update = Update<U>.change(update)
-            }
-        }
-        
+        self.computeSequenceBy(compute)
         return self
     }
     
-    func when<U>(_ schema: Schema<U>, number: Int, _ update: @escaping (inout T,U) -> ()) -> Schema<T> {
+    func returns<A,B,C>(_ compute: @escaping (A,B,C) -> T) -> Schema<T> {
         
-        var metCount = 0
-        
-        for i in 0..<self.branches.count {
-            
-            let subSchemas = self.branches[i].subSchemas
-            
-            for subSchema in subSchemas {
-                
-                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
-                    continue
-                }
-                guard typeSubSchema.schema === schema else {
-                    continue
-                }
-                
-                metCount += 1
-                guard metCount == number else {
-                    continue
-                }
-                
-                typeSubSchema.update = Update<U>.change(update)
-            }
-        }
-        
+        self.computeSequenceBy(compute)
         return self
     }
     
-    func initWhen<U>(_ schema: Schema<U>, _ initialization: @escaping (U) -> T) -> Schema<T> {
+    func returns<A,B,C,D>(_ compute: @escaping (A,B,C,D) -> T) -> Schema<T> {
         
-        for i in 0..<self.branches.count {
-            
-            let subSchemas = self.branches[i].subSchemas
-            
-            for subSchema in subSchemas {
-                
-                guard let typeSubSchema = subSchema as? TypedSubSchema<U> else {
-                    continue
-                }
-                guard typeSubSchema.schema === schema else {
-                    continue
-                }
-                
-                typeSubSchema.update = Update<U>.initialization(initialization)
-            }
-        }
-        
+        self.computeSequenceBy(compute)
         return self
+        
+    }
+    
+    func initWhen<U>(_ schema: Schema<U>, _ compute: @escaping (U) -> T) -> Schema<T> {
+        
+        self.computeBranchBy(for: schema, compute)
+        return self
+    }
+}
+
+public extension Schema where T == Token {
+    
+    convenience init(token: Token) {
+        
+        self.init()
+        
+        self.appendTokenKind(filterBy: { $0 == token }, minCount: 1, maxCount: 1)
+    }
+    
+    convenience init(tokenKind: @escaping (Token) -> Bool) {
+        
+        self.init()
+        
+        self.appendTokenKind(filterBy: tokenKind, minCount: 1, maxCount: 1)
     }
 }
 

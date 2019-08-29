@@ -19,158 +19,104 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         
         let string = HString(stringLiteral: stringLiteral)
         let tokenizer = Tokenizer(string: string)
-        var subSchemas: [SubSchema] = []
         
         while let token = tokenizer.readNextToken() {
             
-            let subSchema = ValueSubSchema(accept: { $0 == token }, minCount: 1, maxCount: 1, update: Schema<T>.Update<Token>.none)
-            
-            subSchemas.append(subSchema)
+            self.appendTokenKind(filterBy: { (t: Token) -> Bool in
+                t == token
+            }, minCount: 1, maxCount: 1)
         }
-        
-        self.branches = [ Branch(subSchemas: subSchemas) ]
     }
     
     public convenience init(stringInterpolation: SchemaInterpolation) {
         
-        self.init()
+        self.init(schemaLiteral: stringInterpolation.schema)
         
-        self.branches = stringInterpolation.creators.map({ Branch(subSchemas: $0.map({ $0.create(for: self) })) })
-        
+        for after in stringInterpolation.afters {
+            
+            after.apply(to: self)
+        }
     }
+    
 }
 
 public struct SchemaInterpolation: StringInterpolationProtocol {
     
     public typealias StringLiteralType = String
     
-    fileprivate var creators: [[SubSchemaCreator]] = [[]]
+    let schema = Schema<Void>()
     
-    fileprivate class SubSchemaCreator {
+    var afters: [After] = []
+    
+    class After {
         
-        var minCount: Int
-        var maxCount: Int?
-        
-        init(minCount: Int, maxCount: Int?) {
-            self.minCount = minCount
-            self.maxCount = maxCount
-        }
-        
-        func create<T>(for schema: Schema<T>) -> Schema<T>.SubSchema {
+        func apply<T>(to schema: Schema<T>) {
             fatalError()
         }
     }
     
-    private class TypedSubSchemaCreator<U>: SubSchemaCreator {
+    private class ComputeBranchAfter<T>: After {
         
-        var schema: Schema<U>
-        var equal: Bool
-        
-        init(schema: Schema<U>, minCount: Int, maxCount: Int?, equal: Bool = false) {
+        override func apply<U>(to schema: Schema<U>) {
             
-            self.schema = schema
-            self.equal = equal
+            guard T.self == U.self else {
+                fatalError()
+            }
             
-            super.init(minCount: minCount, maxCount: maxCount)
-        }
-        
-        override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
-            
-            let update = self.equal ? Schema<T>.Update<U>.initialization({ $0 as! T }) : Schema<T>.Update<U>.none
-            
-            return Schema<T>.TypedSubSchema<U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, update: update)
-        }
-    }
-    
-    private class ValueSubSchemaCreator: SubSchemaCreator {
-        
-        var token: Token
-        
-        init(token: Token) {
-            
-            self.token = token
-            super.init(minCount: 1, maxCount: 1)
-        }
-        
-        override func create<T>(for _: Schema<T>) -> Schema<T>.SubSchema {
-            
-            let token = self.token
-            return Schema<T>.ValueSubSchema(accept: { $0 == token }, minCount: 1, maxCount: 1, update: Schema<T>.Update<Token>.none)
+            schema.computeBranchBy(for: schema, { (value: U) -> U in
+                return value
+            })
         }
     }
     
     public init(literalCapacity: Int, interpolationCount: Int) {
-        
     }
     
-    public mutating func appendLiteral(_ literal: String) {
+    public func appendLiteral(_ literal: String) {
         
         let string = HString(converting: literal)!
         let tokenizer = Tokenizer(string: string)
-        
+            
         while let token = tokenizer.readNextToken() {
             
-            let creator = ValueSubSchemaCreator(token: token)
-            self.creators[0].append(creator)
+            self.schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
+                t == token
+            }, minCount: 1, maxCount: 1)
         }
-        
     }
     
-    public mutating func appendInterpolation<U>(_ schema: Schema<U>) {
+    public func appendInterpolation<U>(_ schema: Schema<U>) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
-        
-        self.creators[0].append(creator)
+        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
     }
     
-    public mutating func appendInterpolation<U>(multiple schema: Schema<U>, atLeast minCount: Int = 0, atMost maxCount: Int? = nil) {
+    public func appendInterpolation<U>(multiple schema: Schema<U>, atLeast minCount: Int = 0, atMost maxCount: Int? = nil) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: minCount, maxCount: maxCount)
-        
-        self.creators[0].append(creator)
+        self.schema.appendSchema(schema, minCount: minCount, maxCount: maxCount)
     }
     
-    public mutating func appendInterpolation<U>(maybe schema: Schema<U>) {
+    public func appendInterpolation<U>(maybe schema: Schema<U>) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 0, maxCount: 1)
-        
-        self.creators[0].append(creator)
+        self.schema.appendSchema(schema, minCount: 0, maxCount: 1)
     }
     
-    public mutating func appendInterpolation(variants schemas: [Schema<Void>]) {
+    public func appendInterpolation<U>(or schema: Schema<U>) {
         
-        // intended for string literal schemas, because they lack types
-        
-        // We can't make a typed disjunction in a string literal
-        let globalSchema = Schema<Void>()
-        globalSchema.branches = schemas.map({ (schema: Schema<Void>) -> Schema<Void>.Branch in
-            Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<Void>(schema: schema, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none)])
-        })
-        
-        let creator = TypedSubSchemaCreator(schema: globalSchema, minCount: 0, maxCount: 1)
-        
-        self.creators[0].append(creator)
+        self.schema.appendBranchedSchema(schema)
     }
     
-    public mutating func appendInterpolation<U>(or schema: Schema<U>) {
+    public mutating func appendInterpolation<T>(equal schema: Schema<T>) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1)
+        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
         
-        self.creators.append([creator])
+        self.afters.append(ComputeBranchAfter<T>())
     }
     
-    public mutating func appendInterpolation<U>(equal schema: Schema<U>) {
+    public mutating func appendInterpolation<T>(orEqual schema: Schema<T>) {
         
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1, equal: true)
+        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
         
-        self.creators[0].append(creator)
-    }
-    
-    public mutating func appendInterpolation<U>(orEqual schema: Schema<U>) {
-        
-        let creator = TypedSubSchemaCreator(schema: schema, minCount: 1, maxCount: 1, equal: true)
-        
-        self.creators.append([creator])
+        self.afters.append(ComputeBranchAfter<T>())
     }
 }
 

@@ -9,122 +9,113 @@
 
 public enum Schemas {
     
-    public static let word = Schema<HString>(initialValue: nil, branches: [
-            Schema<HString>.Branch(subSchemas: [
-                Schema<HString>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                    
-                    guard case Token.word = token else {
-                        return false
-                    }
-                    
-                    return true
-                }, minCount: 1, maxCount: 1, update: Schema<HString>.Update<Token>.initialization({ (token: Token) -> HString in
-                    
-                    guard case Token.word(let string) = token else {
-                        fatalError()
-                    }
-                    
-                    return string
-                }))
-                ])
-        ])
+    private static let wordToken = Schema<Token> { (token: Token) -> Bool in
+        
+        guard case Token.word = token else {
+            return false
+        }
+        
+        return true
+    }
     
-    public static let quotedString = Schema<HString>(initialValue: nil, branches: [
-        Schema<HString>.Branch(subSchemas: [
-            Schema<HString>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                guard case Token.quotedString = token else {
-                    return false
-                }
-                
-                return true
-            }, minCount: 1, maxCount: 1, update: Schema<HString>.Update<Token>.initialization({ (token: Token) -> HString in
-                
-                guard case Token.quotedString(let string) = token else {
-                    fatalError()
-                }
-                
-                return string
-            }))
-            ])
-        ])
+    public static let word = Schema<HString>("\(wordToken)")
     
-    public static let integer = Schema<Int>(initialValue: nil, branches: [
-        Schema<Int>.Branch(subSchemas: [
-            Schema<Int>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                guard case Token.integer = token else {
-                    return false
-                }
-                
-                return true
-            }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.initialization({ (token: Token) -> Int in
-                
-                guard case Token.integer(let value) = token else {
-                    fatalError()
-                }
-                
-                return value
-            }))
-            ])
-        ])
+        .returnsSingle { (t: Token) -> HString in
+            
+            guard case Token.word(let string) = t else {
+                fatalError()
+            }
+            
+            return string
+        }
     
-    public static let realNumber = Schema<Double>(initialValue: nil, branches: [
-        Schema<Double>.Branch(subSchemas: [
-            Schema<Double>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                guard case Token.realNumber = token else {
-                    return false
-                }
-                
-                return true
-            }, minCount: 1, maxCount: 1, update: Schema<Double>.Update<Token>.initialization({ (token: Token) -> Double in
-                
-                guard case Token.realNumber(let value) = token else {
-                    fatalError()
-                }
-                
-                return value
-            }))
-            ])
-        ])
     
-    public static let _r = Schema<Void>(initialValue: (), branches: [
-        Schema<Void>.Branch(subSchemas: [
-            Schema<Void>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                guard case Token.lineSeparator = token else {
-                    return false
-                }
-                
-                return true
-            }, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Token>.none)
-            ])
-        ])
+    private static let quotedStringToken = Schema<Token> { (token: Token) -> Bool in
+        
+        guard case Token.quotedString = token else {
+            return false
+        }
+        
+        return true
+    }
     
-    public static let trueLiteral = Schema<Bool>(initialValue: nil, branches: [
-        Schema<Bool>.Branch(subSchemas: [
-            Schema<Bool>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                return token == Token.word("true")
-            }, minCount: 1, maxCount: 1, update: Schema<Bool>.Update<Token>.initialization({ (token: Token) -> Bool in
-                
-                return true
-            }))
-            ])
-        ])
+    public static let quotedString = Schema<HString>("\(quotedStringToken)")
+        
+        .returnsSingle { (t: Token) -> HString in
+            
+            guard case Token.quotedString(let string) = t else {
+                fatalError()
+            }
+            
+            return string
+    }
     
-    public static let falseLiteral = Schema<Bool>(initialValue: nil, branches: [
-        Schema<Bool>.Branch(subSchemas: [
-            Schema<Bool>.ValueSubSchema(accept: { (token: Token) -> Bool in
-                
-                return token == Token.word("false")
-            }, minCount: 1, maxCount: 1, update: Schema<Bool>.Update<Token>.initialization({ (token: Token) -> Bool in
-                
-                return false
-            }))
-            ])
-        ])
+    private static let integerToken = Schema<Token> { (token: Token) -> Bool in
+        
+        guard case Token.integer = token else {
+            return false
+        }
+        
+        return true
+    }
+    
+    public static let integer = Schema<Int>("\(integerToken)")
+        
+        .returnsSingle { (t: Token) -> Int in
+            
+            guard case Token.integer(let value) = t else {
+                fatalError()
+            }
+            
+            return value
+    }
+    
+    private static let realNumberToken = Schema<Token> { (token: Token) -> Bool in
+        
+        guard case Token.realNumber = token else {
+            return false
+        }
+        
+        return true
+    }
+    
+    public static let realNumber = Schema<Double>("\(realNumberToken)")
+        
+        .returnsSingle { (t: Token) -> Double in
+            
+            guard case Token.realNumber(let value) = t else {
+                fatalError()
+            }
+            
+            return value
+    }
+    
+    private static let lineSeparatorToken = Schema<Token>(token: Token.lineSeparator)
+    
+    public static let lineSeparator = Schema<Void>("\(lineSeparatorToken)")
+        
+        .returnsSingle { (_: Token) -> Void in
+            
+            return ()
+    }
+    
+    private static let trueToken = Schema<Token>(token: Token.word("true"))
+    
+    public static let trueLiteral = Schema<Bool>("\(trueToken)")
+        
+        .returnsSingle { (_: Token) -> Bool in
+            
+            return true
+    }
+    
+    private static let falseToken = Schema<Token>(token: Token.word("false"))
+    
+    public static let falseLiteral = Schema<Bool>("\(falseToken)")
+        
+        .returnsSingle { (_: Token) -> Bool in
+            
+            return false
+    }
     
     public static let boolean = Schema<Bool>("\(equal: trueLiteral)\(orEqual: falseLiteral)")
     
