@@ -60,6 +60,12 @@ public final class Schema<T> {
         self.branchElements.append(element)
     }
     
+    func computeSequenceBy(_ compute: @escaping () -> T) {
+        
+        self.computation = ResultComputation<T>(parameterValues: [], parameterTypes: [], subSchemaIndexesToParameterIndexes: [:], compute: { (_:[Any?]) -> T in return compute() })
+        
+    }
+    
     func computeSequenceBySingle<A>(_ compute: @escaping (A) -> T) {
         
         let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
