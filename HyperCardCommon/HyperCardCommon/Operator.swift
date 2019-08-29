@@ -26,7 +26,7 @@ public enum ArithmeticOperator {
 }
 
 public enum ComparisonOperator {
-    case equal(Expression, Expression)  // =
+    case equal(Expression, Expression)  // =, is
     case unequal(Expression, Expression)  // ≠, <>, is not
     case lesserThan(Expression, Expression)  // <
     case greaterThan(Expression, Expression)  // >
