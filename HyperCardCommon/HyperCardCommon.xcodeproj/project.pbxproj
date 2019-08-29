@@ -352,6 +352,8 @@
 		6CA2CCD420C845000042148A /* PictureLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2CCD320C845000042148A /* PictureLoading.swift */; };
 		6CAA6BB323184F9C00017C68 /* ComparisonOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CAA6BB223184F9C00017C68 /* ComparisonOperatorSchemas.swift */; };
 		6CAA6BB52318523D00017C68 /* LogicalOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CAA6BB42318523D00017C68 /* LogicalOperatorSchemas.swift */; };
+		6CAA6BB7231852F900017C68 /* ExistenceOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CAA6BB6231852F900017C68 /* ExistenceOperatorSchemas.swift */; };
+		6CAA6BB92318561300017C68 /* StringOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CAA6BB82318561300017C68 /* StringOperatorSchemas.swift */; };
 		6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */; };
 		6CB0254A1F4ED75700B57D87 /* HyperCardCommon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C9E6A8B1E75BCCD00BBF925 /* HyperCardCommon.framework */; };
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
@@ -747,6 +749,8 @@
 		6CA2CCD320C845000042148A /* PictureLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PictureLoading.swift; sourceTree = "<group>"; };
 		6CAA6BB223184F9C00017C68 /* ComparisonOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonOperatorSchemas.swift; sourceTree = "<group>"; };
 		6CAA6BB42318523D00017C68 /* LogicalOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicalOperatorSchemas.swift; sourceTree = "<group>"; };
+		6CAA6BB6231852F900017C68 /* ExistenceOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistenceOperatorSchemas.swift; sourceTree = "<group>"; };
+		6CAA6BB82318561300017C68 /* StringOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringOperatorSchemas.swift; sourceTree = "<group>"; };
 		6CB025451F4ED75700B57D87 /* HyperCardCommonTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = HyperCardCommonTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardCommonTests.swift; sourceTree = "<group>"; };
 		6CB025491F4ED75700B57D87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -838,6 +842,8 @@
 				6C1EF77F231568F8001D5BB7 /* ArithmeticOperatorSchemas.swift */,
 				6CAA6BB223184F9C00017C68 /* ComparisonOperatorSchemas.swift */,
 				6CAA6BB42318523D00017C68 /* LogicalOperatorSchemas.swift */,
+				6CAA6BB6231852F900017C68 /* ExistenceOperatorSchemas.swift */,
+				6CAA6BB82318561300017C68 /* StringOperatorSchemas.swift */,
 			);
 			name = Schemas;
 			sourceTree = "<group>";
@@ -1851,6 +1857,7 @@
 				6CA2CCBA20C82A500042148A /* HyperCardFile.swift in Sources */,
 				6C8746271F5402E0005A41AB /* Responder.swift in Sources */,
 				6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */,
+				6CAA6BB7231852F900017C68 /* ExistenceOperatorSchemas.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
@@ -1887,6 +1894,7 @@
 				6C30E8D11F4D117A00ACB457 /* StringComparison.swift in Sources */,
 				6C89A2E82314082800F394D8 /* CommonScriptTypes.swift in Sources */,
 				6C2FB5742314854200824D73 /* SchemaEditing.swift in Sources */,
+				6CAA6BB92318561300017C68 /* StringOperatorSchemas.swift in Sources */,
 				6C9E6B0B1E75BCFA00BBF925 /* ResourceRepository.swift in Sources */,
 				6C298BA32312E4CC00960F72 /* BitmapLoading.swift in Sources */,
 				6C30878D1F48957100CCA9A7 /* PartLoading.swift in Sources */,

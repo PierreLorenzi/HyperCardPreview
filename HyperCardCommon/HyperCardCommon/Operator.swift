@@ -48,7 +48,6 @@ public enum LogicalOperator {
 public enum ExistenceOperator {
     case isOfType(Expression, ExpressionType)  // is a, is an
     case thereIs(ObjectDescriptor)  // is a, is an
-    case thereIsNo(ObjectDescriptor)  // there is no
     case thereIsNotA(ObjectDescriptor)  // there is not a
 }
 

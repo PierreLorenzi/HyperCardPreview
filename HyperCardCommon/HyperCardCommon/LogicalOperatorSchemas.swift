@@ -10,7 +10,7 @@
 public extension Schemas {
     
     
-    static let comparisonOperato = Schema<LogicalOperator>("\(not)\(or: and)\(or: or)")
+    static let logicalOperator = Schema<LogicalOperator>("\(not)\(or: and)\(or: or)")
     
     
     
