@@ -24,7 +24,7 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
             
             self.appendTokenKind(filterBy: { (t: Token) -> Bool in
                 t == token
-            }, minCount: 1, maxCount: 1)
+            }, minCount: 1, maxCount: 1, isConstant: true)
         }
     }
     
@@ -81,7 +81,7 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
             
             self.schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
                 t == token
-            }, minCount: 1, maxCount: 1)
+            }, minCount: 1, maxCount: 1, isConstant: true)
         }
     }
     
@@ -103,6 +103,11 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public func appendInterpolation<U>(or schema: Schema<U>) {
         
         self.schema.appendBranchedSchema(schema)
+    }
+    
+    public func appendInterpolation(_ token: Token) {
+        
+        self.schema.appendTokenKind(filterBy: { $0 == token }, minCount: 1, maxCount: 1, isConstant: true)
     }
 }
 

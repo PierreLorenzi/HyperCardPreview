@@ -14,11 +14,40 @@ import HyperCardCommon
 
 class SchemaTests: XCTestCase {
     
-    func testBuild() {
+    func testToken() {
         
-        let schema = Schema<Token>(token: Token.word("coucou"))
+        let schema = Schema<Token>("\(Token.word("coucou"))")
         
         XCTAssert(schema.parse("coucou") == Token.word("coucou"))
+        XCTAssert(schema.parse("couco") == nil)
+        XCTAssert(schema.parse("coucouu") == nil)
+        XCTAssert(schema.parse("coucou coucou") == nil)
+        XCTAssert(schema.parse("asdasdsd") == nil)
+        XCTAssert(schema.parse("") == nil)
+    }
+    
+    func testTokenRepeat() {
+        
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.computeSequenceBySingle { (tokens: [Token]) -> Int in return tokens.count }
+        
+        XCTAssert(schema.parse("") == 0)
+        XCTAssert(schema.parse("coucou") == 1)
+        XCTAssert(schema.parse("coucou coucou") == 2)
+        XCTAssert(schema.parse("coucou coucou coucou") == 3)
+        XCTAssert(schema.parse("coucou coucou coucou coucou") == 4)
+        XCTAssert(schema.parse("aaa") == nil)
+        XCTAssert(schema.parse("coucou coucou aaa") == nil)
+        XCTAssert(schema.parse("aaa coucou coucou") == nil)
+        
+    }
+    
+    func testCCC() {
+        
+        let schema = Schema<Int>("here it is \(Schemas.integer) is the value")
+        schema.computeSequenceBySingle { (value: Int) -> Int in return value }
+        
     }
 
 //    func testStringRepeat() {

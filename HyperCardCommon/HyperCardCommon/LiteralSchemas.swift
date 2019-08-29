@@ -9,131 +9,76 @@
 
 public enum Schemas {
     
-    private static let wordToken = Schema<Token> { (token: Token) -> Bool in
+    public static let word = Schema<HString> { (token: Token) -> HString? in
         
-        guard case Token.word = token else {
-            return false
+        guard case Token.word(let string) = token else {
+            return nil
         }
         
-        return true
+        return string
     }
     
-    public static let word = Schema<HString>("\(wordToken)")
     
-        .returnsSingle { (t: Token) -> HString in
-            
-            guard case Token.word(let string) = t else {
-                fatalError()
-            }
-            
-            return string
-        }
-    
-    
-    private static let quotedStringToken = Schema<Token> { (token: Token) -> Bool in
+    public static let quotedString = Schema<HString> { (token: Token) -> HString? in
         
-        guard case Token.quotedString = token else {
-            return false
+        guard case Token.quotedString(let string) = token else {
+            return nil
         }
         
-        return true
+        return string
     }
     
-    public static let quotedString = Schema<HString>("\(quotedStringToken)")
+    public static let integer = Schema<Int> { (token: Token) -> Int? in
         
-        .returnsSingle { (t: Token) -> HString in
-            
-            guard case Token.quotedString(let string) = t else {
-                fatalError()
-            }
-            
-            return string
-    }
-    
-    private static let integerToken = Schema<Token> { (token: Token) -> Bool in
-        
-        guard case Token.integer = token else {
-            return false
+        guard case Token.integer(let value) = token else {
+            return nil
         }
         
-        return true
+        return value
     }
     
-    public static let integer = Schema<Int>("\(integerToken)")
+    public static let realNumber = Schema<Double> { (token: Token) -> Double? in
         
-        .returnsSingle { (t: Token) -> Int in
-            
-            guard case Token.integer(let value) = t else {
-                fatalError()
-            }
-            
-            return value
-    }
-    
-    private static let realNumberToken = Schema<Token> { (token: Token) -> Bool in
-        
-        guard case Token.realNumber = token else {
-            return false
+        guard case Token.realNumber(let value) = token else {
+            return nil
         }
         
-        return true
+        return value
     }
     
-    public static let realNumber = Schema<Double>("\(realNumberToken)")
-        
-        .returnsSingle { (t: Token) -> Double in
-            
-            guard case Token.realNumber(let value) = t else {
-                fatalError()
-            }
-            
-            return value
-    }
+    private static let lineSeparator = Schema<Void>("\(Token.lineSeparator)")
     
-    private static let lineSeparatorToken = Schema<Token>(token: Token.lineSeparator)
-    
-    public static let lineSeparator = Schema<Void>("\(lineSeparatorToken)")
-        
-        .returnsSingle { (_: Token) -> Void in
-            
-            return ()
-    }
+        .returns(())
     
     public static let trueLiteral = Schema<Bool>("true")
         
-        .returnsSingle { (_: Token) -> Bool in
-            
-            return true
-    }
+        .returns(true)
     
     public static let falseLiteral = Schema<Bool>("false")
         
-        .returnsSingle { (_: Token) -> Bool in
-            
-            return false
-    }
+        .returns(false)
     
     public static let boolean = Schema<Bool>("\(trueLiteral)\(or: falseLiteral)")
     
     public static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
         
-        .initWhen(quotedString) {
+        .when(quotedString) {
             Literal.string($0)
         }
         
-        .initWhen(boolean) {
+        .when(boolean) {
             Literal.boolean($0)
         }
         
-        .initWhen(integer) {
+        .when(integer) {
             Literal.integer($0)
         }
         
-        .initWhen(realNumber) {
+        .when(realNumber) {
             Literal.floatingPoint($0)
         }
         
-        .initWhen(word) {
+        .when(word) {
             Literal.string($0)
     }
 

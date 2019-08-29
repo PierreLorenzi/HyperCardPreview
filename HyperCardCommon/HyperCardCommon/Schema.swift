@@ -39,9 +39,9 @@ public final class Schema<T> {
         return matchingSchema
     }
     
-    public func appendTokenKind(filterBy isTokenValid: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?) {
+    public func appendTokenKind(filterBy isTokenValid: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?, isConstant: Bool) {
         
-        let element = TokenSchemaElement<T>(tokenFilter: isTokenValid, minCount: minCount, maxCount: maxCount)
+        let element = TokenSchemaElement<T>(tokenFilter: isTokenValid, minCount: minCount, maxCount: maxCount, isConstant: isConstant)
         
         self.sequenceElements.append(element)
     }
@@ -68,7 +68,7 @@ public final class Schema<T> {
     
     public func computeSequenceBySingle<A>(_ compute: @escaping (A) -> T) {
         
-        let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
         guard schemaElements.count == 1 else {
             fatalError()
         }
@@ -90,7 +90,7 @@ public final class Schema<T> {
     
     public func computeSequenceBy<A,B>(_ compute: @escaping (A,B) -> T) {
         
-        let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
         guard schemaElements.count == 2 else {
             fatalError()
         }
@@ -112,7 +112,7 @@ public final class Schema<T> {
     
     public func computeSequenceBy<A,B,C>(_ compute: @escaping (A,B,C) -> T) {
         
-        let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
         guard schemaElements.count == 3 else {
             fatalError()
         }
@@ -135,7 +135,7 @@ public final class Schema<T> {
     
     public func computeSequenceBy<A,B,C,D>(_ compute: @escaping (A,B,C,D) -> T) {
         
-        let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
         guard schemaElements.count == 4 else {
             fatalError()
         }
@@ -229,14 +229,22 @@ public final class Schema<T> {
             return branchSchema
         }
     }
+    
+    var isConstant: Bool {
+        
+        return self.sequenceElements.allSatisfy({ $0.isConstant }) && self.branchElements.isEmpty
+    }
 }
 
 private class SchemaElement<T> {
     
     let minCount: Int
     let maxCount: Int?
-    let isSchema: Bool
     let isSameType: Bool
+    
+    var isConstant: Bool {
+        fatalError()
+    }
     
     func isSchema<U>(_ schema: Schema<U>) -> Bool {
         fatalError()
@@ -266,10 +274,9 @@ private class SchemaElement<T> {
         fatalError()
     }
     
-    init(minCount: Int, maxCount: Int?, isSchema: Bool, isSameType: Bool) {
+    init(minCount: Int, maxCount: Int?, isSameType: Bool) {
         self.minCount = minCount
         self.maxCount = maxCount
-        self.isSchema = isSchema
         self.isSameType = isSameType
     }
 }
@@ -283,14 +290,18 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
         
         self.schema = schema
         
-        super.init(minCount: minCount, maxCount: maxCount, isSchema: true, isSameType: T.self == U.self)
+        super.init(minCount: minCount, maxCount: maxCount, isSameType: T.self == U.self)
     }
     
     init(branchSchema: Schema<U>) {
         
         self.schema = branchSchema
         
-        super.init(minCount: 1, maxCount: 1, isSchema: U.self != Void.self, isSameType: T.self == U.self)
+        super.init(minCount: 1, maxCount: 1, isSameType: T.self == U.self)
+    }
+    
+    override var isConstant: Bool {
+        return self.minCount == self.maxCount && self.schema.isConstant
     }
     
     override func isSchema<V>(_ schema: Schema<V>) -> Bool {
@@ -346,12 +357,18 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     
     private var tokenFilter: (Token) -> Bool
     private var computeBranch: ((Token) -> T)? = nil
+    let _isConstant: Bool
     
-    init(tokenFilter: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?) {
+    init(tokenFilter: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?, isConstant: Bool) {
         
         self.tokenFilter = tokenFilter
+        self._isConstant = isConstant
         
-        super.init(minCount: minCount, maxCount: maxCount, isSchema: true, isSameType: T.self == Token.self)
+        super.init(minCount: minCount, maxCount: maxCount, isSameType: T.self == Token.self)
+    }
+    
+    override var isConstant: Bool {
+        return self._isConstant
     }
     
     override func isSchema<U>(_ schema: Schema<U>) -> Bool {
@@ -388,7 +405,7 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     
     override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
         
-        return TokenSchemaElement<V>(tokenFilter: self.tokenFilter, minCount: self.minCount, maxCount: self.maxCount)
+        return TokenSchemaElement<V>(tokenFilter: self.tokenFilter, minCount: self.minCount, maxCount: self.maxCount, isConstant: self.isConstant)
     }
     
     override func createSchemaSameType() -> MatchingSchema<T> {
@@ -696,7 +713,7 @@ private class SequenceMatcher<T>: Matcher<T> {
         
         /* If the matcher has matched nothing and the schema's min count is 0, consider that the next
          schema starts with no value */
-        if branch.isNew && subSchema.minCount == 0 {
+        if branch.isNew && subSchema.minCount == 0 && branch.occurenceIndex == 0 {
             
             /* Consider the matcher as finished, so we include its result in the computation */
             var newComputation = branch.computation

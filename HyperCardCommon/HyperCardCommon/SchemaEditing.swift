@@ -9,6 +9,22 @@
 
 public extension Schema {
     
+    convenience init(tokenKind mapToken: @escaping (Token) -> T?) {
+        
+        self.init()
+        
+        self.appendTokenKind(filterBy: { mapToken($0) != nil }, minCount: 1, maxCount: 1, isConstant: false)
+        
+        self.computeSequenceBySingle({ mapToken($0)! })
+    }
+    
+    func returns(_ value: T) -> Schema<T> {
+        
+        let compute = { () -> T in return value }
+        self.computeSequenceBy(compute)
+        return self
+    }
+    
     func returnsSingle<A>(_ compute: @escaping (A) -> T) -> Schema<T> {
         
         self.computeSequenceBySingle(compute)
@@ -34,27 +50,10 @@ public extension Schema {
         
     }
     
-    func initWhen<U>(_ schema: Schema<U>, _ compute: @escaping (U) -> T) -> Schema<T> {
+    func when<U>(_ schema: Schema<U>, _ compute: @escaping (U) -> T) -> Schema<T> {
         
         self.computeBranchBy(for: schema, compute)
         return self
-    }
-}
-
-public extension Schema where T == Token {
-    
-    convenience init(token: Token) {
-        
-        self.init()
-        
-        self.appendTokenKind(filterBy: { $0 == token }, minCount: 1, maxCount: 1)
-    }
-    
-    convenience init(tokenKind: @escaping (Token) -> Bool) {
-        
-        self.init()
-        
-        self.appendTokenKind(filterBy: tokenKind, minCount: 1, maxCount: 1)
     }
 }
 

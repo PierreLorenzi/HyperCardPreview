@@ -45,35 +45,35 @@ public extension Schemas {
     
     static let arithmeticOperator = Schema<ArithmeticOperator>("(\(addition)\(or: substraction)\(or: opposite)\(or: multiplication)\(or: division)\(or: exponentiation)\(or: modulo)\(or: integerDivision))")
     
-        .initWhen(addition) {
+        .when(addition) {
             ArithmeticOperator.addition($0.0, $0.1)
         }
         
-        .initWhen(substraction) {
+        .when(substraction) {
             ArithmeticOperator.substraction($0.0, $0.1)
         }
         
-        .initWhen(opposite) {
+        .when(opposite) {
             ArithmeticOperator.opposite($0)
         }
         
-        .initWhen(multiplication) {
+        .when(multiplication) {
             ArithmeticOperator.multiplication($0.0, $0.1)
         }
         
-        .initWhen(division) {
+        .when(division) {
             ArithmeticOperator.division($0.0, $0.1)
         }
         
-        .initWhen(exponentiation) {
+        .when(exponentiation) {
             ArithmeticOperator.exponentiation($0.0, $0.1)
         }
         
-        .initWhen(modulo) {
+        .when(modulo) {
             ArithmeticOperator.modulo($0.0, $0.1)
         }
         
-        .initWhen(integerDivision) {
+        .when(integerDivision) {
             ArithmeticOperator.integerDivision($0.0, $0.1)
         }
     
