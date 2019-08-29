@@ -99,25 +99,21 @@ public enum Schemas {
             return ()
     }
     
-    private static let trueToken = Schema<Token>(token: Token.word("true"))
-    
-    public static let trueLiteral = Schema<Bool>("\(trueToken)")
+    public static let trueLiteral = Schema<Bool>("true")
         
         .returnsSingle { (_: Token) -> Bool in
             
             return true
     }
     
-    private static let falseToken = Schema<Token>(token: Token.word("false"))
-    
-    public static let falseLiteral = Schema<Bool>("\(falseToken)")
+    public static let falseLiteral = Schema<Bool>("false")
         
         .returnsSingle { (_: Token) -> Bool in
             
             return false
     }
     
-    public static let boolean = Schema<Bool>("\(equal: trueLiteral)\(orEqual: falseLiteral)")
+    public static let boolean = Schema<Bool>("\(trueLiteral)\(or: falseLiteral)")
     
     public static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
         

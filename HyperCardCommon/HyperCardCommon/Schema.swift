@@ -39,34 +39,34 @@ public final class Schema<T> {
         return matchingSchema
     }
     
-    func appendTokenKind(filterBy isTokenValid: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?) {
+    public func appendTokenKind(filterBy isTokenValid: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?) {
         
         let element = TokenSchemaElement<T>(tokenFilter: isTokenValid, minCount: minCount, maxCount: maxCount)
         
         self.sequenceElements.append(element)
     }
     
-    func appendSchema<U>(_ schema: Schema<U>, minCount: Int, maxCount: Int?) {
+    public func appendSchema<U>(_ schema: Schema<U>, minCount: Int, maxCount: Int?) {
         
         let element = TypedSchemaElement<T,U>(schema: schema, minCount: minCount, maxCount: maxCount)
         
         self.sequenceElements.append(element)
     }
     
-    func appendBranchedSchema<U>(_ schema: Schema<U>) {
+    public func appendBranchedSchema<U>(_ schema: Schema<U>) {
         
         let element = TypedSchemaElement<T,U>(branchSchema: schema)
         
         self.branchElements.append(element)
     }
     
-    func computeSequenceBy(_ compute: @escaping () -> T) {
+    public func computeSequenceBy(_ compute: @escaping () -> T) {
         
         self.computation = ResultComputation<T>(parameterValues: [], parameterTypes: [], subSchemaIndexesToParameterIndexes: [:], compute: { (_:[Any?]) -> T in return compute() })
         
     }
     
-    func computeSequenceBySingle<A>(_ compute: @escaping (A) -> T) {
+    public func computeSequenceBySingle<A>(_ compute: @escaping (A) -> T) {
         
         let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
         guard schemaElements.count == 1 else {
@@ -88,7 +88,7 @@ public final class Schema<T> {
         
     }
     
-    func computeSequenceBy<A,B>(_ compute: @escaping (A,B) -> T) {
+    public func computeSequenceBy<A,B>(_ compute: @escaping (A,B) -> T) {
         
         let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
         guard schemaElements.count == 2 else {
@@ -110,7 +110,7 @@ public final class Schema<T> {
         })
     }
     
-    func computeSequenceBy<A,B,C>(_ compute: @escaping (A,B,C) -> T) {
+    public func computeSequenceBy<A,B,C>(_ compute: @escaping (A,B,C) -> T) {
         
         let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
         guard schemaElements.count == 3 else {
@@ -133,7 +133,7 @@ public final class Schema<T> {
         })
     }
     
-    func computeSequenceBy<A,B,C,D>(_ compute: @escaping (A,B,C,D) -> T) {
+    public func computeSequenceBy<A,B,C,D>(_ compute: @escaping (A,B,C,D) -> T) {
         
         let schemaElements = self.sequenceElements.enumerated().filter({ $0.element.isSchema })
         guard schemaElements.count == 4 else {
@@ -158,7 +158,7 @@ public final class Schema<T> {
         
     }
     
-    func computeBranchBy<U>(for schema: Schema<U>, _ compute: @escaping (U) -> T) {
+    public func computeBranchBy<U>(for schema: Schema<U>, _ compute: @escaping (U) -> T) {
         
         let elements = [self.sequenceElements[0]] + self.branchElements
         
@@ -172,7 +172,7 @@ public final class Schema<T> {
         }
     }
     
-    func parse(_ string: HString) -> T? {
+    public func parse(_ string: HString) -> T? {
         
         let tokenizer = Tokenizer(string: string)
         let schema = self.matchingSchema
@@ -194,6 +194,13 @@ public final class Schema<T> {
         
         if self.branchElements.isEmpty {
             
+            /* To simplify, if we are reduced to one schema, set to it */
+            if self.sequenceElements.count == 1 && self.sequenceElements[0].isSameType && self.sequenceElements[0].minCount == 1 && self.sequenceElements[0].maxCount == 1 &&
+                self.computation == nil {
+                
+                return self.sequenceElements[0].createSchemaSameType()
+            }
+            
             let subSchemas = self.sequenceElements.map({ $0.createSubSchema() })
             let sequenceSchema = SequenceSchema<T>(subSchemas: subSchemas, initialComputation: self.computation!)
             return sequenceSchema
@@ -204,6 +211,11 @@ public final class Schema<T> {
             let elements = [self.sequenceElements[0]] + self.branchElements
             
             let subSchemas: [MatchingSchema<T>] = elements.map { (element: SchemaElement<T>) -> MatchingSchema<T> in
+                
+                if element.isSameType && element.minCount == 1 && element.maxCount == 1 && !element.hasComputation() {
+                    
+                    return element.createSchemaSameType()
+                }
                 
                 let sequenceSubSchema = element.createSubSchema()
                 let sequenceComputation = element.createBranchComputation()
@@ -221,7 +233,10 @@ public final class Schema<T> {
 
 private class SchemaElement<T> {
     
+    let minCount: Int
+    let maxCount: Int?
     let isSchema: Bool
+    let isSameType: Bool
     
     func isSchema<U>(_ schema: Schema<U>) -> Bool {
         fatalError()
@@ -243,34 +258,39 @@ private class SchemaElement<T> {
         fatalError()
     }
     
-    init(isSchema: Bool) {
+    func createSchemaSameType() -> MatchingSchema<T> {
+        fatalError()
+    }
+    
+    func hasComputation() -> Bool {
+        fatalError()
+    }
+    
+    init(minCount: Int, maxCount: Int?, isSchema: Bool, isSameType: Bool) {
+        self.minCount = minCount
+        self.maxCount = maxCount
         self.isSchema = isSchema
+        self.isSameType = isSameType
     }
 }
 
 private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     private var schema: Schema<U>
-    private let minCount: Int
-    private let maxCount: Int?
     private var computeBranch: ((U) -> T)? = nil
     
     init(schema: Schema<U>, minCount: Int, maxCount: Int?) {
         
         self.schema = schema
-        self.minCount = minCount
-        self.maxCount = maxCount
         
-        super.init(isSchema: true)
+        super.init(minCount: minCount, maxCount: maxCount, isSchema: true, isSameType: T.self == U.self)
     }
     
     init(branchSchema: Schema<U>) {
         
         self.schema = branchSchema
-        self.minCount = 1
-        self.maxCount = 1
         
-        super.init(isSchema: U.self != Void.self)
+        super.init(minCount: 1, maxCount: 1, isSchema: U.self != Void.self, isSameType: T.self == U.self)
     }
     
     override func isSchema<V>(_ schema: Schema<V>) -> Bool {
@@ -310,22 +330,28 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
         
         return TypedSchemaElement<V,U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount)
     }
+    
+    override func createSchemaSameType() -> MatchingSchema<T> {
+        
+        return self.schema.buildMatchingSchema() as! MatchingSchema<T>
+    }
+    
+    override func hasComputation() -> Bool {
+        
+        return self.computeBranch != nil
+    }
 }
 
 private class TokenSchemaElement<T>: SchemaElement<T> {
     
     private var tokenFilter: (Token) -> Bool
-    private let minCount: Int
-    private let maxCount: Int?
     private var computeBranch: ((Token) -> T)? = nil
     
     init(tokenFilter: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?) {
         
         self.tokenFilter = tokenFilter
-        self.minCount = minCount
-        self.maxCount = maxCount
         
-        super.init(isSchema: true)
+        super.init(minCount: minCount, maxCount: maxCount, isSchema: true, isSameType: T.self == Token.self)
     }
     
     override func isSchema<U>(_ schema: Schema<U>) -> Bool {
@@ -363,6 +389,16 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
         
         return TokenSchemaElement<V>(tokenFilter: self.tokenFilter, minCount: self.minCount, maxCount: self.maxCount)
+    }
+    
+    override func createSchemaSameType() -> MatchingSchema<T> {
+        
+        return TokenSchema(checkTokenValid: self.tokenFilter) as! MatchingSchema<T>
+    }
+    
+    override func hasComputation() -> Bool {
+        
+        return self.computeBranch != nil
     }
 }
 

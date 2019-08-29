@@ -21,7 +21,7 @@ public extension Schemas {
         
         .returns { ($0,$1) }
     
-    static let opposite = Schema<Expression>("- \(equal: expression)")
+    static let opposite = Schema<Expression>("- \(expression)")
             
     static let multiplication = Schema<(Expression,Expression)>("\(expression) * \(expression)")
         

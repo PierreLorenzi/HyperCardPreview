@@ -15,9 +15,9 @@ import HyperCardCommon
 class SchemasTests: XCTestCase {
     
     func testLiteral() {
-        
+
         let schema = Schemas.literal
-        
+
         XCTAssert(schema.parse("true") == Literal.boolean(true))
         XCTAssert(schema.parse("false") == Literal.boolean(false))
         XCTAssert(schema.parse("fàLSE") == Literal.boolean(false))

@@ -104,20 +104,6 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         
         self.schema.appendBranchedSchema(schema)
     }
-    
-    public mutating func appendInterpolation<T>(equal schema: Schema<T>) {
-        
-        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
-        
-        self.afters.append(ComputeBranchAfter<T>())
-    }
-    
-    public mutating func appendInterpolation<T>(orEqual schema: Schema<T>) {
-        
-        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
-        
-        self.afters.append(ComputeBranchAfter<T>())
-    }
 }
 
 
