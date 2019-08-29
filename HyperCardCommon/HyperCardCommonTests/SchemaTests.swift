@@ -43,265 +43,94 @@ class SchemaTests: XCTestCase {
         
     }
     
+    func testTokenRepeat2() {
+        
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 2, maxCount: 4, isConstant: true)
+        schema.computeSequenceBySingle { (tokens: [Token]) -> Int in return tokens.count }
+        
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou") == 2)
+        XCTAssert(schema.parse("coucou coucou coucou") == 3)
+        XCTAssert(schema.parse("coucou coucou coucou coucou") == 4)
+        XCTAssert(schema.parse("coucou coucou coucou coucou coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou coucou coucou coucou coucou") == nil)
+    }
+    
+    func testTokenRepeat3() {
+        
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 3, maxCount: 3, isConstant: true)
+        schema.computeSequenceBy({ return 3 })
+        
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou coucou") == 3)
+        XCTAssert(schema.parse("coucou coucou coucou coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou coucou coucou coucou") == nil)
+    }
+    
+    func testTwoTokenRepeat() {
+        
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.computeSequenceBy { (tokens1: [Token], tokens2: [Token]) -> Int in return tokens1.count * 10 + tokens2.count }
+        
+        XCTAssert(schema.parse("") == 0)
+        XCTAssert(schema.parse("coucou") == 10)
+        XCTAssert(schema.parse("coucou coucou") == 20)
+        XCTAssert(schema.parse("pierre") == 1)
+        XCTAssert(schema.parse("pierre pierre") == 2)
+        XCTAssert(schema.parse("coucou pierre pierre") == 12)
+        XCTAssert(schema.parse("coucou coucou pierre") == 21)
+        XCTAssert(schema.parse("pierre coucou") == nil)
+        XCTAssert(schema.parse("aaa") == nil)
+        
+    }
+    
+    func testTwoTokenRepeat2() {
+        
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 2, maxCount: 2, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 2, maxCount: 3, isConstant: true)
+        schema.computeSequenceBySingle { (tokens2: [Token]) -> Int in return 20 + tokens2.count }
+        
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou") == nil)
+        XCTAssert(schema.parse("coucou coucou coucou") == nil)
+        XCTAssert(schema.parse("pierre") == nil)
+        XCTAssert(schema.parse("pierre pierre") == nil)
+        XCTAssert(schema.parse("coucou coucou pierre pierre") == 22)
+        XCTAssert(schema.parse("coucou coucou pierre pierre pierre") == 23)
+        XCTAssert(schema.parse("coucou coucou coucou pierre pierre") == nil)
+        XCTAssert(schema.parse("coucou coucou pierre pierre pierre pierre") == nil)
+        
+    }
+    
     func testSingleArgumentSameType() {
         
         let schema = Schema<Int>("here it is \(Schemas.integer) is the value")
         
         XCTAssert(schema.parse("here it is 123 is the value") == 123)
     }
-
-//    func testStringRepeat() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("pierre pierre pierre") == 3)
-//        XCTAssert(schema.parse("") == 0)
-//        XCTAssert(schema.parse("pierre") == 1)
-//        XCTAssert(schema.parse("pierre pierre pierr") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre p") == nil)
-//        XCTAssert(schema.parse("slfkdja;slk") == nil)
-//
-//    }
-//
-//    func testStringRepeat2() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 3, maxCount: 4, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == nil)
-//        XCTAssert(schema.parse("pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre") == 3)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre") == 4)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierr") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre p") == nil)
-//        XCTAssert(schema.parse("slfkdja;slk") == nil)
-//
-//    }
-//
-//    func testStringRepeat3() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 3, maxCount: 3, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == nil)
-//        XCTAssert(schema.parse("pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre") == 3)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre pierre pierre") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierr") == nil)
-//        XCTAssert(schema.parse("pierre pierre pierrep") == nil)
-//        XCTAssert(schema.parse("slfkdja;slk") == nil)
-//
-//    }
-//
-//    func testTwoStringRepeat() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 10
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("roc") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == 0)
-//        XCTAssert(schema.parse("pierre") == 10)
-//        XCTAssert(schema.parse("pier") == nil)
-//        XCTAssert(schema.parse("pierre p") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == 20)
-//        XCTAssert(schema.parse("roc") == 1)
-//        XCTAssert(schema.parse("roc r") == nil)
-//        XCTAssert(schema.parse("roc roc roc") == 3)
-//        XCTAssert(schema.parse("pierre roc") == 11)
-//        XCTAssert(schema.parse("pierre pierre roc roc") == 22)
-//        XCTAssert(schema.parse("roc pierre") == nil)
-//        XCTAssert(schema.parse("pierre roc roc") == 12)
-//        XCTAssert(schema.parse("pierre pierre roc") == 21)
-//
-//    }
-//
-//    func testTwoStringRepeat2() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 2, maxCount: 2, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 10
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("roc") }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == nil)
-//        XCTAssert(schema.parse("pierre") == nil)
-//        XCTAssert(schema.parse("pier") == nil)
-//        XCTAssert(schema.parse("pierre p") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == nil)
-//        XCTAssert(schema.parse("roc") == nil)
-//        XCTAssert(schema.parse("roc r") == nil)
-//        XCTAssert(schema.parse("roc roc roc") == nil)
-//        XCTAssert(schema.parse("pierre roc") == nil)
-//        XCTAssert(schema.parse("pierre pierre roc roc") == nil)
-//        XCTAssert(schema.parse("roc pierre") == nil)
-//        XCTAssert(schema.parse("pierre roc roc") == nil)
-//        XCTAssert(schema.parse("pierre pierre roc") == 21)
-//
-//    }
-//
-//    func testSeveralStringRepeat() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("roc") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 2
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("ciseau") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 3
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("crayon") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 4
-//        }))])]
-//
-//        XCTAssert(schema.parse("pierre") == 1)
-//        XCTAssert(schema.parse("roc") == 2)
-//        XCTAssert(schema.parse("ciseau") == 3)
-//        XCTAssert(schema.parse("crayon") == 4)
-//    }
-//
-//    func testRepeatAmbiguity() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 10
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == 0)
-//        XCTAssert(schema.parse("pierre") == 10)
-//        XCTAssert(schema.parse("pierre pierre") == 20)
-//        XCTAssert(schema.parse("pierre pierre pierre") == 30)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre") == 40)
-//        XCTAssert(schema.parse("pierre pierre pierre pierre p") == nil)
-//
-//    }
-//
-//    func testRepeatAmbiguity2() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 10
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("coucou") }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 10
-//        }))]), Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        })), Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("roc") }, minCount: 1, maxCount: 1, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("pierre coucou") == 20)
-//        XCTAssert(schema.parse("pierre roc") == 2)
-//        XCTAssert(schema.parse("pierre") == nil)
-//        XCTAssert(schema.parse("") == nil)
-//
-//    }
-//
-//    func testDisjunction() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            XCTAssert(value == Token.word("pierre"))
-//            parentValue += 1
-//        }))]), Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("roc") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            XCTAssert(value == Token.word("roc"))
-//            parentValue -= 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("") == 0)
-//        XCTAssert(schema.parse("pierre") == 1)
-//        XCTAssert(schema.parse("pierre pierre") == 2)
-//        XCTAssert(schema.parse("roc") == -1)
-//        XCTAssert(schema.parse("roc roc") == -2)
-//        XCTAssert(schema.parse("pierre roc") == nil)
-//        XCTAssert(schema.parse("roc pierre") == nil)
-//
-//    }
-//
-//    func testDisjunctionAmbiguity() {
-//
-//        let schema = Schema<Int>()
-//        schema.initialValue = 0
-//        schema.branches = [ Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue += 1
-//        }))]), Schema<Int>.Branch(subSchemas: [Schema<Int>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, update: Schema<Int>.Update<Token>.change({ (parentValue: inout Int, value: Token) in
-//            parentValue -= 1
-//        }))])]
-//
-//        XCTAssert(schema.parse("pierre") == 1)
-//
-//    }
-//
-//    func testEmptyBranch() {
-//
-//        /* Schemas with empty branches happen during interpolations */
-//
-//        let schema = Schema<Void>()
-//        schema.initialValue = ()
-//        schema.branches = [ Schema<Void>.Branch(subSchemas: [])]
-//
-//        XCTAssert(schema.parse("") != nil)
-//        XCTAssert(schema.parse("pierre") == nil)
-//
-//    }
-//
-//    func testEmptyBranch2() {
-//
-//        /* Schemas with empty branches happen during interpolations */
-//
-//        let schema = Schema<Void>()
-//        let schema2 = Schema<Void>()
-//        schema.initialValue = ()
-//        schema2.initialValue = ()
-//        schema.branches = [ Schema<Void>.Branch(subSchemas: [Schema<Void>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Token>.none), Schema<Void>.TypedSubSchema<Void>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none)])]
-//        schema2.branches = [ Schema.Branch(subSchemas: []) ]
-//
-//        XCTAssert(schema.parse("pierre") != nil)
-//        XCTAssert(schema.parse("") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == nil)
-//
-//    }
-//
-//    func testEmptyBranch3() {
-//
-//        /* Schemas with empty branches happen during interpolations */
-//
-//        let schema = Schema<Void>()
-//        let schema2 = Schema<Void>()
-//        schema.initialValue = ()
-//        schema2.initialValue = ()
-//        schema.branches = [ Schema<Void>.Branch(subSchemas: [Schema<Void>.TypedSubSchema<Void>(schema: schema2, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Void>.none), Schema<Void>.ValueSubSchema(accept: { $0 == Token.word("pierre") }, minCount: 1, maxCount: 1, update: Schema<Void>.Update<Token>.none)])]
-//        schema2.branches = [ Schema.Branch(subSchemas: []) ]
-//
-//        XCTAssert(schema.parse("pierre") != nil)
-//        XCTAssert(schema.parse("") == nil)
-//        XCTAssert(schema.parse("pierre pierre") == nil)
-//
-//    }
+    
+    func testBranchAmbiguity() {
+        
+        /* When there are several competing branches, it must return the best one */
+        let schema = Schema<Int>()
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.computeSequenceBy { (tokens1: [Token], tokens2: [Token]) -> Int in return tokens1.count * 10 + tokens2.count }
+        
+        XCTAssert(schema.parse("") == 0)
+        XCTAssert(schema.parse("pierre") == 10)
+        XCTAssert(schema.parse("pierre pierre") == 20)
+        XCTAssert(schema.parse("pierre pierre pierre") == 30)
+        
+    }
 
 }

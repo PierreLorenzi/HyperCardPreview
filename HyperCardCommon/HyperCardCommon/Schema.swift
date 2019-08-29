@@ -376,7 +376,7 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     }
     
     override var isConstant: Bool {
-        return self._isConstant
+        return self._isConstant && self.minCount == self.maxCount
     }
     
     override func isSchema<U>(_ schema: Schema<U>) -> Bool {
