@@ -13,6 +13,6 @@ public enum Token: Equatable {
     case symbol(HString)
     case integer(Int)
     case realNumber(Double)
-    case lineSeparator
+    case lineSeparation
 }
 

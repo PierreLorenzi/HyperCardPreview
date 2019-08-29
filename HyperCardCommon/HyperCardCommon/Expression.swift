@@ -19,7 +19,7 @@ public indirect enum Expression {
 public enum Literal: Equatable {
     case boolean(Bool)
     case integer(Int)
-    case floatingPoint(Double)
+    case realNumber(Double)
     case string(HString)
 }
 

@@ -47,7 +47,7 @@ public enum Schemas {
             return nil
         }
         
-        return Literal.floatingPoint(value)
+        return Literal.realNumber(value)
     }
     
     public static let boolean = Schema<Literal>("\(trueLiteral)\(or: falseLiteral)")

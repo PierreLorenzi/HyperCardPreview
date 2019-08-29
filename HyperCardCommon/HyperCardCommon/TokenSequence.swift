@@ -62,7 +62,7 @@ public class TokenSequence: Sequence {
                     return nil
                 }
                 else {
-                    return Token.lineSeparator
+                    return Token.lineSeparation
                 }
             }
                 
@@ -75,7 +75,7 @@ public class TokenSequence: Sequence {
                 /* If it is a return, it is a single token */
             else if nextCharacter == HChar.carriageReturn {
                 self.index += 1
-                return Token.lineSeparator
+                return Token.lineSeparation
             }
                 
                 /* If it is a digit, include all the remaining digits */
