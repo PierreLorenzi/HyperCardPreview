@@ -9,78 +9,57 @@
 
 public enum Schemas {
     
-    public static let word = Schema<HString> { (token: Token) -> HString? in
+    
+    public static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
+    
+    
+    
+    public static let word = Schema<Literal> { (token: Token) -> Literal? in
         
         guard case Token.word(let string) = token else {
             return nil
         }
         
-        return string
+        return Literal.string(string)
     }
     
-    
-    public static let quotedString = Schema<HString> { (token: Token) -> HString? in
+    public static let quotedString = Schema<Literal> { (token: Token) -> Literal? in
         
         guard case Token.quotedString(let string) = token else {
             return nil
         }
         
-        return string
+        return Literal.string(string)
     }
     
-    public static let integer = Schema<Int> { (token: Token) -> Int? in
+    public static let integer = Schema<Literal> { (token: Token) -> Literal? in
         
         guard case Token.integer(let value) = token else {
             return nil
         }
         
-        return value
+        return Literal.integer(value)
     }
     
-    public static let realNumber = Schema<Double> { (token: Token) -> Double? in
+    public static let realNumber = Schema<Literal> { (token: Token) -> Literal? in
         
         guard case Token.realNumber(let value) = token else {
             return nil
         }
         
-        return value
+        return Literal.floatingPoint(value)
     }
     
-    private static let lineSeparator = Schema<Void>("\(Token.lineSeparator)")
+    public static let boolean = Schema<Literal>("\(trueLiteral)\(or: falseLiteral)")
     
-        .returns(())
+    public static let trueLiteral = Schema<Literal>("true")
+        
+        .returns(Literal.boolean(true))
     
-    public static let trueLiteral = Schema<Bool>("true")
+    public static let falseLiteral = Schema<Literal>("false")
         
-        .returns(true)
+        .returns(Literal.boolean(false))
     
-    public static let falseLiteral = Schema<Bool>("false")
-        
-        .returns(false)
-    
-    public static let boolean = Schema<Bool>("\(trueLiteral)\(or: falseLiteral)")
-    
-    public static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
-        
-        .when(quotedString) {
-            Literal.string($0)
-        }
-        
-        .when(boolean) {
-            Literal.boolean($0)
-        }
-        
-        .when(integer) {
-            Literal.integer($0)
-        }
-        
-        .when(realNumber) {
-            Literal.floatingPoint($0)
-        }
-        
-        .when(word) {
-            Literal.string($0)
-    }
 
 }
 

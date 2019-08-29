@@ -10,71 +10,44 @@
 
 public extension Schemas {
     
-    // Just a stub for now
-    static let expression = Schema<Expression>()
-    
-    static let addition = Schema<(Expression,Expression)>("\(expression) + \(expression)")
-    
-        .returns { ($0,$1) }
-    
-    static let substraction = Schema<(Expression,Expression)>("\(expression) - \(expression)")
-        
-        .returns { ($0,$1) }
-    
-    static let opposite = Schema<Expression>("- \(expression)")
-            
-    static let multiplication = Schema<(Expression,Expression)>("\(expression) * \(expression)")
-        
-        .returns { ($0,$1) }
-    
-    static let division = Schema<(Expression,Expression)>("\(expression) / \(expression)")
-        
-        .returns { ($0,$1) }
-    
-    static let exponentiation = Schema<(Expression,Expression)>("\(expression) ^ \(expression)")
-        
-        .returns { ($0,$1) }
-    
-    static let modulo = Schema<(Expression,Expression)>("\(expression) mod \(expression)")
-        
-        .returns { ($0,$1) }
-    
-    static let integerDivision = Schema<(Expression,Expression)>("\(expression) div \(expression)")
-        
-        .returns { ($0,$1) }
     
     static let arithmeticOperator = Schema<ArithmeticOperator>("(\(addition)\(or: substraction)\(or: opposite)\(or: multiplication)\(or: division)\(or: exponentiation)\(or: modulo)\(or: integerDivision))")
     
-        .when(addition) {
-            ArithmeticOperator.addition($0.0, $0.1)
-        }
+    
+    
+    static let addition = Schema<ArithmeticOperator>("\(expression) + \(expression)")
+    
+        .returns { ArithmeticOperator.addition($0, $1) }
+    
+    static let substraction = Schema<ArithmeticOperator>("\(expression) - \(expression)")
         
-        .when(substraction) {
-            ArithmeticOperator.substraction($0.0, $0.1)
-        }
+        .returns { ArithmeticOperator.substraction($0,$1) }
+    
+    static let opposite = Schema<ArithmeticOperator>("- \(expression)")
+    
+        .returnsSingle { ArithmeticOperator.opposite($0) }
+            
+    static let multiplication = Schema<ArithmeticOperator>("\(expression) * \(expression)")
         
-        .when(opposite) {
-            ArithmeticOperator.opposite($0)
-        }
+        .returns { ArithmeticOperator.multiplication($0,$1) }
+    
+    static let division = Schema<ArithmeticOperator>("\(expression) / \(expression)")
         
-        .when(multiplication) {
-            ArithmeticOperator.multiplication($0.0, $0.1)
-        }
+        .returns { ArithmeticOperator.division($0,$1) }
+    
+    static let exponentiation = Schema<ArithmeticOperator>("\(expression) ^ \(expression)")
         
-        .when(division) {
-            ArithmeticOperator.division($0.0, $0.1)
-        }
+        .returns { ArithmeticOperator.exponentiation($0,$1) }
+    
+    static let modulo = Schema<ArithmeticOperator>("\(expression) mod \(expression)")
         
-        .when(exponentiation) {
-            ArithmeticOperator.exponentiation($0.0, $0.1)
-        }
+        .returns { ArithmeticOperator.modulo($0,$1) }
+    
+    static let integerDivision = Schema<ArithmeticOperator>("\(expression) div \(expression)")
         
-        .when(modulo) {
-            ArithmeticOperator.modulo($0.0, $0.1)
-        }
-        
-        .when(integerDivision) {
-            ArithmeticOperator.integerDivision($0.0, $0.1)
-        }
+        .returns { ArithmeticOperator.integerDivision($0,$1) }
+    
+    // Just a stub for now
+    static let expression = Schema<Expression>()
     
 }
