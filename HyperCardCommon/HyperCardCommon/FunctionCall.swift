@@ -85,6 +85,9 @@ public enum FunctionCall {
     case windows
 }
 
+// In fact the argument of 'number' is a string which is parsed,
+// for example the following works: the number of "cards in this stack"
+// or number("cards in this stack"), or even number(cards in this stack).
 public enum NumberFunction {
     
     case numberOfButtons(inLayerWithType: LayerType)
