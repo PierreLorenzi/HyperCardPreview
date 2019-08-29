@@ -18,9 +18,9 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         self.init()
         
         let string = HString(stringLiteral: stringLiteral)
-        let tokenizer = Tokenizer(string: string)
+        let tokens = TokenSequence(string)
         
-        while let token = tokenizer.readNextToken() {
+        for token in tokens {
             
             self.appendTokenKind(filterBy: { (t: Token) -> Bool in
                 t == token
@@ -75,9 +75,9 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public func appendLiteral(_ literal: String) {
         
         let string = HString(converting: literal)!
-        let tokenizer = Tokenizer(string: string)
-            
-        while let token = tokenizer.readNextToken() {
+        let tokens = TokenSequence(string)
+        
+        for token in tokens {
             
             self.schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
                 t == token

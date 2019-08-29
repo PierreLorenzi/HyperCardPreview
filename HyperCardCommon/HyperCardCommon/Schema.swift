@@ -174,11 +174,11 @@ public final class Schema<T> {
     
     public func parse(_ string: HString) -> T? {
         
-        let tokenizer = Tokenizer(string: string)
+        let tokens = TokenSequence(string)
         let schema = self.matchingSchema
         let matcher = schema.buildMatcher()
         
-        while let token = tokenizer.readNextToken() {
+        for token in tokens {
             
             if !matcher.canContinue {
                 return nil

@@ -32,7 +32,7 @@
 		6C8746241F540007005A41AB /* scroll down arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */; };
 		6C8746251F540007005A41AB /* scroll up arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */; };
 		6C8746271F5402E0005A41AB /* Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8746261F5402E0005A41AB /* Responder.swift */; };
-		6C89A2E42314082800F394D8 /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DC2314082800F394D8 /* Tokenizer.swift */; };
+		6C89A2E42314082800F394D8 /* TokenSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DC2314082800F394D8 /* TokenSequence.swift */; };
 		6C89A2E52314082800F394D8 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DD2314082800F394D8 /* Token.swift */; };
 		6C89A2E62314082800F394D8 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DE2314082800F394D8 /* Schema.swift */; };
 		6C89A2E72314082800F394D8 /* CharacterTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DF2314082800F394D8 /* CharacterTypes.swift */; };
@@ -50,7 +50,6 @@
 		6C89A2FE231408EF00F394D8 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F4231408EE00F394D8 /* Chunk.swift */; };
 		6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F5231408EF00F394D8 /* Operator.swift */; };
 		6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */; };
-		6C969DB12314B4790062B039 /* SchemaInterpolationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */; };
 		6C9DF4D620C703DF0024F61B /* ResourceRepositoryLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */; };
 		6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D720C708A80024F61B /* MainRepository.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
@@ -424,7 +423,7 @@
 		6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll down arrow clicked.tiff"; sourceTree = "<group>"; };
 		6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll up arrow clicked.tiff"; sourceTree = "<group>"; };
 		6C8746261F5402E0005A41AB /* Responder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Responder.swift; sourceTree = "<group>"; };
-		6C89A2DC2314082800F394D8 /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
+		6C89A2DC2314082800F394D8 /* TokenSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSequence.swift; sourceTree = "<group>"; };
 		6C89A2DD2314082800F394D8 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
 		6C89A2DE2314082800F394D8 /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
 		6C89A2DF2314082800F394D8 /* CharacterTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTypes.swift; sourceTree = "<group>"; };
@@ -442,7 +441,6 @@
 		6C89A2F4231408EE00F394D8 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
 		6C89A2F5231408EF00F394D8 /* Operator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
 		6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectDescriptor.swift; sourceTree = "<group>"; };
-		6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaInterpolationTests.swift; sourceTree = "<group>"; };
 		6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRepositoryLoading.swift; sourceTree = "<group>"; };
 		6C9DF4D720C708A80024F61B /* MainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRepository.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
@@ -821,7 +819,7 @@
 			children = (
 				6C89A2DF2314082800F394D8 /* CharacterTypes.swift */,
 				6C89A2DD2314082800F394D8 /* Token.swift */,
-				6C89A2DC2314082800F394D8 /* Tokenizer.swift */,
+				6C89A2DC2314082800F394D8 /* TokenSequence.swift */,
 				6C89A2DE2314082800F394D8 /* Schema.swift */,
 				6C2FB5732314854200824D73 /* SchemaEditing.swift */,
 				6C2FB5752314858000824D73 /* SchemaInterpolation.swift */,
@@ -1334,7 +1332,6 @@
 				6C56FD091F56BC2B0036FF8A /* DataTests.swift */,
 				6CEED1F820C9A83900A0DBE0 /* GraphicTests.swift */,
 				6C2FB5772314906C00824D73 /* SchemaTests.swift */,
-				6C969DB02314B4790062B039 /* SchemaInterpolationTests.swift */,
 				6C5E929323155F4A00054E46 /* TestSchemas.swift */,
 				6CB025501F4ED7A700B57D87 /* Resources */,
 				6CB025491F4ED75700B57D87 /* Info.plist */,
@@ -1855,7 +1852,7 @@
 				6C9E6B0E1E75BCFA00BBF925 /* BitmapFont.swift in Sources */,
 				6CA2CCC820C83DE10042148A /* Icon.swift in Sources */,
 				6C9DF50B20C73A8A0024F61B /* TextLayout.swift in Sources */,
-				6C89A2E42314082800F394D8 /* Tokenizer.swift in Sources */,
+				6C89A2E42314082800F394D8 /* TokenSequence.swift in Sources */,
 				6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */,
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
 				6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */,
@@ -1904,7 +1901,6 @@
 				6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */,
 				6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */,
 				6CEED1F920C9A83900A0DBE0 /* GraphicTests.swift in Sources */,
-				6C969DB12314B4790062B039 /* SchemaInterpolationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
