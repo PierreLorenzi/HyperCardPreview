@@ -10,6 +10,7 @@
 		6C175D3923190456005882A8 /* FactorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3823190456005882A8 /* FactorSchemas.swift */; };
 		6C175D3B2319088F005882A8 /* UnaryOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */; };
 		6C175D3D23190A48005882A8 /* BinaryOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3C23190A48005882A8 /* BinaryOperatorSchemas.swift */; };
+		6C175D3F231913B4005882A8 /* NoArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */; };
 		6C298BA32312E4CC00960F72 /* BitmapLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C298BA22312E4CC00960F72 /* BitmapLoading.swift */; };
 		6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */; };
 		6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */; };
@@ -404,6 +405,7 @@
 		6C175D3823190456005882A8 /* FactorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactorSchemas.swift; sourceTree = "<group>"; };
 		6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnaryOperatorSchemas.swift; sourceTree = "<group>"; };
 		6C175D3C23190A48005882A8 /* BinaryOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BinaryOperatorSchemas.swift; sourceTree = "<group>"; };
+		6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
 		6C298BA22312E4CC00960F72 /* BitmapLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitmapLoading.swift; sourceTree = "<group>"; };
 		6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhiteView.swift; sourceTree = "<group>"; };
 		6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColorPainter.swift; sourceTree = "<group>"; };
@@ -841,6 +843,7 @@
 				6C175D3C23190A48005882A8 /* BinaryOperatorSchemas.swift */,
 				6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */,
 				6C175D3823190456005882A8 /* FactorSchemas.swift */,
+				6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */,
 			);
 			name = Schemas;
 			sourceTree = "<group>";
@@ -1827,6 +1830,7 @@
 				6C175D3D23190A48005882A8 /* BinaryOperatorSchemas.swift in Sources */,
 				6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */,
 				6C89A2E52314082800F394D8 /* Token.swift in Sources */,
+				6C175D3F231913B4005882A8 /* NoArgumentFunctionSchemas.swift in Sources */,
 				6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */,
 				6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */,
 				6C9E6B071E75BCFA00BBF925 /* Part.swift in Sources */,

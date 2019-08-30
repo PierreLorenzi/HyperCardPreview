@@ -25,7 +25,7 @@ public enum FunctionCall {
     case commandKey
     case compound(number1: Expression, number2: Expression)
     case cos(number: Expression)
-    case date(exactness: Exactness)
+    case date(exactness: Exactness?)
     case destination
     case diskSpace(diskName: Expression?)
     case exp(number: Expression)
