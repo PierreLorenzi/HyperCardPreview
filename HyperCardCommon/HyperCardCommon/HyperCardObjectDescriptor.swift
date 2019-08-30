@@ -22,7 +22,7 @@ public enum HyperCardObjectDescriptor {
 }
 
 public enum ButtonOrFieldDescriptor {
-    case field(FileDescriptor)
+    case field(FieldDescriptor)
     case button(ButtonDescriptor)
     case part(PartDescriptor)
 }
