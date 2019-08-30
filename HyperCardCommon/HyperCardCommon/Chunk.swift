@@ -7,34 +7,34 @@
 //
 
 
-public struct ChunkExpression {
+public struct ChunkExpression: Equatable {
     public var expression: Expression
     public var chunk: Chunk
 }
 
-public struct ChunkContainer {
+public struct ChunkContainer: Equatable {
     public var container: ContainerDescriptor
     public var chunk: Chunk
 }
 
-public struct Chunk {
+public struct Chunk: Equatable {
     public var type: ChunkType
     public var number: ChunkNumber
 }
 
-public enum ChunkType {
+public enum ChunkType: Equatable {
     case line
     case item
     case word
     case character
 }
 
-public enum ChunkNumber {
+public enum ChunkNumber: Equatable {
     case single(Ordinal)
     case range(ChunkNumberRange)
 }
 
-public struct ChunkNumberRange {
+public struct ChunkNumberRange: Equatable {
     public var minimumNumber: Expression
     public var maximumNumber: Expression
 }

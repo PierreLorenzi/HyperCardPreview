@@ -7,7 +7,7 @@
 //
 
 
-public enum Operator {
+public enum Operator: Equatable {
     
     /* Arithmetic Operators */
     case addition(Expression, Expression)  // +
@@ -47,7 +47,7 @@ public enum Operator {
     case concatenationWithSpace(Expression, Expression)  // &&
 }
 
-public enum ExpressionType {
+public enum ExpressionType: Equatable {
     case number
     case integer
     case point

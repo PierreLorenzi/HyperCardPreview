@@ -31,12 +31,16 @@ public final class Schema<T> {
     }
     
     private var possibleMatchingSchema: MatchingSchema<T>? = nil
-    private var matchingSchema: MatchingSchema<T> {
+    
+    fileprivate var matchingSchema: MatchingSchema<T> {
+        
         guard let matchingSchema = self.possibleMatchingSchema else {
+            
             let matchingSchema = self.buildMatchingSchema()
             self.possibleMatchingSchema = matchingSchema
             return matchingSchema
         }
+        
         return matchingSchema
     }
     
@@ -317,7 +321,7 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     }
     
     override var isConstant: Bool {
-        return self._isConstant ?? (self.schema.isConstant && self.minCount == self.maxCount)
+        return self._isConstant ?? ((self.schema.isConstant && self.minCount == self.maxCount) || U.self == Void.self)
     }
     
     override func isSchema<V>(_ schema: Schema<V>) -> Bool {
@@ -360,7 +364,7 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     override func createSchemaSameType() -> MatchingSchema<T> {
         
-        return self.schema.buildMatchingSchema() as! MatchingSchema<T>
+        return self.schema.matchingSchema as! MatchingSchema<T>
     }
     
     override func hasComputation() -> Bool {

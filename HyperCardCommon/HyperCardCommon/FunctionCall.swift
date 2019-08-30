@@ -7,7 +7,7 @@
 //
 
 
-public enum FunctionCall {
+public enum FunctionCall: Equatable {
     
     case custom(identifier: HString, arguments: [Expression])
     
@@ -86,7 +86,7 @@ public enum FunctionCall {
 }
 
 
-public enum Countable {
+public enum Countable: Equatable {
     
     case buttons(LayerType)
     case fields(LayerType)
@@ -104,7 +104,7 @@ public enum Countable {
     case chunks(ChunkType, `in`: Expression)
 }
 
-public enum SelectedLineFunction {
+public enum SelectedLineFunction: Equatable {
     case selectedLine
     case selectedLineInListField(FieldDescriptor)
     case selectedLineInPopUpButton(ButtonDescriptor)

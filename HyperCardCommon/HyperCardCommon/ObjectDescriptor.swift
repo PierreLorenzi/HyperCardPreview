@@ -7,7 +7,7 @@
 //
 
 
-public enum ObjectDescriptor {
+public enum ObjectDescriptor: Equatable {
     
     case window(WindowDescriptor)
     case menu(MenuDescriptor)
@@ -23,7 +23,7 @@ public enum ObjectDescriptor {
     case hyperCardObject(HyperCardObjectDescriptor)
 }
 
-public struct NamedDescriptor {
+public struct NamedDescriptor: Equatable {
     var name: Expression
 }
 
@@ -35,24 +35,24 @@ public typealias ApplicationDescriptor = NamedDescriptor
 public typealias FolderDescriptor = NamedDescriptor
 public typealias ScriptingLanguageDescriptor = NamedDescriptor
 
-public struct MenuItemDescriptor {
+public struct MenuItemDescriptor: Equatable {
     
     var identification: HyperCardObjectIdentification
     var parentMenu: MenuDescriptor
 }
 
-public enum ProgramDescriptor {
+public enum ProgramDescriptor: Equatable {
     
     case currentProgram
     case identification(HyperCardObjectIdentification)
 }
 
-public enum WindowDescriptor {
+public enum WindowDescriptor: Equatable {
     
     case currentCardWindow
     case identification(HyperCardObjectIdentification)
 }
 
-public struct PictureDescriptor {
+public struct PictureDescriptor: Equatable {
     var layer: LayerType
 }

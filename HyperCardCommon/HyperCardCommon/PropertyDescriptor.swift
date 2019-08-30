@@ -7,12 +7,12 @@
 //
 
 
-public enum PropertyDescriptor {
+public enum PropertyDescriptor: Equatable {
     case intrinsic(IntrinsicProperty)
     case extrinsic(ExtrinsicProperty)
 }
 
-public enum IntrinsicProperty {
+public enum IntrinsicProperty: Equatable {
     case hyperCardProperty(PartialKeyPath<HyperCard>)
     case stackProperty(PartialKeyPath<Stack>, of: StackDescriptor)
     case backgroundProperty(PartialKeyPath<Background>, of: BackgroundDescriptor)
@@ -27,20 +27,20 @@ public enum IntrinsicProperty {
     case messageBoxProperty(PartialKeyPath<MessageBox>)
 }
 
-public enum ExtrinsicProperty {
+public enum ExtrinsicProperty: Equatable {
     case number(NumberProperty)
     case partNumber(of: PartDescriptor)
     case chunk(ChunkProperty)
 }
 
-public enum NumberProperty {
+public enum NumberProperty: Equatable {
     case numberOfButtonOrField(PartDescriptor)
     case numberOfCard(CardDescriptor)
     case numberOfBackground(BackgroundDescriptor)
     case numberOfWindow(WindowDescriptor)
 }
 
-public enum ChunkProperty {
+public enum ChunkProperty: Equatable {
     case textFont(of: ChunkContainer)
     case textSize(of: ChunkContainer)
     case textStyle(of: ChunkContainer)

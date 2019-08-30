@@ -7,14 +7,14 @@
 //
 
 
-public enum Ordinal {
+public enum Ordinal: Equatable {
     case any
     case middle
     case last
     case number(Expression)
 }
 
-public enum RelativeOrdinal {
+public enum RelativeOrdinal: Equatable {
     case current
     case next
     case previous

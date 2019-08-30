@@ -7,7 +7,7 @@
 //
 
 
-public indirect enum Expression {
+public indirect enum Expression: Equatable {
     case literal(Literal)
     case `operator`(Operator)
     case containerContent(ContainerDescriptor)
@@ -23,7 +23,7 @@ public enum Literal: Equatable {
     case string(HString)
 }
 
-public indirect enum ContainerDescriptor {
+public indirect enum ContainerDescriptor: Equatable {
     case variable(identifier: HString)
     case part(PartDescriptor)
     case messageBox

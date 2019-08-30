@@ -7,7 +7,7 @@
 //
 
 
-public enum HyperCardObjectDescriptor {
+public enum HyperCardObjectDescriptor: Equatable {
     
     case me
     
@@ -21,13 +21,13 @@ public enum HyperCardObjectDescriptor {
     case part(PartDescriptor)
 }
 
-public enum StackDescriptor {
+public enum StackDescriptor: Equatable {
     
     case current
     case withName(Expression)
 }
 
-public enum LayerDescriptor {
+public enum LayerDescriptor: Equatable {
     
     case relative(RelativeOrdinal)
     case absolute(HyperCardObjectIdentification)
@@ -35,20 +35,20 @@ public enum LayerDescriptor {
 
 public typealias BackgroundDescriptor = LayerDescriptor
 
-public struct CardDescriptor {
+public struct CardDescriptor: Equatable {
     
     var descriptor: LayerDescriptor
     var parentBackground: LayerDescriptor?
 }
 
-public enum HyperCardObjectIdentification {
+public enum HyperCardObjectIdentification: Equatable {
     
     case withOrdinal(Ordinal)
     case withIdentifier(Expression)
     case withName(Expression)
 }
 
-public struct PartDescriptor {
+public struct PartDescriptor: Equatable {
     
     var type: PartDescriptorType
     var typedPartDescriptor: TypedPartDescriptor
@@ -57,14 +57,14 @@ public struct PartDescriptor {
 public typealias ButtonDescriptor = TypedPartDescriptor
 public typealias FieldDescriptor = TypedPartDescriptor
 
-public struct TypedPartDescriptor {
+public struct TypedPartDescriptor: Equatable {
     
     var layer: LayerType
     var identification: HyperCardObjectIdentification
     var card: CardDescriptor
 }
 
-public enum PartDescriptorType {
+public enum PartDescriptorType: Equatable {
     case field
     case button
     case part
