@@ -1,5 +1,5 @@
 //
-//  UnaryOperatorSchemas.swift
+//  OperatorSchemas.swift
 //  HyperCardCommon
 //
 //  Created by Pierre Lorenzi on 30/08/2019.
@@ -10,29 +10,27 @@
 public extension Schemas {
     
     
-    static let unaryOperator = Schema<UnaryOperator>("\(parentheses)\(or: opposite)\(or: not)\(or: thereIs)\(or: thereIsNotA)")
+    static let unaryOperator = Schema<Operator>("\(parentheses)\(or: opposite)\(or: not)\(or: thereIs)\(or: thereIsNotA)")
     
     
     
-    static let parentheses = Schema<Expression>("( \(expression) )")
+    static let parentheses = Schema<Operator>("( \(expression) )")
+    
+    static let opposite = Schema<Operator>("- \(factor)")
         
-        .returnsSingle { Expression.literal($0) }
+        .returnsSingle { Operator.opposite($0) }
     
-    static let opposite = Schema<UnaryOperator>("- \(factor)")
+    static let not = Schema<Operator>("not \(factor)")
         
-        .returnsSingle { UnaryOperator.opposite($0) }
+        .returnsSingle { Operator.not($0) }
     
-    static let not = Schema<UnaryOperator>("not \(factor)")
+    static let thereIs = Schema<Operator>("there is \(either: "a", "an") \(objectDescriptor)")
         
-        .returnsSingle { UnaryOperator.not($0) }
+        .returnsSingle { Operator.thereIs($0) }
     
-    static let thereIs = Schema<UnaryOperator>("there is \(either: "a", "an") \(objectDescriptor)")
+    static let thereIsNotA = Schema<Operator>("there is not \(either: "a", "an") \(objectDescriptor)")
         
-        .returnsSingle { UnaryOperator.thereIs($0) }
-    
-    static let thereIsNotA = Schema<UnaryOperator>("there is not \(either: "a", "an") \(objectDescriptor)")
-        
-        .returnsSingle { UnaryOperator.thereIsNotA($0) }
+        .returnsSingle { Operator.thereIsNotA($0) }
     
     // stub
     static let objectDescriptor = Schema<ObjectDescriptor>()
