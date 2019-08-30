@@ -132,5 +132,13 @@ class SchemaTests: XCTestCase {
         XCTAssert(schema.parse("pierre pierre pierre") == 30)
         
     }
+    
+    func test() {
+        
+        let schema: Schema<Literal> = "\(maybe: "the") number equal to \(Schemas.integer)"
+        
+        XCTAssert(schema.parse("the number equal to 444") == Literal.integer(444))
+        
+    }
 
 }

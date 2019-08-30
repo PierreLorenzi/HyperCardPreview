@@ -26,8 +26,8 @@ class SchemasTests: XCTestCase {
         XCTAssert(schema.parse("unquoted") == Literal.string("unquoted"))
         XCTAssert(schema.parse("123") == Literal.integer(123))
         XCTAssert(schema.parse("00123") == Literal.integer(123))
-        XCTAssert(schema.parse("123.25") == Literal.floatingPoint(123.25))
-        XCTAssert(schema.parse("123.2500") == Literal.floatingPoint(123.25))
+        XCTAssert(schema.parse("123.25") == Literal.realNumber(123.25))
+        XCTAssert(schema.parse("123.2500") == Literal.realNumber(123.25))
     }
     
 }

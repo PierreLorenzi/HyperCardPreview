@@ -100,6 +100,23 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
         self.schema.appendSchema(schema, minCount: 0, maxCount: 1)
     }
     
+    public func appendInterpolation(maybe literal: String) {
+        
+        let stringSchema = Schema<Void>()
+        stringSchema.computeSequenceBy({ return () })
+        let string = HString(converting: literal)!
+        let tokens = TokenSequence(string)
+        
+        for token in tokens {
+            
+            stringSchema.appendTokenKind(filterBy: { (t: Token) -> Bool in
+                t == token
+            }, minCount: 1, maxCount: 1, isConstant: true)
+        }
+        
+        self.schema.appendSchema(stringSchema, minCount: 0, maxCount: 1)
+    }
+    
     public func appendInterpolation<U>(or schema: Schema<U>) {
         
         self.schema.appendBranchedSchema(schema)

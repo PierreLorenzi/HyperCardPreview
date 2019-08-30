@@ -309,7 +309,8 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     }
     
     override var isConstant: Bool {
-        return self.minCount == self.maxCount && self.schema.isConstant
+        /* Even if a constant can appear several times, we don't consider it an obvious variable */
+        return self.schema.isConstant
     }
     
     override func isSchema<V>(_ schema: Schema<V>) -> Bool {
@@ -376,7 +377,8 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     }
     
     override var isConstant: Bool {
-        return self._isConstant && self.minCount == self.maxCount
+        /* Even if a constant can appear several times, we don't consider it an obvious variable */
+        return self._isConstant
     }
     
     override func isSchema<U>(_ schema: Schema<U>) -> Bool {
