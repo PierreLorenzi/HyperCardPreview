@@ -1,8 +1,8 @@
 //
-//  ExistenceOperatorSchemas.swift
+//  UnaryOperatorSchemas.swift
 //  HyperCardCommon
 //
-//  Created by Pierre Lorenzi on 29/08/2019.
+//  Created by Pierre Lorenzi on 30/08/2019.
 //  Copyright © 2019 Pierre Lorenzi. All rights reserved.
 //
 
@@ -10,33 +10,29 @@
 public extension Schemas {
     
     
-    static let existenceOperator = Schema<ExistenceOperator>("\(not)\(or: and)")
+    static let unaryOperator = Schema<UnaryOperator>("\(parentheses)\(or: opposite)\(or: not)\(or: thereIs)\(or: thereIsNotA)")
     
     
     
-    static let isOfType1 = Schema<ExistenceOperator>("\(expression) is a \(expressionType)")
+    static let parentheses = Schema<Expression>("( \(expression) )")
         
-        .returns { ExistenceOperator.isOfType($0, $1) }
+        .returnsSingle { Expression.literal($0) }
     
-    static let isOfType2 = Schema<ExistenceOperator>("\(expression) is an \(expressionType)")
+    static let opposite = Schema<UnaryOperator>("- \(factor)")
         
-        .returns { ExistenceOperator.isOfType($0, $1) }
+        .returnsSingle { UnaryOperator.opposite($0) }
     
-    static let thereIs1 = Schema<ExistenceOperator>("there is a \(objectDescriptor)")
+    static let not = Schema<UnaryOperator>("not \(factor)")
         
-        .returnsSingle { ExistenceOperator.thereIs($0) }
+        .returnsSingle { UnaryOperator.not($0) }
     
-    static let thereIs2 = Schema<ExistenceOperator>("there is an \(objectDescriptor)")
+    static let thereIs = Schema<UnaryOperator>("there is \(either: "a", "an") \(objectDescriptor)")
         
-        .returnsSingle { ExistenceOperator.thereIs($0) }
+        .returnsSingle { UnaryOperator.thereIs($0) }
     
-    static let thereIsNotA1 = Schema<ExistenceOperator>("there is not a \(objectDescriptor)")
+    static let thereIsNotA = Schema<UnaryOperator>("there is not \(either: "a", "an") \(objectDescriptor)")
         
-        .returnsSingle { ExistenceOperator.thereIsNotA($0) }
-    
-    static let thereIsNotA2 = Schema<ExistenceOperator>("there is not an \(objectDescriptor)")
-        
-        .returnsSingle { ExistenceOperator.thereIsNotA($0) }
+        .returnsSingle { UnaryOperator.thereIsNotA($0) }
     
     // stub
     static let objectDescriptor = Schema<ObjectDescriptor>()

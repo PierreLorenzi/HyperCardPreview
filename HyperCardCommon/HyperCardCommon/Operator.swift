@@ -8,24 +8,30 @@
 
 
 public enum Operator {
-    case arithmetic(ArithmeticOperator)
-    case comparision(ComparisonOperator)
-    case logical(LogicalOperator)
-    case existenceOperator(ExistenceOperator)
+    
+    case unary(UnaryOperator)
+    case binary(BinaryOperator)
 }
 
-public enum ArithmeticOperator {
+public enum UnaryOperator {
+    
+    case parentheses(Expression) // ()
+    case opposite(Expression) // -
+    case not(Expression)  // not
+    case thereIs(ObjectDescriptor)  // is a, is an
+    case thereIsNotA(ObjectDescriptor)  // there is not a
+    
+}
+
+public enum BinaryOperator {
+    
     case addition(Expression, Expression)  // +
     case substraction(Expression, Expression)  // -
-    case opposite(Expression) // -
     case multiplication(Expression, Expression)  // *
     case division(Expression, Expression)  // /
     case exponentiation(Expression, Expression)  // ^
     case modulo(Expression, Expression)  // mod
     case integerDivision(Expression, Expression)  // div
-}
-
-public enum ComparisonOperator {
     case equal(Expression, Expression)  // =, is
     case unequal(Expression, Expression)  // ≠, <>, is not
     case lesserThan(Expression, Expression)  // <
@@ -37,18 +43,11 @@ public enum ComparisonOperator {
     case isNotIn(Expression, Expression)  // is not in
     case isWithin(Expression, Expression)  // is within
     case isNotWithin(Expression, Expression)  // is not within
-}
-
-public enum LogicalOperator {
-    case not(Expression)  // not
     case and(Expression, Expression)  // and
     case or(Expression, Expression)  // or
-}
-
-public enum ExistenceOperator {
     case isOfType(Expression, ExpressionType)  // is a, is an
-    case thereIs(ObjectDescriptor)  // is a, is an
-    case thereIsNotA(ObjectDescriptor)  // there is not a
+    case concatenation(Expression, Expression)   // &
+    case concatenationWithSpace(Expression, Expression)  // &&
 }
 
 public enum ExpressionType {
@@ -58,10 +57,5 @@ public enum ExpressionType {
     case rectangle
     case date
     case logical
-}
-
-public enum StringOperator {
-    case concatenation(Expression, Expression)   // &
-    case concatenationWithSpace(Expression, Expression)  // &&
 }
 
