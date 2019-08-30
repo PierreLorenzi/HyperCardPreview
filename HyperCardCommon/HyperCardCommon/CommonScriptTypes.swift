@@ -7,10 +7,6 @@
 //
 
 
-public struct Identifier: Equatable {
-    public var value: String
-}
-
 public enum Ordinal {
     case any
     case middle

@@ -11,7 +11,7 @@ public enum FlowStatement {
     
     case `do`(Expression, language: Expression)
     
-    case exit(handlerName: Identifier)
+    case exit(handlerName: HString)
     case exitRepeat
     case exitToHyperCard
     
@@ -21,14 +21,14 @@ public enum FlowStatement {
     
     case nextRepeat
     
-    case pass(handlerName: Identifier)
+    case pass(handlerName: HString)
     
     case `repeat`([Statement])
     case repeatTimes(Expression, [Statement])
     case repeatUntil(condition: Expression, [Statement])
     case repeatWhile(condition: Expression, [Statement])
-    case repeatWithCounter(counterName: Identifier, startValue: Expression, endValue: Expression, [Statement])
-    case repeatWithDownCounter(counterName: Identifier, startValue: Expression, endValue: Expression, [Statement])
+    case repeatWithCounter(counterName: HString, startValue: Expression, endValue: Expression, [Statement])
+    case repeatWithDownCounter(counterName: HString, startValue: Expression, endValue: Expression, [Statement])
     
     case `return`
     case returnExpression(Expression)

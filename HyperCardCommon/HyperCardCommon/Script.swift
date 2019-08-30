@@ -32,6 +32,6 @@ public enum Statement {
 }
 
 public struct MessageCall {
-    public var identifier: Identifier
+    public var identifier: HString
     public var arguments: [Expression]
 }

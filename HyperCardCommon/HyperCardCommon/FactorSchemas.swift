@@ -10,13 +10,15 @@
 public extension Schemas {
     
     
-    static let factor = Schema<Expression>("\(literal)\(or: unaryOperator)\(or: container)")
+    static let factor = Schema<Expression>("\(literal)\(or: unaryOperator)\(or: container)\(or: functionCall)")
     
         .when(literal) { Expression.literal($0) }
         
         .when(unaryOperator) { Expression.operator($0) }
         
         .when(container) { Expression.containerContent($0) }
+        
+        .when(functionCall) { Expression.functionCall($0) }
     
     // not finished
 }

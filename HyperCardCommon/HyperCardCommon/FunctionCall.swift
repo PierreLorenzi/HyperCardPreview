@@ -9,7 +9,7 @@
 
 public enum FunctionCall {
     
-    case custom(identifier: Identifier, arguments: [Expression])
+    case custom(identifier: HString, arguments: [Expression])
     
     case abs(Expression)
     case annuity(number1: Expression, number2: Expression)
