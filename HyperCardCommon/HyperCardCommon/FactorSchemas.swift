@@ -10,19 +10,11 @@
 public extension Schemas {
     
     
-    static let factor = Schema<Expression>("\(literalFactor)\(or: unaryOperatorFactor)\(or: containerFactor)")
+    static let factor = Schema<Expression>("\(literal)\(or: unaryOperator)\(or: containerDescriptor)")
     
-    
-    
-    static let literalFactor = Schema<Expression>("\(literal)")
-    
-        .returnsSingle { Expression.literal($0) }
-    
-    static let unaryOperatorFactor = Schema<Expression>("\(unaryOperator)")
+        .when(literal) { Expression.literal($0) }
         
-        .returnsSingle { Expression.operator(Operator.unary($0)) }
-    
-    static let containerFactor = Schema<Expression>("\(containerDescriptor)")
+        .when(unaryOperator) { Expression.operator($0) }
         
-        .returnsSingle { Expression.containerContent($0) }
+        .when(containerDescriptor) { Expression.containerContent($0) }
 }
