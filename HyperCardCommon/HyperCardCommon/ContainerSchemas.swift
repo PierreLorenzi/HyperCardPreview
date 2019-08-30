@@ -37,7 +37,7 @@ public extension Schemas {
     
     static let selectionDescriptor = Schema<ContainerDescriptor>("\(maybe: "the") selection")
         
-        .returns(ContainerDescriptor.messageBox)
+        .returns(ContainerDescriptor.selection)
     
     // stub
     static let buttonOrFieldDescriptor = Schema<ContainerDescriptor>()
