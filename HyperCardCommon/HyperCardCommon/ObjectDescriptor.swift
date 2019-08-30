@@ -8,6 +8,7 @@
 
 
 public enum ObjectDescriptor {
+    
     case window(WindowDescriptor)
     case menu(MenuDescriptor)
     case menuItem(MenuItemDescriptor)
@@ -22,8 +23,11 @@ public enum ObjectDescriptor {
     case hyperCardObject(HyperCardObjectDescriptor)
 }
 
-public typealias MenuDescriptor = StandardObjectDescriptor<Void>
-public typealias MenuItemDescriptor = StandardObjectDescriptor<MenuDescriptor>
+public struct NamedDescriptor {
+    var name: Expression
+}
+
+public typealias MenuDescriptor = HyperCardObjectIdentification
 public typealias FileDescriptor = NamedDescriptor
 public typealias DiskDescriptor = NamedDescriptor
 public typealias DocumentDescriptor = NamedDescriptor
@@ -31,22 +35,24 @@ public typealias ApplicationDescriptor = NamedDescriptor
 public typealias FolderDescriptor = NamedDescriptor
 public typealias ScriptingLanguageDescriptor = NamedDescriptor
 
-public struct NamedDescriptor {
-    public var name: Expression
+public struct MenuItemDescriptor {
+    
+    var identification: HyperCardObjectIdentification
+    var parentMenu: MenuDescriptor
 }
 
 public enum ProgramDescriptor {
-    case thisProgram
-    case programWithPath(Expression)
-    case programWithSignature(Expression)
+    
+    case currentProgram
+    case identification(HyperCardObjectIdentification)
 }
 
 public enum WindowDescriptor {
+    
     case currentCardWindow
-    case absolute(StandardObjectDescriptor<Void>)
+    case identification(HyperCardObjectIdentification)
 }
 
-public enum PictureDescriptor {
-    case cardPicture(CardDescriptor)
-    case backgroundPicture(BackgroundDescriptor)
+public struct PictureDescriptor {
+    var layer: LayerType
 }

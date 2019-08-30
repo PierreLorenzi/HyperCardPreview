@@ -109,7 +109,7 @@ public enum DeleteCommand {
     case deleteChunk(ChunkContainer)
     case deleteMenu(MenuDescriptor)
     case deleteMenuItem(MenuItemDescriptor)
-    case deleteButtonOfField(ButtonOrFieldDescriptor)
+    case deleteButtonOfField(PartDescriptor)
 }
 
 public enum EnabledOrDisabledObjet {
@@ -131,7 +131,7 @@ public enum ShownOrHiddenObjet {
     case titleBar
     case groups
     case picture(PictureDescriptor)
-    case buttonOrField(ButtonOrFieldDescriptor)
+    case buttonOrField(PartDescriptor)
     case window(WindowDescriptor)
 }
 
@@ -168,7 +168,7 @@ public enum PrintCommand {
     case printAllCards(fromPoint: Expression?, toPoint: Expression?)
     case printMarkedCards(fromPoint: Expression?, toPoint: Expression?)
     case printCards(count: Expression, fromPoint: Expression?, toPoint: Expression?)
-    case printButtonOrField(ButtonOrFieldDescriptor)
+    case printButtonOrField(PartDescriptor)
     case printFile(name: Expression, withApplicationName: Expression)
     case printExpression(Expression)
 }
@@ -214,7 +214,7 @@ public enum ResetCommand {
 
 public enum SelectCommand {
     case selectEmpty
-    case selectButtonOrField(ButtonOrFieldDescriptor)
+    case selectButtonOrField(PartDescriptor)
     case selectText(inContainer: ContainerDescriptor, atPosition: ContainerTargetPosition)
 }
 
@@ -223,7 +223,7 @@ public enum ShowCommand {
     case showAllCards
     case showMarkedCards
     case showCards(count: Expression)
-    case showButtonOrFieldAtPoint(ButtonOrFieldDescriptor, atPoint: Expression)
+    case showButtonOrFieldAtPoint(PartDescriptor, atPoint: Expression)
     case showWindowAtPoint(WindowDescriptor, atPoint: Expression)
 }
 

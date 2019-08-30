@@ -18,58 +18,55 @@ public enum HyperCardObjectDescriptor {
     case background(BackgroundDescriptor)
     case card(CardDescriptor)
     
-    case buttonOrField(ButtonOrFieldDescriptor)
+    case buttonOrField(PartDescriptor)
 }
-
-public enum ButtonOrFieldDescriptor {
-    case field(FieldDescriptor)
-    case button(ButtonDescriptor)
-    case part(PartDescriptor)
-}
-
-public typealias BackgroundDescriptor = LayerDescriptor<StackDescriptor>
-public typealias BackgroundCardDescriptor = LayerDescriptor<BackgroundDescriptor>
-public typealias StackCardDescriptor = LayerDescriptor<StackDescriptor>
-
-public typealias CardFieldDescriptor = StandardObjectDescriptor<CardDescriptor>
-public typealias BackgroundFieldDescriptor = StandardObjectDescriptor<BackgroundDescriptor>
-public typealias CardButtonDescriptor = StandardObjectDescriptor<CardDescriptor>
-public typealias BackgroundButtonDescriptor = StandardObjectDescriptor<BackgroundDescriptor>
-public typealias CardPartDescriptor = StandardObjectDescriptor<CardDescriptor>
-public typealias BackgroundPartDescriptor = StandardObjectDescriptor<BackgroundDescriptor>
 
 public enum StackDescriptor {
+    
     case current
     case withName(Expression)
 }
 
-public enum CardDescriptor {
-    case inBackground(BackgroundCardDescriptor)
-    case inStack(StackCardDescriptor)
-}
-
-public enum LayerDescriptor<ParentDescriptor> {
+public enum LayerDescriptor {
+    
     case relative(RelativeOrdinal)
-    case absolute(StandardObjectDescriptor<ParentDescriptor>)
+    case absolute(HyperCardObjectIdentification)
 }
 
-public enum ButtonDescriptor {
-    case inBackground(BackgroundButtonDescriptor)
-    case inCard(CardButtonDescriptor)
+public typealias BackgroundDescriptor = LayerDescriptor
+
+public struct CardDescriptor {
+    
+    var descriptor: LayerDescriptor
+    var parentBackground: LayerDescriptor?
 }
 
-public enum FieldDescriptor {
-    case inBackground(BackgroundFieldDescriptor)
-    case inCard(CardFieldDescriptor)
+public enum HyperCardObjectIdentification {
+    
+    case withOrdinal(Ordinal)
+    case withIdentifier(Expression)
+    case withName(Expression)
 }
 
-public enum PartDescriptor {
-    case inBackground(BackgroundPartDescriptor)
-    case inCard(CardPartDescriptor)
+public struct PartDescriptor {
+    
+    var type: PartDescriptorType
+    var typedPartDescriptor: TypedPartDescriptor
 }
 
-public enum StandardObjectDescriptor<ParentDescriptor> {
-    case withOrdinal(Ordinal, parent: ParentDescriptor)
-    case withIdentifier(Expression, parent: ParentDescriptor)
-    case withName(Expression, parent: ParentDescriptor)
+public typealias ButtonDescriptor = TypedPartDescriptor
+public typealias FieldDescriptor = TypedPartDescriptor
+
+public struct TypedPartDescriptor {
+    
+    var layer: LayerType
+    var identification: HyperCardObjectIdentification
+    var card: CardDescriptor
 }
+
+public enum PartDescriptorType {
+    case field
+    case button
+    case part
+}
+

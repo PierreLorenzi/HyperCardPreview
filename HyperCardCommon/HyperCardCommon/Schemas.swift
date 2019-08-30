@@ -23,9 +23,6 @@ public extension Schemas {
     /* Represents 'container', but used to avoid dependency cycles */
     static let containerAgain: Schema<ChunkContainer> = buildFakeSchema()
     
-    // Just a temporary stub
-    static let objectDescriptor: Schema<ObjectDescriptor> = buildFakeSchema()
-    
     static func finalizeSchemas() {
         
         /* Join the dependency cycles. It makes a strong dependency cycle but

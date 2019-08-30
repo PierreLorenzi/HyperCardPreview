@@ -24,11 +24,11 @@ public extension Schemas {
         
         .returnsSingle { Operator.not($0) }
     
-    static let thereIs = Schema<Operator>("there is \(either: "a", "an") \(objectDescriptor)")
+    static let thereIs = Schema<Operator>("there is \(either: "a", "an") \(object)")
         
         .returnsSingle { Operator.thereIs($0) }
     
-    static let thereIsNotA = Schema<Operator>("there is not \(either: "a", "an") \(objectDescriptor)")
+    static let thereIsNotA = Schema<Operator>("there is not \(either: "a", "an") \(object)")
         
         .returnsSingle { Operator.thereIsNotA($0) }
     

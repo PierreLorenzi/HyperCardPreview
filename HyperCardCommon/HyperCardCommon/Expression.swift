@@ -25,7 +25,7 @@ public enum Literal: Equatable {
 
 public indirect enum ContainerDescriptor {
     case variable(identifier: HString)
-    case buttonOrField(ButtonOrFieldDescriptor)
+    case part(PartDescriptor)
     case messageBox
     case selection
     case chunk(ChunkContainer)

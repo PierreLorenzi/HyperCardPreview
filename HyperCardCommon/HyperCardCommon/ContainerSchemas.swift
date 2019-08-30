@@ -10,7 +10,7 @@
 public extension Schemas {
     
     
-    static let container = Schema<ContainerDescriptor>("\(variable)\(or: buttonOrField)\(or: messageBox)\(or: selection)\(or: chunkContainer)")
+    static let container = Schema<ContainerDescriptor>("\(variable)\(or: part)\(or: messageBox)\(or: selection)\(or: chunkContainer)")
     
     
     
@@ -33,7 +33,7 @@ public extension Schemas {
         .returns(ContainerDescriptor.selection)
     
     // stub
-    static let buttonOrField = Schema<ContainerDescriptor>()
+    static let part = Schema<ContainerDescriptor>()
     
     static let chunkContainer = Schema<ContainerDescriptor>("\(chunk) \(containerAgain)")
     

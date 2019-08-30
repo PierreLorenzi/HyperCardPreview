@@ -80,4 +80,49 @@ public enum Vocabulary {
     
     static let backgroundFields = Schema<Void>("\(maybe: background) \(fields)")
         .returns(())
+    
+    static let line = Schema<Void>("line")
+        .returns(())
+    
+    static let lines = Schema<Void>("lines")
+        .returns(())
+    
+    static let item = Schema<Void>("item")
+        .returns(())
+    
+    static let items = Schema<Void>("items")
+        .returns(())
+    
+    static let word = Schema<Void>("word")
+        .returns(())
+    
+    static let words = Schema<Void>("words")
+        .returns(())
+    
+    static let character = Schema<Void>("\(either: "character", "char")")
+        .returns(())
+    
+    static let characters = Schema<Void>("\(either: "characters", "chars")")
+        .returns(())
+    
+    static let window = Schema<Void>("window")
+        .returns(())
+    
+    static let windows = Schema<Void>("windows")
+        .returns(())
+    
+    static let menu = Schema<Void>("menu")
+        .returns(())
+    
+    static let menus = Schema<Void>("menus")
+        .returns(())
+    
+    static let menuItem = Schema<Void>("menuItem")
+        .returns(())
+    
+    static let menuItems = Schema<Void>("menuItems")
+        .returns(())
+    
+    static let program = Schema<Void>("program")
+        .returns(())
 }

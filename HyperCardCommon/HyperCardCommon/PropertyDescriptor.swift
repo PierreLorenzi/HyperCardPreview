@@ -20,21 +20,21 @@ public enum IntrinsicProperty {
     case partProperty(PartialKeyPath<Part>, of: PartDescriptor)
     case fieldProperty(PartialKeyPath<Field>, of: FieldDescriptor)
     case buttonProperty(PartialKeyPath<Button>, of: ButtonDescriptor)
-    case menuBarProperty(PartialKeyPath<MenuBar>, of: ButtonDescriptor)
-    case menuProperty(PartialKeyPath<Menu>, of: ButtonDescriptor)
-    case menuItemProperty(PartialKeyPath<MenuItem>, of: ButtonDescriptor)
-    case windowProperty(PartialKeyPath<Window>, of: ButtonDescriptor)
-    case messageBoxProperty(PartialKeyPath<MessageBox>, of: ButtonDescriptor)
+    case menuBarProperty(PartialKeyPath<MenuBar>)
+    case menuProperty(PartialKeyPath<Menu>, of: MenuDescriptor)
+    case menuItemProperty(PartialKeyPath<MenuItem>, of: MenuItemDescriptor)
+    case windowProperty(PartialKeyPath<Window>, of: WindowDescriptor)
+    case messageBoxProperty(PartialKeyPath<MessageBox>)
 }
 
 public enum ExtrinsicProperty {
     case number(NumberProperty)
-    case partNumber(of: ButtonOrFieldDescriptor)
+    case partNumber(of: PartDescriptor)
     case chunk(ChunkProperty)
 }
 
 public enum NumberProperty {
-    case numberOfButtonOrField(ButtonOrFieldDescriptor)
+    case numberOfButtonOrField(PartDescriptor)
     case numberOfCard(CardDescriptor)
     case numberOfBackground(BackgroundDescriptor)
     case numberOfWindow(WindowDescriptor)
