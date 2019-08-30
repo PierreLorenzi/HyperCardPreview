@@ -17,15 +17,7 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         
         self.init()
         
-        let string = HString(stringLiteral: stringLiteral)
-        let tokens = TokenSequence(string)
-        
-        for token in tokens {
-            
-            self.appendTokenKind(filterBy: { (t: Token) -> Bool in
-                t == token
-            }, minCount: 1, maxCount: 1, isConstant: true)
-        }
+        fillSchemaWithLiteral(self, stringLiteral)
     }
     
     public convenience init(stringInterpolation: SchemaInterpolation) {
@@ -38,6 +30,19 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
         }
     }
     
+}
+
+private func fillSchemaWithLiteral<U>(_ schema: Schema<U>, _ literal: String) {
+    
+    let string = HString(stringLiteral: literal)
+    let tokens = TokenSequence(string)
+    
+    for token in tokens {
+        
+        schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
+            t == token
+        }, minCount: 1, maxCount: 1, isConstant: true)
+    }
 }
 
 public struct SchemaInterpolation: StringInterpolationProtocol {
@@ -74,47 +79,51 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     
     public func appendLiteral(_ literal: String) {
         
-        let string = HString(converting: literal)!
-        let tokens = TokenSequence(string)
-        
-        for token in tokens {
-            
-            self.schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
-                t == token
-            }, minCount: 1, maxCount: 1, isConstant: true)
-        }
+        fillSchemaWithLiteral(self.schema, literal)
     }
     
     public func appendInterpolation<U>(_ schema: Schema<U>) {
         
-        self.schema.appendSchema(schema, minCount: 1, maxCount: 1)
+        self.schema.appendSchema(schema, minCount: 1, maxCount: 1, isConstant: nil)
     }
     
     public func appendInterpolation<U>(multiple schema: Schema<U>, atLeast minCount: Int = 0, atMost maxCount: Int? = nil) {
         
-        self.schema.appendSchema(schema, minCount: minCount, maxCount: maxCount)
+        self.schema.appendSchema(schema, minCount: minCount, maxCount: maxCount, isConstant: nil)
     }
     
     public func appendInterpolation<U>(maybe schema: Schema<U>) {
         
-        self.schema.appendSchema(schema, minCount: 0, maxCount: 1)
+        self.schema.appendSchema(schema, minCount: 0, maxCount: 1, isConstant: nil)
     }
     
     public func appendInterpolation(maybe literal: String) {
         
         let stringSchema = Schema<Void>()
         stringSchema.computeSequenceBy({ return () })
-        let string = HString(converting: literal)!
-        let tokens = TokenSequence(string)
+        fillSchemaWithLiteral(stringSchema, literal)
         
-        for token in tokens {
+        self.schema.appendSchema(stringSchema, minCount: 0, maxCount: 1, isConstant: true)
+    }
+    
+    public func appendInterpolation(either literals: String...) {
+                
+        let schemas: [Schema<Void>] = literals.map { (literal: String) -> Schema<Void> in
             
-            stringSchema.appendTokenKind(filterBy: { (t: Token) -> Bool in
-                t == token
-            }, minCount: 1, maxCount: 1, isConstant: true)
+            let stringSchema = Schema<Void>()
+            stringSchema.computeSequenceBy({ return () })
+            fillSchemaWithLiteral(stringSchema, literal)
+            
+            return stringSchema
         }
         
-        self.schema.appendSchema(stringSchema, minCount: 0, maxCount: 1)
+        let parentSchema = Schema<Void>()
+        for schema in schemas {
+            
+            parentSchema.appendBranchedSchema(schema)
+        }
+        
+        self.schema.appendSchema(parentSchema, minCount: 1, maxCount: 1, isConstant: true)
     }
     
     public func appendInterpolation<U>(or schema: Schema<U>) {

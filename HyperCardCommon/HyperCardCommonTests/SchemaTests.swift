@@ -141,5 +141,18 @@ class SchemaTests: XCTestCase {
         XCTAssert(schema.parse("the number equal to 444") == Literal.integer(444))
         
     }
+    
+    func testEitherString() {
+        
+        let schema: Schema<Void> = "\(maybe: "the") \(either: "message", "msg") box"
+        schema.computeSequenceBy { return () }
+        
+        XCTAssert(schema.parse("the message box") != nil)
+        XCTAssert(schema.parse("the msg box") != nil)
+        XCTAssert(schema.parse("message box") != nil)
+        XCTAssert(schema.parse("msg box") != nil)
+        XCTAssert(schema.parse("") == nil)
+        XCTAssert(schema.parse("box") == nil)
+    }
 
 }

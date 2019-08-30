@@ -24,17 +24,13 @@ public enum Literal: Equatable {
 }
 
 public indirect enum ContainerDescriptor {
-    case variable(VariableDescriptor)
+    case variable(identifier: HString)
     case buttonOrField(ButtonOrFieldDescriptor)
     case messageBox
     case selection
     case chunk(ContainerChunk)
     
     // Menus are included in the doc but in fact there are just for the "put" command, which is a special case
-}
-
-public struct VariableDescriptor {
-    public var identifier: Identifier
 }
 
 

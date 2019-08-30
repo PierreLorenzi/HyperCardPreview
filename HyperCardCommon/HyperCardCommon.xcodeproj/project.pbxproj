@@ -50,6 +50,7 @@
 		6C89A2FE231408EF00F394D8 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F4231408EE00F394D8 /* Chunk.swift */; };
 		6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F5231408EF00F394D8 /* Operator.swift */; };
 		6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */; };
+		6C9DB5D92318A5F40030A556 /* ContainerSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */; };
 		6C9DF4D620C703DF0024F61B /* ResourceRepositoryLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */; };
 		6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D720C708A80024F61B /* MainRepository.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
@@ -445,6 +446,7 @@
 		6C89A2F4231408EE00F394D8 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
 		6C89A2F5231408EF00F394D8 /* Operator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
 		6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectDescriptor.swift; sourceTree = "<group>"; };
+		6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerSchemas.swift; sourceTree = "<group>"; };
 		6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRepositoryLoading.swift; sourceTree = "<group>"; };
 		6C9DF4D720C708A80024F61B /* MainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRepository.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
@@ -844,6 +846,7 @@
 				6CAA6BB42318523D00017C68 /* LogicalOperatorSchemas.swift */,
 				6CAA6BB6231852F900017C68 /* ExistenceOperatorSchemas.swift */,
 				6CAA6BB82318561300017C68 /* StringOperatorSchemas.swift */,
+				6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */,
 			);
 			name = Schemas;
 			sourceTree = "<group>";
@@ -1874,6 +1877,7 @@
 				6C1EF780231568F8001D5BB7 /* ArithmeticOperatorSchemas.swift in Sources */,
 				6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */,
 				6C89A2F9231408EF00F394D8 /* FunctionCall.swift in Sources */,
+				6C9DB5D92318A5F40030A556 /* ContainerSchemas.swift in Sources */,
 				6C89A2FD231408EF00F394D8 /* FlowStatement.swift in Sources */,
 				6C9E6B491E75BCFA00BBF925 /* VectorFontConverting.swift in Sources */,
 				6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */,

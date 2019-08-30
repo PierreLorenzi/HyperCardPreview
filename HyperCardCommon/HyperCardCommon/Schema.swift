@@ -46,9 +46,9 @@ public final class Schema<T> {
         self.sequenceElements.append(element)
     }
     
-    public func appendSchema<U>(_ schema: Schema<U>, minCount: Int, maxCount: Int?) {
+    public func appendSchema<U>(_ schema: Schema<U>, minCount: Int, maxCount: Int?, isConstant: Bool?) {
         
-        let element = TypedSchemaElement<T,U>(schema: schema, minCount: minCount, maxCount: maxCount)
+        let element = TypedSchemaElement<T,U>(schema: schema, minCount: minCount, maxCount: maxCount, isConstant: isConstant)
         
         self.sequenceElements.append(element)
     }
@@ -216,7 +216,7 @@ public final class Schema<T> {
         
         else {
             
-            let elements = [self.sequenceElements[0]] + self.branchElements
+            let elements = self.sequenceElements.isEmpty ? self.branchElements : [self.sequenceElements[0]] + self.branchElements
             
             let subSchemas: [MatchingSchema<T>] = elements.map { (element: SchemaElement<T>) -> MatchingSchema<T> in
                 
@@ -293,10 +293,12 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     private var schema: Schema<U>
     private var computeBranch: ((U) -> T)? = nil
+    private var _isConstant: Bool?
     
-    init(schema: Schema<U>, minCount: Int, maxCount: Int?) {
+    init(schema: Schema<U>, minCount: Int, maxCount: Int?, isConstant: Bool?) {
         
         self.schema = schema
+        self._isConstant = isConstant
         
         super.init(minCount: minCount, maxCount: maxCount, isSameType: T.self == U.self)
     }
@@ -309,8 +311,7 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     }
     
     override var isConstant: Bool {
-        /* Even if a constant can appear several times, we don't consider it an obvious variable */
-        return self.schema.isConstant
+        return self._isConstant ?? (self.schema.isConstant && self.minCount == self.maxCount)
     }
     
     override func isSchema<V>(_ schema: Schema<V>) -> Bool {
@@ -348,7 +349,7 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
         
-        return TypedSchemaElement<V,U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount)
+        return TypedSchemaElement<V,U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, isConstant: self._isConstant)
     }
     
     override func createSchemaSameType() -> MatchingSchema<T> {
