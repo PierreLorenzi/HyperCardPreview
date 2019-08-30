@@ -32,9 +32,6 @@ public extension Schemas {
         
         .returns(ContainerDescriptor.selection)
     
-    // stub
-    static let part = Schema<ContainerDescriptor>()
-    
     static let chunkContainer = Schema<ContainerDescriptor>("\(chunk) \(containerAgain)")
     
         .returns { ContainerDescriptor.chunk(ChunkContainer(container: $1, chunk: $0)) }

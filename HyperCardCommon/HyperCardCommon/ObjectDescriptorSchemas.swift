@@ -89,7 +89,7 @@ public extension Schemas {
 public extension Schemas {
     
     
-    static let menuItem = Schema<MenuItemDescriptor>("\(menuItemIdentification) \(of) \(menu)")
+    static let menuItem = Schema<MenuItemDescriptor>("\(menuItemIdentification) \(Vocabulary.of) \(menu)")
     
         .returns { MenuItemDescriptor(identification: $0, parentMenu: $1) }
     
@@ -134,12 +134,6 @@ public extension Schemas {
         return ProgramDescriptor.identification($0)
     }
     
-}
-
-fileprivate extension Schemas {
-    
-    static let of = Schema<Void>("\(either: "of", "in")")
-        .returns(())
 }
 
 public extension Schemas {

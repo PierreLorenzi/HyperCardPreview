@@ -18,7 +18,7 @@ public enum HyperCardObjectDescriptor {
     case background(BackgroundDescriptor)
     case card(CardDescriptor)
     
-    case buttonOrField(PartDescriptor)
+    case part(PartDescriptor)
 }
 
 public enum StackDescriptor {

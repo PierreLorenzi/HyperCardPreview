@@ -12,7 +12,7 @@ public extension Schemas {
     
     static let chunk = Schema<Chunk>("\(multiple: chunkExtraction)")
     
-    static let chunkExtraction = Schema<Chunk>("\(chunkElement) of")
+    static let chunkExtraction = Schema<Chunk>("\(chunkElement) \(Vocabulary.of)")
 }
 
 public extension Schemas {

@@ -125,4 +125,8 @@ public enum Vocabulary {
     
     static let program = Schema<Void>("program")
         .returns(())
+    
+    /* Used for 'card 2 of this bg' / 'card 2 in this bg' */
+    static let of = Schema<Void>("\(either: "of", "in")")
+        .returns(())
 }
