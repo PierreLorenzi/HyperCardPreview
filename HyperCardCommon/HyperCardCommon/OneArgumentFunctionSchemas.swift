@@ -120,29 +120,37 @@ public extension Schemas {
     static let countable = Schema<Countable>()
     
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let cardParts = Schema<Countable>("\(Vocabulary.cardParts)")
     
         .returns(Countable.parts(LayerType.card))
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let backgroundParts = Schema<Countable>("\(Vocabulary.backgroundParts)")
         
         .returns(Countable.parts(LayerType.background))
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let cardButtons = Schema<Countable>("\(Vocabulary.cardButtons)")
         
         .returns(Countable.buttons(LayerType.card))
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let backgroundButtons = Schema<Countable>("\(Vocabulary.backgroundButtons)")
         
         .returns(Countable.buttons(LayerType.background))
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let cardFields = Schema<Countable>("\(Vocabulary.cardFields)")
         
         .returns(Countable.fields(LayerType.card))
     
+    /* It doesn't accept a card descriptor, not event 'of this cd' */
     static let backgroundFields = Schema<Countable>("\(Vocabulary.backgroundFields)")
         
         .returns(Countable.fields(LayerType.background))
     
     // not finished
+    
+    // do not forget an expression schema at the end to explain: number of "card parts"
 }

@@ -85,10 +85,7 @@ public enum FunctionCall {
     case windows
 }
 
-// In fact the argument of 'number' is a string which is parsed,
-// for example the following works: the number of "cards in this stack"
-// or number("cards in this stack"), or even number(cards in this stack).
-// The last two notations can be intercepted.
+
 public enum Countable {
     
     case buttons(LayerType)
@@ -98,7 +95,7 @@ public enum Countable {
     case cardsInStack(StackDescriptor)
     case cardsInBackground(BackgroundDescriptor)
     case markedCards
-    case backgrounds
+    case backgrounds(StackDescriptor)
     
     case windows
     case menus
