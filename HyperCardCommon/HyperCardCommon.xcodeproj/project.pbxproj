@@ -361,6 +361,7 @@
 		6CB51D7A1F4F640A000C43D3 /* TestButtonProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D791F4F640A000C43D3 /* TestButtonProperties.stack */; };
 		6CB5ABAE2319243600082140 /* OneArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABAD2319243600082140 /* OneArgumentFunctionSchemas.swift */; };
 		6CB5ABB02319448500082140 /* Schemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABAF2319448500082140 /* Schemas.swift */; };
+		6CB5ABB22319513D00082140 /* VocabularySchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABB12319513D00082140 /* VocabularySchemas.swift */; };
 		6CC67B751F4F03840070195B /* TestManyCards.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CC67B741F4F03840070195B /* TestManyCards.stack */; };
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
@@ -761,6 +762,7 @@
 		6CB51D791F4F640A000C43D3 /* TestButtonProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestButtonProperties.stack; sourceTree = "<group>"; };
 		6CB5ABAD2319243600082140 /* OneArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
 		6CB5ABAF2319448500082140 /* Schemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemas.swift; sourceTree = "<group>"; };
+		6CB5ABB12319513D00082140 /* VocabularySchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularySchemas.swift; sourceTree = "<group>"; };
 		6CC67B741F4F03840070195B /* TestManyCards.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestManyCards.stack; sourceTree = "<group>"; };
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
@@ -843,6 +845,7 @@
 			isa = PBXGroup;
 			children = (
 				6CB5ABAF2319448500082140 /* Schemas.swift */,
+				6CB5ABB12319513D00082140 /* VocabularySchemas.swift */,
 				6C5E9291231541FC00054E46 /* LiteralSchemas.swift */,
 				6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */,
 				6C175D3C23190A48005882A8 /* BinaryOperatorSchemas.swift */,
@@ -1880,6 +1883,7 @@
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
 				6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */,
 				6C89A2FB231408EF00F394D8 /* PropertyDescriptor.swift in Sources */,
+				6CB5ABB22319513D00082140 /* VocabularySchemas.swift in Sources */,
 				6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */,
 				6C89A2F9231408EF00F394D8 /* FunctionCall.swift in Sources */,
 				6C9DB5D92318A5F40030A556 /* ContainerSchemas.swift in Sources */,

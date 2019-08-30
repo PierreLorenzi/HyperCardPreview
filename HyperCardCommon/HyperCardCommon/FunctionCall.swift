@@ -11,11 +11,11 @@ public enum FunctionCall {
     
     case custom(identifier: Identifier, arguments: [Expression])
     
-    case abs(number: Expression)
+    case abs(Expression)
     case annuity(number1: Expression, number2: Expression)
-    case atan(number: Expression)
+    case atan(Expression)
     case average(numberList: Expression)
-    case charToNum(character: Expression)
+    case charToNum(Expression)
     case clickChunk
     case clickH
     case clickV
@@ -24,22 +24,22 @@ public enum FunctionCall {
     case clickText
     case commandKey
     case compound(number1: Expression, number2: Expression)
-    case cos(number: Expression)
+    case cos(Expression)
     case date(exactness: Exactness?)
     case destination
     case diskSpace(diskName: Expression?)
-    case exp(number: Expression)
-    case exp1(number: Expression)
-    case exp2(number: Expression)
+    case exp(Expression)
+    case exp1(Expression)
+    case exp2(Expression)
     case foundChunk
     case foundField
     case foundLine
     case foundText
     case heapSpace
     case length(Expression)
-    case ln(number: Expression)
-    case log1(number: Expression)
-    case log2(number: Expression)
+    case ln(Expression)
+    case log1(Expression)
+    case log2(Expression)
     case max(numberList: Expression)
     case menus
     case min(numberList: Expression)
@@ -48,17 +48,17 @@ public enum FunctionCall {
     case mouseH
     case mouseV
     case mouseLoc
-    case number(NumberFunction)
-    case numToChar(number: Expression)
+    case number(Countable)
+    case numToChar(Expression)
     case offset(text1: Expression, text2: Expression)
     case optionKey
-    case param(number: Expression)
+    case param(Expression)
     case paramCount
     case params
     case programs(machineName: Expression?)
-    case random(number: Expression)
+    case random(Expression)
     case result
-    case round(number: Expression)
+    case round(Expression)
     case screenRect
     case seconds
     case selectedButton(ofFamilyWithNumber: Expression, inLayerWithType: LayerType)
@@ -68,20 +68,20 @@ public enum FunctionCall {
     case selectedLoc
     case selectedText
     case shiftKey
-    case sin(number: Expression)
+    case sin(Expression)
     case sound
-    case sqrt(number: Expression)
+    case sqrt(Expression)
     case stacks
     case stackSpace
     case sum(numberList: Expression)
     case systemVersion
-    case tan(number: Expression)
+    case tan(Expression)
     case target(exactness: Exactness?)
     case ticks
     case time(exactness: Exactness?)
     case tool
-    case trunc(number: Expression)
-    case value(of: Expression)
+    case trunc(Expression)
+    case value(Expression)
     case windows
 }
 
@@ -89,22 +89,22 @@ public enum FunctionCall {
 // for example the following works: the number of "cards in this stack"
 // or number("cards in this stack"), or even number(cards in this stack).
 // The last two notations can be intercepted.
-public enum NumberFunction {
+public enum Countable {
     
-    case numberOfButtons(inLayerWithType: LayerType)
-    case numberOfFields(inLayerWithType: LayerType)
-    case numberOfParts(inLayerWithType: LayerType)
+    case buttons(LayerType)
+    case fields(LayerType)
+    case parts(LayerType)
     
-    case numberOfMarkedCards
-    case numberOfCards
-    case numberOfCardsInBackground(BackgroundDescriptor)
-    case numberOfBackgrounds
+    case cardsInStack(StackDescriptor)
+    case cardsInBackground(BackgroundDescriptor)
+    case markedCards
+    case backgrounds
     
-    case numberOfWindows
-    case numberOfMenus
-    case numberOfMenuItems(inMenu: MenuDescriptor)
+    case windows
+    case menus
+    case menuItems(inMenu: MenuDescriptor)
     
-    case numberOfChunks(ChunkType, `in`: Expression)
+    case chunks(ChunkType, `in`: Expression)
 }
 
 public enum SelectedLineFunction {

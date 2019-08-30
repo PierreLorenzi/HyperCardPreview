@@ -25,6 +25,9 @@ public extension Schemas {
         appendOneArgumentFunction(exp1, to: schema)
         appendOneArgumentFunction(exp2, to: schema)
         appendOneArgumentFunction(length, to: schema)
+        appendOneArgumentFunction(ln, to: schema)
+        appendOneArgumentFunction(log1, to: schema)
+        appendOneArgumentFunction(log2, to: schema)
         
         return schema
     }
@@ -55,37 +58,37 @@ public extension Schemas {
     
     private static let abs = OneArgumentFunction<Expression>(name: "abs", argumentSchema: expressionAgain) {
         
-        FunctionCall.abs(number: $0)
+        FunctionCall.abs($0)
     }
     
     private static let atan = OneArgumentFunction<Expression>(name: "atan", argumentSchema: expressionAgain) {
         
-        FunctionCall.atan(number: $0)
+        FunctionCall.atan($0)
     }
     
     private static let charToNum = OneArgumentFunction<Expression>(name: "charToNum", argumentSchema: expressionAgain) {
         
-        FunctionCall.charToNum(character: $0)
+        FunctionCall.charToNum($0)
     }
     
     private static let cos = OneArgumentFunction<Expression>(name: "cos", argumentSchema: expressionAgain) {
         
-        FunctionCall.cos(number: $0)
+        FunctionCall.cos($0)
     }
     
     private static let exp = OneArgumentFunction<Expression>(name: "exp", argumentSchema: expressionAgain) {
         
-        FunctionCall.exp(number: $0)
+        FunctionCall.exp($0)
     }
     
     private static let exp1 = OneArgumentFunction<Expression>(name: "exp1", argumentSchema: expressionAgain) {
         
-        FunctionCall.exp1(number: $0)
+        FunctionCall.exp1($0)
     }
     
     private static let exp2 = OneArgumentFunction<Expression>(name: "exp2", argumentSchema: expressionAgain) {
         
-        FunctionCall.exp2(number: $0)
+        FunctionCall.exp2($0)
     }
     
     private static let length = OneArgumentFunction<Expression>(name: "length", argumentSchema: expressionAgain) {
@@ -93,5 +96,53 @@ public extension Schemas {
         FunctionCall.length($0)
     }
     
+    private static let ln = OneArgumentFunction<Expression>(name: "ln", argumentSchema: expressionAgain) {
+        
+        FunctionCall.ln($0)
+    }
     
+    private static let log1 = OneArgumentFunction<Expression>(name: "log1", argumentSchema: expressionAgain) {
+        
+        FunctionCall.log1($0)
+    }
+    
+    private static let log2 = OneArgumentFunction<Expression>(name: "log2", argumentSchema: expressionAgain) {
+        
+        FunctionCall.log2($0)
+    }
+    
+    
+}
+
+public extension Schemas {
+    
+    
+    static let countable = Schema<Countable>()
+    
+    
+    static let cardParts = Schema<Countable>("\(Vocabulary.cardParts)")
+    
+        .returns(Countable.parts(LayerType.card))
+    
+    static let backgroundParts = Schema<Countable>("\(Vocabulary.backgroundParts)")
+        
+        .returns(Countable.parts(LayerType.background))
+    
+    static let cardButtons = Schema<Countable>("\(Vocabulary.cardButtons)")
+        
+        .returns(Countable.buttons(LayerType.card))
+    
+    static let backgroundButtons = Schema<Countable>("\(Vocabulary.backgroundButtons)")
+        
+        .returns(Countable.buttons(LayerType.background))
+    
+    static let cardFields = Schema<Countable>("\(Vocabulary.cardFields)")
+        
+        .returns(Countable.fields(LayerType.card))
+    
+    static let backgroundFields = Schema<Countable>("\(Vocabulary.backgroundFields)")
+        
+        .returns(Countable.fields(LayerType.background))
+    
+    // not finished
 }
