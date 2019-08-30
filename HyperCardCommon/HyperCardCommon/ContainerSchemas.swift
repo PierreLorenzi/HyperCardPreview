@@ -20,13 +20,6 @@ public extension Schemas {
         guard case Token.word(let identifier) = token else {
             return nil
         }
-        guard identifier[0].isLetter() else {
-            return nil
-        }
-        guard (1..<identifier.length).allSatisfy({ identifier[$0].isAlphaNumeric() }) else {
-            
-            return nil
-        }
         
         return ContainerDescriptor.variable(identifier: identifier)
     }
