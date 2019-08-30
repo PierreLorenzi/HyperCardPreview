@@ -192,7 +192,7 @@ public extension Schemas {
 public extension Schemas {
     
     
-    static let exactness = Schema<Exactness>()
+    static let exactness = Schema<Exactness>("\(longExactness)\(or: shortExactness)\(or: abbreviatedExactness)\(or: englishExactness)")
     
     
     
