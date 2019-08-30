@@ -111,6 +111,9 @@ public extension Schemas {
         FunctionCall.log2($0)
     }
     
+    // not finished
+    
+    // you forgot diskSpace
     
 }
 
