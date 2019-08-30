@@ -17,9 +17,15 @@ public struct ChunkContainer: Equatable {
     public var chunk: Chunk
 }
 
-public struct Chunk: Equatable {
+public struct ChunkElement: Equatable {
     public var type: ChunkType
     public var number: ChunkNumber
+}
+
+public struct Chunk: Equatable {
+    
+    /* Ordered from smallest to greatest */
+    public var elements: [ChunkElement]
 }
 
 public enum ChunkType: Equatable {

@@ -12,6 +12,8 @@ public extension Schemas {
     
     static let container = Schema<ContainerDescriptor>("\(variable)\(or: part)\(or: messageBox)\(or: selection)\(or: chunkContainer)")
     
+        .when(part) { ContainerDescriptor.part($0) }
+    
     
     
     static let variable = Schema<ContainerDescriptor> { (token: Token) -> ContainerDescriptor? in

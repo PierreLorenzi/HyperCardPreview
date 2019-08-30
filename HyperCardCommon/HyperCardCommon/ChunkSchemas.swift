@@ -12,13 +12,15 @@ public extension Schemas {
     
     static let chunk = Schema<Chunk>("\(multiple: chunkExtraction)")
     
-    static let chunkExtraction = Schema<Chunk>("\(chunkElement) \(Vocabulary.of)")
+        .returnsSingle { Chunk(elements: $0) }
+    
+    static let chunkExtraction = Schema<ChunkElement>("\(chunkElement) \(Vocabulary.of)")
 }
 
 public extension Schemas {
     
     
-    static let chunkElement = Schema<Chunk>("\(lineChunkElement)\(or: itemChunkElement)\(or: wordChunkElement)\(or: characterChunkElement)")
+    static let chunkElement = Schema<ChunkElement>("\(lineChunkElement)\(or: itemChunkElement)\(or: wordChunkElement)\(or: characterChunkElement)")
     
     
     
@@ -31,20 +33,20 @@ public extension Schemas {
     static let characterChunkElement = buildChunkElementSchema(type: ChunkType.character, typeName: Vocabulary.character)
     
     
-    private static func buildChunkElementSchema(type: ChunkType, typeName: Schema<Void>) -> Schema<Chunk> {
+    private static func buildChunkElementSchema(type: ChunkType, typeName: Schema<Void>) -> Schema<ChunkElement> {
         
         /* Schema for 'the second line' or 'line 2' */
-        let ordinalSchema: Schema<Chunk> = buildOrdinalIdentification(typeName: typeName) {
+        let ordinalSchema: Schema<ChunkElement> = buildOrdinalIdentification(typeName: typeName) {
             
-            return Chunk(type: type, number: ChunkNumber.single($0))
+            return ChunkElement(type: type, number: ChunkNumber.single($0))
         }
         
         /* Schema for 'line 2 to 4' */
-        let rangeElement = Schema<Chunk>("\(typeName) \(expressionAgain) to \(expressionAgain)")
+        let rangeElement = Schema<ChunkElement>("\(typeName) \(expressionAgain) to \(expressionAgain)")
             
-            .returns { Chunk(type: type, number: ChunkNumber.range(ChunkNumberRange(minimumNumber: $0, maximumNumber: $1))) }
+            .returns { ChunkElement(type: type, number: ChunkNumber.range(ChunkNumberRange(minimumNumber: $0, maximumNumber: $1))) }
         
-        let schema = Schema<Chunk>("\(ordinalSchema)\(or: rangeElement)")
+        let schema = Schema<ChunkElement>("\(ordinalSchema)\(or: rangeElement)")
         
         return schema
     }

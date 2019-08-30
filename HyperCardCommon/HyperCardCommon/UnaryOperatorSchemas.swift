@@ -16,6 +16,8 @@ public extension Schemas {
     
     static let parentheses = Schema<Operator>("( \(expressionAgain) )")
     
+        .returnsSingle { Operator.parentheses($0) }
+    
     static let opposite = Schema<Operator>("- \(factorAgain)")
         
         .returnsSingle { Operator.opposite($0) }

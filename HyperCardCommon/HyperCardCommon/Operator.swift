@@ -9,6 +9,8 @@
 
 public enum Operator: Equatable {
     
+    case parentheses(Expression)  // ( )
+    
     /* Arithmetic Operators */
     case addition(Expression, Expression)  // +
     case substraction(Expression, Expression)  // -

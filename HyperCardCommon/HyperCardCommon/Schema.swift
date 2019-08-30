@@ -331,9 +331,10 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     override func createSubSchema() -> SubSchema<T> {
         
-        let matchingSchema = self.schema.buildMatchingSchema()
+        let schema = self.schema
+        let loadSchema = { () -> MatchingSchema<U> in schema.matchingSchema }
         
-        return TypedSubSchema<T,U>(schema: matchingSchema, minCount: self.minCount, maxCount: self.maxCount)
+        return TypedSubSchema<T,U>(loadSchema: loadSchema, minCount: self.minCount, maxCount: self.maxCount)
     }
     
     override func computeAsBranchWith<V>(_ compute: @escaping (V) -> T) {
@@ -398,9 +399,10 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
     
     override func createSubSchema() -> SubSchema<T> {
         
-        let matchingSchema = TokenSchema(checkTokenValid: self.tokenFilter)
+        let tokenFilter = self.tokenFilter
+        let loadSchema = { () -> MatchingSchema<Token> in TokenSchema(checkTokenValid: tokenFilter) }
         
-        return TypedSubSchema<T,Token>(schema: matchingSchema, minCount: self.minCount, maxCount: self.maxCount)
+        return TypedSubSchema<T,Token>(loadSchema: loadSchema, minCount: self.minCount, maxCount: self.maxCount)
     }
     
     override func computeAsBranchWith<V>(_ compute: @escaping (V) -> T) {
@@ -506,18 +508,18 @@ private class SubSchema<T> {
 
 private class TypedSubSchema<T,U>: SubSchema<T> {
     
-    private let schema: MatchingSchema<U>
+    private let schemaProperty: Property<MatchingSchema<U>>
     
-    init(schema: MatchingSchema<U>, minCount: Int, maxCount: Int?) {
+    init(loadSchema: @escaping () -> MatchingSchema<U>, minCount: Int, maxCount: Int?) {
         
-        self.schema = schema
+        self.schemaProperty = Property(lazy: loadSchema)
         
         super.init(minCount: minCount, maxCount: maxCount)
     }
     
     override func buildSubMatcher() -> SubMatcher<T> {
         
-        let matcher = schema.buildMatcher()
+        let matcher = self.schemaProperty.value.buildMatcher()
         
         return TypedSubMatcher<T, U>(matcher: matcher)
     }

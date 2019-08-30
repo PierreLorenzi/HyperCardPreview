@@ -26,4 +26,6 @@ public extension Schemas {
     
     
     static let chunkExpression = Schema<ChunkExpression>("\(chunk) \(factorAgain)")
+    
+        .returns { ChunkExpression(expression: $1, chunk: $0) }
 }
