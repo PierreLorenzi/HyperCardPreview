@@ -23,7 +23,6 @@ public enum Vocabulary {
     
     static let cards = Schema<Void>("\(either: "cards", "cds")")
         .returns(())
-        .returns(())
     
     static let markedCards = Schema<Void>("marked \(cards)")
         .returns(())
@@ -35,12 +34,16 @@ public enum Vocabulary {
         .returns(())
     
     static let cardPart = Schema<Void>("\(maybe: card) \(part)")
+        .returns(())
     
     static let cardParts = Schema<Void>("\(maybe: card) \(parts)")
+        .returns(())
     
     static let backgroundPart = Schema<Void>("\(background) \(part)")
+        .returns(())
     
     static let backgroundParts = Schema<Void>("\(background) \(parts)")
+        .returns(())
     
     static let button = Schema<Void>("\(either: "button", "btn")")
         .returns(())
@@ -49,21 +52,28 @@ public enum Vocabulary {
         .returns(())
     
     static let cardButton = Schema<Void>("\(maybe: card) \(button)")
+        .returns(())
     
     static let cardButtons = Schema<Void>("\(maybe: card) \(buttons)")
+        .returns(())
     
     static let backgroundButton = Schema<Void>("\(background) \(button)")
+        .returns(())
     
     static let backgroundButtons = Schema<Void>("\(background) \(buttons)")
+        .returns(())
     
     static let field = Schema<Void>("\(either: "field", "fld")")
+        .returns(())
     
     static let fields = Schema<Void>("\(either: "fields", "flds")")
         .returns(())
     
     static let cardField = Schema<Void>("\(card) \(field)")
+        .returns(())
     
     static let cardFields = Schema<Void>("\(card) \(fields)")
+        .returns(())
     
     static let backgroundField = Schema<Void>("\(maybe: background) \(field)")
         .returns(())
