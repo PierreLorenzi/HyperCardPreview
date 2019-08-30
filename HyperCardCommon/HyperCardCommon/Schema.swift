@@ -181,7 +181,7 @@ public final class Schema<T> {
         
         let tokens = TokenSequence(string)
         let schema = self.matchingSchema
-        let matcher = schema.buildMatcher()
+        let matcher = schema.buildMatcher(parent: nil)
         
         for token in tokens {
             
@@ -444,12 +444,19 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
 
 private class MatchingSchema<T> {
     
-    func buildMatcher() -> Matcher<T> {
+    func buildMatcher(parent: MatcherLink?) -> Matcher<T> {
         fatalError()
     }
 }
 
-private class Matcher<T> {
+protocol MatcherLink {
+    
+    var parent: MatcherLink? { get }
+    
+    var schema: AnyObject { get }
+}
+
+private class Matcher<T>: MatcherLink {
     
     var canContinue: Bool
     var resultParsed: T?
@@ -458,10 +465,15 @@ private class Matcher<T> {
         fatalError()
     }
     
-    init(initialCanContinue: Bool, initialResultParsed: T?) {
+    let parent: MatcherLink?
+    let schema: AnyObject
+    
+    init(initialCanContinue: Bool, initialResultParsed: T?, parent: MatcherLink?, schema: AnyObject) {
         
         self.canContinue = initialCanContinue
         self.resultParsed = initialResultParsed
+        self.parent = parent
+        self.schema = schema
     }
 }
 
@@ -476,9 +488,9 @@ private class SequenceSchema<T>: MatchingSchema<T> {
         self.initialComputation = initialComputation
     }
     
-    override func buildMatcher() -> Matcher<T> {
+    override func buildMatcher(parent: MatcherLink?) -> Matcher<T> {
         
-        return SequenceMatcher<T>(subSchemas: self.subSchemas, initialComputation: self.initialComputation)
+        return SequenceMatcher<T>(subSchemas: self.subSchemas, initialComputation: self.initialComputation, parent: parent, schema: self)
     }
 }
 
@@ -493,7 +505,7 @@ private class SubSchema<T> {
         self.maxCount = maxCount
     }
     
-    func buildSubMatcher() -> SubMatcher<T> {
+    func buildSubMatcher(parent: MatcherLink?) -> SubMatcher<T> {
         fatalError()
     }
     
@@ -517,11 +529,23 @@ private class TypedSubSchema<T,U>: SubSchema<T> {
         super.init(minCount: minCount, maxCount: maxCount)
     }
     
-    override func buildSubMatcher() -> SubMatcher<T> {
+    override func buildSubMatcher(parent: MatcherLink?) -> SubMatcher<T> {
         
-        let matcher = self.schemaProperty.value.buildMatcher()
+        let schema = self.schemaProperty.value
         
-        return TypedSubMatcher<T, U>(matcher: matcher)
+        /* Cycle check: check that the same schema is not already being parsed */
+        var possibleLink = parent
+        while let link = possibleLink {
+            if link.schema === schema {
+                let sameMatcher = (link as! Matcher<U>)
+                return TypedSubMatcher<T, U>(matcher: sameMatcher, isCycle: true)
+            }
+            possibleLink = link.parent
+        }
+        
+        let matcher = schema.buildMatcher(parent: parent)
+        
+        return TypedSubMatcher<T, U>(matcher: matcher, isCycle: false)
     }
     
     override func integrateResult(from subMatcher: SubMatcher<T>, in computation: inout ResultComputation<T>, at index: Int) {
@@ -586,15 +610,17 @@ private class SubMatcher<T> {
     
     var canContinue: Bool
     var hasResult: Bool
+    let isCycle: Bool
     
     func matchNextToken(_: Token) {
         fatalError()
     }
     
-    init(initialCanContinue: Bool, initialHasResult: Bool) {
+    init(initialCanContinue: Bool, initialHasResult: Bool, isCycle: Bool) {
         
         self.canContinue = initialCanContinue
         self.hasResult = initialHasResult
+        self.isCycle = isCycle
     }
 }
 
@@ -602,12 +628,12 @@ private class TypedSubMatcher<T, U>: SubMatcher<T> {
     
     private let matcher: Matcher<U>
     
-    init(matcher: Matcher<U>) {
+    init(matcher: Matcher<U>, isCycle: Bool) {
         
         self.matcher = matcher
         
         /* Init status */
-        super.init(initialCanContinue: matcher.canContinue, initialHasResult: matcher.resultParsed != nil)
+        super.init(initialCanContinue: matcher.canContinue, initialHasResult: matcher.resultParsed != nil, isCycle: isCycle)
     }
     
     var resultParsed: U? {
@@ -616,7 +642,10 @@ private class TypedSubMatcher<T, U>: SubMatcher<T> {
     
     override func matchNextToken(_ token: Token) {
         
-        self.matcher.matchNextToken(token)
+        if !self.isCycle {
+            
+            self.matcher.matchNextToken(token)
+        }
         
         self.canContinue = self.matcher.canContinue
         self.hasResult = self.matcher.resultParsed != nil
@@ -638,6 +667,7 @@ private class SequenceMatcher<T>: Matcher<T> {
     
     private var branches: [Branch]
     private let subSchemas: [SubSchema<T>]
+    private var isNew: Bool
     
     private struct Branch {
         
@@ -648,15 +678,16 @@ private class SequenceMatcher<T>: Matcher<T> {
         var isNew: Bool
     }
     
-    init(subSchemas: [SubSchema<T>], initialComputation: ResultComputation<T>) {
+    init(subSchemas: [SubSchema<T>], initialComputation: ResultComputation<T>, parent: MatcherLink?, schema: AnyObject) {
         
         self.branches = []
         self.subSchemas = subSchemas
+        self.isNew = false
         
-        super.init(initialCanContinue: false, initialResultParsed: nil)
+        super.init(initialCanContinue: false, initialResultParsed: nil, parent: parent, schema: schema)
         
         /* Add the first branch */
-        let initialSubMatcher = subSchemas[0].buildSubMatcher()
+        let initialSubMatcher = subSchemas[0].buildSubMatcher(parent: self)
         let firstBranch = Branch(subMatcher: initialSubMatcher, computation: initialComputation, subSchemaIndex: 0, occurenceIndex: 0, isNew: true)
         self.branches.append(firstBranch)
         
@@ -665,6 +696,8 @@ private class SequenceMatcher<T>: Matcher<T> {
     }
     
     override func matchNextToken(_ token: Token) {
+        
+        self.isNew = false
         
         for i in 0..<self.branches.count {
             
@@ -764,7 +797,7 @@ private class SequenceMatcher<T>: Matcher<T> {
         }
         
         /* Build the branch */
-        let newSubMatcher = subSchema.buildSubMatcher()
+        let newSubMatcher = subSchema.buildSubMatcher(parent: self.isNew ? self : nil)
         let newBranch = Branch(subMatcher: newSubMatcher, computation: computation, subSchemaIndex: branch.subSchemaIndex, occurenceIndex: newOccurrenceIndex, isNew: true)
         
         self.branches.insert(newBranch, at: insertionIndex)
@@ -795,7 +828,7 @@ private class SequenceMatcher<T>: Matcher<T> {
         
         /* Build the branch */
         let newSubSchema = self.subSchemas[newSubSchemaIndex]
-        let newSubMatcher = newSubSchema.buildSubMatcher()
+        let newSubMatcher = newSubSchema.buildSubMatcher(parent: self.isNew ? self : nil)
         let newBranch = Branch(subMatcher: newSubMatcher, computation: computation, subSchemaIndex: newSubSchemaIndex, occurenceIndex: 0, isNew: true)
         
         self.branches.insert(newBranch, at: insertionIndex)
@@ -813,11 +846,11 @@ private class ChoiceSchema<T>: MatchingSchema<T> {
         self.choices = choices
     }
     
-    override func buildMatcher() -> Matcher<T> {
+    override func buildMatcher(parent: MatcherLink?) -> Matcher<T> {
         
-        let matchers: [Matcher<T>] = self.choices.map({ $0.buildMatcher() })
+        let matchers: [Matcher<T>] = self.choices.map({ $0.buildMatcher(parent: parent) })
         
-        return ChoiceMatcher<T>(matchers: matchers)
+        return ChoiceMatcher<T>(matchers: matchers, parent: parent, schema: self)
     }
 }
 
@@ -825,11 +858,11 @@ private class ChoiceMatcher<T>: Matcher<T> {
     
     private var matchers: [Matcher<T>]
     
-    init(matchers: [Matcher<T>]) {
+    init(matchers: [Matcher<T>], parent: MatcherLink?, schema: AnyObject) {
         
         self.matchers = matchers
         
-        super.init(initialCanContinue: false, initialResultParsed: nil)
+        super.init(initialCanContinue: false, initialResultParsed: nil, parent: parent, schema: schema)
         
         updateState()
     }
@@ -879,9 +912,9 @@ private class TokenSchema: MatchingSchema<Token> {
         self.checkTokenValid = checkTokenValid
     }
     
-    override func buildMatcher() -> Matcher<Token> {
+    override func buildMatcher(parent: MatcherLink?) -> Matcher<Token> {
         
-        return TokenMatcher(checkTokenValid: self.checkTokenValid)
+        return TokenMatcher(checkTokenValid: self.checkTokenValid, parent: parent, schema: self)
     }
 }
 
@@ -889,11 +922,11 @@ private class TokenMatcher: Matcher<Token> {
     
     private let checkTokenValid: (Token) -> Bool
     
-    init(checkTokenValid: @escaping (Token) -> Bool) {
+    init(checkTokenValid: @escaping (Token) -> Bool, parent: MatcherLink?, schema: AnyObject) {
         
         self.checkTokenValid = checkTokenValid
         
-        super.init(initialCanContinue: true, initialResultParsed: nil)
+        super.init(initialCanContinue: true, initialResultParsed: nil, parent: parent, schema: schema)
     }
     
     override func matchNextToken(_ token: Token) {
