@@ -15,7 +15,7 @@ public enum FlowStatement {
     case exitRepeat
     case exitToHyperCard
     
-    case global([Identifier])
+    case global(identifiers: [HString])
     
     case `if`([Condition], else: [Statement])
     

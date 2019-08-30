@@ -7,13 +7,19 @@
 //
 
 
-public typealias ContainerChunk = Chunk<ContainerDescriptor>
-public typealias ExpressionChunk = Chunk<Expression>
+public struct ChunkExpression {
+    public var expression: Expression
+    public var chunk: Chunk
+}
 
-public struct Chunk<Parent> {
+public struct ChunkContainer {
+    public var container: ContainerDescriptor
+    public var chunk: Chunk
+}
+
+public struct Chunk {
     public var type: ChunkType
     public var number: ChunkNumber
-    public var parent: Parent
 }
 
 public enum ChunkType {

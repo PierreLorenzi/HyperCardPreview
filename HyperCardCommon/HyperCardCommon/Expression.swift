@@ -13,7 +13,7 @@ public indirect enum Expression {
     case containerContent(ContainerDescriptor)
     case functionCall(FunctionCall)
     case property(PropertyDescriptor)
-    case chunk(ExpressionChunk)
+    case chunk(ChunkExpression)
 }
 
 public enum Literal: Equatable {
@@ -28,7 +28,7 @@ public indirect enum ContainerDescriptor {
     case buttonOrField(ButtonOrFieldDescriptor)
     case messageBox
     case selection
-    case chunk(ContainerChunk)
+    case chunk(ChunkContainer)
     
     // Menus are included in the doc but in fact there are just for the "put" command, which is a special case
 }

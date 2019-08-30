@@ -20,6 +20,9 @@ public extension Schemas {
     /* Represents 'expression', but used to avoid dependency cycles */
     static let expressionAgain: Schema<Expression> = buildFakeSchema()
     
+    /* Represents 'container', but used to avoid dependency cycles */
+    static let containerAgain: Schema<ChunkContainer> = buildFakeSchema()
+    
     // Just a temporary stub
     static let objectDescriptor: Schema<ObjectDescriptor> = buildFakeSchema()
     

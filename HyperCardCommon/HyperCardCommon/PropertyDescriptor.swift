@@ -41,7 +41,7 @@ public enum NumberProperty {
 }
 
 public enum ChunkProperty {
-    case textFont(of: Chunk<FieldDescriptor>)
-    case textSize(of: Chunk<FieldDescriptor>)
-    case textStyle(of: Chunk<FieldDescriptor>)
+    case textFont(of: ChunkContainer)
+    case textSize(of: ChunkContainer)
+    case textStyle(of: ChunkContainer)
 }

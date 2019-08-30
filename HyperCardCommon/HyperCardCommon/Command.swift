@@ -106,7 +106,7 @@ public enum CreateCommand {
 }
 
 public enum DeleteCommand {
-    case deleteChunk(ContainerChunk)
+    case deleteChunk(ChunkContainer)
     case deleteMenu(MenuDescriptor)
     case deleteMenuItem(MenuItemDescriptor)
     case deleteButtonOfField(ButtonOrFieldDescriptor)

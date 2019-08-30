@@ -20,11 +20,11 @@ public extension Schemas {
     
         .returns { FunctionCall.custom(identifier: $0, arguments: $1) }
     
-    private static let argumentList = Schema<[Expression]>("\(expression) \(multiple: supplementaryArgument)")
+    private static let argumentList = Schema<[Expression]>("\(expressionAgain) \(multiple: supplementaryArgument)")
     
         .returns { [$0] + $1 }
     
-    private static let supplementaryArgument = Schema<Expression>(", \(expression)")
+    private static let supplementaryArgument = Schema<Expression>(", \(expressionAgain)")
     
     static let identifier = Schema<HString> { (token: Token) -> HString? in
         

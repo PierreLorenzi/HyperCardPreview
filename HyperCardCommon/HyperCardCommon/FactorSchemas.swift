@@ -10,7 +10,7 @@
 public extension Schemas {
     
     
-    static let factor = Schema<Expression>("\(literal)\(or: unaryOperator)\(or: container)\(or: functionCall)")
+    static let factor = Schema<Expression>("\(literal)\(or: unaryOperator)\(or: container)\(or: functionCall)\(or: chunkExpression)")
     
         .when(literal) { Expression.literal($0) }
         
@@ -19,6 +19,11 @@ public extension Schemas {
         .when(container) { Expression.containerContent($0) }
         
         .when(functionCall) { Expression.functionCall($0) }
+        
+        .when(chunkExpression) { Expression.chunk($0) }
     
     // not finished
+    
+    
+    static let chunkExpression = Schema<ChunkExpression>("\(chunk) \(factorAgain)")
 }
