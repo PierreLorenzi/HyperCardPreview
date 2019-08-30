@@ -7,6 +7,7 @@
 //
 
 
+/// The HyperTalk schemas for parsing
 public enum Schemas {
     
 }
@@ -18,9 +19,6 @@ public extension Schemas {
     
     /* Represents 'expression', but used to avoid dependency cycles */
     static let expressionAgain: Schema<Expression> = buildFakeSchema()
-    
-    // Just a temporary stub
-    static let expression: Schema<Expression> = buildFakeSchema()
     
     // Just a temporary stub
     static let objectDescriptor: Schema<ObjectDescriptor> = buildFakeSchema()
