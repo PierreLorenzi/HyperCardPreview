@@ -10,11 +10,11 @@
 public extension Schemas {
     
     
-    static let containerDescriptor = Schema<ContainerDescriptor>("\(variableDescriptor)\(or: buttonOrFieldDescriptor)\(or: messageBoxDescriptor)\(or: selectionDescriptor)\(or: chunkDescriptor)")
+    static let container = Schema<ContainerDescriptor>("\(variable)\(or: buttonOrField)\(or: messageBox)\(or: selection)\(or: chunk)")
     
     
     
-    static let variableDescriptor = Schema<ContainerDescriptor> { (token: Token) -> ContainerDescriptor? in
+    static let variable = Schema<ContainerDescriptor> { (token: Token) -> ContainerDescriptor? in
         
         /* The token must be: [a-z][a-z0-9]* */
         guard case Token.word(let identifier) = token else {
@@ -31,17 +31,17 @@ public extension Schemas {
         return ContainerDescriptor.variable(identifier: identifier)
     }
     
-    static let messageBoxDescriptor = Schema<ContainerDescriptor>("\(maybe: "the") \(either: "message", "msg") box")
+    static let messageBox = Schema<ContainerDescriptor>("\(maybe: "the") \(either: "message", "msg") box")
     
         .returns(ContainerDescriptor.messageBox)
     
-    static let selectionDescriptor = Schema<ContainerDescriptor>("\(maybe: "the") selection")
+    static let selection = Schema<ContainerDescriptor>("\(maybe: "the") selection")
         
         .returns(ContainerDescriptor.selection)
     
     // stub
-    static let buttonOrFieldDescriptor = Schema<ContainerDescriptor>()
+    static let buttonOrField = Schema<ContainerDescriptor>()
     
     // stub
-    static let chunkDescriptor = Schema<ContainerChunk>()
+    static let chunk = Schema<ContainerChunk>()
 }
