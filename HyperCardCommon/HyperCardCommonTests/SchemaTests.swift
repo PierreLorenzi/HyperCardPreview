@@ -133,7 +133,7 @@ class SchemaTests: XCTestCase {
         
     }
     
-    func test() {
+    func testMaybeString() {
         
         let schema: Schema<Literal> = "\(maybe: "the") number equal to \(Schemas.integer)"
         
