@@ -13,6 +13,7 @@ public final class Schema<T> {
     private var sequenceElements: [SchemaElement<T>] = []
     private var branchElements: [SchemaElement<T>] = []
     private var computation: ResultComputation<T>? = nil
+    private var _isConstant: Bool?
     
     public init() {}
     
@@ -240,7 +241,12 @@ public final class Schema<T> {
     
     var isConstant: Bool {
         
-        return self.sequenceElements.allSatisfy({ $0.isConstant }) && self.branchElements.isEmpty
+        get {
+            return self._isConstant ?? (self.sequenceElements.allSatisfy({ $0.isConstant }) && self.branchElements.isEmpty)
+        }
+        set {
+            self._isConstant = newValue
+        }
     }
 }
 

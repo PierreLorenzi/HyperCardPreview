@@ -14,13 +14,13 @@ public extension Schemas {
     
     
     
-    static let parentheses = Schema<Operator>("( \(expression) )")
+    static let parentheses = Schema<Operator>("( \(expressionAgain) )")
     
-    static let opposite = Schema<Operator>("- \(factor)")
+    static let opposite = Schema<Operator>("- \(factorAgain)")
         
         .returnsSingle { Operator.opposite($0) }
     
-    static let not = Schema<Operator>("not \(factor)")
+    static let not = Schema<Operator>("not \(factorAgain)")
         
         .returnsSingle { Operator.not($0) }
     
@@ -32,8 +32,6 @@ public extension Schemas {
         
         .returnsSingle { Operator.thereIsNotA($0) }
     
-    // stub
-    static let objectDescriptor = Schema<ObjectDescriptor>()
 }
 
 // Expression types

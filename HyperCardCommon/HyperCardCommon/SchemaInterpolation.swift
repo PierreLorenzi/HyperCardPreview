@@ -35,6 +35,11 @@ extension Schema: ExpressibleByStringInterpolation, ExpressibleByStringLiteral {
 private func fillSchemaWithLiteral<U>(_ schema: Schema<U>, _ literal: String) {
     
     let string = HString(stringLiteral: literal)
+    return fillSchemaWithHString(schema, string)
+}
+
+private func fillSchemaWithHString<U>(_ schema: Schema<U>, _ string: HString) {
+    
     let tokens = TokenSequence(string)
     
     for token in tokens {
@@ -95,6 +100,15 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     public func appendInterpolation<U>(maybe schema: Schema<U>) {
         
         self.schema.appendSchema(schema, minCount: 0, maxCount: 1, isConstant: nil)
+    }
+    
+    public func appendInterpolation(string: HString) {
+        
+        let stringSchema = Schema<Void>()
+        stringSchema.computeSequenceBy({ return () })
+        fillSchemaWithHString(stringSchema, string)
+        
+        self.schema.appendSchema(stringSchema, minCount: 1, maxCount: 1, isConstant: true)
     }
     
     public func appendInterpolation(maybe literal: String) {

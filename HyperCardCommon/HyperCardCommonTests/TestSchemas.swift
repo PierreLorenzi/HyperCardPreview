@@ -14,6 +14,11 @@ import HyperCardCommon
 
 class SchemasTests: XCTestCase {
     
+    override class func setUp() {
+        
+        Schemas.finalizeSchemas()
+    }
+    
     func testLiteral() {
 
         let schema = Schemas.literal
