@@ -214,6 +214,12 @@ public final class Schema<T> {
                 }
             }
             
+            /* Handle untyped schemas */
+            if T.self == Void.self && self.computation == nil {
+                
+                self.computeSequenceBy({ () -> Void in return () } as! () -> T)
+            }
+            
             let subSchemas = self.sequenceElements.map({ $0.createSubSchema() })
             let sequenceSchema = SequenceSchema<T>(subSchemas: subSchemas, initialComputation: self.computation!)
             return sequenceSchema
@@ -447,6 +453,9 @@ private class MatchingSchema<T> {
     func buildMatcher(parent: MatcherLink?) -> Matcher<T> {
         fatalError()
     }
+    
+    // TODO test
+    public var name: String? = nil
 }
 
 protocol MatcherLink {
@@ -847,10 +856,8 @@ private class ChoiceSchema<T>: MatchingSchema<T> {
     }
     
     override func buildMatcher(parent: MatcherLink?) -> Matcher<T> {
-        
-        let matchers: [Matcher<T>] = self.choices.map({ $0.buildMatcher(parent: parent) })
-        
-        return ChoiceMatcher<T>(matchers: matchers, parent: parent, schema: self)
+                
+        return ChoiceMatcher<T>(choices: self.choices, parent: parent, schema: self)
     }
 }
 
@@ -858,12 +865,13 @@ private class ChoiceMatcher<T>: Matcher<T> {
     
     private var matchers: [Matcher<T>]
     
-    init(matchers: [Matcher<T>], parent: MatcherLink?, schema: AnyObject) {
+    init(choices: [MatchingSchema<T>], parent: MatcherLink?, schema: AnyObject) {
         
-        self.matchers = matchers
+        self.matchers = []
         
         super.init(initialCanContinue: false, initialResultParsed: nil, parent: parent, schema: schema)
         
+        self.matchers = choices.map({ $0.buildMatcher(parent: self) })
         updateState()
     }
     

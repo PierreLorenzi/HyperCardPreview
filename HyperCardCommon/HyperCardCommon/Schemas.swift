@@ -29,6 +29,7 @@ public extension Schemas {
          the objets are all static anyway */
         factorAgain.appendSchema(factor, minCount: 1, maxCount: 1, isConstant: nil)
         expressionAgain.appendSchema(expression, minCount: 1, maxCount: 1, isConstant: nil)
+        containerAgain.appendSchema(container, minCount: 1, maxCount: 1, isConstant: nil)
         
     }
     

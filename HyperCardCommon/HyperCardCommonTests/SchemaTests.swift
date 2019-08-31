@@ -154,5 +154,15 @@ class SchemaTests: XCTestCase {
         XCTAssert(schema.parse("") == nil)
         XCTAssert(schema.parse("box") == nil)
     }
+    
+    func testCycle() {
+        
+        let single = Schema<Void>("tap")
+        let schema = Schema<Void>("\(single)")
+        let schemaTap = Schema<Void>("\(schema) tap")
+        schema.appendBranchedSchema(schemaTap)
+        
+        schema.parse("tap tap tap")
+    }
 
 }
