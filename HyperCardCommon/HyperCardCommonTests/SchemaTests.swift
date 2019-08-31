@@ -29,7 +29,7 @@ class SchemaTests: XCTestCase {
     func testTokenRepeat() {
         
         let schema = Schema<Int>()
-        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: false)
         schema.computeSequenceBySingle { (tokens: [Token]) -> Int in return tokens.count }
         
         XCTAssert(schema.parse("") == 0)
@@ -46,7 +46,7 @@ class SchemaTests: XCTestCase {
     func testTokenRepeat2() {
         
         let schema = Schema<Int>()
-        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 2, maxCount: 4, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 2, maxCount: 4, isConstant: false)
         schema.computeSequenceBySingle { (tokens: [Token]) -> Int in return tokens.count }
         
         XCTAssert(schema.parse("") == nil)
@@ -75,8 +75,8 @@ class SchemaTests: XCTestCase {
     func testTwoTokenRepeat() {
         
         let schema = Schema<Int>()
-        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: true)
-        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 0, maxCount: nil, isConstant: false)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: false)
         schema.computeSequenceBy { (tokens1: [Token], tokens2: [Token]) -> Int in return tokens1.count * 10 + tokens2.count }
         
         XCTAssert(schema.parse("") == 0)
@@ -95,7 +95,7 @@ class SchemaTests: XCTestCase {
         
         let schema = Schema<Int>()
         schema.appendTokenKind(filterBy: { $0 == Token.word("coucou") }, minCount: 2, maxCount: 2, isConstant: true)
-        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 2, maxCount: 3, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 2, maxCount: 3, isConstant: false)
         schema.computeSequenceBySingle { (tokens2: [Token]) -> Int in return 20 + tokens2.count }
         
         XCTAssert(schema.parse("") == nil)
@@ -113,17 +113,17 @@ class SchemaTests: XCTestCase {
     
     func testSingleArgumentSameType() {
         
-        let schema = Schema<Int>("here it is \(Schemas.integer) is the value")
+        let schema = Schema<Literal>("here it is \(Schemas.integer) is the value")
         
-        XCTAssert(schema.parse("here it is 123 is the value") == 123)
+        XCTAssert(schema.parse("here it is 123 is the value") == Literal.integer(123))
     }
     
     func testBranchAmbiguity() {
         
         /* When there are several competing branches, it must return the best one */
         let schema = Schema<Int>()
-        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
-        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: true)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: false)
+        schema.appendTokenKind(filterBy: { $0 == Token.word("pierre") }, minCount: 0, maxCount: nil, isConstant: false)
         schema.computeSequenceBy { (tokens1: [Token], tokens2: [Token]) -> Int in return tokens1.count * 10 + tokens2.count }
         
         XCTAssert(schema.parse("") == 0)

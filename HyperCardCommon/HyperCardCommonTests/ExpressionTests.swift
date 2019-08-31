@@ -35,4 +35,11 @@ class ExpressionTests: XCTestCase {
         XCTAssert(schema.parse("123.2500")! == Expression.literal(Literal.realNumber(123.25)))
     }
     
+    func testOperators() {
+        
+        let schema = Schemas.expression
+        
+        XCTAssert(schema.parse("2 + 2")! == Expression.operator(Operator.addition(Expression.literal(Literal.integer(2)), Expression.literal(Literal.integer(2)))))
+    }
+    
 }

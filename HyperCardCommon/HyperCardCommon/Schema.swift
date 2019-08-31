@@ -7,7 +7,15 @@
 //
 
 
-// buildable
+// note to myself: it doesn't work because of the cycles. We must change
+// the matchers states (canContinue and parsedResults) by callbacks. That way,
+// in a cycle, there would be cycle callbacks. For example parse with the
+// schemas 'Expression' and 'Expression + Expression'; at first the main schema
+// asks addition schema if it has a result; by callback, addition answer 'waiting
+// for cycle', ie, waiting for your own answer because I can't know. Then the main
+// finishes, and if it has results on other branches, it sets the state and
+// triggers the callbacks; addition then announces that is has a result (it would
+// be ignored) or that it can't continue (then it is deleted).
 public final class Schema<T> {
     
     private var sequenceElements: [SchemaElement<T>] = []
@@ -650,11 +658,8 @@ private class TypedSubMatcher<T, U>: SubMatcher<T> {
     }
     
     override func matchNextToken(_ token: Token) {
-        
-        if !self.isCycle {
             
-            self.matcher.matchNextToken(token)
-        }
+        self.matcher.matchNextToken(token)
         
         self.canContinue = self.matcher.canContinue
         self.hasResult = self.matcher.resultParsed != nil
