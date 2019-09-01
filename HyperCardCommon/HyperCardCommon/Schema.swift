@@ -11,7 +11,7 @@ public final class Schema<T> {
     
     private var sequenceElements: [SchemaElement<T>] = []
     private var branchElements: [SchemaElement<T>] = []
-    private var computation: ResultValue? = nil
+    private var computation: ResultValue<T>? = nil
     private var _isConstant: Bool?
     
     public init() {}
@@ -29,9 +29,9 @@ public final class Schema<T> {
         self.branchElements = schemaLiteral.branchElements.map { $0.assignNewType(T.self) }
     }
     
-    private var possibleMatchingSchema: MatchingSchema? = nil
+    private var possibleMatchingSchema: MatchingSchema<T>? = nil
     
-    fileprivate var matchingSchema: MatchingSchema {
+    fileprivate var matchingSchema: MatchingSchema<T> {
         
         guard let matchingSchema = self.possibleMatchingSchema else {
             
@@ -66,29 +66,95 @@ public final class Schema<T> {
     
     public func computeSequenceBy(_ compute: @escaping () -> T) {
         
-        // TODO
+        self.computation = ResultValue<T>(types: [], schemaIndexesToParameterIndexes: [:], compute: { (_:[Any?]) -> T in return compute() })
         
     }
     
     public func computeSequenceBySingle<A>(_ compute: @escaping (A) -> T) {
         
-        // TODO
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
+        guard schemaElements.count == 1 else {
+            fatalError()
+        }
+        
+        let keysAndValues = schemaElements.enumerated().map({ ($0.element.offset, $0.offset)  })
+        let schemaIndexesToParameterIndexes = [Int: Int](uniqueKeysWithValues: keysAndValues)
+        
+        let types: [Any] = [A.self]
+        
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+            
+            let a = values[0]! as! A
+            
+            return compute(a)
+        })
         
     }
     
     public func computeSequenceBy<A,B>(_ compute: @escaping (A,B) -> T) {
         
-        // TODO
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
+        guard schemaElements.count == 2 else {
+            fatalError()
+        }
+        
+        let keysAndValues = schemaElements.enumerated().map({ ($0.element.offset, $0.offset)  })
+        let schemaIndexesToParameterIndexes = [Int: Int](uniqueKeysWithValues: keysAndValues)
+        
+        let types: [Any] = [A.self, B.self]
+        
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+            
+            let a = values[0]! as! A
+            let b = values[1]! as! B
+            
+            return compute(a,b)
+        })
     }
     
     public func computeSequenceBy<A,B,C>(_ compute: @escaping (A,B,C) -> T) {
         
-        // TODO
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
+        guard schemaElements.count == 3 else {
+            fatalError()
+        }
+        
+        let keysAndValues = schemaElements.enumerated().map({ ($0.element.offset, $0.offset)  })
+        let schemaIndexesToParameterIndexes = [Int: Int](uniqueKeysWithValues: keysAndValues)
+        
+        let types: [Any] = [A.self, B.self, C.self]
+        
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+            
+            let a = values[0]! as! A
+            let b = values[1]! as! B
+            let c = values[2]! as! C
+            
+            return compute(a,b,c)
+        })
     }
     
     public func computeSequenceBy<A,B,C,D>(_ compute: @escaping (A,B,C,D) -> T) {
         
-        // TODO
+        let schemaElements = self.sequenceElements.enumerated().filter({ !$0.element.isConstant })
+        guard schemaElements.count == 4 else {
+            fatalError()
+        }
+        
+        let keysAndValues = schemaElements.enumerated().map({ ($0.element.offset, $0.offset)  })
+        let schemaIndexesToParameterIndexes = [Int: Int](uniqueKeysWithValues: keysAndValues)
+        
+        let types: [Any] = [A.self, B.self, C.self, D.self]
+        
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+            
+            let a = values[0]! as! A
+            let b = values[1]! as! B
+            let c = values[2]! as! C
+            let d = values[3]! as! D
+            
+            return compute(a,b,c,d)
+        })
         
     }
     
@@ -125,10 +191,10 @@ public final class Schema<T> {
             matcher.matchNextToken(token, createdMatchers: &createdMatchers)
         }
         
-        return matcher.resultParsed as! T?
+        return matcher.resultParsed
     }
     
-    fileprivate func buildMatchingSchema() -> MatchingSchema {
+    fileprivate func buildMatchingSchema() -> MatchingSchema<T> {
         
         if self.branchElements.isEmpty {
             
@@ -153,29 +219,30 @@ public final class Schema<T> {
                 self.computeSequenceBy({ () -> Void in return () } as! () -> T)
             }
             
-            let subSchemas: [CountedSchema] = self.sequenceElements.map({ (element: SchemaElement<T>) -> CountedSchema in CountedSchema(schemaProperty: Property<MatchingSchema>(lazy: { element.createSubSchema() }), minCount: element.minCount, maxCount: element.maxCount, resultParameterIndex: nil) })
-            let sequenceSchema = SequenceSchema(schemas: subSchemas, initialResultValue: self.computation!)
+            let subSchemas = self.sequenceElements.map({ $0.createCountedSchema() })
+            let sequenceSchema = SequenceSchema<T>(schemas: subSchemas, initialResultValue: self.computation!)
             return sequenceSchema
         }
-        
+            
         else {
             
             let elements = self.sequenceElements.isEmpty ? self.branchElements : [self.sequenceElements[0]] + self.branchElements
             
-            let subSchemas: [MatchingSchema] = elements.map { (element: SchemaElement<T>) -> MatchingSchema in
+            let subSchemas: [MatchingSchema<T>] = elements.map { (element: SchemaElement<T>) -> MatchingSchema<T> in
                 
                 if element.isSameType && element.minCount == 1 && element.maxCount == 1 && !element.hasComputation() {
                     
-                    return element.createSubSchema()
+                    return element.createSchemaSameType()
                 }
                 
+                let sequenceSubSchema = element.createCountedSchema()
                 let sequenceComputation = element.createBranchComputation()
-                let sequenceSchema = SequenceSchema(schemas: [CountedSchema(schemaProperty: Property<MatchingSchema>(lazy: { return element.createSubSchema() }), minCount: element.minCount, maxCount: element.maxCount, resultParameterIndex: nil)], initialResultValue: sequenceComputation)
+                let sequenceSchema = SequenceSchema<T>(schemas: [sequenceSubSchema], initialResultValue: sequenceComputation)
                 
                 return sequenceSchema
             }
             
-            let branchSchema = ChoiceSchema(schemas: subSchemas)
+            let branchSchema = ChoiceSchema<T>(schemas: subSchemas)
             
             return branchSchema
         }
@@ -206,7 +273,7 @@ private class SchemaElement<T> {
         fatalError()
     }
     
-    func createSubSchema() -> MatchingSchema {
+    func createCountedSchema() -> CountedSchema<T> {
         fatalError()
     }
     
@@ -214,7 +281,7 @@ private class SchemaElement<T> {
         fatalError()
     }
     
-    func createBranchComputation() -> ResultValue {
+    func createBranchComputation() -> ResultValue<T> {
         fatalError()
     }
     
@@ -222,7 +289,7 @@ private class SchemaElement<T> {
         fatalError()
     }
     
-    func createSchemaSameType() -> MatchingSchema {
+    func createSchemaSameType() -> MatchingSchema<T> {
         fatalError()
     }
     
@@ -267,9 +334,14 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
         return schema === self.schema
     }
     
-    override func createSubSchema() -> MatchingSchema {
+    override func createCountedSchema() -> CountedSchema<T> {
         
-        return self.schema.matchingSchema
+        let schema = self.schema
+        
+        return CountedSchema(schemaProperty: Property<SubSchema<T>>(lazy: { () -> SubSchema<T> in
+            
+            return TypedSubSchema<T, U>(schema: schema.matchingSchema)
+        }), minCount: self.minCount, maxCount: self.maxCount)
     }
     
     override func computeAsBranchWith<V>(_ compute: @escaping (V) -> T) {
@@ -281,10 +353,26 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
         self.computeBranch = (compute as! ((U) -> T))
     }
     
-    override func createBranchComputation() -> ResultValue {
+    override func createBranchComputation() -> ResultValue<T> {
         
-        // TODO
-        fatalError()
+        let compute = self.computeBranch!
+        
+        return ResultValue<T>(types: [U.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T in
+            
+            let value = values[0]! as! U
+            
+            return compute(value)
+        })
+    }
+    
+    override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
+        
+        return TypedSchemaElement<V,U>(schema: self.schema, minCount: self.minCount, maxCount: self.maxCount, isConstant: self._isConstant)
+    }
+    
+    override func createSchemaSameType() -> MatchingSchema<T> {
+        
+        return self.schema.matchingSchema as! MatchingSchema<T>
     }
     
     override func hasComputation() -> Bool {
@@ -316,9 +404,16 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
         return false
     }
     
-    override func createSubSchema() -> MatchingSchema {
+    override func createCountedSchema() -> CountedSchema<T> {
         
-        return TokenSchema(isTokenValid: self.tokenFilter)
+        let tokenFilter = self.tokenFilter
+        
+        return CountedSchema(schemaProperty: Property<SubSchema<T>>(lazy: { () -> SubSchema<T> in
+            
+            let schema = TokenSchema(isTokenValid: tokenFilter)
+            return TypedSubSchema<T,Token>(schema: schema)
+        }), minCount: self.minCount, maxCount: self.maxCount)
+        
     }
     
     override func computeAsBranchWith<V>(_ compute: @escaping (V) -> T) {
@@ -330,10 +425,26 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
         self.computeBranch = (compute as! ((Token) -> T))
     }
     
-    override func createBranchComputation() -> ResultValue {
+    override func createBranchComputation() -> ResultValue<T> {
         
-        // TODO
-        fatalError()
+        let compute = self.computeBranch!
+        
+        return ResultValue<T>(types: [Token.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T in
+            
+            let value = values[0]! as! Token
+            
+            return compute(value)
+        })
+    }
+    
+    override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
+        
+        return TokenSchemaElement<V>(tokenFilter: self.tokenFilter, minCount: self.minCount, maxCount: self.maxCount, isConstant: self.isConstant)
+    }
+    
+    override func createSchemaSameType() -> MatchingSchema<T> {
+        
+        return TokenSchema(isTokenValid: self.tokenFilter) as! MatchingSchema<T>
     }
     
     override func hasComputation() -> Bool {
@@ -344,71 +455,69 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
 
 private typealias MatcherMap = [ObjectIdentifier: MatcherCreation]
 
-private typealias MatcherCallback = (Matcher, inout MatcherMap) -> ()
+private typealias MatcherCallback = (AnyObject, inout MatcherMap) -> ()
 
 private struct MatcherCreation {
     
-    var matcher: Matcher
+    var matcher: AnyObject
     var isParent: Bool
 }
 
-private protocol MatchingSchema: AnyObject {
+private class MatchingSchema<T> {
     
-    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher
+    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher<T> {
+        fatalError()
+    }
 }
 
-private protocol Matcher: AnyObject {
+private class Matcher<T> {
     
-    var canContinue: Bool { get }
-    var resultParsed: Any? { get }
+    var canContinue = false
+    var resultParsed: T? = nil
     
-    func addChangeCallback(_: @escaping MatcherCallback)
-    func addCycleChangeCallback(_: @escaping MatcherCallback)
+    var changeCallbacks: [MatcherCallback] = []
+    var cycleChangeCallbacks: [MatcherCallback] = []
     
-    func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap)
+    func addChangeCallback(_ callback: @escaping MatcherCallback) {
+        self.changeCallbacks.append(callback)
+    }
+    
+    func addCycleChangeCallback(_ callback: @escaping MatcherCallback) {
+        self.cycleChangeCallbacks.append(callback)
+    }
+    
+    func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
+        fatalError()
+    }
 }
 
-private protocol DevelopingMatcher: Matcher {
-    
-    var subSchemas: [MatchingSchema] { get }
-}
-
-private class ComplexMatcher: Matcher {
+private class ComplexMatcher<T>: Matcher<T> {
     
     private var branches: [Branch]
-    private var changeCallbacks: [MatcherCallback] = []
-    private var cycleChangeCallbacks: [MatcherCallback] = []
-    var _canContinue: Bool
-    var resultMatcher: Matcher?
+    var resultMatcher: Matcher<T>?
     var isSendingCycleCallback = false
     
     private struct Branch {
         
-        var matcher: Matcher
+        var matcher: Matcher<T>
         var isCycleConnection: Bool
         var isShared: Bool
-        weak var developedFrom: Matcher?
+        weak var developedFrom: Matcher<T>?
     }
     
-    var canContinue: Bool {
-        return self._canContinue
-    }
-    
-    var resultParsed: Any? {
-        return self.resultMatcher?.resultParsed
-    }
-    
-    init(schemaIdentity: ObjectIdentifier, subSchemas: [MatchingSchema], createdMatchers: inout MatcherMap) {
+    init(schema: MatchingSchema<T>, subSchemas: [MatchingSchema<T>], createdMatchers: inout MatcherMap) {
         
         self.branches = []
-        self._canContinue = false
         
-        self.createInitialBranches(schemaIdentity: schemaIdentity, subSchemas: subSchemas, createdMatchers: &createdMatchers)
+        super.init()
+        
+        self.createInitialBranches(schema: schema, subSchemas: subSchemas, createdMatchers: &createdMatchers)
     }
     
-    private func createInitialBranches(schemaIdentity: ObjectIdentifier, subSchemas: [MatchingSchema], createdMatchers: inout MatcherMap) {
+    private func createInitialBranches(schema: MatchingSchema<T>, subSchemas: [MatchingSchema<T>], createdMatchers: inout MatcherMap) {
         
         /* Declare myself as created, and parent of the subsequent creations */
+        let schemaIdentity = ObjectIdentifier(schema)
         createdMatchers[schemaIdentity] = MatcherCreation(matcher: self, isParent: true)
         
         /* Create the initial branches */
@@ -419,9 +528,9 @@ private class ComplexMatcher: Matcher {
         createdMatchers[schemaIdentity]!.isParent = false
     }
     
-    private func createBranches(at index: Int, with schemas: [MatchingSchema], createdMatchers: inout MatcherMap, developedFrom: Matcher?) {
+    private func createBranches(at index: Int, with schemas: [MatchingSchema<T>], createdMatchers: inout MatcherMap, developedFrom: Matcher<T>?) {
         
-        let changeCallback: MatcherCallback = { [unowned self] (matcher: Matcher, createdMatchers: inout MatcherMap) in self.receiveChangeCallback(from: matcher, createdMatchers: &createdMatchers) }
+        let changeCallback: MatcherCallback = { [unowned self] (matcher: AnyObject, createdMatchers: inout MatcherMap) in self.receiveChangeCallback(from: matcher, createdMatchers: &createdMatchers) }
         
         var insertionIndex = index
         
@@ -436,14 +545,15 @@ private class ComplexMatcher: Matcher {
                 let isCycleConnection = matcherCreation.isParent
                 
                 /* Use the already existing matcher as matcher */
+                let matcher = matcherCreation.matcher as! Matcher<T>
                 if isCycleConnection {
-                    matcherCreation.matcher.addCycleChangeCallback(changeCallback)
+                    matcher.addCycleChangeCallback(changeCallback)
                 }
                 else {
-                    matcherCreation.matcher.addChangeCallback(changeCallback)
+                    matcher.addChangeCallback(changeCallback)
                 }
                 
-                branch = Branch(matcher: matcherCreation.matcher, isCycleConnection: isCycleConnection, isShared: true, developedFrom: developedFrom)
+                branch = Branch(matcher: matcher, isCycleConnection: isCycleConnection, isShared: true, developedFrom: developedFrom)
             }
             else {
                 
@@ -491,7 +601,7 @@ private class ComplexMatcher: Matcher {
         let branch = self.branches[index]
         
         /* Check if there are sub-branches */
-        guard let developingMatcher = branch.matcher as? DevelopingMatcher else {
+        guard let developingMatcher = branch.matcher as? DevelopingMatcher<T> else {
             return
         }
         
@@ -500,7 +610,7 @@ private class ComplexMatcher: Matcher {
         self.createBranches(at: index + 1, with: subSchemas, createdMatchers: &createdMatchers, developedFrom: branch.matcher)
     }
     
-    private func receiveChangeCallback(from matcher: Matcher, createdMatchers: inout MatcherMap) {
+    private func receiveChangeCallback(from matcher: AnyObject, createdMatchers: inout MatcherMap) {
         
         /* Remake the development of this matcher */
         let index = self.branches.firstIndex(where: { $0.matcher === matcher })!
@@ -566,10 +676,11 @@ private class ComplexMatcher: Matcher {
         let newResultMatcher = self.branches.first(where: { $0.matcher.resultParsed != nil })?.matcher
         let newCanContinue = self.branches.first(where: { !$0.matcher.canContinue }) == nil
         
-        let didStatusChange = (newResultMatcher !== self.resultMatcher || newCanContinue != self._canContinue)
+        let didStatusChange = (newResultMatcher !== self.resultMatcher || newCanContinue != self.canContinue)
         
         self.resultMatcher = newResultMatcher
-        self._canContinue = newCanContinue
+        self.resultParsed = newResultMatcher?.resultParsed
+        self.canContinue = newCanContinue
         
         return didStatusChange
     }
@@ -614,17 +725,7 @@ private class ComplexMatcher: Matcher {
         }
     }
     
-    func addChangeCallback(_ callback: @escaping MatcherCallback) {
-        
-        self.changeCallbacks.append(callback)
-    }
-    
-    func addCycleChangeCallback(_ callback: @escaping MatcherCallback) {
-        
-        self.cycleChangeCallbacks.append(callback)
-    }
-    
-    func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
+    override func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
         
         /* Remove the finished branches. We can't do it before because they
          may have results */
@@ -641,89 +742,239 @@ private class ComplexMatcher: Matcher {
     }
 }
 
-private class SequenceSchema: MatchingSchema {
+private class SequenceSchema<T>: MatchingSchema<T> {
     
-    private let schemas: [CountedSchema]
-    private let initialResultValue: ResultValue
+    private let schemas: [CountedSchema<T>]
+    private let initialResultValue: ResultValue<T>
     
-    init(schemas: [CountedSchema], initialResultValue: ResultValue) {
+    init(schemas: [CountedSchema<T>], initialResultValue: ResultValue<T>) {
         
         self.schemas = schemas
         self.initialResultValue = initialResultValue
     }
     
-    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher {
+    override func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher<T> {
         
         return SequenceElementMatcher(schemas: self.schemas, schemaIndex: 0, occurrenceIndex: 0, resultValue: self.initialResultValue, createdMatchers: &createdMatchers)
     }
 }
 
-private protocol ResultValue {
+private struct ResultValue<T> {
+    
+    private var values: [Any?]
+    private let types: [Any]
+    private let schemaIndexesToParameterIndexes: [Int: Int]
+    private let computeWithParameters: ([Any?]) -> T
+    
+    init(types: [Any], schemaIndexesToParameterIndexes: [Int: Int], compute: @escaping ([Any?]) -> T) {
+        
+        self.values = [Any?](repeating: nil, count: types.count)
+        self.types = types
+        self.schemaIndexesToParameterIndexes = schemaIndexesToParameterIndexes
+        self.computeWithParameters = compute
+    }
     
     // Returns non-nil only if all parameters have a value or are marked absent
-    func compute() -> Any?
+    func compute() -> T? {
+        return self.computeWithParameters(self.values)
+    }
     
-    mutating func setValue(_: Any, at: Int) -> ()
-    mutating func markParameterAbsent(at: Int) -> ()
+    mutating func setValue<U>(_ value: U, at schemaIndex: Int) -> () {
+        
+        guard let index = self.schemaIndexesToParameterIndexes[schemaIndex] else {
+            return
+        }
+        
+        let parameterType = self.types[index]
+        
+        if parameterType is U.Type {
+            
+            self.values[index] = Optional.some(value)
+        }
+        else if parameterType is (U?).Type {
+            
+            self.values[index] = Optional.some(Optional.some(value) as Any)
+        }
+        else if parameterType is [U].Type {
+            
+            let possibleList = self.values[index] as! [U]?
+            
+            let newList: [U]
+            if let list = possibleList {
+                
+                var changingList = list
+                changingList.append(value)
+                
+                newList = changingList
+            }
+            else {
+                
+                newList = [value]
+            }
+            
+            self.values[index] = Optional.some(newList)
+        }
+        else {
+            
+            fatalError()
+        }
+    }
+    
+    mutating func markParameterAbsent<U>(at schemaIndex: Int, type: U.Type) -> () {
+        
+        guard let index = self.schemaIndexesToParameterIndexes[schemaIndex] else {
+            return
+        }
+        
+        let parameterType = self.types[index]
+        
+        if parameterType is (U?).Type {
+            
+            self.values[index] = Optional.some(Optional<U>.none as Any)
+        }
+        else if parameterType is [U].Type {
+            
+            self.values[index] = Optional.some([U]())
+        }
+        else {
+            
+            fatalError()
+        }
+    }
 }
 
-private struct CountedSchema {
+private class DevelopingMatcher<T>: Matcher<T> {
     
-    var schemaProperty: Property<MatchingSchema>
-    var schema: MatchingSchema {
+    var subSchemas: [MatchingSchema<T>] = []
+}
+
+private class SubSchema<T> {
+    
+    func buildSubMatcher(createdMatchers: inout MatcherMap) -> SubMatcher<T> {
+        fatalError()
+    }
+    
+    func integrateResultAbsence(at index: Int, in resultValue: inout ResultValue<T>) {
+        fatalError()
+    }
+}
+
+private class SubMatcher<T>: Matcher<Any> {
+    
+    func integrateResult(at index: Int, in resultValue: inout ResultValue<T>) {
+        fatalError()
+    }
+}
+
+private class TypedSubSchema<T,U>: SubSchema<T> {
+    
+    private let schema: MatchingSchema<U>
+    
+    init(schema: MatchingSchema<U>) {
+        
+        self.schema = schema
+        
+        super.init()
+    }
+    
+    override func buildSubMatcher(createdMatchers: inout MatcherMap) -> SubMatcher<T> {
+        
+        let matcher = self.schema.buildMatcher(createdMatchers: &createdMatchers)
+        
+        return TypedSubMatcher(matcher: matcher)
+    }
+    
+    override func integrateResultAbsence(at index: Int, in resultValue: inout ResultValue<T>) {
+        
+        resultValue.markParameterAbsent(at: index, type: U.self)
+    }
+}
+
+private class TypedSubMatcher<T, U>: SubMatcher<T> {
+    
+    private let matcher: Matcher<U>
+    
+    init(matcher: Matcher<U>) {
+        
+        self.matcher = matcher
+        
+        super.init()
+        
+        self.updateState()
+    }
+    
+    private func updateState() {
+        
+        self.canContinue = self.matcher.canContinue
+        self.resultParsed = self.matcher.resultParsed
+    }
+    
+    override func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
+        
+        self.matcher.matchNextToken(token, createdMatchers: &createdMatchers)
+        
+        self.updateState()
+    }
+    
+    override func integrateResult(at index: Int, in resultValue: inout ResultValue<T>) {
+        
+        guard let result = self.matcher.resultParsed else {
+            return
+        }
+        
+        resultValue.setValue(result, at: index)
+    }
+}
+
+private struct CountedSchema<T> {
+    
+    var schemaProperty: Property<SubSchema<T>>
+    var schema: SubSchema<T> {
         return self.schemaProperty.value
     }
     var minCount: Int
     var maxCount: Int?
-    var resultParameterIndex: Int?
 }
 
-private class SequenceElementMatcher: DevelopingMatcher {
+private class SequenceElementMatcher<T>: DevelopingMatcher<T> {
     
-    private let matcher: Matcher
-    private let schemas: [CountedSchema]
+    private let subMatcher: SubMatcher<T>
+    private let schemas: [CountedSchema<T>]
     private let schemaIndex: Int
     private let occurrenceIndex: Int
-    private var resultValue: ResultValue
-    private var _canContinue: Bool
-    private var _parsedResult: Any?
-    private var _subSchemas: [MatchingSchema]
+    private var resultValue: ResultValue<T>
     private var isNew = true
-    private var changeCallbacks: [MatcherCallback] = []
-    private var cycleChangeCallbacks: [MatcherCallback] = []
     
     
-    init(schemas: [CountedSchema], schemaIndex: Int, occurrenceIndex: Int, resultValue: ResultValue, createdMatchers: inout MatcherMap) {
+    init(schemas: [CountedSchema<T>], schemaIndex: Int, occurrenceIndex: Int, resultValue: ResultValue<T>, createdMatchers: inout MatcherMap) {
         
-        self.matcher = schemas[schemaIndex].schema.buildMatcher(createdMatchers: &createdMatchers)
+        self.subMatcher = schemas[schemaIndex].schema.buildSubMatcher(createdMatchers: &createdMatchers)
         self.schemas = schemas
         self.schemaIndex = schemaIndex
         self.occurrenceIndex = occurrenceIndex
         self.resultValue = resultValue
-        self._canContinue = false
-        self._subSchemas = []
+        
+        super.init()
         
         self.updateState(createdMatchers: &createdMatchers)
     }
     
     private func updateState(createdMatchers: inout MatcherMap) {
         
-        self._canContinue = self.matcher.canContinue
-        self._parsedResult = self.resultValue.compute()
-        self._subSchemas = self.listSubSchemas(createdMatchers: &createdMatchers)
+        self.canContinue = self.subMatcher.canContinue
+        self.resultParsed = self.resultValue.compute()
+        self.subSchemas = self.listSubSchemas(createdMatchers: &createdMatchers)
     }
     
-    private func listSubSchemas(createdMatchers: inout MatcherMap) -> [MatchingSchema] {
+    private func listSubSchemas(createdMatchers: inout MatcherMap) -> [MatchingSchema<T>] {
         
-        var subSchemas: [MatchingSchema] = []
+        var subSchemas: [MatchingSchema<T>] = []
         
-        if let result = self.matcher.resultParsed {
+        if self.subMatcher.resultParsed != nil {
             
             /* Consider the matcher as finished, so we include its result in the computation */
             var newResultValue = self.resultValue
-            if let index = self.schemas[self.schemaIndex].resultParameterIndex {
-                newResultValue.setValue(result, at: index)
-            }
+            self.subMatcher.integrateResult(at: self.schemaIndex, in: &newResultValue)
             
             /* Make a sub-branch where the same schema restarts. Avoid repeating indefinitely
              an empty match */
@@ -747,9 +998,7 @@ private class SequenceElementMatcher: DevelopingMatcher {
             
             /* Consider the matcher as absent, so we include it in the computation */
             var newResultValue = self.resultValue
-            if let index = self.schemas[self.schemaIndex].resultParameterIndex {
-                newResultValue.markParameterAbsent(at: index)
-            }
+            self.schemas[self.schemaIndex].schema.integrateResultAbsence(at: self.schemaIndex, in: &newResultValue)
             
             /* Make a sub-branch where the next schema starts */
             if let subSchema = self.buildNextSubSchema(newResultValue: newResultValue, createdMatchers: &createdMatchers) {
@@ -760,7 +1009,7 @@ private class SequenceElementMatcher: DevelopingMatcher {
         return subSchemas
     }
     
-    private func buildSubSchemaNextOccurrence(newResultValue: ResultValue, createdMatchers: inout MatcherMap) -> MatchingSchema? {
+    private func buildSubSchemaNextOccurrence(newResultValue: ResultValue<T>, createdMatchers: inout MatcherMap) -> MatchingSchema<T>? {
         
         let schema = self.schemas[self.schemaIndex]
         
@@ -770,10 +1019,10 @@ private class SequenceElementMatcher: DevelopingMatcher {
             return nil
         }
         
-        return SequenceElementSchema(schemas: self.schemas, schemaIndex: self.schemaIndex, occurrenceIndex: newOccurrenceIndex, resultValue: newResultValue)
+        return SequenceElementSchema<T>(schemas: self.schemas, schemaIndex: self.schemaIndex, occurrenceIndex: newOccurrenceIndex, resultValue: newResultValue)
     }
     
-    private func buildNextSubSchema(newResultValue: ResultValue, createdMatchers: inout MatcherMap) -> MatchingSchema? {
+    private func buildNextSubSchema(newResultValue: ResultValue<T>, createdMatchers: inout MatcherMap) -> MatchingSchema<T>? {
         
         let schema = self.schemas[self.schemaIndex]
         
@@ -792,44 +1041,24 @@ private class SequenceElementMatcher: DevelopingMatcher {
         return SequenceElementSchema(schemas: self.schemas, schemaIndex: newSchemaIndex, occurrenceIndex: newOccurrenceIndex, resultValue: newResultValue)
     }
     
-    var subSchemas: [MatchingSchema] {
-        return self._subSchemas
-    }
-    
-    var canContinue: Bool {
-        return self._canContinue
-    }
-    
-    var resultParsed: Any? {
-        return self._parsedResult
-    }
-    
-    func addChangeCallback(_ callback: @escaping MatcherCallback) {
-        self.changeCallbacks.append(callback)
-    }
-    
-    func addCycleChangeCallback(_ callback: @escaping MatcherCallback) {
-        self.cycleChangeCallbacks.append(callback)
-    }
-    
-    func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
+    override func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
         
         
-        self.matcher.matchNextToken(token, createdMatchers: &createdMatchers)
+        self.subMatcher.matchNextToken(token, createdMatchers: &createdMatchers)
         
         self.isNew = false
         self.updateState(createdMatchers: &createdMatchers)
     }
 }
 
-private class SequenceElementSchema: MatchingSchema {
+private class SequenceElementSchema<T>: MatchingSchema<T> {
     
-    private let schemas: [CountedSchema]
+    private let schemas: [CountedSchema<T>]
     private let schemaIndex: Int
     private let occurrenceIndex: Int
-    private var resultValue: ResultValue
+    private var resultValue: ResultValue<T>
     
-    init(schemas: [CountedSchema], schemaIndex: Int, occurrenceIndex: Int, resultValue: ResultValue) {
+    init(schemas: [CountedSchema<T>], schemaIndex: Int, occurrenceIndex: Int, resultValue: ResultValue<T>) {
         
         self.schemas = schemas
         self.schemaIndex = schemaIndex
@@ -837,13 +1066,13 @@ private class SequenceElementSchema: MatchingSchema {
         self.resultValue = resultValue
     }
     
-    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher {
+    override func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher<T> {
         
         return SequenceElementMatcher(schemas: self.schemas, schemaIndex: self.schemaIndex, occurrenceIndex: self.occurrenceIndex, resultValue: self.resultValue, createdMatchers: &createdMatchers)
     }
 }
 
-private class TokenSchema: MatchingSchema {
+private class TokenSchema: MatchingSchema<Token> {
     
     private let isTokenValid: (Token) -> Bool
     
@@ -852,64 +1081,49 @@ private class TokenSchema: MatchingSchema {
         self.isTokenValid = isTokenValid
     }
  
-    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher {
+    override func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher<Token> {
         
         return TokenMatcher(isTokenValid: self.isTokenValid)
     }
 }
 
-private class TokenMatcher: Matcher {
+private class TokenMatcher: Matcher<Token> {
     
     private let isTokenValid: (Token) -> Bool
-    
-    private var didMatch = false
-    
-    private var seenToken: Token? = nil
     
     init(isTokenValid: @escaping (Token) -> Bool) {
         
         self.isTokenValid = isTokenValid
+        
+        super.init()
+        
+        self.canContinue = true
+        self.resultParsed = nil
     }
     
-    var canContinue: Bool {
-        return !self.didMatch
-    }
-    
-    var resultParsed: Any? {
-        return self.seenToken
-    }
-    
-    func addChangeCallback(_: @escaping MatcherCallback) {
-    }
-    
-    func addCycleChangeCallback(_: @escaping MatcherCallback) {
-    }
-    
-    func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
+    override func matchNextToken(_ token: Token, createdMatchers: inout MatcherMap) {
         
         if self.isTokenValid(token) {
             
-            self.seenToken = token
+            self.resultParsed = token
         }
         
-        self.didMatch = true
+        self.canContinue = false
     }
     
 }
 
-private class ChoiceSchema: MatchingSchema {
+private class ChoiceSchema<T>: MatchingSchema<T> {
     
-    private let schemas: [MatchingSchema]
+    private let schemas: [MatchingSchema<T>]
     
-    init(schemas: [MatchingSchema]) {
+    init(schemas: [MatchingSchema<T>]) {
         self.schemas = schemas
     }
     
-    func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher {
+    override func buildMatcher(createdMatchers: inout MatcherMap) -> Matcher<T> {
         
-        let schemaIdentity = ObjectIdentifier(self)
-        
-        return ComplexMatcher(schemaIdentity: schemaIdentity, subSchemas: self.schemas, createdMatchers: &createdMatchers)
+        return ComplexMatcher(schema: self, subSchemas: self.schemas, createdMatchers: &createdMatchers)
     }
 }
 
