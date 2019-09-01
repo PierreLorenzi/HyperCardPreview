@@ -82,7 +82,11 @@ public final class Schema<T> {
         
         let types: [Any] = [A.self]
         
-        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T? in
+            
+            guard values.allSatisfy({ $0 != nil }) else {
+                return nil
+            }
             
             let a = values[0]! as! A
             
@@ -103,7 +107,11 @@ public final class Schema<T> {
         
         let types: [Any] = [A.self, B.self]
         
-        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T? in
+            
+            guard values.allSatisfy({ $0 != nil }) else {
+                return nil
+            }
             
             let a = values[0]! as! A
             let b = values[1]! as! B
@@ -124,7 +132,11 @@ public final class Schema<T> {
         
         let types: [Any] = [A.self, B.self, C.self]
         
-        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T? in
+            
+            guard values.allSatisfy({ $0 != nil }) else {
+                return nil
+            }
             
             let a = values[0]! as! A
             let b = values[1]! as! B
@@ -146,7 +158,11 @@ public final class Schema<T> {
         
         let types: [Any] = [A.self, B.self, C.self, D.self]
         
-        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T in
+        self.computation = ResultValue<T>(types: types, schemaIndexesToParameterIndexes: schemaIndexesToParameterIndexes, compute: { (values: [Any?]) -> T? in
+            
+            guard values.allSatisfy({ $0 != nil }) else {
+                return nil
+            }
             
             let a = values[0]! as! A
             let b = values[1]! as! B
@@ -357,7 +373,11 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
         
         let compute = self.computeBranch!
         
-        return ResultValue<T>(types: [U.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T in
+        return ResultValue<T>(types: [U.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T? in
+            
+            guard values[0] != nil else {
+                return nil
+            }
             
             let value = values[0]! as! U
             
@@ -429,7 +449,11 @@ private class TokenSchemaElement<T>: SchemaElement<T> {
         
         let compute = self.computeBranch!
         
-        return ResultValue<T>(types: [Token.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T in
+        return ResultValue<T>(types: [Token.self as Any], schemaIndexesToParameterIndexes: [0: 0], compute: { (values: [Any?]) -> T? in
+            
+            guard values[0] != nil else {
+                return nil
+            }
             
             let value = values[0]! as! Token
             
@@ -764,9 +788,9 @@ private struct ResultValue<T> {
     private var values: [Any?]
     private let types: [Any]
     private let schemaIndexesToParameterIndexes: [Int: Int]
-    private let computeWithParameters: ([Any?]) -> T
+    private let computeWithParameters: ([Any?]) -> T?
     
-    init(types: [Any], schemaIndexesToParameterIndexes: [Int: Int], compute: @escaping ([Any?]) -> T) {
+    init(types: [Any], schemaIndexesToParameterIndexes: [Int: Int], compute: @escaping ([Any?]) -> T?) {
         
         self.values = [Any?](repeating: nil, count: types.count)
         self.types = types
@@ -850,6 +874,10 @@ private class DevelopingMatcher<T>: Matcher<T> {
 
 private class SubSchema<T> {
     
+    func findSubMatcher(in: MatcherMap) -> SubMatcher<T>? {
+        fatalError()
+    }
+    
     func buildSubMatcher(createdMatchers: inout MatcherMap) -> SubMatcher<T> {
         fatalError()
     }
@@ -875,6 +903,18 @@ private class TypedSubSchema<T,U>: SubSchema<T> {
         self.schema = schema
         
         super.init()
+    }
+    
+    override func findSubMatcher(in createdMatchers: MatcherMap) -> SubMatcher<T>? {
+        
+        let schemaIdentity = ObjectIdentifier(self.schema)
+        guard let existingMatcher = createdMatchers[schemaIdentity] else {
+            
+            return nil
+        }
+        
+        let matcher = existingMatcher.matcher as! Matcher<U>
+        return TypedSubMatcher(matcher: matcher)
     }
     
     override func buildSubMatcher(createdMatchers: inout MatcherMap) -> SubMatcher<T> {
@@ -948,7 +988,8 @@ private class SequenceElementMatcher<T>: DevelopingMatcher<T> {
     
     init(schemas: [CountedSchema<T>], schemaIndex: Int, occurrenceIndex: Int, resultValue: ResultValue<T>, createdMatchers: inout MatcherMap) {
         
-        self.subMatcher = schemas[schemaIndex].schema.buildSubMatcher(createdMatchers: &createdMatchers)
+        let schema = schemas[schemaIndex].schema
+        self.subMatcher = schema.buildSubMatcher(createdMatchers: &createdMatchers)
         self.schemas = schemas
         self.schemaIndex = schemaIndex
         self.occurrenceIndex = occurrenceIndex
