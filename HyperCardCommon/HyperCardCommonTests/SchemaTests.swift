@@ -162,7 +162,7 @@ class SchemaTests: XCTestCase {
         let schemaTap = Schema<Void>("\(schema) tap")
         schema.appendBranchedSchema(schemaTap)
         
-        schema.parse("tap tap tap")
+        XCTAssertNotNil(schema.parse("tap tap tap"))
     }
 
 }
