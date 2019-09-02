@@ -801,7 +801,11 @@ private class ComplexMatcher<T>: Matcher<T> {
         self.branches.removeAll(where: { !$0.matcher.canContinue && !$0.matcher.hasCycle && !$0.isCycleConnection })
         
         /* Feed the branches */
-        for branch in self.branches {
+        for i in 0..<self.branches.count {
+            
+            self.branches[i].developedFrom = nil
+            
+            let branch = self.branches[i]
             
             guard !branch.isShared && !branch.isCycleConnection else {
                 continue
@@ -1120,7 +1124,7 @@ private class SequenceMatcher<T>: DevelopingMatcher<T> {
     private func updateState(context: inout MatchingContext) -> Bool {
         
         let newCanContinue = self.subMatcher.canContinue
-        let newResultParsed = self.hasFinished(context: &context) ? self.resultValue.compute() : nil
+        let newResultParsed = self.hasFinished(context: &context) ? self.computeResult() : nil
         let newHasCycle = self.subMatcher.hasCycle
         let newSubSchemas = self.listSubSchemas(context: &context)
         
@@ -1134,7 +1138,21 @@ private class SequenceMatcher<T>: DevelopingMatcher<T> {
         return hasChanged
     }
     
+    private func computeResult() -> T {
+        
+        var newResultValue = self.resultValue
+            
+        self.subMatcher.integrateResult(at: self.schemaIndex, in: &newResultValue)
+        
+        return newResultValue.compute()!
+    }
+    
     private func hasFinished(context: inout MatchingContext) -> Bool {
+        
+        /* Check that we have a result */
+        guard self.subMatcher.resultParsed != nil else {
+            return false
+        }
         
         /* Check that this is the last schema */
         guard self.schemaIndex == self.schemas.count - 1 else {
@@ -1142,8 +1160,7 @@ private class SequenceMatcher<T>: DevelopingMatcher<T> {
         }
         
         /* Check that we have enough occurrences */
-        let hasOccurred = self.startIndex != context.index
-        let occurrenceCount = self.occurrenceIndex + (hasOccurred ? 1 : 0)
+        let occurrenceCount = self.occurrenceIndex + 1
         guard occurrenceCount >= self.schemas.last!.minCount else {
             return false
         }
