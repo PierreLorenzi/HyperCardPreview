@@ -10,6 +10,11 @@
 public struct ChunkExpression: Equatable {
     public var expression: Expression
     public var chunk: Chunk
+    
+    public init(expression: Expression, chunk: Chunk) {
+        self.expression = expression
+        self.chunk = chunk
+    }
 }
 
 public struct ChunkContainer: Equatable {
@@ -20,12 +25,21 @@ public struct ChunkContainer: Equatable {
 public struct ChunkElement: Equatable {
     public var type: ChunkType
     public var number: ChunkNumber
+    
+    public init(type: ChunkType, number: ChunkNumber) {
+        self.type = type
+        self.number = number
+    }
 }
 
 public struct Chunk: Equatable {
     
     /* Ordered from smallest to greatest */
     public var elements: [ChunkElement]
+    
+    public init(elements: [ChunkElement]) {
+        self.elements = elements
+    }
 }
 
 public enum ChunkType: Equatable {

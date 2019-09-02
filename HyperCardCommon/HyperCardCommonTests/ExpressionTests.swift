@@ -40,6 +40,20 @@ class ExpressionTests: XCTestCase {
         let schema = Schemas.expression
         
         XCTAssert(schema.parse("2 + 2")! == Expression.operator(Operator.addition(Expression.literal(Literal.integer(2)), Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("- 2 + 2")! == Expression.operator(Operator.addition(Expression.operator(Operator.opposite(Expression.literal(Literal.integer(2)))), Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("the exp of 2")! == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("exp of 2")! == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("exp(2)")! == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("the message box")! == Expression.containerContent(ContainerDescriptor.messageBox))
+//        XCTAssert(schema.parse("card field id 3")! == Expression.containerContent(ContainerDescriptor.part(PartDescriptor(type: PartDescriptorType.field, typedPartDescriptor: TypedPartDescriptor(layer: LayerType.card, identification: HyperCardObjectIdentification.withIdentifier(Expression.literal(Literal.integer(3))), card: CardDescriptor(descriptor: LayerDescriptor.relative(RelativeOrdinal.current), parentBackground: nil))))))
+//        XCTAssert(schema.parse("char 2 of \"aaa\"")! == Expression.chunk(ChunkExpression(expression: Expression.literal(Literal.string("aaa")), chunk: Chunk(elements: [ChunkElement(type: ChunkType.character, number: ChunkNumber.single(Ordinal.number(Expression.literal(Literal.integer(2)))))]))))
+    }
+    
+    func test() {
+        
+        let schema = Schemas.expression
+        
+        XCTAssert(schema.parse("char 2 of \"aaa\"")! == Expression.chunk(ChunkExpression(expression: Expression.literal(Literal.string("aaa")), chunk: Chunk(elements: [ChunkElement(type: ChunkType.character, number: ChunkNumber.single(Ordinal.number(Expression.literal(Literal.integer(2)))))]))))
     }
     
 }

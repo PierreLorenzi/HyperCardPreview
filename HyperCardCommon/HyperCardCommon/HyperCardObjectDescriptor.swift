@@ -37,8 +37,13 @@ public typealias BackgroundDescriptor = LayerDescriptor
 
 public struct CardDescriptor: Equatable {
     
-    var descriptor: LayerDescriptor
-    var parentBackground: LayerDescriptor?
+    public var descriptor: LayerDescriptor
+    public var parentBackground: LayerDescriptor?
+    
+    public init(descriptor: LayerDescriptor, parentBackground: LayerDescriptor?) {
+        self.descriptor = descriptor
+        self.parentBackground = parentBackground
+    }
 }
 
 public enum HyperCardObjectIdentification: Equatable {
@@ -50,8 +55,13 @@ public enum HyperCardObjectIdentification: Equatable {
 
 public struct PartDescriptor: Equatable {
     
-    var type: PartDescriptorType
-    var typedPartDescriptor: TypedPartDescriptor
+    public var type: PartDescriptorType
+    public var typedPartDescriptor: TypedPartDescriptor
+    
+    public init(type: PartDescriptorType, typedPartDescriptor: TypedPartDescriptor) {
+        self.type = type
+        self.typedPartDescriptor = typedPartDescriptor
+    }
 }
 
 public typealias ButtonDescriptor = TypedPartDescriptor
@@ -59,9 +69,15 @@ public typealias FieldDescriptor = TypedPartDescriptor
 
 public struct TypedPartDescriptor: Equatable {
     
-    var layer: LayerType
-    var identification: HyperCardObjectIdentification
-    var card: CardDescriptor
+    public var layer: LayerType
+    public var identification: HyperCardObjectIdentification
+    public var card: CardDescriptor
+    
+    public init(layer: LayerType, identification: HyperCardObjectIdentification, card: CardDescriptor) {
+        self.layer = layer
+        self.identification = identification
+        self.card = card
+    }
 }
 
 public enum PartDescriptorType: Equatable {
