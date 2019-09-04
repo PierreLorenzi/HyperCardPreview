@@ -486,7 +486,7 @@ private class Matcher<T> {
     
     var canContinue = false
     var resultParsed: T? = nil
-    var hasCycle = false
+    var cycleCount = 0
     
     var changeCallbacks: [MatcherCallback] = []
     var cycleChangeCallbacks: [MatcherCallback] = []
@@ -771,16 +771,27 @@ private class ComplexMatcher<T>: Matcher<T> {
         /* Update status */
         let newResultMatcher = self.branches.first(where: { !$0.isCycleConnection && $0.matcher.resultParsed != nil })?.matcher
         let newCanContinue = self.branches.first(where: { !$0.isCycleConnection && $0.matcher.canContinue }) != nil
-        let newHasCycle = self.branches.first(where: { $0.isCycleConnection || $0.matcher.hasCycle }) != nil
+        let newCycleCount = self.computeCycleCount()
         
-        let didStatusChange = (newResultMatcher !== self.resultMatcher || newCanContinue != self.canContinue || newHasCycle != self.hasCycle)
+        let didStatusChange = (newResultMatcher !== self.resultMatcher || newCanContinue != self.canContinue || newCycleCount != self.cycleCount)
         
         self.resultMatcher = newResultMatcher
         self.resultParsed = newResultMatcher?.resultParsed
         self.canContinue = newCanContinue
-        self.hasCycle = newHasCycle
+        self.cycleCount = newCycleCount
         
         return didStatusChange
+    }
+    
+    private func computeCycleCount() -> Int {
+        
+        let subLevelCycleCount: Int = self.branches.map({ $0.matcher.cycleCount }).reduce(0, +)
+        
+        let currentLevelCycleCount: Int = self.branches.filter({ $0.isCycleConnection }).count
+        
+        let cycleEndCount = self.cycleChangeCallbacks.count
+        
+        return subLevelCycleCount + currentLevelCycleCount - cycleEndCount
     }
     
     private func stabilize(context: inout MatchingContext) {
@@ -820,7 +831,7 @@ private class ComplexMatcher<T>: Matcher<T> {
         
         /* Remove the finished branches. We can't do it before because they
          may have results */
-        self.branches.removeAll(where: { (!$0.matcher.canContinue && !$0.isShared && !$0.matcher.hasCycle && !$0.isCycleConnection) || $0.removeNextTime })
+        self.branches.removeAll(where: { (!$0.matcher.canContinue && !$0.isShared && $0.matcher.cycleCount == 0 && !$0.isCycleConnection) || $0.removeNextTime })
         
         /* Feed the branches */
         for i in 0..<self.branches.count {
@@ -830,7 +841,7 @@ private class ComplexMatcher<T>: Matcher<T> {
             let branch = self.branches[i]
             
             /* Shared branches have a status shifted in time, se we must check them now */
-            if branch.isShared && !branch.matcher.canContinue && !branch.matcher.hasCycle && !branch.isCycleConnection {
+            if branch.isShared && !branch.matcher.canContinue && branch.matcher.cycleCount == 0 && !branch.isCycleConnection {
                 self.branches[i].removeNextTime = true
             }
             
@@ -872,7 +883,7 @@ private class SubMatcher<T> {
     var resultParsed: T? {
         fatalError()
     }
-    var hasCycle: Bool {
+    var cycleCount: Int {
         fatalError()
     }
     var subBranches: [SubSchema<T>] {
@@ -1116,8 +1127,8 @@ private class SequenceSubMatcher<T,U>: SubMatcher<T> {
         return compute(parameterResult)
     }
     
-    override var hasCycle: Bool {
-        return self.matcher.hasCycle
+    override var cycleCount: Int {
+        return self.matcher.cycleCount
     }
     
     override var subBranches: [SubSchema<T>] {
@@ -1201,8 +1212,8 @@ private class ResultSubMatcher<T>: SubMatcher<T> {
     override var resultParsed: T? {
         return self.result
     }
-    override var hasCycle: Bool {
-        return false
+    override var cycleCount: Int {
+        return 0
     }
     override var subBranches: [SubSchema<T>] {
         return []
@@ -1277,8 +1288,8 @@ private class ChoiceSubMatcher<T,U>: SubMatcher<T> {
         return self.compute(matcherResult)
     }
     
-    override var hasCycle: Bool {
-        return self.matcher.hasCycle
+    override var cycleCount: Int {
+        return self.matcher.cycleCount
     }
     
     override var subBranches: [SubSchema<T>] {
