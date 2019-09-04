@@ -147,7 +147,7 @@ public extension Schemas {
         
         let nameSchema = Schema<HyperCardObjectIdentification>("\(typeName) \(quotedString)")
             
-            .returnsSingle { HyperCardObjectIdentification.withName(Expression.literal($0)) }
+            .returnsSingle { HyperCardObjectIdentification.withName(Expression.literal(Literal.quotedString($0))) }
         
         let ordinalOrNameIdentification = buildOrdinalIdentification(typeName: typeName) {
             

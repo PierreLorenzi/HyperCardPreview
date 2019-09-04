@@ -12,44 +12,49 @@ public extension Schemas {
     
     static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)")
     
+        .when(quotedString, { Literal.quotedString($0) })
+        .when(boolean, { Literal.boolean($0) })
+        .when(integer, { Literal.integer($0) })
+        .when(realNumber, { Literal.realNumber($0) })
     
     
-    static let quotedString = Schema<Literal> { (token: Token) -> Literal? in
+    static let quotedString = Schema<HString> { (token: Token) -> HString? in
         
         guard case Token.quotedString(let string) = token else {
             return nil
         }
         
-        return Literal.quotedString(string)
+        return string
     }
     
-    static let integer = Schema<Literal> { (token: Token) -> Literal? in
+    static let integer = Schema<Int> { (token: Token) -> Int? in
         
         guard case Token.integer(let value) = token else {
             return nil
         }
         
-        return Literal.integer(value)
+        return value
     }
     
-    static let realNumber = Schema<Literal> { (token: Token) -> Literal? in
+    static let realNumber = Schema<Double> { (token: Token) -> Double? in
         
         guard case Token.realNumber(let value) = token else {
             return nil
         }
         
-        return Literal.realNumber(value)
+        return value
     }
     
-    static let boolean = Schema<Literal>("\(trueLiteral)\(or: falseLiteral)")
-    
-    static let trueLiteral = Schema<Literal>("true")
+    static let boolean = Schema<Bool> { (token: Token) -> Bool? in
         
-        .returns(Literal.boolean(true))
-    
-    static let falseLiteral = Schema<Literal>("false")
-        
-        .returns(Literal.boolean(false))
+        if token == Token.word("true") {
+            return true
+        }
+        if token == Token.word("false") {
+            return false
+        }
+        return nil
+    }
     
 
 }
