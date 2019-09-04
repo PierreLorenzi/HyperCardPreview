@@ -10,18 +10,9 @@
 public extension Schemas {
     
     
-    static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)\(or: word)")
+    static let literal = Schema<Literal>("\(quotedString)\(or: boolean)\(or: integer)\(or: realNumber)")
     
     
-    
-    static let word = Schema<Literal> { (token: Token) -> Literal? in
-        
-        guard case Token.word(let string) = token else {
-            return nil
-        }
-        
-        return Literal.string(string)
-    }
     
     static let quotedString = Schema<Literal> { (token: Token) -> Literal? in
         
@@ -29,7 +20,7 @@ public extension Schemas {
             return nil
         }
         
-        return Literal.string(string)
+        return Literal.quotedString(string)
     }
     
     static let integer = Schema<Literal> { (token: Token) -> Literal? in

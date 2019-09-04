@@ -141,24 +141,24 @@ public extension Schemas {
 
     static func buildHyperCardObjectIdentification<T>(typeName: Schema<Void>, returns compute: @escaping (HyperCardObjectIdentification) -> T) -> Schema<T> {
         
-        let ordinalIdentification = buildOrdinalIdentification(typeName: typeName) {
+        let identifierSchema = Schema<HyperCardObjectIdentification>("\(typeName) id \(factorAgain)")
+            
+            .returnsSingle { HyperCardObjectIdentification.withIdentifier($0) }
+        
+        let nameSchema = Schema<HyperCardObjectIdentification>("\(typeName) \(quotedString)")
+            
+            .returnsSingle { HyperCardObjectIdentification.withName(Expression.literal($0)) }
+        
+        let ordinalOrNameIdentification = buildOrdinalIdentification(typeName: typeName) {
             
             return HyperCardObjectIdentification.withOrdinal($0)
         }
         
-        let nameSchema = Schema<HyperCardObjectIdentification>("\(typeName) \(expressionAgain)")
+        let schema = Schema<T>("\(identifierSchema)\(or: nameSchema)\(or: ordinalOrNameIdentification)")
         
-            .returnsSingle { HyperCardObjectIdentification.withName($0) }
-        
-        let identifierSchema = Schema<HyperCardObjectIdentification>("\(typeName) id \(factorAgain)")
-        
-            .returnsSingle { HyperCardObjectIdentification.withIdentifier($0) }
-        
-        let schema = Schema<T>("\(identifierSchema)\(or: ordinalIdentification)\(or: nameSchema)")
-        
-            .when(ordinalIdentification) { compute($0) }
-            .when(nameSchema) { compute($0) }
             .when(identifierSchema) { compute($0) }
+            .when(nameSchema) { compute($0) }
+            .when(ordinalOrNameIdentification) { compute($0) }
         
         return schema
     }

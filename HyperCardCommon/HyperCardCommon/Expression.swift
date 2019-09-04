@@ -20,10 +20,12 @@ public enum Literal: Equatable {
     case boolean(Bool)
     case integer(Int)
     case realNumber(Double)
-    case string(HString)
+    case quotedString(HString)
 }
 
 public indirect enum ContainerDescriptor: Equatable {
+    
+    // In case of expressions, 'variable' includes unquoted word, so it can be a string
     case variable(identifier: HString)
     case part(PartDescriptor)
     case messageBox

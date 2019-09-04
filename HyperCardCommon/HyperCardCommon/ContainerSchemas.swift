@@ -10,21 +10,11 @@
 public extension Schemas {
     
     
-    static let container = Schema<ContainerDescriptor>("\(variable)\(or: part)\(or: messageBox)\(or: selection)\(or: chunkContainer)")
+    static let container = Schema<ContainerDescriptor>("\(part)\(or: messageBox)\(or: selection)\(or: chunkContainer)\(or: variable)")
     
         .when(part) { ContainerDescriptor.part($0) }
     
     
-    
-    static let variable = Schema<ContainerDescriptor> { (token: Token) -> ContainerDescriptor? in
-        
-        /* The token must be: [a-z][a-z0-9]* */
-        guard case Token.word(let identifier) = token else {
-            return nil
-        }
-        
-        return ContainerDescriptor.variable(identifier: identifier)
-    }
     
     static let messageBox = Schema<ContainerDescriptor>("\(maybe: "the") \(either: "message", "msg") box")
     
@@ -37,4 +27,14 @@ public extension Schemas {
     static let chunkContainer = Schema<ContainerDescriptor>("\(chunk) \(containerAgain)")
     
         .returns { ContainerDescriptor.chunk(ChunkContainer(container: $1, chunk: $0)) }
+    
+    static let variable = Schema<ContainerDescriptor> { (token: Token) -> ContainerDescriptor? in
+        
+        /* The token must be: [a-z][a-z0-9]* */
+        guard case Token.word(let identifier) = token else {
+            return nil
+        }
+        
+        return ContainerDescriptor.variable(identifier: identifier)
+    }
 }
