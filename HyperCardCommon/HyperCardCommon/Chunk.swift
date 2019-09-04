@@ -57,4 +57,9 @@ public enum ChunkNumber: Equatable {
 public struct ChunkNumberRange: Equatable {
     public var minimumNumber: Expression
     public var maximumNumber: Expression
+    
+    public init(minimumNumber: Expression, maximumNumber: Expression) {
+        self.minimumNumber = minimumNumber
+        self.maximumNumber = maximumNumber
+    }
 }
