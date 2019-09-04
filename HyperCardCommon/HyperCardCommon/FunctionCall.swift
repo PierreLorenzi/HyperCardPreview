@@ -9,7 +9,7 @@
 
 public enum FunctionCall: Equatable {
     
-    case custom(identifier: HString, arguments: [Expression])
+    case custom(identifier: HString, arguments: [Expression]?)
     
     case abs(Expression)
     case annuity(number1: Expression, number2: Expression)

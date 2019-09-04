@@ -107,14 +107,14 @@ private extension Schemas {
     
     static func buildLayerDescriptor(typeName: Schema<Void>) -> Schema<LayerDescriptor> {
         
-        let relativeLayer = buildRelativeOrdinalSchema(typeName: Vocabulary.background) {
+        let relativeLayer = buildRelativeOrdinalSchema(typeName: typeName) {
             
-            return BackgroundDescriptor.relative($0)
+            return LayerDescriptor.relative($0)
         }
         
-        let layerWithIdentification = buildHyperCardObjectIdentification(typeName: Vocabulary.background) {
+        let layerWithIdentification = buildHyperCardObjectIdentification(typeName: typeName) {
             
-            return BackgroundDescriptor.absolute($0)
+            return LayerDescriptor.absolute($0)
         }
         
         let layer = Schema<LayerDescriptor>("\(relativeLayer)\(or: layerWithIdentification)")

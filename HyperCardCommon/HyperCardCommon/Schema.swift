@@ -574,6 +574,7 @@ private class ComplexMatcher<T>: Matcher<T> {
     private var branches: [Branch]
     private var resultMatcher: SubMatcher<T>?
     private var isSendingCycleCallback = false
+    private var currentIndex: Int
     
     private struct Branch {
         
@@ -581,11 +582,13 @@ private class ComplexMatcher<T>: Matcher<T> {
         var isCycleConnection: Bool
         var isShared: Bool
         weak var developedFrom: SubMatcher<T>?
+        var removeNextTime: Bool
     }
     
     init(schema: MatchingSchema<T>, subSchemas: [SubSchema<T>], context: inout MatchingContext) {
         
         self.branches = []
+        self.currentIndex = context.index
         
         super.init()
         
@@ -627,7 +630,7 @@ private class ComplexMatcher<T>: Matcher<T> {
                     matcherCreation.subMatcher.addChangeCallback(changeCallback)
                 }
                 
-                branch = Branch(matcher: matcherCreation.subMatcher, isCycleConnection: matcherCreation.isParent, isShared: true, developedFrom: developedFrom)
+                branch = Branch(matcher: matcherCreation.subMatcher, isCycleConnection: matcherCreation.isParent, isShared: true, developedFrom: developedFrom, removeNextTime: false)
             }
             else {
                 
@@ -637,7 +640,7 @@ private class ComplexMatcher<T>: Matcher<T> {
                 let changeCallback = self.makeChangeCallback(for: matcher)
                 matcher.addChangeCallback(changeCallback)
                 
-                branch = Branch(matcher: matcher, isCycleConnection: false, isShared: false, developedFrom: developedFrom)
+                branch = Branch(matcher: matcher, isCycleConnection: false, isShared: false, developedFrom: developedFrom, removeNextTime: false)
             }
             
             /* Add the branch */
@@ -699,6 +702,11 @@ private class ComplexMatcher<T>: Matcher<T> {
     }
     
     private func receiveChangeCallback(from matcher: AnyObject, context: inout MatchingContext) {
+        
+        /* If we're receiving notifications from shared objects before being called, ignore them */
+        guard context.index == self.currentIndex else {
+            return
+        }
         
         /* Remake the development of this matcher */
         let index = self.branches.firstIndex(where: { $0.matcher === matcher })!
@@ -808,9 +816,11 @@ private class ComplexMatcher<T>: Matcher<T> {
     
     override func matchNextToken(_ token: Token, context: inout MatchingContext) {
         
+        self.currentIndex = context.index
+        
         /* Remove the finished branches. We can't do it before because they
          may have results */
-        self.branches.removeAll(where: { !$0.matcher.canContinue && !$0.matcher.hasCycle && !$0.isCycleConnection })
+        self.branches.removeAll(where: { (!$0.matcher.canContinue && !$0.isShared && !$0.matcher.hasCycle && !$0.isCycleConnection) || $0.removeNextTime })
         
         /* Feed the branches */
         for i in 0..<self.branches.count {
@@ -818,6 +828,11 @@ private class ComplexMatcher<T>: Matcher<T> {
             self.branches[i].developedFrom = nil
             
             let branch = self.branches[i]
+            
+            /* Shared branches have a status shifted in time, se we must check them now */
+            if branch.isShared && !branch.matcher.canContinue && !branch.matcher.hasCycle && !branch.isCycleConnection {
+                self.branches[i].removeNextTime = true
+            }
             
             guard !branch.isShared && !branch.isCycleConnection else {
                 branch.matcher.dontMatchNextToken()
@@ -1029,15 +1044,39 @@ private class SequenceSubSchema<T,U>: SubSchema<T> {
             return nil
         }
         guard let buildNextSchema = self.buildNextSchema else {
-            return nil
+            return makeBuildFinalResult()
         }
         
-        let resultValue = self.resultValue
+        let resultValue = buildEmptyResultValue()
         
         return { () -> SubSchema<T> in
             
             let nextSchema = buildNextSchema(resultValue)
             return nextSchema
+        }
+    }
+    
+    private func buildEmptyResultValue() -> ResultValue<T> {
+        
+        let resultValue = self.resultValue
+        
+        guard let parameterIndex = self.parameterIndex else {
+            return resultValue
+        }
+        
+        var newResultValue = resultValue
+        newResultValue.markParameterAbsent(at: parameterIndex, type: U.self)
+        
+        return newResultValue
+    }
+    
+    private func makeBuildFinalResult() -> (() -> SubSchema<T>)? {
+        
+        let resultValue = buildEmptyResultValue()
+        let result = resultValue.compute()
+        
+        return { () -> SubSchema<T> in
+            return ResultSubSchema<T>(result: result)
         }
     }
 }
@@ -1128,6 +1167,54 @@ private class SequenceSubMatcher<T,U>: SubMatcher<T> {
     override func dontMatchNextToken() {
         
         self.buildInitialNextSchema = nil
+    }
+}
+
+private class ResultSubSchema<T>: SubSchema<T> {
+    
+    private let result: T
+    
+    init(result: T) {
+        self.result = result
+    }
+    
+    override func findExistingMatcher(in context: inout MatchingContext) -> SubMatcherCreation<T>? {
+        return nil
+    }
+    
+    override func buildSubMatcher(context: inout MatchingContext) -> SubMatcher<T> {
+        return ResultSubMatcher(result: self.result)
+    }
+}
+
+private class ResultSubMatcher<T>: SubMatcher<T> {
+    
+    private let result: T
+    
+    init(result: T) {
+        self.result = result
+    }
+    
+    override var canContinue: Bool {
+        return false
+    }
+    override var resultParsed: T? {
+        return self.result
+    }
+    override var hasCycle: Bool {
+        return false
+    }
+    override var subBranches: [SubSchema<T>] {
+        return []
+    }
+    
+    override func addChangeCallback(_ callback: @escaping MatcherCallback) {
+    }
+    
+    override func addCycleChangeCallback(_ callback: @escaping MatcherCallback) {
+    }
+    
+    override func matchNextToken(_ token: Token, context: inout MatchingContext) {
     }
 }
 

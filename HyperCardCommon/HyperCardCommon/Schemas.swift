@@ -21,7 +21,7 @@ public extension Schemas {
     static let expressionAgain: Schema<Expression> = buildFakeSchema()
     
     /* Represents 'container', but used to avoid dependency cycles */
-    static let containerAgain: Schema<ChunkContainer> = buildFakeSchema()
+    static let containerAgain: Schema<ContainerDescriptor> = buildFakeSchema()
     
     static func finalizeSchemas() {
         
