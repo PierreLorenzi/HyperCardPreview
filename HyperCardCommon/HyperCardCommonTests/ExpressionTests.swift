@@ -41,6 +41,8 @@ class ExpressionTests: XCTestCase {
         
         XCTAssert(schema.parse("2 + 2") == Expression.operator(Operator.addition(Expression.literal(Literal.integer(2)), Expression.literal(Literal.integer(2)))))
         XCTAssert(schema.parse("- 2 + 2") == Expression.operator(Operator.addition(Expression.operator(Operator.opposite(Expression.literal(Literal.integer(2)))), Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("2 * 2 + 2") == Expression.operator(Operator.addition(Expression.operator(Operator.multiplication(Expression.literal(Literal.integer(2)), Expression.literal(Literal.integer(2)))), Expression.literal(Literal.integer(2)))))
+        XCTAssert(schema.parse("2 + 2 * 2") == Expression.operator(Operator.addition( Expression.literal(Literal.integer(2)),Expression.operator(Operator.multiplication(Expression.literal(Literal.integer(2)), Expression.literal(Literal.integer(2)))))))
         XCTAssert(schema.parse("the exp of 2") == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
         XCTAssert(schema.parse("exp of 2") == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
         XCTAssert(schema.parse("exp(2)") == Expression.functionCall(FunctionCall.exp(Expression.literal(Literal.integer(2)))))
