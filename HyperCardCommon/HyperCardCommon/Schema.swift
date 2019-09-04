@@ -14,6 +14,7 @@ public final class Schema<T> {
     private var computation: ResultValue<T>? = nil
     private var schemaIndexesToParameterIndexes: [Int: Int] = [:]
     private var _isConstant: Bool? = nil
+    private var mapToken: ((Token) -> T?)? = nil
     
     public init() {}
     
@@ -30,16 +31,14 @@ public final class Schema<T> {
         self.branchElements = schemaLiteral.branchElements.map { $0.assignNewType(T.self) }
     }
     
+    init(tokenKind mapToken: @escaping (Token) -> T?) {
+        
+        self.mapToken = mapToken
+    }
+    
     private var possibleMatchingSchema: MatchingSchema<T>? = nil
     
     private var matchingSchema: MatchingSchema<T>?
-    
-    public func appendTokenKind(filterBy isTokenValid: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?, isConstant: Bool) {
-        
-        let element = TokenSchemaElement<T>(tokenFilter: isTokenValid, minCount: minCount, maxCount: maxCount, isConstant: isConstant)
-        
-        self.sequenceElements.append(element)
-    }
     
     public func appendSchema<U>(_ schema: Schema<U>, minCount: Int, maxCount: Int?, isConstant: Bool?) {
         
@@ -195,6 +194,10 @@ public final class Schema<T> {
             return existingSchema
         }
         
+        if let mapToken = self.mapToken {
+            return TokenSchema<T>(mapToken: mapToken)
+        }
+        
         /* To simplify, if we are reduced to one schema, set to it */
         if self.sequenceElements.count == 1 && self.branchElements.isEmpty && self.sequenceElements[0].isSameType && self.sequenceElements[0].minCount == 1 && self.sequenceElements[0].maxCount == 1 &&
             self.computation == nil {
@@ -267,7 +270,7 @@ public final class Schema<T> {
     var isConstant: Bool {
         
         get {
-            return self._isConstant ?? (self.sequenceElements.allSatisfy({ $0.isConstant }) && self.branchElements.isEmpty)
+            return self._isConstant ?? (T.self == Void.self)
         }
         set {
             self._isConstant = newValue
@@ -361,15 +364,25 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     
     override func createChoiceSubSchema() -> SubSchema<T> {
         
+        let compute = self.makeComputeBranch()
+        let matchingSchema = self.schema.buildMatchingSchema()
+        return ChoiceSubSchema<T,U>(schema: matchingSchema, compute: compute)
+    }
+    
+    private func makeComputeBranch() -> (U) -> T {
+        
+        if self.computeBranch == nil && T.self == Void.self {
+            return { (_: U) -> T in return () as! T }
+        }
+        
         if self.computeBranch == nil && T.self != U.self {
             fatalError()
         }
         
-        let matchingSchema = self.schema.buildMatchingSchema()
         let compute = self.computeBranch ?? { (value: U) -> T in
             return value as! T }
         
-        return ChoiceSubSchema<T,U>(schema: matchingSchema, compute: compute)
+        return compute
     }
     
     override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
@@ -390,73 +403,6 @@ private class TypedSchemaElement<T,U>: SchemaElement<T> {
     override func createSequenceSubSchema(parameterIndex: Int?, resultValue: ResultValue<T>, buildNextSchema: ((ResultValue<T>) -> SubSchema<T>)?) -> SubSchema<T> {
         
         let matchingSchema = self.schema.buildMatchingSchema()
-        return SequenceSubSchema(schema: matchingSchema, occurrenceCount: 1, minCount: self.minCount, maxCount: self.maxCount, parameterIndex: parameterIndex, resultValue: resultValue, buildNextSchema: buildNextSchema)
-    }
-}
-
-private class TokenSchemaElement<T>: SchemaElement<T> {
-    
-    private var tokenFilter: (Token) -> Bool
-    private var computeBranch: ((Token) -> T)? = nil
-    let _isConstant: Bool
-    
-    init(tokenFilter: @escaping (Token) -> Bool, minCount: Int, maxCount: Int?, isConstant: Bool) {
-        
-        self.tokenFilter = tokenFilter
-        self._isConstant = isConstant
-        
-        super.init(minCount: minCount, maxCount: maxCount, isSameType: T.self == Token.self)
-    }
-    
-    override var isConstant: Bool {
-        /* Even if a constant can appear several times, we don't consider it an obvious variable */
-        return self._isConstant
-    }
-    
-    override func isSchema<U>(_ schema: Schema<U>) -> Bool {
-        return false
-    }
-    
-    override func computeAsBranchWith<V>(_ compute: @escaping (V) -> T) {
-        
-        guard V.self == Token.self else {
-            fatalError()
-        }
-        
-        self.computeBranch = (compute as! ((Token) -> T))
-    }
-    
-    override func createChoiceSubSchema() -> SubSchema<T> {
-        
-        if self.computeBranch == nil && T.self != Token.self {
-            fatalError()
-        }
-        
-        let matchingSchema = TokenSchema(isTokenValid: self.tokenFilter)
-        let compute = self.computeBranch ?? { (value: Token) -> T in
-            return value as! T }
-        
-        return ChoiceSubSchema<T,Token>(schema: matchingSchema, compute: compute)
-    }
-    
-    override func assignNewType<V>(_ type: V.Type) -> SchemaElement<V> {
-        
-        return TokenSchemaElement<V>(tokenFilter: self.tokenFilter, minCount: self.minCount, maxCount: self.maxCount, isConstant: self.isConstant)
-    }
-    
-    override func createSchemaSameType() -> MatchingSchema<T> {
-        
-        return TokenSchema(isTokenValid: self.tokenFilter) as! MatchingSchema<T>
-    }
-    
-    override func hasComputation() -> Bool {
-        
-        return self.computeBranch != nil
-    }
-    
-    override func createSequenceSubSchema(parameterIndex: Int?, resultValue: ResultValue<T>, buildNextSchema: ((ResultValue<T>) -> SubSchema<T>)?) -> SubSchema<T> {
-        
-        let matchingSchema = TokenSchema(isTokenValid: self.tokenFilter)
         return SequenceSubSchema(schema: matchingSchema, occurrenceCount: 1, minCount: self.minCount, maxCount: self.maxCount, parameterIndex: parameterIndex, resultValue: resultValue, buildNextSchema: buildNextSchema)
     }
 }
@@ -518,28 +464,28 @@ private class Matcher<T> {
     }
 }
 
-private class TokenSchema: MatchingSchema<Token> {
+private class TokenSchema<T>: MatchingSchema<T> {
     
-    private let isTokenValid: (Token) -> Bool
+    private let mapToken: (Token) -> T?
     
-    init(isTokenValid: @escaping (Token) -> Bool) {
+    init(mapToken: @escaping (Token) -> T?) {
         
-        self.isTokenValid = isTokenValid
+        self.mapToken = mapToken
     }
     
-    override func buildMatcher(context: inout MatchingContext) -> Matcher<Token> {
+    override func buildMatcher(context: inout MatchingContext) -> Matcher<T> {
         
-        return TokenMatcher(isTokenValid: self.isTokenValid)
+        return TokenMatcher<T>(mapToken: self.mapToken)
     }
 }
 
-private class TokenMatcher: Matcher<Token> {
+private class TokenMatcher<T>: Matcher<T> {
     
-    private let isTokenValid: (Token) -> Bool
+    private let mapToken: (Token) -> T?
     
-    init(isTokenValid: @escaping (Token) -> Bool) {
+    init(mapToken: @escaping (Token) -> T?) {
         
-        self.isTokenValid = isTokenValid
+        self.mapToken = mapToken
         
         super.init()
         
@@ -549,10 +495,7 @@ private class TokenMatcher: Matcher<Token> {
     
     override func matchNextToken(_ token: Token, context: inout MatchingContext) {
         
-        if self.isTokenValid(token) {
-            
-            self.resultParsed = token
-        }
+        self.resultParsed = self.mapToken(token)
         
         self.canContinue = false
     }

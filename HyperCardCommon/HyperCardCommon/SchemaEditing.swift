@@ -9,15 +9,6 @@
 
 public extension Schema {
     
-    convenience init(tokenKind mapToken: @escaping (Token) -> T?) {
-        
-        self.init()
-        
-        self.appendTokenKind(filterBy: { mapToken($0) != nil }, minCount: 1, maxCount: 1, isConstant: false)
-        
-        self.computeSequenceBySingle({ mapToken($0)! })
-    }
-    
     func returns(_ value: T) -> Schema<T> {
         
         let compute = { () -> T in return value }

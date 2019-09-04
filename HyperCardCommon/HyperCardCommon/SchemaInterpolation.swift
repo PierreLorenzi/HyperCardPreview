@@ -44,9 +44,14 @@ private func fillSchemaWithHString<U>(_ schema: Schema<U>, _ string: HString) {
     
     for token in tokens {
         
-        schema.appendTokenKind(filterBy: { (t: Token) -> Bool in
-            t == token
-        }, minCount: 1, maxCount: 1, isConstant: true)
+        let tokenSchema = Schema { (t: Token) -> Void? in
+            guard t == token else {
+                return nil
+            }
+            return ()
+        }
+        
+        schema.appendSchema(tokenSchema, minCount: 1, maxCount: 1, isConstant: true)
     }
 }
 
@@ -147,7 +152,14 @@ public struct SchemaInterpolation: StringInterpolationProtocol {
     
     public func appendInterpolation(_ token: Token) {
         
-        self.schema.appendTokenKind(filterBy: { $0 == token }, minCount: 1, maxCount: 1, isConstant: true)
+        let tokenSchema = Schema { (t: Token) -> Void? in
+            guard t == token else {
+                return nil
+            }
+            return ()
+        }
+        
+        schema.appendSchema(tokenSchema, minCount: 1, maxCount: 1, isConstant: true)
     }
 }
 
