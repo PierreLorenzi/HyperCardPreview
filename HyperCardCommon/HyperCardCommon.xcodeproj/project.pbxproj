@@ -395,6 +395,7 @@
 		6CEED23520C9B92200A0DBE0 /* Home.rsrc in Resources */ = {isa = PBXBuildFile; fileRef = 6CEED23420C9B92100A0DBE0 /* Home.rsrc */; };
 		6CEED23720C9BE1800A0DBE0 /* Home 1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6CEED23620C9BE1800A0DBE0 /* Home 1.gif */; };
 		6CEED23920C9BE2800A0DBE0 /* Home 9.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6CEED23820C9BE2800A0DBE0 /* Home 9.gif */; };
+		6CFCA6862320109500ED6108 /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CFCA6852320109500ED6108 /* SchemaTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -799,6 +800,7 @@
 		6CEED23420C9B92100A0DBE0 /* Home.rsrc */ = {isa = PBXFileReference; lastKnownFileType = archive.rsrc; path = Home.rsrc; sourceTree = "<group>"; };
 		6CEED23620C9BE1800A0DBE0 /* Home 1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "Home 1.gif"; sourceTree = "<group>"; };
 		6CEED23820C9BE2800A0DBE0 /* Home 9.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "Home 9.gif"; sourceTree = "<group>"; };
+		6CFCA6852320109500ED6108 /* SchemaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1362,6 +1364,7 @@
 				6CB025471F4ED75700B57D87 /* HyperCardCommonTests.swift */,
 				6C56FD091F56BC2B0036FF8A /* DataTests.swift */,
 				6CEED1F820C9A83900A0DBE0 /* GraphicTests.swift */,
+				6CFCA6852320109500ED6108 /* SchemaTests.swift */,
 				6C5E929323155F4A00054E46 /* ExpressionTests.swift */,
 				6CB025501F4ED7A700B57D87 /* Resources */,
 				6CB025491F4ED75700B57D87 /* Info.plist */,
@@ -1940,6 +1943,7 @@
 				6C5E929423155F4A00054E46 /* ExpressionTests.swift in Sources */,
 				6CB025481F4ED75700B57D87 /* HyperCardCommonTests.swift in Sources */,
 				6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */,
+				6CFCA6862320109500ED6108 /* SchemaTests.swift in Sources */,
 				6CEED1F920C9A83900A0DBE0 /* GraphicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

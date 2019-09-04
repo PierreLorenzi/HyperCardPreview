@@ -31,7 +31,7 @@ public final class Schema<T> {
         self.branchElements = schemaLiteral.branchElements.map { $0.assignNewType(T.self) }
     }
     
-    init(tokenKind mapToken: @escaping (Token) -> T?) {
+    public init(mapToken: @escaping (Token) -> T?) {
         
         self.mapToken = mapToken
     }
