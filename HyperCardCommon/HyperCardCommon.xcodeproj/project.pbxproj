@@ -7,23 +7,49 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6C175D3923190456005882A8 /* FactorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3823190456005882A8 /* FactorSchemas.swift */; };
-		6C175D3B2319088F005882A8 /* UnaryOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */; };
-		6C175D3D23190A48005882A8 /* ExpressionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3C23190A48005882A8 /* ExpressionSchemas.swift */; };
-		6C175D3F231913B4005882A8 /* NoArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */; };
 		6C298BA32312E4CC00960F72 /* BitmapLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C298BA22312E4CC00960F72 /* BitmapLoading.swift */; };
 		6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */; };
 		6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */; };
 		6C2EF95520CAC0A400FAB8CA /* TestBitmap.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C2EF95320CAC0A300FAB8CA /* TestBitmap.stack */; };
 		6C2EF95820CAC0E900FAB8CA /* TestBitmap 1.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6C2EF95720CAC0E900FAB8CA /* TestBitmap 1.gif */; };
-		6C2FB5742314854200824D73 /* SchemaEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FB5732314854200824D73 /* SchemaEditing.swift */; };
-		6C2FB5762314858000824D73 /* SchemaInterpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C2FB5752314858000824D73 /* SchemaInterpolation.swift */; };
 		6C30878D1F48957100CCA9A7 /* PartLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30878C1F48957100CCA9A7 /* PartLoading.swift */; };
 		6C30E8D11F4D117A00ACB457 /* StringComparison.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C30E8D01F4D117A00ACB457 /* StringComparison.swift */; };
 		6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */; };
 		6C56FD081F56BBA40036FF8A /* TestStrangeFlags.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */; };
 		6C56FD0A1F56BC2B0036FF8A /* DataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C56FD091F56BC2B0036FF8A /* DataTests.swift */; };
-		6C5E9292231541FC00054E46 /* LiteralSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5E9291231541FC00054E46 /* LiteralSchemas.swift */; };
+		6C59F45523201B3300D62D48 /* CharacterTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45423201B3300D62D48 /* CharacterTypes.swift */; };
+		6C59F45823201B4500D62D48 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45723201B4500D62D48 /* Chunk.swift */; };
+		6C59F45A23201B4C00D62D48 /* ChunkSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45923201B4C00D62D48 /* ChunkSchemas.swift */; };
+		6C59F45C23201B5800D62D48 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45B23201B5800D62D48 /* Command.swift */; };
+		6C59F45E23201B6900D62D48 /* CommonScriptTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45D23201B6900D62D48 /* CommonScriptTypes.swift */; };
+		6C59F46023201B7D00D62D48 /* ContainerSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F45F23201B7D00D62D48 /* ContainerSchemas.swift */; };
+		6C59F46223201B8900D62D48 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46123201B8900D62D48 /* Expression.swift */; };
+		6C59F46423201B8F00D62D48 /* ExpressionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46323201B8F00D62D48 /* ExpressionSchemas.swift */; };
+		6C59F46623201B9600D62D48 /* FactorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46523201B9600D62D48 /* FactorSchemas.swift */; };
+		6C59F46823201BA100D62D48 /* FlowStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46723201BA100D62D48 /* FlowStatement.swift */; };
+		6C59F46A23201BAA00D62D48 /* FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46923201BAA00D62D48 /* FunctionCall.swift */; };
+		6C59F46C23201BB600D62D48 /* FunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46B23201BB600D62D48 /* FunctionSchemas.swift */; };
+		6C59F46E23201BBD00D62D48 /* HandlerLocating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46D23201BBD00D62D48 /* HandlerLocating.swift */; };
+		6C59F47023201BC800D62D48 /* HyperCard Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F46F23201BC800D62D48 /* HyperCard Objects.swift */; };
+		6C59F47223201BDB00D62D48 /* HyperCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47123201BDB00D62D48 /* HyperCard.swift */; };
+		6C59F47423201BEB00D62D48 /* HyperCardObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47323201BEB00D62D48 /* HyperCardObjectDescriptor.swift */; };
+		6C59F47623201BF500D62D48 /* HyperCardObjectSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47523201BF500D62D48 /* HyperCardObjectSchemas.swift */; };
+		6C59F47823201C0C00D62D48 /* LiteralSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47723201C0C00D62D48 /* LiteralSchemas.swift */; };
+		6C59F47A23201C1400D62D48 /* NoArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47923201C1400D62D48 /* NoArgumentFunctionSchemas.swift */; };
+		6C59F47C23201C2900D62D48 /* ObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47B23201C2900D62D48 /* ObjectDescriptor.swift */; };
+		6C59F47E23201C2F00D62D48 /* OneArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47D23201C2F00D62D48 /* OneArgumentFunctionSchemas.swift */; };
+		6C59F48023201C3700D62D48 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F47F23201C3700D62D48 /* Operator.swift */; };
+		6C59F48223201C4800D62D48 /* PropertyDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48123201C4800D62D48 /* PropertyDescriptor.swift */; };
+		6C59F48423201C5D00D62D48 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48323201C5D00D62D48 /* Schema.swift */; };
+		6C59F48623201C6300D62D48 /* SchemaEditing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48523201C6300D62D48 /* SchemaEditing.swift */; };
+		6C59F48823201C6900D62D48 /* SchemaInterpolation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48723201C6900D62D48 /* SchemaInterpolation.swift */; };
+		6C59F48A23201C6E00D62D48 /* Schemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48923201C6E00D62D48 /* Schemas.swift */; };
+		6C59F48C23201C7900D62D48 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48B23201C7900D62D48 /* Script.swift */; };
+		6C59F48E23201C9100D62D48 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48D23201C9000D62D48 /* Token.swift */; };
+		6C59F49023201C9500D62D48 /* TokenSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F48F23201C9500D62D48 /* TokenSequence.swift */; };
+		6C59F49223201CA100D62D48 /* UnaryOperatorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F49123201CA100D62D48 /* UnaryOperatorSchemas.swift */; };
+		6C59F49423201CA800D62D48 /* VocabularySchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F49323201CA800D62D48 /* VocabularySchemas.swift */; };
+		6C59F496232020A000D62D48 /* ObjectDescriptorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F495232020A000D62D48 /* ObjectDescriptorSchemas.swift */; };
 		6C5E929423155F4A00054E46 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5E929323155F4A00054E46 /* ExpressionTests.swift */; };
 		6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6064061F5B1DF600988560 /* HdmxTableReader.swift */; };
 		6C76AA9820C5956C009A3446 /* Computation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C76AA9720C5956C009A3446 /* Computation.swift */; };
@@ -34,25 +60,6 @@
 		6C8746241F540007005A41AB /* scroll down arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */; };
 		6C8746251F540007005A41AB /* scroll up arrow clicked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = 6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */; };
 		6C8746271F5402E0005A41AB /* Responder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C8746261F5402E0005A41AB /* Responder.swift */; };
-		6C89A2E42314082800F394D8 /* TokenSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DC2314082800F394D8 /* TokenSequence.swift */; };
-		6C89A2E52314082800F394D8 /* Token.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DD2314082800F394D8 /* Token.swift */; };
-		6C89A2E62314082800F394D8 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DE2314082800F394D8 /* Schema.swift */; };
-		6C89A2E72314082800F394D8 /* CharacterTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2DF2314082800F394D8 /* CharacterTypes.swift */; };
-		6C89A2E82314082800F394D8 /* CommonScriptTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2E02314082800F394D8 /* CommonScriptTypes.swift */; };
-		6C89A2E92314082800F394D8 /* HyperCard Objects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2E12314082800F394D8 /* HyperCard Objects.swift */; };
-		6C89A2EA2314082800F394D8 /* HandlerLocating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2E22314082800F394D8 /* HandlerLocating.swift */; };
-		6C89A2EB2314082800F394D8 /* HyperCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2E32314082800F394D8 /* HyperCard.swift */; };
-		6C89A2F7231408EF00F394D8 /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2ED231408EE00F394D8 /* Command.swift */; };
-		6C89A2F8231408EF00F394D8 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2EE231408EE00F394D8 /* Expression.swift */; };
-		6C89A2F9231408EF00F394D8 /* FunctionCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2EF231408EE00F394D8 /* FunctionCall.swift */; };
-		6C89A2FA231408EF00F394D8 /* ObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F0231408EE00F394D8 /* ObjectDescriptor.swift */; };
-		6C89A2FB231408EF00F394D8 /* PropertyDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F1231408EE00F394D8 /* PropertyDescriptor.swift */; };
-		6C89A2FC231408EF00F394D8 /* Script.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F2231408EE00F394D8 /* Script.swift */; };
-		6C89A2FD231408EF00F394D8 /* FlowStatement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F3231408EE00F394D8 /* FlowStatement.swift */; };
-		6C89A2FE231408EF00F394D8 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F4231408EE00F394D8 /* Chunk.swift */; };
-		6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F5231408EF00F394D8 /* Operator.swift */; };
-		6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */; };
-		6C9DB5D92318A5F40030A556 /* ContainerSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */; };
 		6C9DF4D620C703DF0024F61B /* ResourceRepositoryLoading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */; };
 		6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF4D720C708A80024F61B /* MainRepository.swift */; };
 		6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9DF50120C7257C0024F61B /* AddColor.swift */; };
@@ -358,13 +365,6 @@
 		6CB51D6A1F4F5486000C43D3 /* TestCardProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */; };
 		6CB51D6C1F4F5659000C43D3 /* TestBackgroundProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */; };
 		6CB51D7A1F4F640A000C43D3 /* TestButtonProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CB51D791F4F640A000C43D3 /* TestButtonProperties.stack */; };
-		6CB5ABAE2319243600082140 /* OneArgumentFunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABAD2319243600082140 /* OneArgumentFunctionSchemas.swift */; };
-		6CB5ABB02319448500082140 /* Schemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABAF2319448500082140 /* Schemas.swift */; };
-		6CB5ABB22319513D00082140 /* VocabularySchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB5ABB12319513D00082140 /* VocabularySchemas.swift */; };
-		6CB9D8F62319749A001AAB56 /* FunctionSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB9D8F52319749A001AAB56 /* FunctionSchemas.swift */; };
-		6CB9D8F823197BB5001AAB56 /* ChunkSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB9D8F723197BB5001AAB56 /* ChunkSchemas.swift */; };
-		6CB9D8FA23199E62001AAB56 /* ObjectDescriptorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB9D8F923199E62001AAB56 /* ObjectDescriptorSchemas.swift */; };
-		6CB9D8FC2319BCDA001AAB56 /* HyperCardObjectSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CB9D8FB2319BCDA001AAB56 /* HyperCardObjectSchemas.swift */; };
 		6CC67B751F4F03840070195B /* TestManyCards.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CC67B741F4F03840070195B /* TestManyCards.stack */; };
 		6CD0B1A51F4BDB2400C2F816 /* New York.dfont in Resources */ = {isa = PBXBuildFile; fileRef = 6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */; };
 		6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */; };
@@ -409,23 +409,49 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6C175D3823190456005882A8 /* FactorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactorSchemas.swift; sourceTree = "<group>"; };
-		6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnaryOperatorSchemas.swift; sourceTree = "<group>"; };
-		6C175D3C23190A48005882A8 /* ExpressionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionSchemas.swift; sourceTree = "<group>"; };
-		6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
 		6C298BA22312E4CC00960F72 /* BitmapLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BitmapLoading.swift; sourceTree = "<group>"; };
 		6C2AD4491F51A0BE00E2F8B9 /* WhiteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WhiteView.swift; sourceTree = "<group>"; };
 		6C2AD44B1F51A4BB00E2F8B9 /* AddColorPainter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColorPainter.swift; sourceTree = "<group>"; };
 		6C2EF95320CAC0A300FAB8CA /* TestBitmap.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestBitmap.stack; sourceTree = "<group>"; };
 		6C2EF95720CAC0E900FAB8CA /* TestBitmap 1.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "TestBitmap 1.gif"; sourceTree = "<group>"; };
-		6C2FB5732314854200824D73 /* SchemaEditing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaEditing.swift; sourceTree = "<group>"; };
-		6C2FB5752314858000824D73 /* SchemaInterpolation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SchemaInterpolation.swift; sourceTree = "<group>"; };
 		6C30878C1F48957100CCA9A7 /* PartLoading.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartLoading.swift; sourceTree = "<group>"; };
 		6C30E8D01F4D117A00ACB457 /* StringComparison.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringComparison.swift; sourceTree = "<group>"; };
 		6C549B1B1F50DA0000836AE2 /* RgbConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RgbConversion.swift; sourceTree = "<group>"; };
 		6C56FD071F56BBA40036FF8A /* TestStrangeFlags.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestStrangeFlags.stack; sourceTree = "<group>"; };
 		6C56FD091F56BC2B0036FF8A /* DataTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataTests.swift; sourceTree = "<group>"; };
-		6C5E9291231541FC00054E46 /* LiteralSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiteralSchemas.swift; sourceTree = "<group>"; };
+		6C59F45423201B3300D62D48 /* CharacterTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTypes.swift; sourceTree = "<group>"; };
+		6C59F45723201B4500D62D48 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
+		6C59F45923201B4C00D62D48 /* ChunkSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChunkSchemas.swift; sourceTree = "<group>"; };
+		6C59F45B23201B5800D62D48 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
+		6C59F45D23201B6900D62D48 /* CommonScriptTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonScriptTypes.swift; sourceTree = "<group>"; };
+		6C59F45F23201B7D00D62D48 /* ContainerSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContainerSchemas.swift; sourceTree = "<group>"; };
+		6C59F46123201B8900D62D48 /* Expression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
+		6C59F46323201B8F00D62D48 /* ExpressionSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressionSchemas.swift; sourceTree = "<group>"; };
+		6C59F46523201B9600D62D48 /* FactorSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FactorSchemas.swift; sourceTree = "<group>"; };
+		6C59F46723201BA100D62D48 /* FlowStatement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowStatement.swift; sourceTree = "<group>"; };
+		6C59F46923201BAA00D62D48 /* FunctionCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionCall.swift; sourceTree = "<group>"; };
+		6C59F46B23201BB600D62D48 /* FunctionSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionSchemas.swift; sourceTree = "<group>"; };
+		6C59F46D23201BBD00D62D48 /* HandlerLocating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandlerLocating.swift; sourceTree = "<group>"; };
+		6C59F46F23201BC800D62D48 /* HyperCard Objects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HyperCard Objects.swift"; sourceTree = "<group>"; };
+		6C59F47123201BDB00D62D48 /* HyperCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCard.swift; sourceTree = "<group>"; };
+		6C59F47323201BEB00D62D48 /* HyperCardObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectDescriptor.swift; sourceTree = "<group>"; };
+		6C59F47523201BF500D62D48 /* HyperCardObjectSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectSchemas.swift; sourceTree = "<group>"; };
+		6C59F47723201C0C00D62D48 /* LiteralSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiteralSchemas.swift; sourceTree = "<group>"; };
+		6C59F47923201C1400D62D48 /* NoArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
+		6C59F47B23201C2900D62D48 /* ObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectDescriptor.swift; sourceTree = "<group>"; };
+		6C59F47D23201C2F00D62D48 /* OneArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OneArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
+		6C59F47F23201C3700D62D48 /* Operator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
+		6C59F48123201C4800D62D48 /* PropertyDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyDescriptor.swift; sourceTree = "<group>"; };
+		6C59F48323201C5D00D62D48 /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		6C59F48523201C6300D62D48 /* SchemaEditing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaEditing.swift; sourceTree = "<group>"; };
+		6C59F48723201C6900D62D48 /* SchemaInterpolation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaInterpolation.swift; sourceTree = "<group>"; };
+		6C59F48923201C6E00D62D48 /* Schemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schemas.swift; sourceTree = "<group>"; };
+		6C59F48B23201C7900D62D48 /* Script.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
+		6C59F48D23201C9000D62D48 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
+		6C59F48F23201C9500D62D48 /* TokenSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSequence.swift; sourceTree = "<group>"; };
+		6C59F49123201CA100D62D48 /* UnaryOperatorSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UnaryOperatorSchemas.swift; sourceTree = "<group>"; };
+		6C59F49323201CA800D62D48 /* VocabularySchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VocabularySchemas.swift; sourceTree = "<group>"; };
+		6C59F495232020A000D62D48 /* ObjectDescriptorSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectDescriptorSchemas.swift; sourceTree = "<group>"; };
 		6C5E929323155F4A00054E46 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		6C6064061F5B1DF600988560 /* HdmxTableReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HdmxTableReader.swift; sourceTree = "<group>"; };
 		6C76AA9720C5956C009A3446 /* Computation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computation.swift; sourceTree = "<group>"; };
@@ -436,25 +462,6 @@
 		6C8746221F540007005A41AB /* scroll down arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll down arrow clicked.tiff"; sourceTree = "<group>"; };
 		6C8746231F540007005A41AB /* scroll up arrow clicked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = "scroll up arrow clicked.tiff"; sourceTree = "<group>"; };
 		6C8746261F5402E0005A41AB /* Responder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Responder.swift; sourceTree = "<group>"; };
-		6C89A2DC2314082800F394D8 /* TokenSequence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TokenSequence.swift; sourceTree = "<group>"; };
-		6C89A2DD2314082800F394D8 /* Token.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Token.swift; sourceTree = "<group>"; };
-		6C89A2DE2314082800F394D8 /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
-		6C89A2DF2314082800F394D8 /* CharacterTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CharacterTypes.swift; sourceTree = "<group>"; };
-		6C89A2E02314082800F394D8 /* CommonScriptTypes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonScriptTypes.swift; sourceTree = "<group>"; };
-		6C89A2E12314082800F394D8 /* HyperCard Objects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HyperCard Objects.swift"; sourceTree = "<group>"; };
-		6C89A2E22314082800F394D8 /* HandlerLocating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandlerLocating.swift; sourceTree = "<group>"; };
-		6C89A2E32314082800F394D8 /* HyperCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCard.swift; sourceTree = "<group>"; };
-		6C89A2ED231408EE00F394D8 /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
-		6C89A2EE231408EE00F394D8 /* Expression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Expression.swift; sourceTree = "<group>"; };
-		6C89A2EF231408EE00F394D8 /* FunctionCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionCall.swift; sourceTree = "<group>"; };
-		6C89A2F0231408EE00F394D8 /* ObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectDescriptor.swift; sourceTree = "<group>"; };
-		6C89A2F1231408EE00F394D8 /* PropertyDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PropertyDescriptor.swift; sourceTree = "<group>"; };
-		6C89A2F2231408EE00F394D8 /* Script.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Script.swift; sourceTree = "<group>"; };
-		6C89A2F3231408EE00F394D8 /* FlowStatement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowStatement.swift; sourceTree = "<group>"; };
-		6C89A2F4231408EE00F394D8 /* Chunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
-		6C89A2F5231408EF00F394D8 /* Operator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Operator.swift; sourceTree = "<group>"; };
-		6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HyperCardObjectDescriptor.swift; sourceTree = "<group>"; };
-		6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerSchemas.swift; sourceTree = "<group>"; };
 		6C9DF4D520C703DF0024F61B /* ResourceRepositoryLoading.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceRepositoryLoading.swift; sourceTree = "<group>"; };
 		6C9DF4D720C708A80024F61B /* MainRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRepository.swift; sourceTree = "<group>"; };
 		6C9DF50120C7257C0024F61B /* AddColor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddColor.swift; sourceTree = "<group>"; };
@@ -763,13 +770,6 @@
 		6CB51D691F4F5486000C43D3 /* TestCardProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardProperties.stack; sourceTree = "<group>"; };
 		6CB51D6B1F4F5659000C43D3 /* TestBackgroundProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestBackgroundProperties.stack; sourceTree = "<group>"; };
 		6CB51D791F4F640A000C43D3 /* TestButtonProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestButtonProperties.stack; sourceTree = "<group>"; };
-		6CB5ABAD2319243600082140 /* OneArgumentFunctionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneArgumentFunctionSchemas.swift; sourceTree = "<group>"; };
-		6CB5ABAF2319448500082140 /* Schemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schemas.swift; sourceTree = "<group>"; };
-		6CB5ABB12319513D00082140 /* VocabularySchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VocabularySchemas.swift; sourceTree = "<group>"; };
-		6CB9D8F52319749A001AAB56 /* FunctionSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FunctionSchemas.swift; sourceTree = "<group>"; };
-		6CB9D8F723197BB5001AAB56 /* ChunkSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChunkSchemas.swift; sourceTree = "<group>"; };
-		6CB9D8F923199E62001AAB56 /* ObjectDescriptorSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectDescriptorSchemas.swift; sourceTree = "<group>"; };
-		6CB9D8FB2319BCDA001AAB56 /* HyperCardObjectSchemas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HyperCardObjectSchemas.swift; sourceTree = "<group>"; };
 		6CC67B741F4F03840070195B /* TestManyCards.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestManyCards.stack; sourceTree = "<group>"; };
 		6CD0B1A41F4BDA7D00C2F816 /* New York.dfont */ = {isa = PBXFileReference; lastKnownFileType = file; path = "New York.dfont"; sourceTree = "<group>"; };
 		6CDAC4EA1F4A2D8000DC5DC9 /* Property.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Property.swift; sourceTree = "<group>"; };
@@ -822,66 +822,66 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		6C18F1E2231405E6002B0D85 /* Script */ = {
+		6C59F45123201AF400D62D48 /* Script */ = {
 			isa = PBXGroup;
 			children = (
-				6C89A2E32314082800F394D8 /* HyperCard.swift */,
-				6C89A2E12314082800F394D8 /* HyperCard Objects.swift */,
-				6C89A2E02314082800F394D8 /* CommonScriptTypes.swift */,
-				6C89A2E22314082800F394D8 /* HandlerLocating.swift */,
-				6C89A2EC231408E500F394D8 /* Data */,
-				6C2FB5702314806000824D73 /* Matching */,
-				6C5E92952315656E00054E46 /* Schemas */,
+				6C59F45423201B3300D62D48 /* CharacterTypes.swift */,
+				6C59F45D23201B6900D62D48 /* CommonScriptTypes.swift */,
+				6C59F46D23201BBD00D62D48 /* HandlerLocating.swift */,
+				6C59F47123201BDB00D62D48 /* HyperCard.swift */,
+				6C59F46F23201BC800D62D48 /* HyperCard Objects.swift */,
+				6C59F45623201B3C00D62D48 /* Data */,
+				6C59F45223201B0500D62D48 /* Matching */,
+				6C59F45323201B0A00D62D48 /* Schemas */,
 			);
 			name = Script;
 			sourceTree = "<group>";
 		};
-		6C2FB5702314806000824D73 /* Matching */ = {
+		6C59F45223201B0500D62D48 /* Matching */ = {
 			isa = PBXGroup;
 			children = (
-				6C89A2DF2314082800F394D8 /* CharacterTypes.swift */,
-				6C89A2DD2314082800F394D8 /* Token.swift */,
-				6C89A2DC2314082800F394D8 /* TokenSequence.swift */,
-				6C89A2DE2314082800F394D8 /* Schema.swift */,
-				6C2FB5732314854200824D73 /* SchemaEditing.swift */,
-				6C2FB5752314858000824D73 /* SchemaInterpolation.swift */,
+				6C59F48D23201C9000D62D48 /* Token.swift */,
+				6C59F48F23201C9500D62D48 /* TokenSequence.swift */,
+				6C59F48323201C5D00D62D48 /* Schema.swift */,
+				6C59F48523201C6300D62D48 /* SchemaEditing.swift */,
+				6C59F48723201C6900D62D48 /* SchemaInterpolation.swift */,
 			);
 			name = Matching;
 			sourceTree = "<group>";
 		};
-		6C5E92952315656E00054E46 /* Schemas */ = {
+		6C59F45323201B0A00D62D48 /* Schemas */ = {
 			isa = PBXGroup;
 			children = (
-				6CB5ABAF2319448500082140 /* Schemas.swift */,
-				6C175D3C23190A48005882A8 /* ExpressionSchemas.swift */,
-				6C175D3823190456005882A8 /* FactorSchemas.swift */,
-				6C5E9291231541FC00054E46 /* LiteralSchemas.swift */,
-				6C175D3A2319088F005882A8 /* UnaryOperatorSchemas.swift */,
-				6C9DB5D82318A5F40030A556 /* ContainerSchemas.swift */,
-				6CB9D8F52319749A001AAB56 /* FunctionSchemas.swift */,
-				6C175D3E231913B4005882A8 /* NoArgumentFunctionSchemas.swift */,
-				6CB5ABAD2319243600082140 /* OneArgumentFunctionSchemas.swift */,
-				6CB9D8F723197BB5001AAB56 /* ChunkSchemas.swift */,
-				6CB9D8F923199E62001AAB56 /* ObjectDescriptorSchemas.swift */,
-				6CB9D8FB2319BCDA001AAB56 /* HyperCardObjectSchemas.swift */,
-				6CB5ABB12319513D00082140 /* VocabularySchemas.swift */,
+				6C59F48923201C6E00D62D48 /* Schemas.swift */,
+				6C59F46323201B8F00D62D48 /* ExpressionSchemas.swift */,
+				6C59F46523201B9600D62D48 /* FactorSchemas.swift */,
+				6C59F47723201C0C00D62D48 /* LiteralSchemas.swift */,
+				6C59F49123201CA100D62D48 /* UnaryOperatorSchemas.swift */,
+				6C59F45F23201B7D00D62D48 /* ContainerSchemas.swift */,
+				6C59F45923201B4C00D62D48 /* ChunkSchemas.swift */,
+				6C59F495232020A000D62D48 /* ObjectDescriptorSchemas.swift */,
+				6C59F47523201BF500D62D48 /* HyperCardObjectSchemas.swift */,
+				6C59F46B23201BB600D62D48 /* FunctionSchemas.swift */,
+				6C59F47923201C1400D62D48 /* NoArgumentFunctionSchemas.swift */,
+				6C59F47D23201C2F00D62D48 /* OneArgumentFunctionSchemas.swift */,
+				6C59F49323201CA800D62D48 /* VocabularySchemas.swift */,
 			);
 			name = Schemas;
 			sourceTree = "<group>";
 		};
-		6C89A2EC231408E500F394D8 /* Data */ = {
+		6C59F45623201B3C00D62D48 /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				6C89A2F4231408EE00F394D8 /* Chunk.swift */,
-				6C89A2ED231408EE00F394D8 /* Command.swift */,
-				6C89A2EE231408EE00F394D8 /* Expression.swift */,
-				6C89A2F3231408EE00F394D8 /* FlowStatement.swift */,
-				6C89A2EF231408EE00F394D8 /* FunctionCall.swift */,
-				6C89A2F6231408EF00F394D8 /* HyperCardObjectDescriptor.swift */,
-				6C89A2F0231408EE00F394D8 /* ObjectDescriptor.swift */,
-				6C89A2F5231408EF00F394D8 /* Operator.swift */,
-				6C89A2F1231408EE00F394D8 /* PropertyDescriptor.swift */,
-				6C89A2F2231408EE00F394D8 /* Script.swift */,
+				6C59F48B23201C7900D62D48 /* Script.swift */,
+				6C59F46723201BA100D62D48 /* FlowStatement.swift */,
+				6C59F45B23201B5800D62D48 /* Command.swift */,
+				6C59F46123201B8900D62D48 /* Expression.swift */,
+				6C59F47F23201C3700D62D48 /* Operator.swift */,
+				6C59F48123201C4800D62D48 /* PropertyDescriptor.swift */,
+				6C59F45723201B4500D62D48 /* Chunk.swift */,
+				6C59F47B23201C2900D62D48 /* ObjectDescriptor.swift */,
+				6C59F47323201BEB00D62D48 /* HyperCardObjectDescriptor.swift */,
+				6C59F46923201BAA00D62D48 /* FunctionCall.swift */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -931,6 +931,7 @@
 				6C9E6AB41E75BCFA00BBF925 /* Data */,
 				6C9E6AE81E75BCFA00BBF925 /* File */,
 				6C9E6AFA1E75BCFA00BBF925 /* Graphics */,
+				6C59F45123201AF400D62D48 /* Script */,
 				6C9E6A8F1E75BCCD00BBF925 /* Info.plist */,
 			);
 			path = HyperCardCommon;
@@ -1836,92 +1837,92 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6C59F47223201BDB00D62D48 /* HyperCard.swift in Sources */,
 				6C9E6B0C1E75BCFA00BBF925 /* ResourceSystem.swift in Sources */,
 				6C9DF4D820C708A80024F61B /* MainRepository.swift in Sources */,
 				6C9E6B0A1E75BCFA00BBF925 /* Resource.swift in Sources */,
 				6C9DF50720C732B10024F61B /* RichText.swift in Sources */,
+				6C59F46A23201BAA00D62D48 /* FunctionCall.swift in Sources */,
 				6C9E6B381E75BCFA00BBF925 /* FontFamilyLoading.swift in Sources */,
 				6C9E6B3E1E75BCFA00BBF925 /* Icon Mask.swift in Sources */,
+				6C59F46423201B8F00D62D48 /* ExpressionSchemas.swift in Sources */,
 				6CDAC4ED1F4A46CD00DC5DC9 /* ButtonView.swift in Sources */,
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
 				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
-				6C175D3D23190A48005882A8 /* ExpressionSchemas.swift in Sources */,
-				6C89A300231408EF00F394D8 /* HyperCardObjectDescriptor.swift in Sources */,
-				6C89A2E52314082800F394D8 /* Token.swift in Sources */,
-				6C175D3F231913B4005882A8 /* NoArgumentFunctionSchemas.swift in Sources */,
+				6C59F48623201C6300D62D48 /* SchemaEditing.swift in Sources */,
+				6C59F46E23201BBD00D62D48 /* HandlerLocating.swift in Sources */,
+				6C59F46623201B9600D62D48 /* FactorSchemas.swift in Sources */,
+				6C59F48823201C6900D62D48 /* SchemaInterpolation.swift in Sources */,
 				6C2AD44C1F51A4BB00E2F8B9 /* AddColorPainter.swift in Sources */,
+				6C59F47A23201C1400D62D48 /* NoArgumentFunctionSchemas.swift in Sources */,
+				6C59F47623201BF500D62D48 /* HyperCardObjectSchemas.swift in Sources */,
+				6C59F47C23201C2900D62D48 /* ObjectDescriptor.swift in Sources */,
+				6C59F48423201C5D00D62D48 /* Schema.swift in Sources */,
 				6C9E6B421E75BCFA00BBF925 /* PartView.swift in Sources */,
 				6C9E6B071E75BCFA00BBF925 /* Part.swift in Sources */,
-				6C2FB5762314858000824D73 /* SchemaInterpolation.swift in Sources */,
-				6CB9D8FA23199E62001AAB56 /* ObjectDescriptorSchemas.swift in Sources */,
-				6C89A2FC231408EF00F394D8 /* Script.swift in Sources */,
 				6C9E6B481E75BCFA00BBF925 /* FontDecorating.swift in Sources */,
 				6CA2CCCE20C8437B0042148A /* IconLoading.swift in Sources */,
 				6C2AD44A1F51A0BE00E2F8B9 /* WhiteView.swift in Sources */,
 				6C9E6B3D1E75BCFA00BBF925 /* Drawing.swift in Sources */,
-				6C89A2FE231408EF00F394D8 /* Chunk.swift in Sources */,
+				6C59F48023201C3700D62D48 /* Operator.swift in Sources */,
+				6C59F48223201C4800D62D48 /* PropertyDescriptor.swift in Sources */,
 				6C9E6B3C1E75BCFA00BBF925 /* MaskedImage.swift in Sources */,
-				6CB9D8F823197BB5001AAB56 /* ChunkSchemas.swift in Sources */,
 				6C9DF50220C7257C0024F61B /* AddColor.swift in Sources */,
 				6CA2CCCA20C83FF40042148A /* VectorFont.swift in Sources */,
+				6C59F47823201C0C00D62D48 /* LiteralSchemas.swift in Sources */,
 				6CA2CCD420C845000042148A /* PictureLoading.swift in Sources */,
-				6CB5ABB02319448500082140 /* Schemas.swift in Sources */,
-				6C89A2F7231408EF00F394D8 /* Command.swift in Sources */,
 				6C9E6AFE1E75BCFA00BBF925 /* Numeric Functions.swift in Sources */,
 				6C9E6B3B1E75BCFA00BBF925 /* Image.swift in Sources */,
-				6C89A2FA231408EF00F394D8 /* ObjectDescriptor.swift in Sources */,
 				6CDAC4EB1F4A2D8000DC5DC9 /* Property.swift in Sources */,
+				6C59F48E23201C9100D62D48 /* Token.swift in Sources */,
 				6C9E6B101E75BCFA00BBF925 /* ClassicFile.swift in Sources */,
 				6C9E6B411E75BCFA00BBF925 /* LayerView.swift in Sources */,
-				6C89A2EB2314082800F394D8 /* HyperCard.swift in Sources */,
-				6C89A2E72314082800F394D8 /* CharacterTypes.swift in Sources */,
-				6C89A2F8231408EF00F394D8 /* Expression.swift in Sources */,
+				6C59F46C23201BB600D62D48 /* FunctionSchemas.swift in Sources */,
+				6C59F49023201C9500D62D48 /* TokenSequence.swift in Sources */,
 				6CA2CCBA20C82A500042148A /* HyperCardFile.swift in Sources */,
 				6C8746271F5402E0005A41AB /* Responder.swift in Sources */,
-				6C175D3B2319088F005882A8 /* UnaryOperatorSchemas.swift in Sources */,
-				6C89A2FF231408EF00F394D8 /* Operator.swift in Sources */,
+				6C59F48C23201C7900D62D48 /* Script.swift in Sources */,
+				6C59F48A23201C6E00D62D48 /* Schemas.swift in Sources */,
+				6C59F46023201B7D00D62D48 /* ContainerSchemas.swift in Sources */,
 				6C9E6AFD1E75BCFA00BBF925 /* CommonTypes.swift in Sources */,
 				6C9E6B041E75BCFA00BBF925 /* Layer.swift in Sources */,
 				6C9E6B3F1E75BCFA00BBF925 /* View.swift in Sources */,
 				6C9E6B141E75BCFA00BBF925 /* StackLoading.swift in Sources */,
 				6CA2CCD020C843F60042148A /* VectorFontLoading.swift in Sources */,
 				6C9E6B0E1E75BCFA00BBF925 /* BitmapFont.swift in Sources */,
-				6CB9D8FC2319BCDA001AAB56 /* HyperCardObjectSchemas.swift in Sources */,
 				6CA2CCC820C83DE10042148A /* Icon.swift in Sources */,
-				6CB5ABAE2319243600082140 /* OneArgumentFunctionSchemas.swift in Sources */,
 				6C9DF50B20C73A8A0024F61B /* TextLayout.swift in Sources */,
-				6C89A2E42314082800F394D8 /* TokenSequence.swift in Sources */,
 				6C9E6AFF1E75BCFA00BBF925 /* HyperCardBundle.swift in Sources */,
+				6C59F49423201CA800D62D48 /* VocabularySchemas.swift in Sources */,
 				6C9E6B091E75BCFA00BBF925 /* Button.swift in Sources */,
 				6C9E6B111E75BCFA00BBF925 /* DataRange.swift in Sources */,
-				6C89A2FB231408EF00F394D8 /* PropertyDescriptor.swift in Sources */,
-				6CB5ABB22319513D00082140 /* VocabularySchemas.swift in Sources */,
 				6C549B1C1F50DA0000836AE2 /* RgbConversion.swift in Sources */,
-				6C89A2F9231408EF00F394D8 /* FunctionCall.swift in Sources */,
-				6C9DB5D92318A5F40030A556 /* ContainerSchemas.swift in Sources */,
-				6C89A2FD231408EF00F394D8 /* FlowStatement.swift in Sources */,
+				6C59F47E23201C2F00D62D48 /* OneArgumentFunctionSchemas.swift in Sources */,
+				6C59F46823201BA100D62D48 /* FlowStatement.swift in Sources */,
+				6C59F45E23201B6900D62D48 /* CommonScriptTypes.swift in Sources */,
 				6C9E6B491E75BCFA00BBF925 /* VectorFontConverting.swift in Sources */,
+				6C59F49223201CA100D62D48 /* UnaryOperatorSchemas.swift in Sources */,
+				6C59F45523201B3300D62D48 /* CharacterTypes.swift in Sources */,
 				6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */,
 				6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */,
-				6CB9D8F62319749A001AAB56 /* FunctionSchemas.swift in Sources */,
-				6C89A2EA2314082800F394D8 /* HandlerLocating.swift in Sources */,
+				6C59F46223201B8900D62D48 /* Expression.swift in Sources */,
+				6C59F47423201BEB00D62D48 /* HyperCardObjectDescriptor.swift in Sources */,
+				6C59F45A23201B4C00D62D48 /* ChunkSchemas.swift in Sources */,
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* LayerLoading.swift in Sources */,
-				6C5E9292231541FC00054E46 /* LiteralSchemas.swift in Sources */,
-				6C89A2E62314082800F394D8 /* Schema.swift in Sources */,
+				6C59F45823201B4500D62D48 /* Chunk.swift in Sources */,
 				6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */,
 				6CA2CCD220C8445C0042148A /* LayerColorLoading.swift in Sources */,
-				6C89A2E92314082800F394D8 /* HyperCard Objects.swift in Sources */,
+				6C59F47023201BC800D62D48 /* HyperCard Objects.swift in Sources */,
+				6C59F45C23201B5800D62D48 /* Command.swift in Sources */,
+				6C59F496232020A000D62D48 /* ObjectDescriptorSchemas.swift in Sources */,
 				6CA2CCC020C82F820042148A /* StackBlockDecrypter.swift in Sources */,
 				6CA2CCBC20C82A6C0042148A /* HyperCardFileLoading.swift in Sources */,
 				6C30E8D11F4D117A00ACB457 /* StringComparison.swift in Sources */,
-				6C89A2E82314082800F394D8 /* CommonScriptTypes.swift in Sources */,
-				6C2FB5742314854200824D73 /* SchemaEditing.swift in Sources */,
-				6C175D3923190456005882A8 /* FactorSchemas.swift in Sources */,
 				6C9E6B0B1E75BCFA00BBF925 /* ResourceRepository.swift in Sources */,
 				6C298BA32312E4CC00960F72 /* BitmapLoading.swift in Sources */,
 				6C30878D1F48957100CCA9A7 /* PartLoading.swift in Sources */,
