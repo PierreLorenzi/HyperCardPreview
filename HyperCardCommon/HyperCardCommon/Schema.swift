@@ -831,7 +831,7 @@ private class ComplexMatcher<T>: Matcher<T> {
         
         /* Remove the finished branches. We can't do it before because they
          may have results */
-        self.branches.removeAll(where: { (!$0.matcher.canContinue && !$0.isShared && $0.matcher.cycleCount == 0 && !$0.isCycleConnection) || $0.removeNextTime })
+        self.branches.removeAll(where: { (!$0.matcher.canContinue && !$0.isShared && $0.matcher.cycleCount == 0) || $0.removeNextTime })
         
         /* Feed the branches */
         for i in 0..<self.branches.count {
