@@ -17,8 +17,28 @@ class DocumentView: NSView, NSMenuDelegate {
         
         let layer = CALayer()
         layer.isOpaque = true
+        layer.contentsGravity = CALayerContentsGravity.resizeAspect
         self.layer = layer
         self.wantsLayer = true
+    }
+    
+    var transform: AffineTransform {
+        
+        var transform = AffineTransform()
+        let scale = CGFloat(document.browser.image.width) / self.bounds.self.width
+        let cardOriginY = (self.bounds.size.height - CGFloat(document.browser.image.height) / scale) / 2.0
+        
+        /* Center vertically */
+        transform.translate(x: 0.0, y: cardOriginY)
+        
+        /* Scale */
+        transform.scale(1.0 / scale)
+        
+        /* Flip */
+        transform.translate(x: 0.0, y: CGFloat(document.browser.stack.size.height))
+        transform.scale(x: 1.0, y: -1.0)
+        
+        return transform
     }
 
     override var wantsUpdateLayer: Bool {
@@ -231,8 +251,10 @@ class DocumentView: NSView, NSMenuDelegate {
         let locationInWindow = event.locationInWindow
         let locationInMe = self.convert(locationInWindow, from: nil)
         
-        return Point(x: Int(locationInMe.x), y: document.browser.image.height - Int(locationInMe.y))
+        let transform = self.transform.inverted()!
+        let newPoint = transform.transform(locationInMe)
         
+        return Point(x: Int(newPoint.x), y: Int(newPoint.y))
     }
     
     private var partsInMenu: [PartInMenu]? = nil

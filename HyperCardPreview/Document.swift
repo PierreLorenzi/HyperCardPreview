@@ -175,8 +175,7 @@ class Document: NSDocument, NSAnimationDelegate {
             }
             
             /* Animate the card view appearing */
-            let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
-            let image = NSImage(cgImage: createScreenImage(from: browser.buildImage()), size: imageSize)
+            let image = NSImage(cgImage: browser.buildImage(), size: NSZeroSize)
             animateCardAppearing(atIndex: browser.cardIndex, withImage: image)
             
             return
@@ -229,11 +228,12 @@ class Document: NSDocument, NSAnimationDelegate {
     private func animateCardDisappearing() {
         
         /* Show the card list */
+        self.collectionViewSuperview.frame = self.view.frame
         self.collectionViewSuperview.isHidden = false
         
         /* Animate the image becoming the thumbnail */
         let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
-        let image = NSImage(cgImage: createScreenImage(from: browser.buildImage()), size: imageSize)
+        let image = NSImage(cgImage: browser.buildImage(), size: imageSize)
         let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
         self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {
             [unowned self] in
@@ -303,32 +303,9 @@ class Document: NSDocument, NSAnimationDelegate {
         /* Update the image */
         browser.refresh()
         
-        /* Create a copy of the image for the screen */
-        let screenImage = createScreenImage(from: browser.buildImage())
-        
         /* Display the image in the layer */
         CATransaction.setDisableActions(true)
-        view.layer!.contents = screenImage
-    }
-    
-    private func createScreenImage(from image: CGImage) -> CGImage {
-        
-        /* Create a new bitmap with a context to draw on it. Make it pixel-accurate so we can
-         display a very aliased image */
-        let scale = Int(NSScreen.main!.backingScaleFactor)
-        let width = image.width * scale
-        let height = image.height  * scale
-        let data = RgbConverter.createRgbData(width: width, height: height)
-        let context = RgbConverter.createContext(forRgbData: data, width: width, height: height)
-        
-        /* Make the context aliased */
-        context.setShouldAntialias(false)
-        context.interpolationQuality = .none
-        
-        /* Fill the image */
-        context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
-        
-        return RgbConverter.createImage(forRgbData: data, isOwner: true, width: width, height: height)
+        view.layer!.contents = browser.buildImage()
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
@@ -420,11 +397,10 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Convert the image to screen */
         let rgbImage = RgbConverter.convertImage(image)
-        let screenImage = self.createScreenImage(from: rgbImage)
         
         /* Display the image */
         CATransaction.setDisableActions(true)
-        view.layer!.contents = screenImage
+        view.layer!.contents = rgbImage
     }
     
     func applyContinuousVisualEffect(_ effect: VisualEffects.ContinuousVisualEffect, from image: Image) {
@@ -588,7 +564,10 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Convert the rectangle into current coordinates */
         let rectangle = part.part.rectangle
-        let frame = NSMakeRect(CGFloat(rectangle.x), CGFloat(browser.stack.size.height - rectangle.bottom), CGFloat(rectangle.width), CGFloat(rectangle.height))
+        let rectangleFrame = NSMakeRect(CGFloat(rectangle.x), CGFloat(rectangle.bottom), CGFloat(rectangle.width), CGFloat(rectangle.height))
+        let frameOrigin = view.transform.transform(rectangleFrame.origin)
+        let frameSize = view.transform.transform(rectangleFrame.size)
+        let frame = NSRect(origin: frameOrigin, size: frameSize)
         
         /* Create a view */
         let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, inLayerType: layerType), document: self)
