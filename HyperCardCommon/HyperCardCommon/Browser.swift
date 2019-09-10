@@ -35,6 +35,7 @@ public class Browser {
     public var displayOnlyBackgroundProperty = Property<Bool>(false)
     
     private let drawing: Drawing
+    private let imageBuffer: ImageBuffer
     
     private let resources: ResourceSystem
     private let fontManager: FontManager
@@ -71,9 +72,6 @@ public class Browser {
     /// if the white view is in the view stack
     private var isShowingWhiteView = false
     
-    private let cgdata: UnsafeMutableRawPointer
-    private let cgcontext: CGContext
-    
     private let areThereColors: Bool
     
     private struct ViewRecord {
@@ -92,10 +90,15 @@ public class Browser {
     }
     
     /// Builds a new browser from the given stack. A starting card index can be given.
-    public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0) {
+    public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0, imageBuffer: ImageBuffer) {
         self.hyperCardFile = hyperCardFile
         let stack = hyperCardFile.stack
         drawing = Drawing(width: stack.size.width, height: stack.size.height)
+        
+        self.imageBuffer = imageBuffer
+        imageBuffer.context.translateBy(x: 0, y: CGFloat(stack.size.height))
+        imageBuffer.context.scaleBy(x: 1, y: -1)
+        imageBuffer.context.setBlendMode(CGBlendMode.darken)
         
         var resources = ResourceSystem()
         if let stackResources = hyperCardFile.resources {
@@ -108,18 +111,9 @@ public class Browser {
         
         self.cardIndexProperty = Property<Int>(cardIndex)
         
-        let width = stack.size.width
-        let height = stack.size.height
-        let cgdata = RgbConverter.createRgbData(width: width, height: height)
-        self.cgdata = cgdata
-        self.cgcontext = RgbConverter.createContext(forRgbData: cgdata, width: width, height: height)
-        self.whiteView = WhiteView(cardRectangle: Rectangle(x: 0, y: 0, width: width, height: height))
-        
         self.areThereColors = Browser.areThereColors(inFile: hyperCardFile)
         
-        /* Flip the contect */
-        cgcontext.translateBy(x: 0, y: CGFloat(height))
-        cgcontext.scaleBy(x: 1, y: -1)
+        self.whiteView = WhiteView(cardRectangle: Rectangle(x: 0, y: 0, width: stack.size.width, height: stack.size.height))
         
         /* Add a background view */
         self.appendView(self.whiteView)
@@ -305,7 +299,7 @@ public class Browser {
         if let dirtyRectangle  = self.refreshDrawing() {
             
             /* Refresh the CGImage */
-            RgbConverter.fillRgbData(self.cgdata, withImage: self.image, rectangle: dirtyRectangle)
+            self.imageBuffer.drawImage(self.image, onlyRectangle: dirtyRectangle)
         }
         
     }
@@ -313,20 +307,14 @@ public class Browser {
     private func refreshWithColors() {
         
         /* Draw a white background */
-        cgcontext.setFillColor(CGColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 1.0))
-        cgcontext.fill(CGRect(x: 0, y: 0, width: image.width, height: image.height))
-        
-        /* Draw the colors */
-        AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: cgcontext)
-        
-        /* Update data */
-        cgcontext.flush()
+        imageBuffer.context.setFillColor(CGColor.white)
+        imageBuffer.context.fill(CGRect(x: 0, y: 0, width: imageBuffer.width, height: imageBuffer.height))
         
         /* Update the black&white image */
         let _  = self.refreshDrawing()
         
-        /* Draw the black&white image (only the black pixels, to keep the colors behind) */
-        RgbConverter.fillRgbDataWithBlackPixels(self.cgdata, withImage: self.image)
+        /* Draw the colors */
+        AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: imageBuffer.context)
         
     }
     
@@ -547,11 +535,6 @@ public class Browser {
         }
         
         return content.partContent
-    }
-    
-    public func buildImage() -> CGImage {
-        
-        return RgbConverter.createImage(forRgbData: cgdata, isOwner: false, width: self.image.width, height: self.image.height)
     }
     
     public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder? {

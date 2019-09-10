@@ -16,6 +16,8 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     
     private let browser: Browser
     
+    private let imageBuffer: ImageBuffer
+    
     private let thumbnailSize: Size
     
     private weak var document: Document!
@@ -33,9 +35,13 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
     private static let itemIdentifier = "item"
     
     init(collectionView: NSCollectionView, hyperCardFile: HyperCardFile, document: Document) {
+        let thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: hyperCardFile.stack.size.width, cardHeight: hyperCardFile.stack.size.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
+        self.thumbnailSize = thumbnailSize
+        let screenScale = NSScreen.main!.backingScaleFactor
+        let imageBuffer = ImageBuffer(width: Int(screenScale*CGFloat(thumbnailSize.width)), height: Int(screenScale*CGFloat(thumbnailSize.height)))
+        self.imageBuffer = imageBuffer
+        self.browser = Browser(hyperCardFile: hyperCardFile, imageBuffer: imageBuffer)
         self.collectionView = collectionView
-        self.browser = Browser(hyperCardFile: hyperCardFile)
-        self.thumbnailSize = CollectionViewManager.computeThumbnailSize(cardWidth: browser.image.width, cardHeight: browser.image.height, thumbnailSize: (collectionView.collectionViewLayout! as! NSCollectionViewFlowLayout).itemSize)
         self.document = document
         let stack = hyperCardFile.stack
         self.thumbnails = [CGImage?](repeating: nil, count: stack.cards.count)
@@ -125,7 +131,7 @@ class CollectionViewManager: NSObject, NSCollectionViewDataSource, NSCollectionV
                 
                 slf.browser.cardIndex = cardIndex
                 slf.browser.refresh()
-                let thumbnail = slf.createThumbnail(from: slf.browser.buildImage())
+                let thumbnail = slf.createThumbnail(from: slf.imageBuffer.context.makeImage()!)
                 slf.thumbnails[cardIndex] = thumbnail
                 let indexPathUpdated = IndexPath(item: cardIndex, section: 0)
                 let indexSet = Set<IndexPath>([indexPathUpdated])

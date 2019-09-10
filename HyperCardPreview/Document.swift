@@ -17,6 +17,7 @@ class Document: NSDocument, NSAnimationDelegate {
     
     var browser: Browser!
     var resourceFork: Data?
+    var imageBuffer: ImageBuffer!
     
     @IBOutlet weak var view: DocumentView!
     
@@ -41,8 +42,11 @@ class Document: NSDocument, NSAnimationDelegate {
         do {
             let file = ClassicFile(path: path)
             let hyperCardFile = try HyperCardFile(file: file, password: password)
-            self.browser = Browser(hyperCardFile: hyperCardFile)
+            let screenScale = NSScreen.main!.backingScaleFactor
+            let imageBuffer = ImageBuffer(width: Int(screenScale*CGFloat(hyperCardFile.stack.size.width)), height: Int(screenScale*CGFloat(hyperCardFile.stack.size.height)))
+            self.browser = Browser(hyperCardFile: hyperCardFile, imageBuffer: imageBuffer)
             self.resourceFork = file.resourceFork
+            self.imageBuffer = imageBuffer
         }
         catch Stack.OpeningError.notStack {
             
@@ -175,7 +179,7 @@ class Document: NSDocument, NSAnimationDelegate {
             }
             
             /* Animate the card view appearing */
-            let image = NSImage(cgImage: browser.buildImage(), size: NSZeroSize)
+            let image = NSImage(cgImage: self.imageBuffer.context.makeImage()!, size: NSZeroSize)
             animateCardAppearing(atIndex: browser.cardIndex, withImage: image)
             
             return
@@ -233,7 +237,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Animate the image becoming the thumbnail */
         let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
-        let image = NSImage(cgImage: browser.buildImage(), size: imageSize)
+        let image = NSImage(cgImage: self.imageBuffer.context.makeImage()!, size: imageSize)
         let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
         self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {
             [unowned self] in
@@ -305,7 +309,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Display the image in the layer */
         CATransaction.setDisableActions(true)
-        view.layer!.contents = browser.buildImage()
+        view.layer!.contents = self.imageBuffer.context.makeImage()
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
