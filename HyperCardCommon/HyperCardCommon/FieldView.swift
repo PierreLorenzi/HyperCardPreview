@@ -39,6 +39,11 @@ private let scrollDownButtonClickedImage = MaskedImage(named: "scroll down arrow
 
 private let scrollPatternImage = Image(named: "scroll pattern")!
 
+private enum DraggingState {
+    case none
+    case selectionDrag(characterIndex: Int)
+}
+
 
 
 /// The view of a field.
@@ -74,8 +79,16 @@ public class FieldView: View, MouseResponder {
     }
     private var ghostKnobOffsetProperty = Property<Int?>(nil)
     
+    private var selectedRange: Range<Int>? {
+        get { return self.selectedRangeProperty.value }
+        set { self.selectedRangeProperty.value = newValue }
+    }
+    private var selectedRangeProperty = Property<Range<Int>?>(nil)
+    
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
+    
+    private var draggingState = DraggingState.none
     
     public init(field: Field, contentComputation: Computation<PartContent>, fontManager: FontManager) {
         
@@ -116,6 +129,9 @@ public class FieldView: View, MouseResponder {
         })
         ghostKnobOffsetProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = .refresh
+        })
+        selectedRangeProperty.startNotifications(for: self, by: {
+            [unowned self] in self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
         })
         
     }
@@ -233,7 +249,7 @@ public class FieldView: View, MouseResponder {
         let textRectangle = FieldView.computeTextRectangle(of: field)
         
         let contentHeight = field.rectangle.height - 2
-        let totalTextHeight = textRectangle.top - field.rectangle.top + self.textLayout.height
+        let totalTextHeight = textRectangle.top - field.rectangle.top + self.textLayout.size.height
         
         return max(0, totalTextHeight - contentHeight)
         
@@ -352,6 +368,11 @@ public class FieldView: View, MouseResponder {
         /* Draw the text */
         textLayout.draw(in: drawing, at: Point(x: textRectangle.left, y: textRectangle.top - field.scroll), clipRectangle: contentRectangle)
         
+        /* Draw the selection */
+        if let selectedRange = self.selectedRange {
+            self.drawSelection(selectedRange, in: drawing, layout: textLayout, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: field.scroll)
+        }
+        
     }
     
     private func drawLines(drawing: Drawing, layout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
@@ -389,6 +410,67 @@ public class FieldView: View, MouseResponder {
         }
     }
     
+    private func drawSelection(_ range: Range<Int>, in drawing: Drawing, layout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
+        
+        /* Locate the range in the text */
+        let startTextPosition = layout.findPosition(at: range.startIndex)
+        let endTextPosition = layout.findPosition(at: range.endIndex)
+        
+        /* Special case if the selection is in one line */
+        guard startTextPosition.lineIndex < endTextPosition.lineIndex else {
+            drawSelectionInLine(lineIndex: startTextPosition.lineIndex, startOffset: startTextPosition.offset, endOffset: endTextPosition.offset, layout: layout, drawing: drawing, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: scroll)
+            return
+        }
+        
+        /* Draw the first line */
+        drawSelectionInLine(lineIndex: startTextPosition.lineIndex, startOffset: startTextPosition.offset, endOffset: .endOfLine, layout: layout, drawing: drawing, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: scroll)
+        
+        /* Draw the last line */
+        drawSelectionInLine(lineIndex: endTextPosition.lineIndex, startOffset: .value(0), endOffset: endTextPosition.offset, layout: layout, drawing: drawing, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: scroll)
+        
+        /* Draw the lines in-between */
+        guard startTextPosition.lineIndex + 1 < endTextPosition.lineIndex else {
+            return
+        }
+        
+        for lineIndex in (startTextPosition.lineIndex+1) ... (endTextPosition.lineIndex-1) {
+            
+            drawSelectionInLine(lineIndex: lineIndex, startOffset: .value(0), endOffset: .endOfLine, layout: layout, drawing: drawing, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: scroll)
+        }
+    }
+    
+    private func drawSelectionInLine(lineIndex: Int, startOffset: TextLayout.TextPosition.Offset, endOffset: TextLayout.TextPosition.Offset, layout: TextLayout, drawing: Drawing, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
+        
+        guard startOffset != endOffset else {
+            return
+        }
+        
+        let line = layout.lines[lineIndex]
+        let top = textRectangle.top - scroll + line.top
+        let bottom = textRectangle.top - scroll + line.bottom
+        
+        let left = self.convertTextOffsetToX(startOffset, textRectangle: textRectangle, contentRectangle: contentRectangle)
+        let right = self.convertTextOffsetToX(endOffset, textRectangle: textRectangle, contentRectangle: contentRectangle)
+        
+        let rectangle = Rectangle(top: top, left: left, bottom: bottom, right: right)
+        drawing.drawRectangle(rectangle, clipRectangle: contentRectangle, composition: Drawing.XorComposition)
+    }
+    
+    private func convertTextOffsetToX(_ offset: TextLayout.TextPosition.Offset, textRectangle: Rectangle, contentRectangle: Rectangle) -> Int {
+        
+        switch offset {
+            
+        case .value(0):
+            return contentRectangle.left
+            
+        case .value(let value):
+            return textRectangle.left + value
+            
+        case .endOfLine:
+            return contentRectangle.right
+        }
+    }
+    
     public override var rectangle: Rectangle? {
         
         /* If the view is invisible, do not reserve a rectangle */
@@ -420,6 +502,9 @@ public class FieldView: View, MouseResponder {
             
         case .mouseUp:
             self.respondToMouseUp(at: position)
+            
+        case .mouseDragged:
+            self.respondToMouseDragged(at: position)
         }
     }
     
@@ -447,10 +532,25 @@ public class FieldView: View, MouseResponder {
     
     private func respondToMouseDown(at position: Point) {
         
-        /* The field must be scrolling */
-        guard field.style == .scrolling else {
+        /* Special case for scrolling fields */
+        guard field.style != .scrolling else {
+            self.respondToMouseDownInScrollingField(at: position)
             return
         }
+        
+        /* If we have a previous selection, remove it */
+        self.selectedRange = nil
+        
+        /* Get the click position in the text */
+        let textRectangle = FieldView.computeTextRectangle(of: self.field)
+        let positionInText = Point(x: position.x - textRectangle.x, y: position.y - textRectangle.y)
+        let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
+        
+        /* Wait and see if the user drags */
+        self.draggingState = .selectionDrag(characterIndex: characterIndex)
+    }
+    
+    private func respondToMouseDownInScrollingField(at position: Point) {
         
         /* The position must be in the scroll area */
         guard position.x > field.rectangle.right - scrollWidth else {
@@ -576,6 +676,38 @@ public class FieldView: View, MouseResponder {
     
     private func respondToMouseUp(at position: Point) {
         
+        guard field.style != .scrolling else {
+            self.respondToMouseUpInScrollingField(at: position)
+            return
+        }
+        
+        /* End dragging */
+        self.respondToMouseDragged(at: position)
+        self.draggingState = .none
+    }
+    
+    private func respondToMouseDragged(at position: Point) {
+        
+        switch self.draggingState {
+            
+        case .selectionDrag(let initialCharacterIndex):
+            
+            /* Compute the character index of the current position */
+            let textRectangle = FieldView.computeTextRectangle(of: self.field)
+            let positionInText = Point(x: position.x - textRectangle.x, y: position.y - textRectangle.y)
+            let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
+            
+            let firstIndex = min(characterIndex, initialCharacterIndex)
+            let lastIndex = max(characterIndex, initialCharacterIndex)
+            self.selectedRange = (firstIndex == lastIndex) ? nil : (firstIndex ..< lastIndex)
+            
+        default:
+            break
+        }
+    }
+    
+    private func respondToMouseUpInScrollingField(at position: Point) {
+        
         /* Un-click the scroll buttons if necessary */
         if self.isUpArrowClicked {
             self.isUpArrowClicked = false
@@ -597,7 +729,6 @@ public class FieldView: View, MouseResponder {
             timer.invalidate()
             self.scrollingTimer = nil
         }
-        
     }
     
 }

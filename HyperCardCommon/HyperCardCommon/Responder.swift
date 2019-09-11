@@ -24,5 +24,6 @@ public enum MouseEvent {
     
     case mouseUp
     case mouseDown
+    case mouseDragged
     case verticalScroll(delta: Double)
 }

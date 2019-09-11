@@ -289,6 +289,8 @@ class DocumentView: NSView, NSMenuDelegate {
         
         /* Forget that view */
         self.mouseDownResponder = nil
+        
+        self.draggedResponder = nil
     }
     
     private func extractPosition(from event: NSEvent) -> Point {
@@ -525,6 +527,25 @@ class DocumentView: NSView, NSMenuDelegate {
             else {
                 document.goToNextPage(self)
             }        
+    }
+    
+    private var draggedResponder: MouseResponder? = nil
+    
+    override func mouseDragged(with event: NSEvent) {
+        
+        let browserPosition = extractPosition(from: event)
+        
+        if let formerResponder = self.draggedResponder {
+            formerResponder.respondToMouseEvent(.mouseDragged, at: browserPosition)
+            return
+        }
+        
+        guard let responder = self.document.browser.findViewRespondingToMouseEvent(at: browserPosition) else {
+            return
+        }
+        
+        self.draggedResponder = responder
+        responder.respondToMouseEvent(.mouseDragged, at: browserPosition)
     }
     
 } 

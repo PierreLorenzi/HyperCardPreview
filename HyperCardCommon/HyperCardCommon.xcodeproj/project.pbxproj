@@ -379,6 +379,7 @@
 		6CE0C0FC1F4EF460003AA9FC /* TestPrivateAccess.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */; };
 		6CE0C1011F4EF716003AA9FC /* TestVersion.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1001F4EF716003AA9FC /* TestVersion.stack */; };
 		6CE0C1031F4EFC6D003AA9FC /* TestCardsBackgrounds.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */; };
+		6CE29C9323297F9700E939F7 /* TextLocating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE29C9223297F9700E939F7 /* TextLocating.swift */; };
 		6CE4503B232837B900643B90 /* ImageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE4503A232837B900643B90 /* ImageBuffer.swift */; };
 		6CE8F5D820C42CB300B99E39 /* IndexedTextFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */; };
 		6CE8F5DE20C42E1100B99E39 /* IndexedStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */; };
@@ -785,6 +786,7 @@
 		6CE0C0FB1F4EF460003AA9FC /* TestPrivateAccess.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestPrivateAccess.stack; sourceTree = "<group>"; };
 		6CE0C1001F4EF716003AA9FC /* TestVersion.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestVersion.stack; sourceTree = "<group>"; };
 		6CE0C1021F4EFC6D003AA9FC /* TestCardsBackgrounds.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestCardsBackgrounds.stack; sourceTree = "<group>"; };
+		6CE29C9223297F9700E939F7 /* TextLocating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextLocating.swift; sourceTree = "<group>"; };
 		6CE4503A232837B900643B90 /* ImageBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageBuffer.swift; sourceTree = "<group>"; };
 		6CE8F5D720C42CB300B99E39 /* IndexedTextFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedTextFormatting.swift; sourceTree = "<group>"; };
 		6CE8F5DD20C42E1100B99E39 /* IndexedStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndexedStyle.swift; sourceTree = "<group>"; };
@@ -900,6 +902,7 @@
 				6C9DF50620C732B10024F61B /* RichText.swift */,
 				6C9DF50A20C73A8A0024F61B /* TextLayout.swift */,
 				6C9DF50C20C7445A0024F61B /* TextDrawing.swift */,
+				6CE29C9223297F9700E939F7 /* TextLocating.swift */,
 				6CE4503A232837B900643B90 /* ImageBuffer.swift */,
 			);
 			name = Common;
@@ -1915,6 +1918,7 @@
 				6C59F47423201BEB00D62D48 /* HyperCardObjectDescriptor.swift in Sources */,
 				6C59F45A23201B4C00D62D48 /* ChunkSchemas.swift in Sources */,
 				6C9E6B011E75BCFA00BBF925 /* HString.swift in Sources */,
+				6CE29C9323297F9700E939F7 /* TextLocating.swift in Sources */,
 				6C9E6B0D1E75BCFA00BBF925 /* FontFamily.swift in Sources */,
 				6C9DF50D20C7445A0024F61B /* TextDrawing.swift in Sources */,
 				6C9E6B321E75BCFA00BBF925 /* LayerLoading.swift in Sources */,

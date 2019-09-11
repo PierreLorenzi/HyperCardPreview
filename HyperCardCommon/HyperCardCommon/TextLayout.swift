@@ -16,8 +16,8 @@ public struct TextLayout {
     /// The lines dividing the text
     public var lines: [LineLayout]
     
-    /// The total height of the lines
-    public var height: Int
+    /// The total size of the text
+    public var size: Size
 }
 
 /// A line in a laid-out text
@@ -34,6 +34,12 @@ public struct LineLayout {
     
     /// The point where to draw the text, y is the baseline
     public var origin: Point
+    
+    /// Length from baseline to the top of the line
+    public var top: Int
+    
+    /// Length from baseline to the bottom of the line
+    public var bottom: Int
 }
 
 private let carriageReturn = HChar(13)
@@ -47,7 +53,7 @@ public extension TextLayout {
         
         /* The algorithm doesn't handle empty texts */
         guard text.string.length > 0 else {
-            self.init(text: text, lines: [], height: 0)
+            self.init(text: text, lines: [], size: Size(width: 0, height: 0))
             return
         }
         
@@ -105,7 +111,8 @@ public extension TextLayout {
             
         }
         
-        self.init(text: text, lines: lineLayouts, height: state.top)
+        let totalSize = Size(width: textWidth, height: state.top)
+        self.init(text: text, lines: lineLayouts, size: totalSize)
     }
     
     private struct State {
@@ -199,7 +206,7 @@ public extension TextLayout {
             }
             
             /* Buid the layout */
-            let lineLayout = LineLayout(startIndex: self.startIndex, endIndex: lineEndIndex, initialAttributeIndex: self.startAttributeIndex, origin: Point(x: originX, y: originY))
+            let lineLayout = LineLayout(startIndex: self.startIndex, endIndex: lineEndIndex, initialAttributeIndex: self.startAttributeIndex, origin: Point(x: originX, y: originY), top: self.top, bottom: bottom)
             
             /* Update the state */
             self.startIndex = self.endIndex
