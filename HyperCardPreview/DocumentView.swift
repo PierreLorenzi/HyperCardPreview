@@ -104,8 +104,9 @@ class DocumentView: NSView, NSMenuDelegate {
     override func keyDown(with event: NSEvent) {
         
         /* Enter Key / Return Key */
-        if let characters = event.charactersIgnoringModifiers {
-            let character = Int(characters.utf16[characters.utf16.indices.first!])
+        if let characters = event.charactersIgnoringModifiers,
+            let characterValue = characters.utf16.first {
+            let character = Int(characterValue)
             
             /* Check if the character is return or enter */
             if (character == 13 || character == 3){

@@ -129,6 +129,8 @@ public class Browser {
     
     private func rebuildViews() {
         
+        self.refreshNeeds.removeAll()
+        
         /* If there are colors, we must refresh all because there may be updated colors also that we don't track */
         if areThereColors {
             self.addRefreshNeed(in: Rectangle(x: 0, y: 0, width: stack.size.width, height: stack.size.height), at: 0)
