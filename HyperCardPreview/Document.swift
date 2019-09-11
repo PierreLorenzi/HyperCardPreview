@@ -219,8 +219,7 @@ class Document: NSDocument, NSAnimationDelegate {
     
     private func animateCardAppearing(atIndex cardIndex: Int, withImage image: NSImage?) {
         
-        let initialFrame = self.computeAnimationFrameInList(ofCardAtIndex: cardIndex)
-        self.animateImageView(fromFrame: initialFrame, toFrame: self.view.frame, withImage: image, onCompletion: {
+        self.animateImageView(isAppearing: true, cardIndex: cardIndex, image: image, onCompletion: {
             
             /* At the end, hide the card list */
             [unowned self] in
@@ -231,15 +230,10 @@ class Document: NSDocument, NSAnimationDelegate {
     
     private func animateCardDisappearing() {
         
-        /* Show the card list */
-        self.collectionViewSuperview.frame = self.view.frame
-        self.collectionViewSuperview.isHidden = false
-        
         /* Animate the image becoming the thumbnail */
         let imageSize = NSSize(width: browser.image.width, height: browser.image.height)
         let image = NSImage(cgImage: self.imageBuffer.context.makeImage()!, size: imageSize)
-        let finalFrame = self.computeAnimationFrameInList(ofCardAtIndex: browser.cardIndex)
-        self.animateImageView(fromFrame: self.view.frame, toFrame: finalFrame, withImage: image, onCompletion: {
+        self.animateImageView(isAppearing: false, cardIndex: browser.cardIndex, image: image, onCompletion: {
             [unowned self] in
             self.collectionView.window!.makeFirstResponder(self.collectionView)
         })
@@ -265,23 +259,45 @@ class Document: NSDocument, NSAnimationDelegate {
         
     }
     
-    private func animateImageView(fromFrame initialFrame: NSRect, toFrame finalFrame: NSRect, withImage image: NSImage?, onCompletion: @escaping () -> Void) {
+    private func animateImageView(isAppearing: Bool, cardIndex: Int, image: NSImage?, onCompletion: @escaping () -> Void) {
         
-        /* Show the image view at the initial frame */
-        self.imageView.frame = initialFrame
+        /* Parameters for the card animation */
+        let cardSmallFrame = self.computeAnimationFrameInList(ofCardAtIndex: cardIndex)
+        let cardBigFrame = self.view.frame
+        let cardInitialFrame: NSRect = isAppearing ? cardSmallFrame : cardBigFrame
+        let cardFinalFrame: NSRect = isAppearing ? cardBigFrame : cardSmallFrame
+        
+        /* Parameters for the card list animation */
+        let listSmallFrame = self.computeRectangleFrame(of: Rectangle(x: 0, y: 0, width: browser.stack.size.width, height: browser.stack.size.height))
+        let listBigFrame = self.view.frame
+        let listInitialFrame: NSRect = isAppearing ? listBigFrame : listSmallFrame
+        let listFinalFrame: NSRect = isAppearing ? listSmallFrame : listBigFrame
+        
+        self.imageView.frame = cardInitialFrame
         self.imageView.image = image
         self.imageView.isHidden = false
         
+        self.collectionViewSuperview.frame = listInitialFrame
+        if !isAppearing {
+            self.collectionViewSuperview.isHidden = false
+        }
+        
         /* Store the end block */
         self.actionAfterAnimation = onCompletion
+        self.hideListAfterAnimation = isAppearing
         
         /* Launch the animation */
-        let animationInfo: [NSViewAnimation.Key: Any] = [
+        let cardAnimationInfo: [NSViewAnimation.Key: Any] = [
             NSViewAnimation.Key.target: self.imageView!,
-            NSViewAnimation.Key.startFrame: NSValue(rect: initialFrame),
-            NSViewAnimation.Key.endFrame: NSValue(rect: finalFrame)
+            NSViewAnimation.Key.startFrame: NSValue(rect: cardInitialFrame),
+            NSViewAnimation.Key.endFrame: NSValue(rect: cardFinalFrame)
         ]
-        let animation = NSViewAnimation(viewAnimations: [animationInfo])
+        let listAnimationInfo: [NSViewAnimation.Key: Any] = [
+            NSViewAnimation.Key.target: self.collectionViewSuperview!,
+            NSViewAnimation.Key.startFrame: NSValue(rect: listInitialFrame),
+            NSViewAnimation.Key.endFrame: NSValue(rect: listFinalFrame)
+        ]
+        let animation = NSViewAnimation(viewAnimations: [cardAnimationInfo, listAnimationInfo])
         animation.delegate = self
         animation.duration = 0.2
         animation.start()
@@ -289,15 +305,34 @@ class Document: NSDocument, NSAnimationDelegate {
     }
     
     private var actionAfterAnimation: (() -> Void)? = nil
+    private var hideListAfterAnimation = false
     
     func animationDidEnd(_ animation: NSAnimation) {
         
+        self.imageView.isHidden = true
+        if self.hideListAfterAnimation {
+            self.collectionViewSuperview.isHidden = true
+        }
         if let onCompletion = self.actionAfterAnimation {
             onCompletion()
             self.actionAfterAnimation = nil
         }
-        self.imageView.isHidden = true
         
+    }
+    
+    private func computeRectangleFrame(of rectangle: Rectangle) -> NSRect {
+        
+        let rectangleOrigin = CGPoint(x: rectangle.left, y: rectangle.top)
+        let rectangleEnd = CGPoint(x: rectangle.right, y: rectangle.bottom)
+        
+        let transform = self.view.transform
+        let transformedOrigin = transform.transform(rectangleOrigin)
+        let transformedEnd = transform.transform(rectangleEnd)
+        
+        let frameOrigin = NSPoint(x: min(transformedOrigin.x, transformedEnd.x), y: min(transformedOrigin.y, transformedEnd.y))
+        let frameSize = NSSize(width: abs(transformedEnd.x - transformedOrigin.x), height: abs(transformedEnd.y - transformedOrigin.y))
+        
+        return NSRect(origin: frameOrigin, size: frameSize)
     }
     
     /// Redraws the HyperCard view
@@ -570,13 +605,7 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Convert the rectangle into current coordinates */
         let rectangle = part.part.rectangle
-        let rectangleFrame = NSMakeRect(CGFloat(rectangle.x), CGFloat(rectangle.y), CGFloat(rectangle.width), CGFloat(rectangle.height))
-        let rectangleCenter = NSPoint(x: rectangleFrame.midX, y: rectangleFrame.midY)
-        let frameCenter = view.transform.transform(rectangleCenter)
-        let transformedFrameSize = view.transform.transform(rectangleFrame.size)
-        let frameSize = NSSize(width: abs(transformedFrameSize.width), height: abs(transformedFrameSize.height))
-        let frameOrigin = NSPoint(x: frameCenter.x - frameSize.width/2.0, y: frameCenter.y - frameSize.height/2.0)
-        let frame = NSRect(origin: frameOrigin, size: frameSize)
+        let frame = self.computeRectangleFrame(of: rectangle)
         
         /* Create a view */
         let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, inLayerType: layerType), document: self)
