@@ -66,11 +66,14 @@ class DocumentView: NSView, NSMenuDelegate {
     var transform: AffineTransform {
         
         var transform = AffineTransform()
-        let scale = CGFloat(document.browser.image.width) / self.bounds.self.width
+        let scaleX = CGFloat(document.browser.image.width) / self.bounds.width
+        let scaleY = CGFloat(document.browser.image.height) / self.bounds.height
+        let scale = max(scaleX, scaleY)
+        let cardOriginX = (self.bounds.size.width - CGFloat(document.browser.image.width) / scale) / 2.0
         let cardOriginY = (self.bounds.size.height - CGFloat(document.browser.image.height) / scale) / 2.0
         
         /* Center vertically */
-        transform.translate(x: 0.0, y: cardOriginY)
+        transform.translate(x: cardOriginX, y: cardOriginY)
         
         /* Scale */
         transform.scale(1.0 / scale)
