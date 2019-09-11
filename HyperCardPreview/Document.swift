@@ -18,6 +18,7 @@ class Document: NSDocument, NSAnimationDelegate {
     var browser: Browser!
     var resourceFork: Data?
     var imageBuffer: ImageBuffer!
+    var visualEffectImageBuffer: ImageBuffer!
     
     @IBOutlet weak var view: DocumentView!
     
@@ -397,12 +398,15 @@ class Document: NSDocument, NSAnimationDelegate {
     
     private func displayImage(_ image: Image) {
         
+        if self.visualEffectImageBuffer == nil {
+            self.visualEffectImageBuffer = ImageBuffer(width: self.imageBuffer.width, height: self.imageBuffer.height)
+        }
+        
         /* Convert the image to screen */
-        let rgbImage = RgbConverter.convertImage(image)
+        self.visualEffectImageBuffer.drawImage(image)
         
         /* Display the image */
-        CATransaction.setDisableActions(true)
-        view.layer!.contents = rgbImage
+        self.view.drawBuffer(self.visualEffectImageBuffer)
     }
     
     func applyContinuousVisualEffect(_ effect: VisualEffects.ContinuousVisualEffect, from image: Image) {
