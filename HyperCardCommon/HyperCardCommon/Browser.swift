@@ -274,7 +274,7 @@ public class Browser {
          views because the rectangle is already dirty */
         if view is ClipableView {
             
-            let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, rectangle)
+            let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, rectangle)!
             var rectanglesToRefresh: [Rectangle] = viewRecords[index].rectanglesToRefresh ?? []
             rectanglesToRefresh.append(rectangleToRefresh)
             viewRecords[index].rectanglesToRefresh = rectanglesToRefresh

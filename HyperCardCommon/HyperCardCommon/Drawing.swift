@@ -29,6 +29,8 @@ public class Drawing {
     
     private var row: [Image.Integer]
     
+    private let clipRectangle: Rectangle?
+    
     /// The width of the drawing, in pixels
     public var width: Int {
         return image.width
@@ -52,15 +54,17 @@ public class Drawing {
     public static let NoComposition: ImageComposition = { ( a: inout Image.Integer, b: Image.Integer, integerIndex: Int, y: Int) in return }
     
     /// Builds a white drawing
-    public init(width: Int, height: Int) {
+    public init(width: Int, height: Int, clipRectangle: Rectangle? = nil) {
         self.image = Image(width: width, height: height)
         self.row = [Image.Integer](repeating: 0, count: image.integerCountInRow + 1)
+        self.clipRectangle = clipRectangle
     }
     
     /// Builds a drawing from an image
     public init(image: Image) {
         self.image = image
         self.row = [Image.Integer](repeating: 0, count: image.integerCountInRow + 1)
+        self.clipRectangle = nil
     }
     
     /// To edit pixel by pixel
@@ -85,9 +89,8 @@ public class Drawing {
     public func drawRectangle(_ unclippedRectangle: Rectangle, clipRectangle optionalClipRectangle: Rectangle? = nil, composition: ImageComposition = DirectComposition) {
         
         /* Clip */
-        let clipRectangle = makeValidClipRectangle(optionalClipRectangle)
-        let rectangle = computeRectangleIntersection(unclippedRectangle, clipRectangle)
-        guard rectangle.width > 0 && rectangle.height > 0 else {
+        guard   let clipRectangle = makeValidClipRectangle(optionalClipRectangle),
+                let rectangle = computeRectangleIntersection(unclippedRectangle, clipRectangle) else {
             return
         }
         
@@ -103,9 +106,9 @@ public class Drawing {
         
     }
     
-    private func makeValidClipRectangle(_ userClipRectangle: Rectangle?) -> Rectangle {
+    private func makeValidClipRectangle(_ userClipRectangle: Rectangle?) -> Rectangle? {
         
-        let wholeRectangle = Rectangle(top: 0, left: 0, bottom: height, right: width)
+        let wholeRectangle = self.clipRectangle ?? Rectangle(top: 0, left: 0, bottom: height, right: width)
         
         if let rectangle = userClipRectangle {
             return computeRectangleIntersection(rectangle, wholeRectangle)
@@ -125,9 +128,8 @@ public class Drawing {
         let unclippedRectangle = rectangleToDraw ?? Rectangle(top: 0, left: 0, bottom: image.height, right: image.width)
         
         /* Clip */
-        let clippingRectangle = makeValidClipRectangle(optionalClippingRectangle)
-        let (position, rectangle) = clipImageDrawing(unclippedPosition, rectangleToDraw: unclippedRectangle, clipRectangle: clippingRectangle)
-        guard rectangle.width > 0 && rectangle.height > 0 else {
+        guard   let clippingRectangle = makeValidClipRectangle(optionalClippingRectangle),
+                let (position, rectangle) = clipImageDrawing(unclippedPosition, rectangleToDraw: unclippedRectangle, clipRectangle: clippingRectangle) else {
             return
         }
         
@@ -160,7 +162,7 @@ public class Drawing {
         }
     }
     
-    private func clipImageDrawing(_ position: Point, rectangleToDraw: Rectangle, clipRectangle: Rectangle) -> (position: Point, rectangleToDraw: Rectangle) {
+    private func clipImageDrawing(_ position: Point, rectangleToDraw: Rectangle, clipRectangle: Rectangle) -> (position: Point, rectangleToDraw: Rectangle)? {
         
         /* Clip the rectangle: write the clip rectangle in the source image coordinates */
         let sourceClipRectangle = Rectangle(
@@ -168,7 +170,9 @@ public class Drawing {
             y: clipRectangle.y - position.y + rectangleToDraw.y,
             width: clipRectangle.width,
             height: clipRectangle.height)
-        let clippedRectangleToDraw = computeRectangleIntersection(rectangleToDraw, sourceClipRectangle)
+        guard let clippedRectangleToDraw = computeRectangleIntersection(rectangleToDraw, sourceClipRectangle) else {
+            return nil
+        }
         
         /* Point: prevent negative coordinates */
         let clippedPositionX = position.x + clippedRectangleToDraw.x - rectangleToDraw.x
@@ -357,7 +361,9 @@ public class Drawing {
         case .rectangular(rectangle: let layerRectangle):
             
             /* Clip it with the rectangle of the layer */
-            let layerRectangleToDraw = computeRectangleIntersection(rectangleToDraw, layerRectangle)
+            guard let layerRectangleToDraw = computeRectangleIntersection(rectangleToDraw, layerRectangle) else {
+                return
+            }
             
             /* Correct the position for the layer */
             let layerPosition = Point(
@@ -366,7 +372,9 @@ public class Drawing {
             
             /* Clip the rectangle */
             let unclippedMaskRectangle = Rectangle(x: layerPosition.x, y: layerPosition.y, width: layerRectangleToDraw.width, height: layerRectangleToDraw.height)
-            let maskRectangle = computeRectangleIntersection(unclippedMaskRectangle, clipRectangle ?? Rectangle(x: 0, y: 0, width: self.width, height: self.height))
+            guard let maskRectangle = computeRectangleIntersection(unclippedMaskRectangle, clipRectangle ?? Rectangle(x: 0, y: 0, width: self.width, height: self.height)) else {
+                return
+            }
             
             self.drawRectangle(maskRectangle, composition: composition)
             

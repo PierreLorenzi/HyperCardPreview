@@ -81,8 +81,7 @@ public struct Rectangle: Equatable {
     }
     
     public func intersects(_ rectangle: Rectangle) -> Bool {
-        let intersection = computeRectangleIntersection(self, rectangle)
-        return intersection.width > 0 && intersection.height > 0
+        return computeRectangleIntersection(self, rectangle) != nil
     }
 }
 
@@ -92,9 +91,15 @@ public func ==(r1: Rectangle, r2: Rectangle) -> Bool {
 
 /// Computes the intersection rectangle of two rectangles.
 ///<p>
-/// If the intersection is empty, returns an empty rectangle with zero or negative width and height
-public func computeRectangleIntersection(_ r1: Rectangle, _ r2: Rectangle) -> Rectangle {
-    return Rectangle(top: max(r1.top, r2.top), left: max(r1.left, r2.left), bottom: min(r1.bottom, r2.bottom), right: min(r1.right, r2.right))
+/// If the intersection is empty, returns nil
+public func computeRectangleIntersection(_ r1: Rectangle, _ r2: Rectangle) -> Rectangle? {
+    
+    let rectangle = Rectangle(top: max(r1.top, r2.top), left: max(r1.left, r2.left), bottom: min(r1.bottom, r2.bottom), right: min(r1.right, r2.right))
+    
+    guard rectangle.width > 0 && rectangle.height > 0 else {
+        return nil
+    }
+    return rectangle
 }
 
 /// Computes the rectangle directly enclosing two rectangles. Any of the rectangle can be absent
