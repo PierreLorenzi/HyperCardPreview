@@ -12,14 +12,55 @@ import HyperCardCommon
 /// The view displaying the HyperCard stack
 class DocumentView: NSView, NSMenuDelegate {
     
+    private var commandQueue: MTLCommandQueue
+    
     required init?(coder: NSCoder) {
+        
+        let device = MTLCreateSystemDefaultDevice()!
+        self.commandQueue = device.makeCommandQueue()!
+        
         super.init(coder: coder)
         
-        let layer = CALayer()
+        let layer = CAMetalLayer()
+        layer.framebufferOnly = false
+        layer.device = device
         layer.isOpaque = true
         layer.contentsGravity = CALayerContentsGravity.resizeAspect
         self.layer = layer
         self.wantsLayer = true
+    }
+    
+    func drawBuffer(_ imageBuffer: ImageBuffer) {
+        
+        if drawMetal(imageBuffer) {
+            return
+        }
+        
+        CATransaction.setDisableActions(true)
+        layer!.contents = imageBuffer.context.makeImage()
+    }
+    
+    private func drawMetal(_ imageBuffer: ImageBuffer) -> Bool {
+        
+        let metalLayer = (self.layer! as! CAMetalLayer)
+        
+        guard let drawable = metalLayer.nextDrawable() else {
+            return false
+        }
+        
+        let commandBuffer = commandQueue.makeCommandBuffer()!
+        
+        let texture = drawable.texture
+        guard texture.width == imageBuffer.width && texture.height == imageBuffer.height else {
+            return false
+        }
+        
+        texture.replace(region: MTLRegion(origin: MTLOrigin(x: 0, y: 0, z: 0), size: MTLSize(width: imageBuffer.width, height: imageBuffer.height, depth: texture.depth)), mipmapLevel: 0, withBytes: UnsafeRawPointer(imageBuffer.pixels.baseAddress!), bytesPerRow: imageBuffer.countPerRow*4)
+        
+        commandBuffer.present(drawable)
+        commandBuffer.commit()
+        
+        return true
     }
     
     var transform: AffineTransform {

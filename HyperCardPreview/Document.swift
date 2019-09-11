@@ -42,8 +42,7 @@ class Document: NSDocument, NSAnimationDelegate {
         do {
             let file = ClassicFile(path: path)
             let hyperCardFile = try HyperCardFile(file: file, password: password)
-            let screenScale = NSScreen.main!.backingScaleFactor
-            let imageBuffer = ImageBuffer(width: Int(screenScale*CGFloat(hyperCardFile.stack.size.width)), height: Int(screenScale*CGFloat(hyperCardFile.stack.size.height)))
+            let imageBuffer = ImageBuffer(width: hyperCardFile.stack.size.width, height: hyperCardFile.stack.size.height)
             self.browser = Browser(hyperCardFile: hyperCardFile, imageBuffer: imageBuffer)
             self.resourceFork = file.resourceFork
             self.imageBuffer = imageBuffer
@@ -308,8 +307,7 @@ class Document: NSDocument, NSAnimationDelegate {
         browser.refresh()
         
         /* Display the image in the layer */
-        CATransaction.setDisableActions(true)
-        view.layer!.contents = self.imageBuffer.context.makeImage()
+        view.drawBuffer(self.imageBuffer)
     }
     
     func applyVisualEffect(from image: Image, advance: Bool) {
