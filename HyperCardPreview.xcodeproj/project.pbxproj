@@ -164,25 +164,61 @@
 			children = (
 				6CD58724215D176C00482A56 /* HyperCardPreview.entitlements */,
 				6C26B8C51E6D7520006C314B /* AppDelegate.swift */,
-				6C26B8C71E6D7520006C314B /* Document.swift */,
-				6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */,
-				6C26B8DA1E6D7577006C314B /* DocumentView.swift */,
-				6CADCC061F474A3C00B895FB /* VisualEffects.swift */,
-				6CB8B9861F4B0E4E0070116D /* CollectionViewManager.swift */,
-				6C26B8C91E6D7520006C314B /* Document.xib */,
-				6C26B8CC1E6D7520006C314B /* Assets.xcassets */,
 				6C26B8CE1E6D7520006C314B /* MainMenu.xib */,
-				6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */,
-				6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */,
+				6CA554A51F602852005914E2 /* Help.xib */,
+				6C5936D723295E7500002E71 /* Document */,
+				6C5936D323295DC300002E71 /* Card List */,
+				6C5936D423295DED00002E71 /* Information Panel */,
+				6C5936D523295E1800002E71 /* Export */,
+				6C5936D623295E3E00002E71 /* Resource Panel */,
+				6C5936D823295EA200002E71 /* Resources */,
+				6C26B8D11E6D7520006C314B /* Info.plist */,
+			);
+			path = HyperCardPreview;
+			sourceTree = "<group>";
+		};
+		6C26B8D71E6D7534006C314B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6C5936D323295DC300002E71 /* Card List */ = {
+			isa = PBXGroup;
+			children = (
+				6CB8B9861F4B0E4E0070116D /* CollectionViewManager.swift */,
 				6CB8B98C1F4B16BC0070116D /* CardItem.xib */,
 				6C17633F1F57218C006E72C7 /* CardItemView.swift */,
 				6C1763411F572809006E72C7 /* CardItem.swift */,
 				6C6064021F5B14CC00988560 /* CollectionView.swift */,
-				6CA554A51F602852005914E2 /* Help.xib */,
+			);
+			name = "Card List";
+			sourceTree = "<group>";
+		};
+		6C5936D423295DED00002E71 /* Information Panel */ = {
+			isa = PBXGroup;
+			children = (
+				6CCC93A21E734A580059C8D8 /* InfoPanelController.swift */,
+				6CCC93A01E73483D0059C8D8 /* InfoPanel.xib */,
+			);
+			name = "Information Panel";
+			sourceTree = "<group>";
+		};
+		6C5936D523295E1800002E71 /* Export */ = {
+			isa = PBXGroup;
+			children = (
 				6CC2F9482150F3C2007A7008 /* Stack Encoding.swift */,
 				6C3FF059215CEF0200BCEC81 /* ImageExporter.swift */,
 				6C3FF055215CEC6300BCEC81 /* ExportAccessoryView.xib */,
 				6C3FF05B215CF73400BCEC81 /* ExportProgress.xib */,
+			);
+			name = Export;
+			sourceTree = "<group>";
+		};
+		6C5936D623295E3E00002E71 /* Resource Panel */ = {
+			isa = PBXGroup;
+			children = (
 				6CCE925A215D547600A93935 /* ResourceController.swift */,
 				6CEB53172310747800E19841 /* Sound.swift */,
 				6C90615323114C2F00542349 /* SoundCompression.swift */,
@@ -194,21 +230,33 @@
 				6CCFE629215E3D5E000ED882 /* ResourceImageController.swift */,
 				6CCFE62B215E41FE000ED882 /* ResourceBinaryWindow.xib */,
 				6CCFE62D215E426D000ED882 /* ResourceBinaryController.swift */,
+			);
+			name = "Resource Panel";
+			sourceTree = "<group>";
+		};
+		6C5936D723295E7500002E71 /* Document */ = {
+			isa = PBXGroup;
+			children = (
+				6C26B8C71E6D7520006C314B /* Document.swift */,
+				6C26B8C91E6D7520006C314B /* Document.xib */,
+				6C26B8DA1E6D7577006C314B /* DocumentView.swift */,
+				6C3682AD1E735EFF00EDF16D /* ScriptBorderView.swift */,
+				6CADCC061F474A3C00B895FB /* VisualEffects.swift */,
+			);
+			name = Document;
+			sourceTree = "<group>";
+		};
+		6C5936D823295EA200002E71 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				6C26B8CC1E6D7520006C314B /* Assets.xcassets */,
 				6C4FE2661E75A4CE00E2BF12 /* Application.icns */,
 				6C4FE2561E75849700E2BF12 /* Stack.icns */,
 				6C36D7FE215E1CD3003AA45F /* SoundResourceIcon.png */,
 				6C36D802215E25B7003AA45F /* BinaryResourceIcon.png */,
 				6C2E061E215E61830071DE26 /* EmptySound.wav */,
-				6C26B8D11E6D7520006C314B /* Info.plist */,
 			);
-			path = HyperCardPreview;
-			sourceTree = "<group>";
-		};
-		6C26B8D71E6D7534006C314B /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Frameworks;
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		6C9E6A971E75BCCD00BBF925 /* Products */ = {
