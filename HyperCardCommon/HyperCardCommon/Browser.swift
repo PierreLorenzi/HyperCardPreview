@@ -55,7 +55,14 @@ public class Browser {
         return self.currentCard.background
     }
     
-    private var viewRecords: [ViewRecord] = []
+    private var views: [View] = []
+    
+    private var refreshNeeds: [RefreshNeed] = []
+    
+    private struct RefreshNeed {
+        var rectangle: Rectangle
+        var viewIndex: Int
+    }
     
     public var needsDisplay: Bool {
         get { return needsDisplayProperty.value }
@@ -74,21 +81,6 @@ public class Browser {
     
     private let areThereColors: Bool
     
-    private struct ViewRecord {
-        
-        /// the view
-        public let view: View
-        
-        /// if the view is marked for refresh
-        public var willRefresh: Bool
-        
-        /// if the views behind have been updateed when the view was marked for refresh
-        public var didUpdateBehind: Bool
-        
-        /// if the view accepts to draw sub-rectangles, the rectangles to draw.
-        public var rectanglesToRefresh: [Rectangle]?
-    }
-    
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0, imageBuffer: ImageBuffer) {
         self.hyperCardFile = hyperCardFile
@@ -96,6 +88,7 @@ public class Browser {
         drawing = Drawing(width: stack.size.width, height: stack.size.height)
         
         self.imageBuffer = imageBuffer
+        imageBuffer.context.scaleBy(x: CGFloat(imageBuffer.width)/CGFloat(stack.size.width), y: CGFloat(imageBuffer.height)/CGFloat(stack.size.height))
         imageBuffer.context.translateBy(x: 0, y: CGFloat(stack.size.height))
         imageBuffer.context.scaleBy(x: 1, y: -1)
         imageBuffer.context.setBlendMode(CGBlendMode.darken)
@@ -136,13 +129,18 @@ public class Browser {
     
     private func rebuildViews() {
         
+        /* If there are colors, we must refresh all because there may be updated colors also that we don't track */
+        if areThereColors {
+            self.addRefreshNeed(in: Rectangle(x: 0, y: 0, width: stack.size.width, height: stack.size.height), at: 0)
+        }
+        
         /* If we haven't changed background, keep the background parts */
         if currentBackground === backgroundBefore {
             
             /* Remove all the views except the background views, there are one view per part,
              plus one for the image, plus one for the white view */
             let backgroundViewCount = 1 + currentBackground.parts.count + (isShowingWhiteView ? 1 : 0)
-            removeLastViews(count: self.viewRecords.count - backgroundViewCount)
+            removeLastViews(count: self.views.count - backgroundViewCount)
             
             /* Set the scrolls of the background fields to zero, to avoid having a field
              with a scroll higher than maximum */
@@ -155,7 +153,7 @@ public class Browser {
         else {
             
             /* Remove all the views except the window background */
-            self.viewRecords.removeAll()
+            self.views.removeAll()
             
             /* If the background doesn't draw a white background, add the white view */
             isShowingWhiteView = !doesBackgroundHaveWhiteMask(self.currentBackground)
@@ -175,9 +173,6 @@ public class Browser {
         if !displayOnlyBackground {
             appendLayerViews(self.currentCard)
         }
-        
-        /* We must refresh */
-        self.needsDisplay = true
                 
     }
     
@@ -205,85 +200,75 @@ public class Browser {
     private func removeLastViews(count: Int) {
         
         /* Check if the views to remove are visible */
-        let remainingViewCount = viewRecords.count - count
-        let needsUpdate = viewRecords[remainingViewCount ..< viewRecords.count].map({$0.view.rectangle != nil}).reduce(false, { (b1: Bool, b2: Bool) -> Bool in
-            return b1 || b2
-        })
+        let remainingViewCount = views.count - count
         
-        /* Remove the views */
-        self.viewRecords.removeLast(count)
-        
-        /* If the card was visible, refresh all the background views (don't loose time looping on all the card views) */
-        if needsUpdate {
-            for i in 0..<viewRecords.count {
-                if !viewRecords[i].willRefresh {
-                    markViewForRefresh(atIndex: i, redrawBehind: true)
-                }
-            }
+        for _ in remainingViewCount ..< views.count {
+            
+            let view = views.last!
+            self.removeView(view)
         }
         
     }
     
-    private func markViewForRefresh(atIndex index: Int, redrawBehind: Bool) {
+    private func removeView(_ view: View) {
         
-        /* Get the view rectangle */
-        guard let dirtyRectangle = viewRecords[index].view.rectangle else {
-            return
-        }
+        self.addRefreshNeed(under: view)
         
-        /* Mask the view for refresh */
-        viewRecords[index].willRefresh = true
-        viewRecords[index].didUpdateBehind = redrawBehind
-        
-        /* Refresh all the views in front */
-        for i in (index+1) ..< viewRecords.count {
-            self.markViewForRefreshIfOverlapsRect(atIndex: i, dirtyRectangle: dirtyRectangle)
-        }
-        
-        /* Refresh the views behind if requested */
-        if redrawBehind {
-            for i in 0 ..< index {
-                self.markViewForRefreshIfOverlapsRect(atIndex: i, dirtyRectangle: dirtyRectangle)
-            }
-        }
-        
-        self.needsDisplay = true
+        let index = self.views.firstIndex(where: { $0 === view })!
+        self.views.remove(at: index)
     }
     
-    private func markViewForRefreshIfOverlapsRect(atIndex index: Int, dirtyRectangle: Rectangle) {
+    private func addRefreshNeed(under view: View) {
         
-        /* Get the view */
-        let view = viewRecords[index].view
-        
-        /* Get the rectangle */
         guard let rectangle = view.rectangle else {
             return
         }
         
-        /* The view must intersects the dirty rect */
-        guard rectangle.intersects(dirtyRectangle) else {
+        self.addRefreshNeed(in: rectangle, at: 0)
+    }
+    
+    private func addRefreshNeed(above view: View) {
+        
+        guard let rectangle = view.rectangle else {
             return
         }
         
-        /* Check if it not already marked for refresh */
-        guard !viewRecords[index].willRefresh else {
+        let viewIndex = self.views.firstIndex(where: { $0 === view })!
+        self.addRefreshNeed(in: rectangle, at: viewIndex)
+    }
+    
+    private func addRefreshNeed(in unclippedRectangle: Rectangle, at viewIndex: Int) {
+        
+        guard let rectangle = computeRectangleIntersection(unclippedRectangle, Rectangle(x: 0, y: 0, width: self.image.width, height: self.image.height)) else {
             return
         }
         
-        /* If the view can draw sub-rectangles, mark the rectangle for refresh. Do not check the other
-         views because the rectangle is already dirty */
-        if view is ClipableView {
+        /* Check it doesn't enclose or isn't enclosed by another one */
+        for i in 0..<self.refreshNeeds.count {
             
-            let rectangleToRefresh = computeRectangleIntersection(dirtyRectangle, rectangle)!
-            var rectanglesToRefresh: [Rectangle] = viewRecords[index].rectanglesToRefresh ?? []
-            rectanglesToRefresh.append(rectangleToRefresh)
-            viewRecords[index].rectanglesToRefresh = rectanglesToRefresh
-            return
+            let refreshNeed = self.refreshNeeds[i]
+            
+            if rectangle.containsRectangle(refreshNeed.rectangle) {
+                
+                self.refreshNeeds[i].rectangle = rectangle
+                if viewIndex < refreshNeed.viewIndex {
+                    self.refreshNeeds[i].viewIndex = viewIndex
+                }
+                return
+            }
+            
+            if refreshNeed.rectangle.containsRectangle(rectangle) {
+                
+                if viewIndex < refreshNeed.viewIndex {
+                    self.refreshNeeds[i].viewIndex = viewIndex
+                }
+                return
+            }
         }
         
-        /* Mask the view for refresh. Do not draw behind because it still has the same shape */
-        self.markViewForRefresh(atIndex: index, redrawBehind: view.usesXorComposition)
-        
+        let newRefreshNeed = RefreshNeed(rectangle: rectangle, viewIndex: viewIndex)
+        self.refreshNeeds.append(newRefreshNeed)
+        self.needsDisplay = true
     }
     
     public func refresh() {
@@ -296,70 +281,68 @@ public class Browser {
         }
         
         /* Refresh the drawing */
-        if let dirtyRectangle  = self.refreshDrawing() {
-            
-            /* Refresh the CGImage */
-            self.imageBuffer.drawImage(self.image, onlyRectangle: dirtyRectangle)
+        let refreshNeeds = self.refreshNeeds
+        self.refreshDrawing()
+        
+        /* Update the image buffer */
+        for refreshNeed in refreshNeeds {
+            self.imageBuffer.drawImage(self.image, onlyRectangle: refreshNeed.rectangle)
         }
         
     }
     
     private func refreshWithColors() {
         
-        /* Draw a white background */
-        imageBuffer.context.setFillColor(CGColor.white)
-        imageBuffer.context.fill(CGRect(x: 0, y: 0, width: imageBuffer.width, height: imageBuffer.height))
-        
-        /* Update the black&white image */
-        let _  = self.refreshDrawing()
-        
-        /* Draw the colors */
-        AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: imageBuffer.context)
-        
-    }
-    
-    private func refreshDrawing() -> Rectangle? {
-        
-        var index = -1
-        var dirtyRectangle: Rectangle? = nil
-        
-        /* Draw the views */
-        for viewRecord in viewRecords {
+        for refreshNeed in self.refreshNeeds {
             
-            let view = viewRecord.view
-            index += 1
+            let rectangle = refreshNeed.rectangle
+        
+            /* Draw a white background */
+            imageBuffer.context.setFillColor(CGColor.white)
+            let cgRect = CGRect(x: rectangle.x, y: rectangle.y, width: rectangle.width, height: rectangle.height)
+            imageBuffer.context.fill(cgRect)
             
-            /* The view may be not for refresh but have rectangles to draw */
-            if let clipableView = view as? ClipableView,
-                let rectanglesToRefresh = viewRecord.rectanglesToRefresh, !viewRecord.willRefresh {
-                for rectangle in rectanglesToRefresh {
-                    clipableView.draw(in: drawing, rectangle: rectangle)
-                    dirtyRectangle = computeEnclosingRectangle(dirtyRectangle, rectangle)
+            /* Update all the views in the rectangle */
+            drawing.clipRectangle = rectangle
+            for view in self.views {
+                
+                guard let viewRectangle = view.rectangle,
+                    viewRectangle.intersects(refreshNeed.rectangle) else {
+                        continue
                 }
-                view.refreshNeed = .none
-                viewRecords[index].rectanglesToRefresh = nil
-                viewRecords[index].didUpdateBehind = false
-                continue
+                
+                view.draw(in: drawing)
             }
             
-            /* Check if the view is programmed for refresh */
-            guard viewRecord.willRefresh else {
-                continue
-            }
+            self.imageBuffer.drawImage(self.image, onlyRectangle: rectangle)
             
-            /* Draw the view */
-            view.draw(in: drawing)
-            view.refreshNeed = .none
-            viewRecords[index].willRefresh = false
-            viewRecords[index].didUpdateBehind = false
-            viewRecords[index].rectanglesToRefresh = nil
-            dirtyRectangle = computeEnclosingRectangle(dirtyRectangle, view.rectangle)
+            /* Draw the colors */
+            imageBuffer.context.clip(to: cgRect)
+            AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: imageBuffer.context)
         }
         
-        /* Restrain the rectangle to the card, in case there are parts outside the card rectangle */
-        dirtyRectangle = (dirtyRectangle == nil) ? nil : computeRectangleIntersection(dirtyRectangle!, Rectangle(x: 0, y: 0, width: image.width, height: image.height))
+        self.refreshNeeds.removeAll()
+    }
+    
+    private func refreshDrawing() {
         
-        return dirtyRectangle
+        for refreshNeed in self.refreshNeeds {
+            
+            self.drawing.clipRectangle = refreshNeed.rectangle
+            
+            for i in refreshNeed.viewIndex ..< self.views.count {
+                
+                let view = self.views[i]
+                guard let rectangle = view.rectangle,
+                    rectangle.intersects(refreshNeed.rectangle) else {
+                    continue
+                }
+                
+                view.draw(in: drawing)
+            }
+        }
+        
+        self.refreshNeeds.removeAll()
     }
     
     private func appendLayerViews(_ layer: Layer) {
@@ -390,22 +373,16 @@ public class Browser {
             /* Check if the view has changed shape, in that case the views behind must be refreshed */
             let hasChangedShape = (view.refreshNeed == .refreshWithNewShape)
             
-            /* Find the record */
-            let index = self.viewRecords.firstIndex(where: { $0.view === view })!
-            let record = self.viewRecords[index]
-            if (!hasChangedShape && record.willRefresh) || (hasChangedShape && record.didUpdateBehind) {
-                return
+            if hasChangedShape || view.usesXorComposition {
+                self.addRefreshNeed(under: view)
             }
-            
-            /* Refresh */
-            self.markViewForRefresh(atIndex: index, redrawBehind: hasChangedShape)
+            else {
+                self.addRefreshNeed(above: view)
+            }
         })
         
-        /* Build a view record. Do not mark it as refresh because we're just adding a view on top, just set willRefresh to true  */
-        let viewRecord = ViewRecord(view: view, willRefresh: true, didUpdateBehind: false, rectanglesToRefresh: nil)
-        self.viewRecords.append(viewRecord)
-        self.needsDisplay = true
-        
+        self.views.append(view)
+        self.addRefreshNeed(above: view)
     }
     
     private func buildPartView(for part: LayerPart) -> View {
@@ -540,9 +517,7 @@ public class Browser {
     public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder? {
         
         /* Ask to the views, from the foremost to the outmost */
-        for viewRecord in viewRecords.reversed() {
-            
-            let view = viewRecord.view
+        for view in views.reversed() {
             
             /* Check if the view responds to the mouse */
             guard let responder = view as? MouseResponder else {

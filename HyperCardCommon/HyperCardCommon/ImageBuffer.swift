@@ -62,11 +62,11 @@ public extension ImageBuffer {
         
         verticalSample.move(to: firstVerticalSampleIndex)
         
-        while verticalSample.firstPixelIndex < rectangle.bottom {
+        while verticalSample.lastPixelIndex < rectangle.bottom {
             
             horizontalSample.move(to: firstHorizontalSampleIndex)
             
-            while horizontalSample.firstPixelIndex < rectangle.right {
+            while horizontalSample.lastPixelIndex < rectangle.right {
                 
                 /* Gather the pixels in the sample */
                 var value = 0.0

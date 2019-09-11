@@ -29,7 +29,7 @@ public class Drawing {
     
     private var row: [Image.Integer]
     
-    private let clipRectangle: Rectangle?
+    public var clipRectangle: Rectangle?
     
     /// The width of the drawing, in pixels
     public var width: Int {
