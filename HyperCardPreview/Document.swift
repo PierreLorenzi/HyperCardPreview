@@ -570,9 +570,12 @@ class Document: NSDocument, NSAnimationDelegate {
         
         /* Convert the rectangle into current coordinates */
         let rectangle = part.part.rectangle
-        let rectangleFrame = NSMakeRect(CGFloat(rectangle.x), CGFloat(rectangle.bottom), CGFloat(rectangle.width), CGFloat(rectangle.height))
-        let frameOrigin = view.transform.transform(rectangleFrame.origin)
-        let frameSize = view.transform.transform(rectangleFrame.size)
+        let rectangleFrame = NSMakeRect(CGFloat(rectangle.x), CGFloat(rectangle.y), CGFloat(rectangle.width), CGFloat(rectangle.height))
+        let rectangleCenter = NSPoint(x: rectangleFrame.midX, y: rectangleFrame.midY)
+        let frameCenter = view.transform.transform(rectangleCenter)
+        let transformedFrameSize = view.transform.transform(rectangleFrame.size)
+        let frameSize = NSSize(width: abs(transformedFrameSize.width), height: abs(transformedFrameSize.height))
+        let frameOrigin = NSPoint(x: frameCenter.x - frameSize.width/2.0, y: frameCenter.y - frameSize.height/2.0)
         let frame = NSRect(origin: frameOrigin, size: frameSize)
         
         /* Create a view */
