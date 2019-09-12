@@ -385,6 +385,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
     private func buildContextualMenu(forParts parts: [PartInMenu]) -> NSMenu {
         
         let menu = NSMenu(title: "Parts")
+        menu.autoenablesItems = false
         
         /* Menu item explaining the menu */
         let explanationItem = NSMenuItem(title: "Parts at that point:", action: nil, keyEquivalent: "")
