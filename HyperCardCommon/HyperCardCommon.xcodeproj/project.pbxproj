@@ -930,14 +930,13 @@
 		6C9E6A8D1E75BCCD00BBF925 /* HyperCardCommon */ = {
 			isa = PBXGroup;
 			children = (
-				6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */,
 				6C9E6A9C1E75BCFA00BBF925 /* Browser.swift */,
-				6C9DF4D720C708A80024F61B /* MainRepository.swift */,
 				6C9E6AA41E75BCFA00BBF925 /* Common */,
 				6C9E6AB41E75BCFA00BBF925 /* Data */,
 				6C9E6AE81E75BCFA00BBF925 /* File */,
 				6C9E6AFA1E75BCFA00BBF925 /* Graphics */,
 				6C59F45123201AF400D62D48 /* Script */,
+				6C9E6A8E1E75BCCD00BBF925 /* HyperCardCommon.h */,
 				6C9E6A8F1E75BCCD00BBF925 /* Info.plist */,
 			);
 			path = HyperCardCommon;
@@ -954,6 +953,7 @@
 				6C76AA9720C5956C009A3446 /* Computation.swift */,
 				6C30E8D01F4D117A00ACB457 /* StringComparison.swift */,
 				6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */,
+				6C9DF4D720C708A80024F61B /* MainRepository.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
