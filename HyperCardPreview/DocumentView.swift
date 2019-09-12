@@ -546,4 +546,30 @@ class DocumentView: NSView, NSMenuDelegate {
         responder.respondToMouseEvent(.mouseDragged, at: browserPosition)
     }
     
+    override func resetCursorRects() {
+        
+        let cursorRects = document.browser.cursorRectanglesProperty.value
+        
+        for cursorRect in cursorRects {
+            
+            let (rectangle, cursor) = cursorRect
+            let frame = self.computeRectangleFrame(of: rectangle)
+            self.addCursorRect(frame, cursor: cursor)
+        }
+    }
+    
+    private func computeRectangleFrame(of rectangle: Rectangle) -> NSRect {
+        
+        let rectangleOrigin = CGPoint(x: rectangle.left, y: rectangle.top)
+        let rectangleEnd = CGPoint(x: rectangle.right, y: rectangle.bottom)
+        
+        let transformedOrigin = self.transform.transform(rectangleOrigin)
+        let transformedEnd = self.transform.transform(rectangleEnd)
+        
+        let frameOrigin = NSPoint(x: min(transformedOrigin.x, transformedEnd.x), y: min(transformedOrigin.y, transformedEnd.y))
+        let frameSize = NSSize(width: abs(transformedEnd.x - transformedOrigin.x), height: abs(transformedEnd.y - transformedOrigin.y))
+        
+        return NSRect(origin: frameOrigin, size: frameSize)
+    }
+    
 } 

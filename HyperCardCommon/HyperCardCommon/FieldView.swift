@@ -91,6 +91,10 @@ public class FieldView: View, MouseResponder {
     
     private var draggingState = DraggingState.none
     
+    var cursorRectangle: Rectangle {
+        return FieldView.computeContentRectangle(of: self.field)
+    }
+    
     public init(field: Field, contentComputation: Computation<PartContent>, fontManager: FontManager) {
         
         self.field = field

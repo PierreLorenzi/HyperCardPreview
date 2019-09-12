@@ -81,6 +81,9 @@ public class Browser: MouseResponder {
     
     private weak var _selectedField: FieldView? = nil
     
+    public var cursorRectanglesProperty = Property<[(Rectangle,NSCursor)]>([])
+    private var doCursorRectanglesChange = false
+    
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0, imageBuffer: ImageBuffer) {
         self.hyperCardFile = hyperCardFile
@@ -129,6 +132,8 @@ public class Browser: MouseResponder {
     
     private func rebuildViews() {
         
+        self.doCursorRectanglesChange = false
+        
         /* If there are colors, we must refresh all because there may be updated colors also that we don't track */
         if areThereColors {
             self.addRefreshNeed(in: Rectangle(x: 0, y: 0, width: stack.size.width, height: stack.size.height), at: 0)
@@ -167,7 +172,31 @@ public class Browser: MouseResponder {
         if !displayOnlyBackground {
             appendLayerViews(self.currentCard)
         }
+        
+        if self.doCursorRectanglesChange {
+            self.cursorRectanglesProperty.value = self.listCursorRectangles()
+        }
                 
+    }
+    
+    private func listCursorRectangles() -> [(Rectangle,NSCursor)] {
+        
+        var cursorRectangles: [(Rectangle,NSCursor)] = []
+        
+        for view in self.views {
+            
+            if let fieldView = view as? FieldView, view.rectangle != nil {
+                cursorRectangles.append((fieldView.cursorRectangle, NSCursor.iBeam))
+            }
+            if view is ButtonView, let rectangle = view.rectangle,
+                cursorRectangles.first(where: { (cursorRect: (Rectangle, NSCursor)) -> Bool in
+                    cursorRect.0.intersects(rectangle) && cursorRect.1 === NSCursor.iBeam
+                }) != nil {
+                cursorRectangles.append((rectangle, NSCursor.arrow))
+            }
+        }
+        
+        return cursorRectangles
     }
     
     private func doesBackgroundHaveWhiteMask(_ background: Background) -> Bool {
@@ -210,6 +239,10 @@ public class Browser: MouseResponder {
         
         let index = self.views.firstIndex(where: { $0 === view })!
         self.views.remove(at: index)
+        
+        if view is FieldView {
+            self.doCursorRectanglesChange = true
+        }
     }
     
     private func addRefreshNeed(under view: View) {
@@ -390,6 +423,10 @@ public class Browser: MouseResponder {
         
         self.views.append(view)
         self.addRefreshNeed(above: view)
+        
+        if view is FieldView {
+            self.doCursorRectanglesChange = true
+        }
     }
     
     private func buildPartView(for part: LayerPart) -> View {

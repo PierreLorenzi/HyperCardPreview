@@ -126,6 +126,9 @@ class Document: NSDocument, NSAnimationDelegate {
         let newFrame = window.frameRect(forContentRect: NSMakeRect(currentFrame.origin.x, currentFrame.origin.y, CGFloat(browser.stack.size.width), CGFloat(browser.stack.size.height)))
         window.setFrame(newFrame, display: false)
         view.frame = NSMakeRect(0, 0, CGFloat(browser.stack.size.width), CGFloat(browser.stack.size.height))
+        browser.cursorRectanglesProperty.startNotifications(for: self) {
+            window.invalidateCursorRects(for: self.view)
+        }
         
         browser.needsDisplayProperty.startNotifications(for: self, by: {
             [weak self] in
