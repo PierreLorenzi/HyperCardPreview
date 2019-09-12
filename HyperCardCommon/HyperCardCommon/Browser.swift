@@ -411,7 +411,7 @@ public class Browser: MouseResponder {
         let view = FieldView(field: field, contentComputation: contentComputation, fontManager: self.fontManager)
         
         /* Manage the selection */
-        view.selectedRangeProperty.startNotifications(for: self) { [unowned self] in
+        view.selectedRangeProperty.startNotifications(for: self) { [unowned self, unowned view] in
             self.respondToViewSelection(view)
         }
         
