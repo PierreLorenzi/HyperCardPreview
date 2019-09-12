@@ -62,6 +62,7 @@ public class Browser {
     private struct RefreshNeed {
         var rectangle: Rectangle
         var viewIndex: Int
+        var view: View
     }
     
     public var needsDisplay: Bool {
@@ -75,9 +76,6 @@ public class Browser {
     
     /// the view used to draw a white background on the window
     private var whiteView: WhiteView
-    
-    /// if the white view is in the view stack
-    private var isShowingWhiteView = false
     
     private let areThereColors: Bool
     
@@ -129,8 +127,6 @@ public class Browser {
     
     private func rebuildViews() {
         
-        self.refreshNeeds.removeAll()
-        
         /* If there are colors, we must refresh all because there may be updated colors also that we don't track */
         if areThereColors {
             self.addRefreshNeed(in: Rectangle(x: 0, y: 0, width: stack.size.width, height: stack.size.height), at: 0)
@@ -141,7 +137,7 @@ public class Browser {
             
             /* Remove all the views except the background views, there are one view per part,
              plus one for the image, plus one for the white view */
-            let backgroundViewCount = 1 + currentBackground.parts.count + (isShowingWhiteView ? 1 : 0)
+            let backgroundViewCount = 1 + currentBackground.parts.count + 1
             removeLastViews(count: self.views.count - backgroundViewCount)
             
             /* Set the scrolls of the background fields to zero, to avoid having a field
@@ -154,14 +150,8 @@ public class Browser {
         }
         else {
             
-            /* Remove all the views except the window background */
-            self.views.removeAll()
-            
-            /* If the background doesn't draw a white background, add the white view */
-            isShowingWhiteView = !doesBackgroundHaveWhiteMask(self.currentBackground)
-            if isShowingWhiteView {
-                appendView(self.whiteView)
-            }
+            /* Remove all the views except the white view */
+            self.removeLastViews(count: self.views.count - 1)
             
             /* Append background views */
             appendLayerViews(self.currentBackground)
@@ -245,6 +235,9 @@ public class Browser {
             return
         }
         
+        /* Remove the refresh needs that are not valid anymore */
+        self.removeInvalidRefreshNeeds()
+        
         /* Check it doesn't enclose or isn't enclosed by another one */
         for i in 0..<self.refreshNeeds.count {
             
@@ -255,6 +248,7 @@ public class Browser {
                 self.refreshNeeds[i].rectangle = rectangle
                 if viewIndex < refreshNeed.viewIndex {
                     self.refreshNeeds[i].viewIndex = viewIndex
+                    self.refreshNeeds[i].view = self.views[viewIndex]
                 }
                 return
             }
@@ -263,17 +257,26 @@ public class Browser {
                 
                 if viewIndex < refreshNeed.viewIndex {
                     self.refreshNeeds[i].viewIndex = viewIndex
+                    self.refreshNeeds[i].view = self.views[viewIndex]
                 }
                 return
             }
         }
         
-        let newRefreshNeed = RefreshNeed(rectangle: rectangle, viewIndex: viewIndex)
+        let newRefreshNeed = RefreshNeed(rectangle: rectangle, viewIndex: viewIndex, view: self.views[viewIndex])
         self.refreshNeeds.append(newRefreshNeed)
         self.needsDisplay = true
     }
     
+    private func removeInvalidRefreshNeeds() {
+        
+        self.refreshNeeds.removeAll(where: { $0.viewIndex >= self.views.count || $0.view !== self.views[$0.viewIndex] })
+    }
+    
     public func refresh() {
+        
+        /* Remove the refresh needs that are not valid anymore */
+        self.removeInvalidRefreshNeeds()
         
         /* If there are colors, it is a separate process */
         guard !self.areThereColors else {
