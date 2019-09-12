@@ -798,6 +798,20 @@ public class FieldView: View, MouseResponder {
         self.stopScrolling()
     }
     
+    func getSelection() -> HString? {
+        
+        guard let range = self.selectedRange else {
+            return nil
+        }
+        
+        return self.richText.string[range]
+    }
+    
+    func selectAll() {
+        
+        self.selectedRange = 0..<self.richText.string.length
+    }
+    
 }
 
 

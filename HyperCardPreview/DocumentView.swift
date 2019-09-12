@@ -10,7 +10,7 @@ import Cocoa
 import HyperCardCommon
 
 /// The view displaying the HyperCard stack
-class DocumentView: NSView, NSMenuDelegate {
+class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
     
     private var commandQueue: MTLCommandQueue
     
@@ -570,6 +570,37 @@ class DocumentView: NSView, NSMenuDelegate {
         let frameSize = NSSize(width: abs(transformedEnd.x - transformedOrigin.x), height: abs(transformedEnd.y - transformedOrigin.y))
         
         return NSRect(origin: frameOrigin, size: frameSize)
+    }
+    
+    func validateUserInterfaceItem(_ item: NSValidatedUserInterfaceItem) -> Bool {
+        
+        if item.action == #selector(DocumentView.copy(_:)) {
+            return document.browser.hasSelection()
+        }
+        
+        if item.action == #selector(DocumentView.selectAll(_:)) {
+            return document.browser.hasSelection()
+        }
+        
+        return false
+    }
+    
+    @objc
+    func copy(_ sender: Any?) {
+        
+        guard let selection = document.browser.getSelection() else {
+            return
+        }
+        
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(selection.description, forType: NSPasteboard.PasteboardType.string)
+    }
+    
+    @objc
+    override func selectAll(_ sender: Any?) {
+        
+        document.browser.selectAll()
     }
     
 } 

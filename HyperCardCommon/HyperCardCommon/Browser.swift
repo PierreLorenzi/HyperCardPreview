@@ -635,4 +635,22 @@ public class Browser: MouseResponder {
         }
     }
     
+    public func hasSelection() -> Bool {
+        return self.selectedField != nil
+    }
+    
+    public func getSelection() -> HString? {
+        guard let field = self.selectedField else {
+            return nil
+        }
+        return field.getSelection()
+    }
+    
+    public func selectAll() {
+        guard let field = self.selectedField else {
+            return
+        }
+        field.selectAll()
+    }
+    
 }
