@@ -334,10 +334,7 @@ public class Browser: MouseResponder {
             
             let rectangle = refreshNeed.rectangle
         
-            /* Draw a white background */
-            imageBuffer.context.setFillColor(CGColor.white)
             let cgRect = CGRect(x: rectangle.x, y: rectangle.y, width: rectangle.width, height: rectangle.height)
-            imageBuffer.context.fill(cgRect)
             
             /* Update all the views in the rectangle */
             drawing.clipRectangle = rectangle
