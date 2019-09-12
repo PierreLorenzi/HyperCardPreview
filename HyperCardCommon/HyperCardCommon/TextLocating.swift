@@ -27,7 +27,7 @@ public extension TextLayout {
             return line.startIndex
         }
         guard point.x < self.size.width else {
-            return line.endIndex+1
+            return min(line.endIndex+1, text.string.length)
         }
         
         /* Look for the character index at the level of the point */
