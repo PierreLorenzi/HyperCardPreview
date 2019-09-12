@@ -52,6 +52,7 @@
 		6C59F496232020A000D62D48 /* ObjectDescriptorSchemas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C59F495232020A000D62D48 /* ObjectDescriptorSchemas.swift */; };
 		6C5E929423155F4A00054E46 /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C5E929323155F4A00054E46 /* ExpressionTests.swift */; };
 		6C6064071F5B1DF600988560 /* HdmxTableReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C6064061F5B1DF600988560 /* HdmxTableReader.swift */; };
+		6C68FE62232AD1C500D0FC14 /* StringSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C68FE61232AD1C500D0FC14 /* StringSearch.swift */; };
 		6C76AA9820C5956C009A3446 /* Computation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C76AA9720C5956C009A3446 /* Computation.swift */; };
 		6C7F7B9C1F4F7A1F00C9D3DC /* TestFieldProperties.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */; };
 		6C7F7BA21F4F7DD200C9D3DC /* TestContents.stack in Resources */ = {isa = PBXBuildFile; fileRef = 6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */; };
@@ -456,6 +457,7 @@
 		6C59F495232020A000D62D48 /* ObjectDescriptorSchemas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObjectDescriptorSchemas.swift; sourceTree = "<group>"; };
 		6C5E929323155F4A00054E46 /* ExpressionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		6C6064061F5B1DF600988560 /* HdmxTableReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HdmxTableReader.swift; sourceTree = "<group>"; };
+		6C68FE61232AD1C500D0FC14 /* StringSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringSearch.swift; sourceTree = "<group>"; };
 		6C76AA9720C5956C009A3446 /* Computation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Computation.swift; sourceTree = "<group>"; };
 		6C7F7B9B1F4F7A1F00C9D3DC /* TestFieldProperties.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestFieldProperties.stack; sourceTree = "<group>"; };
 		6C7F7BA11F4F7DD200C9D3DC /* TestContents.stack */ = {isa = PBXFileReference; lastKnownFileType = file; path = TestContents.stack; sourceTree = "<group>"; };
@@ -954,6 +956,7 @@
 				6C30E8D01F4D117A00ACB457 /* StringComparison.swift */,
 				6C9E6AAF1E75BCFA00BBF925 /* ResourceSystem.swift */,
 				6C9DF4D720C708A80024F61B /* MainRepository.swift */,
+				6C68FE61232AD1C500D0FC14 /* StringSearch.swift */,
 			);
 			name = Common;
 			sourceTree = "<group>";
@@ -1856,6 +1859,7 @@
 				6C9E6B031E75BCFA00BBF925 /* Stack.swift in Sources */,
 				6C9E6AFB1E75BCFA00BBF925 /* Browser.swift in Sources */,
 				6CA2CCCC20C842CE0042148A /* Picture.swift in Sources */,
+				6C68FE62232AD1C500D0FC14 /* StringSearch.swift in Sources */,
 				6C76AA9820C5956C009A3446 /* Computation.swift in Sources */,
 				6C59F48623201C6300D62D48 /* SchemaEditing.swift in Sources */,
 				6C59F46E23201BBD00D62D48 /* HandlerLocating.swift in Sources */,

@@ -756,6 +756,28 @@ class Document: NSDocument, NSAnimationDelegate {
         return controller
     }
     
+    var searchController: SearchController!
+    
+    @objc func performFindPanelAction(_ sender: Any?) {
+        
+        if self.searchController == nil {
+            self.searchController = self.buildSearchController()
+        }
+        
+        searchController.showWindow(nil)
+    }
+    
+    private func buildSearchController() -> SearchController {
+        
+        let controller = SearchController(windowNibName: "search")
+        _ = controller.window // Load the nib
+        controller.stack = browser.stack
+        controller.showWindow(nil)
+        self.addWindowController(controller)
+        
+        return controller
+    }
+    
 }
 
 
