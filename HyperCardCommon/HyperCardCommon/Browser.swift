@@ -12,7 +12,7 @@ private let trueHiliteContent = "1"
 
 
 /// Browses through a stack: maintains a current card and current background and draws them.
-public class Browser {
+public class Browser: MouseResponder {
     
     /// The stack being browsed
     public let hyperCardFile: HyperCardFile
@@ -78,6 +78,8 @@ public class Browser {
     private var whiteView: WhiteView
     
     private let areThereColors: Bool
+    
+    private weak var _selectedField: FieldView? = nil
     
     /// Builds a new browser from the given stack. A starting card index can be given.
     public init(hyperCardFile: HyperCardFile, cardIndex: Int = 0, imageBuffer: ImageBuffer) {
@@ -408,6 +410,11 @@ public class Browser {
         
         let view = FieldView(field: field, contentComputation: contentComputation, fontManager: self.fontManager)
         
+        /* Manage the selection */
+        view.selectedRangeProperty.startNotifications(for: self) { [unowned self] in
+            self.respondToViewSelection(view)
+        }
+        
         return view
         
     }
@@ -450,6 +457,42 @@ public class Browser {
         computation.dependsOn(field.contentProperty)
         
         return computation
+    }
+    
+    private func respondToViewSelection(_ view: FieldView) {
+        
+        guard self.selectedField !== view else {
+            return
+        }
+        
+        /* If there was a selected field (and still valid), deselect it */
+        if let field = self.selectedField {
+            field.selectedRange = nil
+        }
+        
+        self.selectedField = view
+    }
+    
+    private var selectedField: FieldView? {
+        
+        get {
+            guard let field = self._selectedField else {
+                return nil
+            }
+            
+            /* If the field doesn't exist anymore because we have changed card,
+             forget it */
+            guard views.contains(where: { $0 === field }) else {
+                self._selectedField = nil
+                return nil
+            }
+            
+            return self._selectedField
+        }
+        
+        set {
+            self._selectedField = newValue
+        }
     }
     
     private func buildButtonView(for button: Button) -> View {
@@ -519,7 +562,7 @@ public class Browser {
         return content.partContent
     }
     
-    public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder? {
+    public func findViewRespondingToMouseEvent(at position: Point) -> MouseResponder {
         
         /* Ask to the views, from the foremost to the outmost */
         for view in views.reversed() {
@@ -537,7 +580,22 @@ public class Browser {
             return responder
         }
         
-        return nil
+        return self
+    }
+    
+    public func doesRespondToMouseEvent(at position: Point) -> Bool {
+        return true
+    }
+    
+    public func respondToMouseEvent(_ mouseEvent: MouseEvent, at position: Point) {
+        
+        guard case MouseEvent.mouseUp = mouseEvent else {
+            return
+        }
+        
+        if let field = self.selectedField {
+            field.selectedRange = nil
+        }
     }
     
 }

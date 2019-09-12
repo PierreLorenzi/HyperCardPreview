@@ -79,11 +79,11 @@ public class FieldView: View, MouseResponder {
     }
     private var ghostKnobOffsetProperty = Property<Int?>(nil)
     
-    private var selectedRange: Range<Int>? {
+    var selectedRange: Range<Int>? {
         get { return self.selectedRangeProperty.value }
         set { self.selectedRangeProperty.value = newValue }
     }
-    private var selectedRangeProperty = Property<Range<Int>?>(nil)
+    var selectedRangeProperty = Property<Range<Int>?>(nil)
     
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil

@@ -231,7 +231,7 @@ class DocumentView: NSView, NSMenuDelegate {
         self.mouseDownResponder = responder
         
         /* Call it with the event */
-        responder?.respondToMouseEvent(.mouseDown, at: browserPosition)
+        responder.respondToMouseEvent(.mouseDown, at: browserPosition)
         
     }
     
@@ -486,7 +486,7 @@ class DocumentView: NSView, NSMenuDelegate {
         if scrollIsVertical {
             let browserPosition = extractPosition(from: event)
             let responder = document.browser.findViewRespondingToMouseEvent(at: browserPosition)
-            responder?.respondToMouseEvent(.verticalScroll(delta: Double(event.deltaY)), at: browserPosition)
+            responder.respondToMouseEvent(.verticalScroll(delta: Double(event.deltaY)), at: browserPosition)
             hasRespondedToScroll = true
             return
         }
@@ -540,9 +540,7 @@ class DocumentView: NSView, NSMenuDelegate {
             return
         }
         
-        guard let responder = self.document.browser.findViewRespondingToMouseEvent(at: browserPosition) else {
-            return
-        }
+        let responder = self.document.browser.findViewRespondingToMouseEvent(at: browserPosition)
         
         self.draggedResponder = responder
         responder.respondToMouseEvent(.mouseDragged, at: browserPosition)
