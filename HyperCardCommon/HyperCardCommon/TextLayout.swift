@@ -79,6 +79,8 @@ public extension TextLayout {
                 if state.endIndex == text.string.length {
                     break
                 }
+                
+                stateAtWordStart = nil
             }
             
             /* Get the current character */
