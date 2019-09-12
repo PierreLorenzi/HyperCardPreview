@@ -81,7 +81,7 @@ public class Browser: MouseResponder {
     
     private weak var _selectedField: FieldView? = nil
     
-    public var cursorRectanglesProperty = Property<[(Rectangle,NSCursor)]>([])
+    public var cursorRectanglesProperty = Property<[Rectangle]>([])
     private var doCursorRectanglesChange = false
     
     /// Builds a new browser from the given stack. A starting card index can be given.
@@ -179,24 +179,21 @@ public class Browser: MouseResponder {
                 
     }
     
-    private func listCursorRectangles() -> [(Rectangle,NSCursor)] {
+    private func listCursorRectangles() -> [Rectangle] {
         
-        var cursorRectangles: [(Rectangle,NSCursor)] = []
+        var rectangles: [Rectangle] = []
         
         for view in self.views {
             
             if let fieldView = view as? FieldView, view.rectangle != nil {
-                cursorRectangles.append((fieldView.cursorRectangle, NSCursor.iBeam))
+                rectangles.append(fieldView.cursorRectangle)
             }
-            if view is ButtonView, let rectangle = view.rectangle,
-                cursorRectangles.first(where: { (cursorRect: (Rectangle, NSCursor)) -> Bool in
-                    cursorRect.0.intersects(rectangle) && cursorRect.1 === NSCursor.iBeam
-                }) != nil {
-                cursorRectangles.append((rectangle, NSCursor.arrow))
+            if view is ButtonView, let rectangle = view.rectangle {
+               rectangles.removeAll(where: { $0.intersects(rectangle) })
             }
         }
         
-        return cursorRectangles
+        return rectangles
     }
     
     private func doesBackgroundHaveWhiteMask(_ background: Background) -> Bool {

@@ -551,11 +551,10 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         
         let cursorRects = document.browser.cursorRectanglesProperty.value
         
-        for cursorRect in cursorRects {
+        for rectangle in cursorRects {
             
-            let (rectangle, cursor) = cursorRect
             let frame = self.computeRectangleFrame(of: rectangle)
-            self.addCursorRect(frame, cursor: cursor)
+            self.addCursorRect(frame, cursor: NSCursor.iBeam)
         }
     }
     
