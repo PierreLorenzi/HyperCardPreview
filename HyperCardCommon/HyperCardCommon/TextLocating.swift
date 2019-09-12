@@ -164,7 +164,7 @@ public extension TextLayout {
             if characterIndex >= line.endIndex {
                 
                 /* Handle characters between lines */
-                if direction == .down {
+                if direction == .down || index == self.lines.count-1 {
                     return index
                 }
                 
