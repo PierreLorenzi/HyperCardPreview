@@ -42,6 +42,7 @@ private let scrollPatternImage = Image(named: "scroll pattern")!
 private enum DraggingState {
     case none
     case selectionDrag(characterIndex: Int)
+    case wordSelectionDrag(wordRange: Range<Int>)
 }
 
 
@@ -504,8 +505,8 @@ public class FieldView: View, MouseResponder {
         case .verticalScroll(delta: let delta):
             self.respondToScroll(at: position, delta: delta)
             
-        case .mouseDown:
-            self.respondToMouseDown(at: position)
+        case .mouseDown(let clickCount):
+            self.respondToMouseDown(at: position, clickCount: clickCount)
             
         case .mouseUp:
             self.respondToMouseUp(at: position)
@@ -537,7 +538,7 @@ public class FieldView: View, MouseResponder {
         
     }
     
-    private func respondToMouseDown(at position: Point) {
+    private func respondToMouseDown(at position: Point, clickCount: Int) {
         
         /* Special case if the user clicks on a scroll */
         guard field.style != .scrolling || position.x <= field.rectangle.right - scrollWidth else {
@@ -545,14 +546,31 @@ public class FieldView: View, MouseResponder {
             return
         }
         
-        /* If we have a previous selection, remove it */
-        self.selectedRange = nil
-        
         /* Get the click position in the text */
         let characterIndex = computeCharacterIndexAtPosition(position)
         
-        /* Wait and see if the user drags */
-        self.draggingState = .selectionDrag(characterIndex: characterIndex)
+        switch clickCount {
+            
+        case 1:
+            /* Simple click */
+            /* If we have a previous selection, remove it */
+            self.selectedRange = nil
+            
+            /* Wait and see if the user drags */
+            self.draggingState = .selectionDrag(characterIndex: characterIndex)
+            
+        case 2:
+            /* Double click */
+            let wordRange = self.findWordRange(at: characterIndex)
+            self.selectedRange = wordRange
+            
+            /* Wait and see if the user drags */
+            self.draggingState = .wordSelectionDrag(wordRange: wordRange)
+            
+        default:
+            break
+        }
+        
     }
     
     private func computeCharacterIndexAtPosition(_ position: Point) -> Int {
@@ -562,6 +580,24 @@ public class FieldView: View, MouseResponder {
         let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
         
         return characterIndex
+    }
+    
+    private func findWordRange(at index: Int) -> Range<Int> {
+        
+        let string = self.richText.string
+        
+        var startIndex = index
+        while startIndex > 0 && string[startIndex-1].isWordElement() {
+            startIndex -= 1
+        }
+        
+        var endIndex = index
+        let length = string.length
+        while endIndex < length && string[endIndex].isWordElement() {
+            endIndex += 1
+        }
+        
+        return startIndex ..< endIndex
     }
     
     private func respondToMouseDownInScroll(at position: Point) {
@@ -711,6 +747,9 @@ public class FieldView: View, MouseResponder {
         case .selectionDrag(let initialCharacterIndex):
             self.respondToSelectionDragged(at: position, initialCharacterIndex: initialCharacterIndex)
             
+        case .wordSelectionDrag(let wordRange):
+            self.respondToWordSelectionDragged(at: position, initialWordRange: wordRange)
+            
         default:
             break
         }
@@ -731,14 +770,38 @@ public class FieldView: View, MouseResponder {
         
         /* Special case: scolling fields scroll */
         if field.style == .scrolling {
-            self.scrollDuringDrag(position: position, initialCharacterIndex: initialCharacterIndex)
+            self.scrollDuringDrag(position: position) { [unowned self] in
+                self.respondToSelectionDragged(at: position, initialCharacterIndex: initialCharacterIndex)
+            }
         }
         
         /* Regiter the position */
         lastDragPosition = position
     }
     
-    private func scrollDuringDrag(position: Point, initialCharacterIndex: Int) {
+    private func respondToWordSelectionDragged(at position: Point, initialWordRange: Range<Int>) {
+        
+        /* Compute the character index of the current position */
+        let characterIndex = computeCharacterIndexAtPosition(position)
+        let wordRange = self.findWordRange(at: characterIndex)
+        
+        /* Change the selection */
+        let firstIndex = min(wordRange.startIndex, initialWordRange.startIndex)
+        let lastIndex = max(wordRange.endIndex, initialWordRange.endIndex)
+        self.selectedRange = firstIndex ..< lastIndex
+        
+        /* Special case: scolling fields scroll */
+        if field.style == .scrolling {
+            self.scrollDuringDrag(position: position) { [unowned self] in
+                self.respondToWordSelectionDragged(at: position, initialWordRange: initialWordRange)
+            }
+        }
+        
+        /* Regiter the position */
+        lastDragPosition = position
+    }
+    
+    private func scrollDuringDrag(position: Point, scrollCallback: @escaping () -> ()) {
         
         /* Check where the mouse is pointing */
         let expectedDirection: Direction?
@@ -770,9 +833,7 @@ public class FieldView: View, MouseResponder {
             self.stopScrolling()
         }
         if let direction = expectedDirection {
-            self.startScrolling(direction) {
-                self.respondToSelectionDragged(at: self.lastDragPosition!, initialCharacterIndex: initialCharacterIndex)
-            }
+            self.startScrolling(direction, callback: scrollCallback)
         }
     }
     

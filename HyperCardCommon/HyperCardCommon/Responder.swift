@@ -23,7 +23,7 @@ public protocol MouseResponder {
 public enum MouseEvent {
     
     case mouseUp
-    case mouseDown
+    case mouseDown(clickCount: Int)
     case mouseDragged
     case verticalScroll(delta: Double)
 }

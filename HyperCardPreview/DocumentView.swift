@@ -231,7 +231,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         self.mouseDownResponder = responder
         
         /* Call it with the event */
-        responder.respondToMouseEvent(.mouseDown, at: browserPosition)
+        responder.respondToMouseEvent(.mouseDown(clickCount: event.clickCount), at: browserPosition)
         
     }
     

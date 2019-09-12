@@ -46,9 +46,16 @@ public extension HChar {
         return self == HChar.space || self == HChar.tabulation
     }
     
+    /// Related to word selection, nothing to do with scripts.
+    func isWordElement() -> Bool {
+        return self.isAlphaNumeric() || HChar.isWordElement[Int(self)]
+    }
+    
     private static let isSymbol: [Bool] = buildTable(with: "!&()*+,-/:<=>@[]^{|}≠≤≥")
     
     private static let isLetter: [Bool] = buildTable(with: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÄÅÇÉÑÖÜáàâäãåçéèêëíìîïñóòôöõúùûüßÆØæøÀÃÕŒœ")
+    
+    private static let isWordElement: [Bool] = buildTable(with: "$%'¢£¥ªº ÿ")
     
     private static func buildTable(with string: HString) -> [Bool] {
         
