@@ -87,6 +87,7 @@ public class FieldView: View, MouseResponder {
     
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
+    private var scrollingDirection: Direction? = nil
     
     private var draggingState = DraggingState.none
     
@@ -534,9 +535,9 @@ public class FieldView: View, MouseResponder {
     
     private func respondToMouseDown(at position: Point) {
         
-        /* Special case for scrolling fields */
-        guard field.style != .scrolling else {
-            self.respondToMouseDownInScrollingField(at: position)
+        /* Special case if the user clicks on a scroll */
+        guard field.style != .scrolling || position.x <= field.rectangle.right - scrollWidth else {
+            self.respondToMouseDownInScroll(at: position)
             return
         }
         
@@ -544,20 +545,22 @@ public class FieldView: View, MouseResponder {
         self.selectedRange = nil
         
         /* Get the click position in the text */
-        let textRectangle = FieldView.computeTextRectangle(of: self.field)
-        let positionInText = Point(x: position.x - textRectangle.x, y: position.y - textRectangle.y)
-        let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
+        let characterIndex = computeCharacterIndexAtPosition(position)
         
         /* Wait and see if the user drags */
         self.draggingState = .selectionDrag(characterIndex: characterIndex)
     }
     
-    private func respondToMouseDownInScrollingField(at position: Point) {
+    private func computeCharacterIndexAtPosition(_ position: Point) -> Int {
         
-        /* The position must be in the scroll area */
-        guard position.x > field.rectangle.right - scrollWidth else {
-            return
-        }
+        let textRectangle = FieldView.computeTextRectangle(of: self.field)
+        let positionInText = Point(x: position.x - textRectangle.x, y: position.y - textRectangle.y + field.scroll)
+        let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
+        
+        return characterIndex
+    }
+    
+    private func respondToMouseDownInScroll(at position: Point) {
         
         /* The field must have an active scroll */
         let scrollRange = self.scrollRange
@@ -569,7 +572,7 @@ public class FieldView: View, MouseResponder {
         let upArrowRectangle = FieldView.computeUpArrowPosition(inFieldWithRectangle: field.rectangle)
         if upArrowRectangle.containsPosition(position) {
             self.isUpArrowClicked = true
-            self.startScrolling(.up)
+            self.startScrolling(.up, callback: nil)
             return
         }
         
@@ -577,7 +580,7 @@ public class FieldView: View, MouseResponder {
         let downArrowRectangle = FieldView.computeDownArrowPosition(inFieldWithRectangle: field.rectangle)
         if downArrowRectangle.containsPosition(position) {
             self.isDownArrowClicked = true
-            self.startScrolling(.down)
+            self.startScrolling(.down, callback: nil)
             return
         }
         
@@ -637,12 +640,7 @@ public class FieldView: View, MouseResponder {
         
     }
     
-    private enum Direction {
-        case up
-        case down
-    }
-    
-    private func startScrolling(_ direction: Direction) {
+    private func startScrolling(_ direction: Direction, callback: (() -> ())?) {
         
         let scrollDelta = 16
         
@@ -658,25 +656,40 @@ public class FieldView: View, MouseResponder {
             
             /* If the scroll is over, stop the timer */
             guard newScroll != scroll else {
-                timer.invalidate()
-                self.scrollingTimer = nil
+                self.stopScrolling()
                 return
             }
             
             /* Update the scroll */
             self.field.scroll = newScroll
             
+            if let call = callback {
+                call()
+            }
+            
         })
         
         /* Save it */
         self.scrollingTimer = timer
+        self.scrollingDirection = direction
         
         /* Schedule it */
         RunLoop.main.add(timer, forMode: RunLoop.Mode.default)
         
     }
     
+    private func stopScrolling() {
+        
+        if let timer = self.scrollingTimer {
+            timer.invalidate()
+            self.scrollingTimer = nil
+            self.scrollingDirection = nil
+        }
+    }
+    
     private func respondToMouseUp(at position: Point) {
+        
+        self.draggingState = .none
         
         guard field.style != .scrolling else {
             self.respondToMouseUpInScrollingField(at: position)
@@ -685,7 +698,6 @@ public class FieldView: View, MouseResponder {
         
         /* End dragging */
         self.respondToMouseDragged(at: position)
-        self.draggingState = .none
     }
     
     private func respondToMouseDragged(at position: Point) {
@@ -693,18 +705,70 @@ public class FieldView: View, MouseResponder {
         switch self.draggingState {
             
         case .selectionDrag(let initialCharacterIndex):
-            
-            /* Compute the character index of the current position */
-            let textRectangle = FieldView.computeTextRectangle(of: self.field)
-            let positionInText = Point(x: position.x - textRectangle.x, y: position.y - textRectangle.y)
-            let characterIndex = self.textLayout.findCharacterIndex(at: positionInText)
-            
-            let firstIndex = min(characterIndex, initialCharacterIndex)
-            let lastIndex = max(characterIndex, initialCharacterIndex)
-            self.selectedRange = (firstIndex == lastIndex) ? nil : (firstIndex ..< lastIndex)
+            self.respondToSelectionDragged(at: position, initialCharacterIndex: initialCharacterIndex)
             
         default:
             break
+        }
+    }
+    
+    // Used only for when the user drags a selection and scrolls without dragging
+    private var lastDragPosition: Point? = nil
+    
+    private func respondToSelectionDragged(at position: Point, initialCharacterIndex: Int) {
+            
+        /* Compute the character index of the current position */
+        let characterIndex = computeCharacterIndexAtPosition(position)
+        
+        /* Change the selection */
+        let firstIndex = min(characterIndex, initialCharacterIndex)
+        let lastIndex = max(characterIndex, initialCharacterIndex)
+        self.selectedRange = (firstIndex == lastIndex) ? nil : (firstIndex ..< lastIndex)
+        
+        /* Special case: scolling fields scroll */
+        if field.style == .scrolling {
+            self.scrollDuringDrag(position: position, initialCharacterIndex: initialCharacterIndex)
+        }
+        
+        /* Regiter the position */
+        lastDragPosition = position
+    }
+    
+    private func scrollDuringDrag(position: Point, initialCharacterIndex: Int) {
+        
+        /* Check where the mouse is pointing */
+        let expectedDirection: Direction?
+        if position.y < field.rectangle.top {
+            expectedDirection = .up
+        }
+        else if position.y >= field.rectangle.bottom {
+            expectedDirection = .down
+        }
+        else {
+            expectedDirection = nil
+        }
+        
+        /* Check if we're scrolling in the right direction */
+        guard expectedDirection != self.scrollingDirection else {
+            return
+        }
+        
+        /* Check if we can still scroll in the direction */
+        if expectedDirection == .up && field.scroll == 0 {
+            return
+        }
+        if expectedDirection == .down && field.scroll == self.scrollRange {
+            return
+        }
+        
+        /* Start scrolling in the right direction */
+        if self.scrollingDirection != nil {
+            self.stopScrolling()
+        }
+        if let direction = expectedDirection {
+            self.startScrolling(direction) {
+                self.respondToSelectionDragged(at: self.lastDragPosition!, initialCharacterIndex: initialCharacterIndex)
+            }
         }
     }
     
@@ -727,10 +791,7 @@ public class FieldView: View, MouseResponder {
             
             self.ghostKnobOffset = nil
         }
-        if let timer = self.scrollingTimer {
-            timer.invalidate()
-            self.scrollingTimer = nil
-        }
+        self.stopScrolling()
     }
     
 }
