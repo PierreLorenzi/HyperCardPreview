@@ -134,6 +134,7 @@ public class FieldView: View, MouseResponder {
             [unowned self] in
             self.refreshNeedProperty.value = (self.field.style == .transparent) ? .refreshWithNewShape : .refresh
             self.selectedRange = nil
+            self.field.scroll = 0
         })
         isUpArrowClickedProperty.startNotifications(for: self, by: {
             [unowned self] in self.refreshNeedProperty.value = .refresh

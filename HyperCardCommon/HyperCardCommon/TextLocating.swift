@@ -79,7 +79,7 @@ public extension TextLayout {
     
     private func findCharacterIndex(at offset: Int, in line: LineLayout) -> Int {
         
-        var currentOffset = 0
+        var currentOffset = line.origin.x
         var attributeIndex = line.initialAttributeIndex
         var font = self.text.attributes[attributeIndex].font
         var nextAttributeIndex: Int? = (attributeIndex+1 == self.text.attributes.count) ? nil : self.text.attributes[attributeIndex+1].index
@@ -186,7 +186,7 @@ public extension TextLayout {
             return .endOfLine
         }
         
-        var offset = 0
+        var offset = line.origin.x
         var attributeIndex = line.initialAttributeIndex
         var font = self.text.attributes[attributeIndex].font
         var nextAttributeIndex: Int? = (attributeIndex+1 == self.text.attributes.count) ? nil : self.text.attributes[attributeIndex+1].index

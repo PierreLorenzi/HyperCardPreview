@@ -146,14 +146,6 @@ public class Browser: MouseResponder {
              plus one for the image, plus one for the white view */
             let backgroundViewCount = 1 + currentBackground.parts.count + 1
             removeLastViews(count: self.views.count - backgroundViewCount)
-            
-            /* Set the scrolls of the background fields to zero, to avoid having a field
-             with a scroll higher than maximum */
-            for field in currentBackground.fields {
-                if field.style == .scrolling {
-                    field.scroll = 0
-                }
-            }
         }
         else {
             
@@ -493,6 +485,9 @@ public class Browser: MouseResponder {
     private func respondToViewSelection(_ view: FieldView) {
         
         guard self.selectedField !== view else {
+            return
+        }
+        guard view.selectedRange != nil else {
             return
         }
         
