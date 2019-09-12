@@ -23,7 +23,7 @@ public protocol MouseResponder {
 public enum MouseEvent {
     
     case mouseUp
-    case mouseDown(clickCount: Int)
+    case mouseDown(clickCount: Int, modifiers: NSEvent.ModifierFlags)
     case mouseDragged
     case verticalScroll(delta: Double)
 }

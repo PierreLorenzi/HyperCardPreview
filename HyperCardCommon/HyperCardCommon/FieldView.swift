@@ -41,8 +41,7 @@ private let scrollPatternImage = Image(named: "scroll pattern")!
 
 private enum DraggingState {
     case none
-    case selectionDrag(characterIndex: Int)
-    case wordSelectionDrag(wordRange: Range<Int>)
+    case selectionDrag(initialRange: Range<Int>, wordPerWord: Bool)
     case scrollKnob(mousePosition: Point, knobOffset: Int, knobRange: Int)
 }
 
@@ -512,8 +511,8 @@ public class FieldView: View, MouseResponder {
         case .verticalScroll(delta: let delta):
             self.respondToScroll(at: position, delta: delta)
             
-        case .mouseDown(let clickCount):
-            self.respondToMouseDown(at: position, clickCount: clickCount)
+        case .mouseDown(let clickCount, let modifiers):
+            self.respondToMouseDown(at: position, clickCount: clickCount, modifiers: modifiers)
             
         case .mouseUp:
             self.respondToMouseUp(at: position)
@@ -545,7 +544,7 @@ public class FieldView: View, MouseResponder {
         
     }
     
-    private func respondToMouseDown(at position: Point, clickCount: Int) {
+    private func respondToMouseDown(at position: Point, clickCount: Int, modifiers: NSEvent.ModifierFlags) {
         
         /* Special case if the user clicks on a scroll */
         guard field.style != .scrolling || position.x <= field.rectangle.right - scrollWidth else {
@@ -554,30 +553,33 @@ public class FieldView: View, MouseResponder {
         }
         
         /* Get the click position in the text */
-        let characterIndex = computeCharacterIndexAtPosition(position)
+        let index = computeCharacterIndexAtPosition(position)
+        let isShiftPressed = modifiers.contains(NSEvent.ModifierFlags.shift)
+        let wordPerWord = (clickCount == 2)
+        let newRange = wordPerWord ? self.findWordRange(at: index) : (index..<index)
         
-        switch clickCount {
-            
-        case 1:
-            /* Simple click */
-            /* If we have a previous selection, remove it */
-            self.selectedRange = nil
-            
-            /* Wait and see if the user drags */
-            self.draggingState = .selectionDrag(characterIndex: characterIndex)
-            
-        case 2:
-            /* Double click */
-            let wordRange = self.findWordRange(at: characterIndex)
-            self.selectedRange = wordRange
-            
-            /* Wait and see if the user drags */
-            self.draggingState = .wordSelectionDrag(wordRange: wordRange)
-            
-        default:
-            break
+        let initialRange: Range<Int>
+        if isShiftPressed {
+            let initialSelectedRange = self.selectedRange ?? (0..<0)
+            initialRange = (index >= initialSelectedRange.startIndex) ? (initialSelectedRange.startIndex..<initialSelectedRange.startIndex) : (initialSelectedRange.endIndex..<initialSelectedRange.endIndex)
+            self.selectedRange = self.extendInitialRange(initialRange, with: newRange, around: index)
+        }
+        else {
+            initialRange = newRange
+            self.selectedRange = newRange
         }
         
+        self.draggingState = .selectionDrag(initialRange: initialRange, wordPerWord: wordPerWord)
+        
+    }
+    
+    private func extendInitialRange(_ initialRange: Range<Int>, with range: Range<Int>, around index: Int) -> Range<Int> {
+        
+        if index >= initialRange.startIndex {
+            return initialRange.startIndex ..< range.endIndex
+        }
+        
+        return range.startIndex ..< initialRange.endIndex
     }
     
     private func computeCharacterIndexAtPosition(_ position: Point) -> Int {
@@ -720,11 +722,8 @@ public class FieldView: View, MouseResponder {
         
         switch self.draggingState {
             
-        case .selectionDrag(let initialCharacterIndex):
-            self.respondToSelectionDragged(at: position, initialCharacterIndex: initialCharacterIndex)
-            
-        case .wordSelectionDrag(let wordRange):
-            self.respondToWordSelectionDragged(at: position, initialWordRange: wordRange)
+        case .selectionDrag(let initialRange, let wordPerWord):
+            self.respondToSelectionDragged(at: position, initialRange: initialRange, wordPerWord: wordPerWord)
             
         case .scrollKnob(let initialMousePosition, let initialKnobOffset, let knobRange):
             self.respondToKnobDragged(mousePosition: position, initialMousePosition: initialMousePosition, initialKnobOffset: initialKnobOffset, knobRange: knobRange)
@@ -746,42 +745,17 @@ public class FieldView: View, MouseResponder {
     // Used only for when the user drags a selection and scrolls without dragging
     private var lastDragPosition: Point? = nil
     
-    private func respondToSelectionDragged(at position: Point, initialCharacterIndex: Int) {
+    private func respondToSelectionDragged(at position: Point, initialRange: Range<Int>, wordPerWord: Bool) {
             
         /* Compute the character index of the current position */
         let characterIndex = computeCharacterIndexAtPosition(position)
-        
-        /* Change the selection */
-        let firstIndex = min(characterIndex, initialCharacterIndex)
-        let lastIndex = max(characterIndex, initialCharacterIndex)
-        self.selectedRange = (firstIndex == lastIndex) ? nil : (firstIndex ..< lastIndex)
+        let newRange = wordPerWord ? self.findWordRange(at: characterIndex) : (characterIndex..<characterIndex)
+        self.selectedRange = self.extendInitialRange(initialRange, with: newRange, around: characterIndex)
         
         /* Special case: scolling fields scroll */
         if field.style == .scrolling {
             self.scrollDuringDrag(position: position) { [unowned self] in
-                self.respondToSelectionDragged(at: position, initialCharacterIndex: initialCharacterIndex)
-            }
-        }
-        
-        /* Regiter the position */
-        lastDragPosition = position
-    }
-    
-    private func respondToWordSelectionDragged(at position: Point, initialWordRange: Range<Int>) {
-        
-        /* Compute the character index of the current position */
-        let characterIndex = computeCharacterIndexAtPosition(position)
-        let wordRange = self.findWordRange(at: characterIndex)
-        
-        /* Change the selection */
-        let firstIndex = min(wordRange.startIndex, initialWordRange.startIndex)
-        let lastIndex = max(wordRange.endIndex, initialWordRange.endIndex)
-        self.selectedRange = firstIndex ..< lastIndex
-        
-        /* Special case: scolling fields scroll */
-        if field.style == .scrolling {
-            self.scrollDuringDrag(position: position) { [unowned self] in
-                self.respondToWordSelectionDragged(at: position, initialWordRange: initialWordRange)
+                self.respondToSelectionDragged(at: position, initialRange: initialRange, wordPerWord: wordPerWord)
             }
         }
         
