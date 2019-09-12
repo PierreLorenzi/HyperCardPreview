@@ -46,6 +46,11 @@ private enum DraggingState {
     case scrollKnob(mousePosition: Point, knobOffset: Int, knobRange: Int)
 }
 
+let arrowScrollDelta = 16
+let arrowTimeInterval = 0.05
+let barScrollDelta = 80
+let barTimeInterval = 0.25
+
 
 
 /// The view of a field.
@@ -613,7 +618,7 @@ public class FieldView: View, MouseResponder {
         let upArrowRectangle = FieldView.computeUpArrowPosition(inFieldWithRectangle: field.rectangle)
         if upArrowRectangle.containsPosition(position) {
             self.isUpArrowClicked = true
-            self.startScrolling(.up, callback: nil)
+            self.startScrolling(.up, scrollDelta: arrowScrollDelta, timeInterval: arrowTimeInterval, callback: nil)
             return
         }
         
@@ -621,7 +626,7 @@ public class FieldView: View, MouseResponder {
         let downArrowRectangle = FieldView.computeDownArrowPosition(inFieldWithRectangle: field.rectangle)
         if downArrowRectangle.containsPosition(position) {
             self.isDownArrowClicked = true
-            self.startScrolling(.down, callback: nil)
+            self.startScrolling(.down, scrollDelta: arrowScrollDelta, timeInterval: arrowTimeInterval, callback: nil)
             return
         }
         
@@ -636,30 +641,28 @@ public class FieldView: View, MouseResponder {
             return
         }
         
-        let scrollBarClickDelta = 80
         
         /* Check if the mouse is clicking over the knob */
         if let knobRectangle = possibleKnobRectangle, position.y < knobRectangle.top, scrollBarRectangle.containsPosition(position) {
             
-            field.scroll = max(0, field.scroll - scrollBarClickDelta)
+            self.startScrolling(.up, scrollDelta: barScrollDelta, timeInterval: barTimeInterval, callback: nil)
         }
         
         /* Check if the mouse is clicking under the knob */
         if let knobRectangle = possibleKnobRectangle, position.y > knobRectangle.bottom, scrollBarRectangle.containsPosition(position) {
             
-            field.scroll = min(scrollRange, field.scroll + scrollBarClickDelta)
+            self.startScrolling(.down, scrollDelta: barScrollDelta, timeInterval: barTimeInterval, callback: nil)
         }
         
     }
     
-    private func startScrolling(_ direction: Direction, callback: (() -> ())?) {
+    private func startScrolling(_ direction: Direction, scrollDelta: Int, timeInterval: TimeInterval, callback: (() -> ())?) {
         
-        let scrollDelta = 16
         
         let scrollRange = self.scrollRange
         
         /* Build a timer to continuously scroll the field */
-        let timer = Timer(timeInterval: 0.05, repeats: true, block: {
+        let timer = Timer(timeInterval: timeInterval, repeats: true, block: {
             [unowned self](timer: Timer) in
             
             /* Compute the new scroll */
@@ -817,7 +820,7 @@ public class FieldView: View, MouseResponder {
             self.stopScrolling()
         }
         if let direction = expectedDirection {
-            self.startScrolling(direction, callback: scrollCallback)
+            self.startScrolling(direction, scrollDelta: arrowScrollDelta, timeInterval: arrowTimeInterval, callback: scrollCallback)
         }
     }
     
