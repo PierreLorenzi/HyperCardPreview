@@ -43,6 +43,7 @@ private enum DraggingState {
     case none
     case selectionDrag(characterIndex: Int)
     case wordSelectionDrag(wordRange: Range<Int>)
+    case scrollKnob(mousePosition: Point, knobOffset: Int, knobRange: Int)
 }
 
 
@@ -631,7 +632,7 @@ public class FieldView: View, MouseResponder {
             
             let knobOffset = knobRectangle.top - field.rectangle.top - scrollButtonHeight
             let knobRange = scrollBarRectangle.height - scrollKnobHeight
-            self.startMovingGhostKnob(fromOffset: knobOffset, knobRange: knobRange)
+            self.draggingState = DraggingState.scrollKnob(mousePosition: position, knobOffset: knobOffset, knobRange: knobRange)
             return
         }
         
@@ -648,35 +649,6 @@ public class FieldView: View, MouseResponder {
             
             field.scroll = min(scrollRange, field.scroll + scrollBarClickDelta)
         }
-        
-    }
-    
-    private func startMovingGhostKnob(fromOffset initialOffset: Int, knobRange: Int) {
-        
-        /* Display the knob */
-        self.ghostKnobOffset = initialOffset
-        
-        /* Register some parameters */
-        let initialMouseLocation = NSEvent.mouseLocation
-        
-        /* Build a timer to continuously move the ghost knob */
-        let timer = Timer(timeInterval: 0.05, repeats: true, block: {
-            [unowned self](timer: Timer) in
-            
-            /* Compute the vertical distance of the dragging */
-            let mouseLocation = NSEvent.mouseLocation
-            let offsetDelta = Int(initialMouseLocation.y - mouseLocation.y)
-            
-            /* Apply the vertical offset to the ghost knob, while respecting the bounds */
-            self.ghostKnobOffset = max(0, min(knobRange, initialOffset + offsetDelta))
-            
-        })
-        
-        /* Save it */
-        self.scrollingTimer = timer
-        
-        /* Schedule it */
-        RunLoop.main.add(timer, forMode: RunLoop.Mode.default)
         
     }
     
@@ -750,9 +722,21 @@ public class FieldView: View, MouseResponder {
         case .wordSelectionDrag(let wordRange):
             self.respondToWordSelectionDragged(at: position, initialWordRange: wordRange)
             
+        case .scrollKnob(let initialMousePosition, let initialKnobOffset, let knobRange):
+            self.respondToKnobDragged(mousePosition: position, initialMousePosition: initialMousePosition, initialKnobOffset: initialKnobOffset, knobRange: knobRange)
+            
         default:
             break
         }
+    }
+    
+    private func respondToKnobDragged(mousePosition: Point, initialMousePosition: Point, initialKnobOffset: Int, knobRange: Int) {
+        
+        /* Compute the vertical distance of the dragging */
+        let offsetDelta = mousePosition.y - initialMousePosition.y
+        
+        /* Apply the vertical offset to the ghost knob, while respecting the bounds */
+        self.ghostKnobOffset = max(0, min(knobRange, initialKnobOffset + offsetDelta))
     }
     
     // Used only for when the user drags a selection and scrolls without dragging
