@@ -32,6 +32,18 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     var stackDocument: Document!
     
+    func setup() {
+        
+        NotificationCenter.default.addObserver(forName: NSControl.textDidEndEditingNotification, object: self.searchField, queue: nil) { [weak self] (_: Notification) in
+            
+            guard let slf = self else {
+                return
+            }
+            
+            slf.sendFindAction(NSFindPanelAction.next)
+        }
+    }
+    
     @IBAction func search(_ sender: Any?) {
         
         /* Stop the current searches */
@@ -205,10 +217,14 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         let cellIndex = self.goToResultButton.indexOfSelectedItem
         let findAction: NSFindPanelAction = (cellIndex == 0) ? .previous : .next
         
+        self.sendFindAction(findAction)
+    }
+    
+    private func sendFindAction(_ findAction: NSFindPanelAction) {
+        
         /* Normally there should be one control per action but whatever, we change the tag
          to pretend */
         self.goToResultButton.tag = Int(findAction.rawValue)
-        
         NSApp.sendAction(#selector(Document.performFindPanelAction(_:)), to: self.document, from: self.goToResultButton)
     }
     
@@ -248,6 +264,10 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         let resultIndex = self.resultTable.selectedRow
         let cardIndex = self.results[resultIndex].cardIndex
         self.stackDocument.goToCard(at: cardIndex, transition: Document.Transition.none)
+        if let field = self.stackDocument.browser.selectedField {
+            field.selectedRange = nil
+        }
+        self.sendFindAction(NSFindPanelAction.next)
     }
 }
 

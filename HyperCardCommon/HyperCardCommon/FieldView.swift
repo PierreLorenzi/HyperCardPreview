@@ -835,6 +835,22 @@ public class FieldView: View, MouseResponder {
         self.selectedRange = 0..<self.richText.string.length
     }
     
+    public func scrollToSelection() {
+        
+        guard self.field.style == .scrolling else {
+            return
+        }
+        guard let selectedRange = self.selectedRange else {
+            return
+        }
+        
+        let textPosition = self.textLayout.findPosition(at: selectedRange.startIndex)
+        let line = self.textLayout.lines[textPosition.lineIndex]
+        let centeringScroll = line.origin.y - self.field.rectangle.height/2
+        let scroll = min(max(centeringScroll, 0), self.scrollRange)
+        self.field.scroll = scroll
+    }
+    
 }
 
 

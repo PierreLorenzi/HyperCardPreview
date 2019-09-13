@@ -821,6 +821,7 @@ class Document: NSDocument, NSAnimationDelegate {
         let field = layerPart.part as! Field
         let fieldView = self.browser.getFieldView(of: field)
         fieldView.selectedRange = position.characterRange!
+        fieldView.scrollToSelection()
     }
     
     private func buildSearchController() -> SearchController {
@@ -828,6 +829,7 @@ class Document: NSDocument, NSAnimationDelegate {
         let controller = SearchController(windowNibName: "search")
         controller.stackDocument = self
         _ = controller.window // Load the nib
+        controller.setup()
         controller.showWindow(nil)
         self.addWindowController(controller)
         
