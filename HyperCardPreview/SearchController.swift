@@ -12,7 +12,6 @@ import HyperCardCommon
 class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDelegate {
     
     private var results: [Result] = []
-    var stack: Stack! = nil
     private let queue = OperationQueue()
     
     private struct Result {
@@ -27,6 +26,10 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     override var windowNibName: NSNib.Name? {
         return "Search"
+    }
+    
+    var stackDocument: Document {
+        return self.document as! Document
     }
     
     @IBAction func search(_ sender: Any?) {
@@ -79,14 +82,15 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     private func searchInStack(_ pattern: HString.SearchPattern, operation: Operation) -> [Result] {
         
         var results: [Result] = []
+        let stack = self.stackDocument.browser.stack
         
-        for cardIndex in 0..<self.stack.cards.count {
+        for cardIndex in 0..<stack.cards.count {
             
             guard !operation.isCancelled else {
                 return []
             }
             
-            let card = self.stack.cards[cardIndex]
+            let card = stack.cards[cardIndex]
             let cardResult = self.countOccurrencesInCard(card, of: pattern)
             
             if cardResult.occurrenceCount > 0 {
@@ -213,6 +217,13 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         view.showResult(cardIndex: result.cardIndex, occurrenceCount: result.occurrenceCount, extract: result.extract)
         
         return view
+    }
+    
+    func tableViewSelectionDidChange(_: Notification) {
+        
+        let resultIndex = self.resultTable.selectedRow
+        let cardIndex = self.results[resultIndex].cardIndex
+        self.stackDocument.goToCard(at: cardIndex, transition: Document.Transition.none)
     }
 }
 

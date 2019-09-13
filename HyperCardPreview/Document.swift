@@ -771,7 +771,6 @@ class Document: NSDocument, NSAnimationDelegate {
         
         let controller = SearchController(windowNibName: "search")
         _ = controller.window // Load the nib
-        controller.stack = browser.stack
         controller.showWindow(nil)
         self.addWindowController(controller)
         
