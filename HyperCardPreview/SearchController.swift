@@ -258,7 +258,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         let card = stack.cards[index]
         
         guard card.name.length != 0 else {
-            return "Card \(index)"
+            return "Card \(index+1)"
         }
         
         return card.name.description
