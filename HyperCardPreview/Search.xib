@@ -19,14 +19,14 @@
         <window title="Search" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" releasedWhenClosed="NO" frameAutosaveName="searchPanel" animationBehavior="default" id="DLd-FU-Ych" customClass="NSPanel">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES"/>
-            <rect key="contentRect" x="278" y="300" width="191" height="309"/>
+            <rect key="contentRect" x="278" y="300" width="233" height="339"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1440" height="900"/>
             <view key="contentView" id="n18-5X-qqB">
-                <rect key="frame" x="0.0" y="0.0" width="191" height="309"/>
+                <rect key="frame" x="0.0" y="0.0" width="233" height="339"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <searchField wantsLayer="YES" verticalHuggingPriority="750" fixedFrame="YES" textCompletion="NO" translatesAutoresizingMaskIntoConstraints="NO" id="noC-uQ-aQU">
-                        <rect key="frame" x="20" y="273" width="151" height="22"/>
+                        <rect key="frame" x="20" y="303" width="193" height="22"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <searchFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" borderStyle="bezel" usesSingleLineMode="YES" bezelStyle="round" sendsSearchStringImmediately="YES" recentsAutosaveName="search" id="DFH-Q3-IAX">
                             <font key="font" metaFont="system"/>
@@ -41,20 +41,20 @@
                         </connections>
                     </searchField>
                     <scrollView fixedFrame="YES" autohidesScrollers="YES" horizontalLineScroll="79" horizontalPageScroll="10" verticalLineScroll="79" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ynB-fW-F9Z">
-                        <rect key="frame" x="0.0" y="-1" width="193" height="239"/>
+                        <rect key="frame" x="0.0" y="-1" width="235" height="269"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" ambiguous="YES" id="GIi-JQ-lxB">
-                            <rect key="frame" x="1" y="1" width="191" height="237"/>
+                            <rect key="frame" x="1" y="1" width="233" height="267"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" rowHeight="77" rowSizeStyle="automatic" viewBased="YES" id="rxQ-Gu-pOc">
-                                    <rect key="frame" x="0.0" y="0.0" width="191" height="237"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="233" height="267"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <size key="intercellSpacing" width="3" height="2"/>
                                     <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
-                                        <tableColumn identifier="result" editable="NO" width="188" minWidth="40" maxWidth="1000" id="qwS-DX-AyC">
+                                        <tableColumn identifier="result" editable="NO" width="230" minWidth="40" maxWidth="1000" id="qwS-DX-AyC">
                                             <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                 <font key="font" metaFont="smallSystem"/>
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -68,7 +68,7 @@
                                             <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                             <prototypeCellViews>
                                                 <customView identifier="searchItem" id="aLx-qN-WZS" customClass="SearchItemView" customModule="HyperCardPreview" customModuleProvider="target">
-                                                    <rect key="frame" x="1" y="1" width="188" height="77"/>
+                                                    <rect key="frame" x="1" y="1" width="230" height="77"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                                 </customView>
                                             </prototypeCellViews>
@@ -91,7 +91,7 @@
                         </scroller>
                     </scrollView>
                     <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="66R-tI-f9J">
-                        <rect key="frame" x="20" y="246" width="153" height="17"/>
+                        <rect key="frame" x="20" y="276" width="195" height="17"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                         <textFieldCell key="cell" lineBreakMode="clipping" id="xOJ-XD-YVP">
                             <font key="font" metaFont="system"/>
@@ -100,7 +100,7 @@
                         </textFieldCell>
                     </textField>
                     <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZcR-Vf-T1s">
-                        <rect key="frame" x="102" y="242" width="71" height="24"/>
+                        <rect key="frame" x="144" y="272" width="71" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                         <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Z24-KV-uos">
                             <font key="font" metaFont="system"/>
@@ -112,7 +112,7 @@
                     </segmentedControl>
                 </subviews>
             </view>
-            <point key="canvasLocation" x="-292.5" y="64.5"/>
+            <point key="canvasLocation" x="-271.5" y="79.5"/>
         </window>
     </objects>
     <resources>

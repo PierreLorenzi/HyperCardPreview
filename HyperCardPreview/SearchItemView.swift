@@ -25,8 +25,8 @@ class SearchItemView: NSView {
         self.isSetup = true
     }
     
-    func showResult(cardIndex: Int, occurrenceCount: Int, extract: String) {
-        self.cardLabel.stringValue = "Card \(cardIndex+1)"
+    func showResult(cardName: String, occurrenceCount: Int, extract: String) {
+        self.cardLabel.stringValue = cardName
         self.occurrenceCountLabel.stringValue = "\(occurrenceCount) result\(occurrenceCount == 1 ? "" : "s")"
         self.extractLabel.stringValue = extract
     }

@@ -214,9 +214,22 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         }
         
         let result = self.results[row]
-        view.showResult(cardIndex: result.cardIndex, occurrenceCount: result.occurrenceCount, extract: result.extract)
+        let name = self.writeCardName(index: result.cardIndex)
+        view.showResult(cardName: name, occurrenceCount: result.occurrenceCount, extract: result.extract)
         
         return view
+    }
+    
+    private func writeCardName(index: Int) -> String {
+        
+        let stack = self.stackDocument.browser.stack
+        let card = stack.cards[index]
+        
+        guard card.name.length != 0 else {
+            return "Card \(index)"
+        }
+        
+        return card.name.description
     }
     
     func tableViewSelectionDidChange(_: Notification) {
