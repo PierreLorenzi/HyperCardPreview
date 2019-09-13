@@ -758,13 +758,45 @@ class Document: NSDocument, NSAnimationDelegate {
     
     var searchController: SearchController!
     
-    @objc func performFindPanelAction(_ sender: Any?) {
+    @objc func performFindPanelAction(_ possibleSender: Any?) {
+        
+        /* The precise action to do is in the sender's tag. We must get it the Objective-C's way */
+        guard let sender = possibleSender, let tag = (sender as AnyObject).tag else {
+            return
+        }
+        let findAction = NSFindPanelAction(rawValue: UInt(tag))!
+        
+        switch findAction {
+            
+        case .showFindPanel:
+            self.search()
+            
+        case .next:
+            self.searchNext()
+            
+        case .previous:
+            self.searchPrevious()
+            
+        default:
+            return
+        }
+    }
+    
+    private func search() {
         
         if self.searchController == nil {
             self.searchController = self.buildSearchController()
         }
         
         searchController.showWindow(nil)
+    }
+    
+    private func searchNext() {
+        // TODO
+    }
+    
+    private func searchPrevious() {
+        // TODO
     }
     
     private func buildSearchController() -> SearchController {

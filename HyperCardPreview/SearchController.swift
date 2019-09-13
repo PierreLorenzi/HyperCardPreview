@@ -23,6 +23,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var resultTable: NSTableView!
     @IBOutlet weak var resultCountField: NSTextField!
+    @IBOutlet weak var goToResultButton: NSSegmentedControl!
     
     override var windowNibName: NSNib.Name? {
         return "Search"
@@ -64,6 +65,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
             self.results = results
             self.resultTable.reloadData()
             self.resultCountField.stringValue = self.writeResultCount()
+            self.goToResultButton.isEnabled = !self.results.isEmpty
         }
     }
     
@@ -187,18 +189,30 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         switch resultCount {
             
         case 0:
-            return "No Result"
+            return "0 result"
             
         case 1:
-            return "1 Result"
+            return "1 result"
             
         default:
-            return "\(resultCount) Results"
+            return "\(resultCount) results"
         }
     }
     
     func numberOfRows(in tableView: NSTableView) -> Int {
         return self.results.count
+    }
+    
+    @IBAction func goToResult(_ sender: Any?) {
+        
+        let cellIndex = self.goToResultButton.indexOfSelectedItem
+        let findAction: NSFindPanelAction = (cellIndex == 0) ? .previous : .next
+        
+        /* Normally there should be one control per action but whatever, we change the tag
+         to pretend */
+        self.goToResultButton.tag = Int(findAction.rawValue)
+        
+        NSApp.sendAction(#selector(Document.performFindPanelAction(_:)), to: self.document, from: self.goToResultButton)
     }
     
     func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {

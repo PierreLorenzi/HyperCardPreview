@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="SearchController" customModule="HyperCardPreview" customModuleProvider="target">
             <connections>
+                <outlet property="goToResultButton" destination="ZcR-Vf-T1s" id="8yT-F5-Tnt"/>
                 <outlet property="resultCountField" destination="66R-tI-f9J" id="5f9-IY-DZs"/>
                 <outlet property="resultTable" destination="rxQ-Gu-pOc" id="GZK-lW-jFd"/>
                 <outlet property="searchField" destination="noC-uQ-aQU" id="Zf9-5Y-hgd"/>
@@ -102,13 +103,16 @@
                     <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZcR-Vf-T1s">
                         <rect key="frame" x="144" y="272" width="71" height="24"/>
                         <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
-                        <segmentedCell key="cell" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Z24-KV-uos">
+                        <segmentedCell key="cell" enabled="NO" borderStyle="border" alignment="left" style="rounded" trackingMode="momentary" id="Z24-KV-uos">
                             <font key="font" metaFont="system"/>
                             <segments>
                                 <segment image="NSGoBackTemplate" width="32"/>
                                 <segment image="NSGoForwardTemplate" width="32" tag="1"/>
                             </segments>
                         </segmentedCell>
+                        <connections>
+                            <action selector="goToResult:" target="-2" id="OKc-QU-S86"/>
+                        </connections>
                     </segmentedControl>
                 </subviews>
             </view>
