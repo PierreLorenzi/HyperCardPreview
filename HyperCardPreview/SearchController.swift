@@ -13,6 +13,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     private var results: [Result] = []
     var stack: Stack! = nil
+    private let queue = OperationQueue()
     
     private struct Result {
         var cardIndex: Int
@@ -22,6 +23,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     @IBOutlet weak var searchField: NSSearchField!
     @IBOutlet weak var resultTable: NSTableView!
+    @IBOutlet weak var resultCountField: NSTextField!
     
     override var windowNibName: NSNib.Name? {
         return "Search"
@@ -29,25 +31,60 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     @IBAction func search(_ sender: Any?) {
         
-        self.results = []
-        defer {
-            self.resultTable.reloadData()
+        /* Stop the current searches */
+        self.queue.cancelAllOperations()
+        
+        let request = self.searchField.stringValue
+        
+        /* Stack a new search */
+        let operation = BlockOperation()
+        operation.addExecutionBlock {
+            [unowned self, unowned operation] in
+            
+            self.performSearch(request: request, operation: operation)
         }
         
-        let searchFieldContent = self.searchField.stringValue
-        guard let string = HString(converting: searchFieldContent) else {
+        self.queue.addOperation(operation)
+    }
+    
+    private func performSearch(request: String, operation: Operation) {
+        
+        let results = self.executeRequest(request, operation: operation)
+        
+        guard !operation.isCancelled else {
             return
         }
         
-        let pattern = HString.SearchPattern(string)
-        self.results = self.searchInStack(pattern)
+        OperationQueue.main.addOperation {
+            [unowned self] in
+            
+            self.results = results
+            self.resultTable.reloadData()
+            self.resultCountField.stringValue = self.writeResultCount()
+        }
     }
     
-    private func searchInStack(_ pattern: HString.SearchPattern) -> [Result] {
+    private func executeRequest(_ request: String, operation: Operation) -> [Result] {
+        
+        guard let string = HString(converting: request) else {
+            return []
+        }
+        
+        let pattern = HString.SearchPattern(string)
+        let results = self.searchInStack(pattern, operation: operation)
+        
+        return results
+    }
+    
+    private func searchInStack(_ pattern: HString.SearchPattern, operation: Operation) -> [Result] {
         
         var results: [Result] = []
         
         for cardIndex in 0..<self.stack.cards.count {
+            
+            guard !operation.isCancelled else {
+                return []
+            }
             
             let card = self.stack.cards[cardIndex]
             let cardResult = self.countOccurrencesInCard(card, of: pattern)
@@ -133,6 +170,27 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         }
         
         return count
+    }
+    
+    private func writeResultCount() -> String {
+        
+        guard !self.searchField.stringValue.isEmpty else {
+            return ""
+        }
+        
+        let resultCount = self.results.map({ $0.occurrenceCount }).reduce(0,+)
+        
+        switch resultCount {
+            
+        case 0:
+            return "No Result"
+            
+        case 1:
+            return "1 Result"
+            
+        default:
+            return "\(resultCount) Results"
+        }
     }
     
     func numberOfRows(in tableView: NSTableView) -> Int {
