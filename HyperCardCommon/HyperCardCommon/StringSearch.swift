@@ -35,7 +35,7 @@ public extension HString {
             
             let character = HChar.lowercaseNoAccentTable[Int(self[patternEndIndex-index])]
             let previousIndex = pattern.previousIndexes[Int(character)][patternLength-index-1]
-            patternEndIndex += patternLength - previousIndex - 1
+            patternEndIndex += patternLength - previousIndex - index - 1
         }
         
         return nil
