@@ -77,51 +77,49 @@ extension Stack {
         while true {
             
             let card = self.cards[position.cardIndex]
-            if !card.dontSearch && !card.background.dontSearch {
             
-                /* Layer loop */
+            /* Layer loop */
+            while true {
+                
+                let layer: Layer = (position.partLayer == .background) ? card.background : card
+                
+                /* Part loop */
                 while true {
                     
-                    let layer: Layer = (position.partLayer == .background) ? card.background : card
-                    
-                    /* Part loop */
-                    while true {
-                        
-                        if position.partIndex == nil {
-                            if layer.parts.isEmpty {
-                                break
-                            }
-                            position.partIndex = (direction == .forward) ? 0 : layer.parts.count-1
-                        }
-                        
-                        /* Character loop. The increments are not well defined,
-                         so we must check the consistenty now */
-                        if let content = self.retrieveContent(card: card, layerType: position.partLayer, partIndex: position.partIndex!) {
-                            
-                            if position.characterRange == nil {
-                                position.characterRange = (direction == .forward) ? (0..<0) : (content.length..<content.length)
-                            }
-                            
-                            /* Find the next occurrence */
-                            if let characterRange = findInString(pattern, content, position.characterRange!) {
-                                
-                                return SearchPosition(cardIndex: position.cardIndex, partLayer: position.partLayer, partIndex: position.partIndex, characterRange: characterRange)
-                            }
-                        }
-                        
-                        position.characterRange = nil
-                        
-                        /* Increment part */
-                        if !incrementInt(&position.partIndex!, layer.parts.count) {
-                            position.partIndex = nil
+                    if position.partIndex == nil {
+                        if layer.parts.isEmpty {
                             break
                         }
+                        position.partIndex = (direction == .forward) ? 0 : layer.parts.count-1
                     }
                     
-                    /* Increment layer */
-                    if !incrementLayer(&position.partLayer) {
+                    /* Character loop. The increments are not well defined,
+                     so we must check the consistenty now */
+                    if let content = self.retrieveContent(card: card, layerType: position.partLayer, partIndex: position.partIndex!) {
+                        
+                        if position.characterRange == nil {
+                            position.characterRange = (direction == .forward) ? (0..<0) : (content.length..<content.length)
+                        }
+                        
+                        /* Find the next occurrence */
+                        if let characterRange = findInString(pattern, content, position.characterRange!) {
+                            
+                            return SearchPosition(cardIndex: position.cardIndex, partLayer: position.partLayer, partIndex: position.partIndex, characterRange: characterRange)
+                        }
+                    }
+                    
+                    position.characterRange = nil
+                    
+                    /* Increment part */
+                    if !incrementInt(&position.partIndex!, layer.parts.count) {
+                        position.partIndex = nil
                         break
                     }
+                }
+                
+                /* Increment layer */
+                if !incrementLayer(&position.partLayer) {
+                    break
                 }
             }
             
@@ -186,10 +184,6 @@ extension Stack {
         let layer: Layer = (layerType == .background) ? card.background : card
         let layerPart = layer.parts[partIndex]
         guard case LayerPart.field(let field) = layerPart else {
-            return nil
-        }
-        
-        guard !field.dontSearch else {
             return nil
         }
         

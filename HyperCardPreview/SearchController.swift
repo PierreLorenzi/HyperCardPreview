@@ -93,9 +93,6 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
             }
             
             let card = stack.cards[cardIndex]
-            guard !card.dontSearch && !card.background.dontSearch else {
-                continue
-            }
             
             let cardResult = self.countOccurrencesInCard(card, of: pattern)
             
@@ -140,10 +137,6 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         /* Search in the background fields */
         for content in card.backgroundPartContents {
             
-            guard self.canBackgroundContentBeSearched(identifier: content.partIdentifier, card: card) else {
-                continue
-            }
-            
             let stringContent = content.partContent.string
             let contentOccurrenceCount = self.countOccurrencesInString(stringContent, of: pattern)
             occurrenceCount += contentOccurrenceCount
@@ -156,10 +149,6 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         /* Search in the card fields */
         for field in card.fields {
             
-            guard !field.dontSearch else {
-                continue
-            }
-            
             let stringContent = field.content.string
             let contentOccurrenceCount = self.countOccurrencesInString(stringContent, of: pattern)
             occurrenceCount += contentOccurrenceCount
@@ -170,16 +159,6 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         }
         
         return CardResult(occurrenceCount: occurrenceCount, bestContent: bestContent)
-    }
-    
-    private func canBackgroundContentBeSearched(identifier: Int, card: Card) -> Bool {
-        
-        /* Look for the background field */
-        let background = card.background
-        let layerPart = background.parts.first(where: { $0.part.identifier == identifier })!
-        let field = layerPart.part as! Field
-        
-        return !field.dontSearch
     }
     
     private func countOccurrencesInString(_ string: HString, of pattern: HString.SearchPattern) -> Int {
