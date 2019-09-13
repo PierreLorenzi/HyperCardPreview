@@ -32,18 +32,6 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     var stackDocument: Document!
     
-    func setup() {
-        
-        NotificationCenter.default.addObserver(forName: NSControl.textDidEndEditingNotification, object: self.searchField, queue: nil) { [weak self] (_: Notification) in
-            
-            guard let slf = self else {
-                return
-            }
-            
-            slf.sendFindAction(NSFindPanelAction.next)
-        }
-    }
-    
     @IBAction func search(_ sender: Any?) {
         
         /* Stop the current searches */
