@@ -792,16 +792,41 @@ class Document: NSDocument, NSAnimationDelegate {
     }
     
     private func searchNext() {
-        // TODO
+        self.searchDirection(.forward)
     }
     
     private func searchPrevious() {
-        // TODO
+        self.searchDirection(.backward)
+    }
+    
+    private func searchDirection(_ direction: Stack.SearchDirection) {
+        
+        guard let controller = self.searchController else {
+            return
+        }
+        
+        let selectedField = self.browser.selectedField
+        let selectedRange = selectedField?.selectedRange
+        
+        guard let position = self.browser.stack.find(controller.currentRequest, direction: direction, fromCardIndex: self.browser.cardIndex, field: selectedField?.field, range: selectedRange) else {
+            return
+        }
+        
+        if position.cardIndex != self.browser.cardIndex {
+            self.goToCard(at: position.cardIndex, transition: Document.Transition.none)
+        }
+        
+        let layer: Layer = (position.partLayer == .card) ? self.browser.currentCard : self.browser.currentCard.background
+        let layerPart = layer.parts[position.partIndex!]
+        let field = layerPart.part as! Field
+        let fieldView = self.browser.getFieldView(of: field)
+        fieldView.selectedRange = position.characterRange!
     }
     
     private func buildSearchController() -> SearchController {
         
         let controller = SearchController(windowNibName: "search")
+        controller.stackDocument = self
         _ = controller.window // Load the nib
         controller.showWindow(nil)
         self.addWindowController(controller)

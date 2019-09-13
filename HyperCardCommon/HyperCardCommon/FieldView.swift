@@ -55,7 +55,7 @@ let barTimeInterval = 0.25
 /// The view of a field.
 public class FieldView: View, MouseResponder {
     
-    private let field: Field
+    public let field: Field
     
     private var richText: RichText {
         get { return self.richTextComputation.value }
@@ -85,11 +85,11 @@ public class FieldView: View, MouseResponder {
     }
     private var ghostKnobOffsetProperty = Property<Int?>(nil)
     
-    var selectedRange: Range<Int>? {
+    public var selectedRange: Range<Int>? {
         get { return self.selectedRangeProperty.value }
         set { self.selectedRangeProperty.value = newValue }
     }
-    var selectedRangeProperty = Property<Range<Int>?>(nil)
+    public var selectedRangeProperty = Property<Range<Int>?>(nil)
     
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil

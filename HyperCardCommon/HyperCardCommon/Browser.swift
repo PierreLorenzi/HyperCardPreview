@@ -499,7 +499,7 @@ public class Browser: MouseResponder {
         self.selectedField = view
     }
     
-    private var selectedField: FieldView? {
+    public var selectedField: FieldView? {
         
         get {
             guard let field = self._selectedField else {
@@ -640,6 +640,18 @@ public class Browser: MouseResponder {
             return
         }
         field.selectAll()
+    }
+    
+    public func getFieldView(of field: Field) -> FieldView {
+        
+        for view in self.views {
+            
+            if let fieldView = view as? FieldView, fieldView.field === field {
+                return fieldView
+            }
+        }
+        
+        fatalError()
     }
     
 }
