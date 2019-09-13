@@ -101,7 +101,7 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     private func makeExtract(in content: HString, around pattern: HString.SearchPattern) -> String {
      
-        let length = 200
+        let length = 100
         let firstOccurrence = content.find(pattern, from: 0)!
         let startIndex = max(firstOccurrence - length/2, 0)
         let endIndex = min(firstOccurrence + length/2, content.length)
