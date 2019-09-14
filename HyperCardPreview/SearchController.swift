@@ -30,6 +30,10 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         return "Search"
     }
     
+    override func windowTitle(forDocumentDisplayName displayName: String) -> String {
+        return "Search"
+    }
+    
     var stackDocument: Document!
     
     @IBAction func search(_ sender: Any?) {
