@@ -776,10 +776,10 @@ class Document: NSDocument, NSAnimationDelegate {
             self.search()
             
         case .next:
-            self.searchNext()
+            self.searchDirection(.forward)
             
         case .previous:
-            self.searchPrevious()
+            self.searchDirection(.backward)
             
         default:
             return
@@ -793,14 +793,6 @@ class Document: NSDocument, NSAnimationDelegate {
         }
         
         searchController.showWindow(nil)
-    }
-    
-    private func searchNext() {
-        self.searchDirection(.forward)
-    }
-    
-    private func searchPrevious() {
-        self.searchDirection(.backward)
     }
     
     private func searchDirection(_ direction: Stack.SearchDirection) {
