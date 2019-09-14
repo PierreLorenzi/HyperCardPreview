@@ -673,11 +673,15 @@ class Document: NSDocument, NSAnimationDelegate {
     }
     
     @objc func displayBackgroundInfo(_ sender: AnyObject) {
-        displayInfo().displayBackground(browser.currentBackground)
+        let background = browser.currentBackground
+        let index = browser.stack.backgrounds.firstIndex(where: { $0 === background })!
+        displayInfo().displayBackground(background, number: index+1)
     }
     
     @objc func displayCardInfo(_ sender: AnyObject) {
-        displayInfo().displayCard(browser.currentCard)
+        let card = browser.currentCard
+        let index = browser.stack.cards.firstIndex(where: { $0 === card })!
+        displayInfo().displayCard(card, number: index+1)
     }
     
     func displayInfo() -> InfoPanelController {

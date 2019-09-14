@@ -87,13 +87,15 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         tabView.removeTabViewItem(tab)
     }
     
-    func displayBackground(_ background: Background) {
-        self.window!.title = "Background ID \(background.identifier)"
+    func displayBackground(_ background: Background, number: Int) {
+        self.window!.title = self.describeLayer(background, layerType: .background, number: number)
         displayScript(background.script)
         self.deleteContentTab()
         self.displayLayerImage(of: background)
         
         self.infos = [("Name", "\"\(background.name)\""),
+            ("Number","\(number)"),
+            ("ID","\(background.identifier)"),
             ("Number of parts", "\(background.parts.count)"),
             ("Show Pict", "\(background.showPict ? "yes" : "no")"),
             ("Don't Search", "\(background.dontSearch ? "yes" : "no")"),
@@ -102,13 +104,25 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.infoTable.reloadData()
     }
     
-    func displayCard(_ card: Card) {
-        self.window!.title = "Card ID \(card.identifier)"
+    private func describeLayer(_ layer: Layer, layerType: LayerType, number: Int) -> String {
+        
+        let layerTypeName: String = (layerType == .background) ? "Background" : "Card"
+        
+        if layer.name.length > 0 {
+            return "\(layerTypeName) \"\(layer.name)\""
+        }
+        return "\(layerTypeName) \(number)"
+    }
+    
+    func displayCard(_ card: Card, number: Int) {
+        self.window!.title = self.describeLayer(card, layerType: .card, number: number)
         displayScript(card.script)
         self.deleteContentTab()
         self.displayLayerImage(of: card)
         
         self.infos = [("Name", "\"\(card.name)\""),
+            ("Number","\(number)"),
+            ("ID","\(card.identifier)"),
             ("Number of parts", "\(card.parts.count)"),
             ("Marked", "\(card.marked ? "yes" : "no")"),
             ("Show Pict", "\(card.showPict ? "yes" : "no")"),
