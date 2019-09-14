@@ -151,6 +151,13 @@ public class Stack {
     }
     public var fontNameReferencesProperty = Property<[FontNameReference]>([])
     
+    /// The file format version of the font: v1 or v2
+    public var fileVersion: FileVersion {
+        get { return self.fileVersionProperty.value }
+        set { self.fileVersionProperty.value = newValue }
+    }
+    public var fileVersionProperty = Property<FileVersion>(.v2)
+    
 }
 
 

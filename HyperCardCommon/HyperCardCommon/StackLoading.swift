@@ -25,11 +25,14 @@ public extension Stack {
             throw OpeningError.corrupted
         }
         
+        /* File Version */
+        let fileVersion = data.readFileVersion(at: 0x10)
+        
         /* Load now the scalar fields of the stack */
-        self.loadScalarFields(in: data, decodedData: decodedData)
+        self.loadScalarFields(in: data, decodedData: decodedData, fileVersion: fileVersion)
         
         /* Lazy-load the stack structure */
-        self.loadStructureFields(in: data, decodedData: decodedData)
+        self.loadStructureFields(in: data, decodedData: decodedData, fileVersion: fileVersion)
     }
     
     /// Errors raised when loading a stack from a file
@@ -127,7 +130,7 @@ public extension Stack {
         return sum == 0
     }
     
-    private func loadScalarFields(in data: DataRange, decodedData: DataRange) {
+    private func loadScalarFields(in data: DataRange, decodedData: DataRange, fileVersion: FileVersion) {
         
         self.passwordHash = decodedData.readOptionalUInt32(at: 0x44)
         self.userLevel = decodedData.readUserLevel(at: 0x48)
@@ -144,6 +147,7 @@ public extension Stack {
         self.windowRectangle = data.readRectangle(at: 0x78)
         self.screenRectangle = data.readRectangle(at: 0x80)
         self.scrollPoint = data.readPoint(at: 0x88)
+        self.fileVersion = fileVersion
         
         /* Lazy-load script */
         self.scriptProperty.lazyCompute { () -> HString in
@@ -163,11 +167,10 @@ public extension Stack {
         
     }
     
-    private func loadStructureFields(in data: DataRange, decodedData: DataRange) {
+    private func loadStructureFields(in data: DataRange, decodedData: DataRange, fileVersion: FileVersion) {
         
         /* To find the blocks in the file, make a function */
         let loadBlockAction = self.makeLoadBlockAction(in: data, decodedData: decodedData)
-        let fileVersion = data.readFileVersion(at: 0x10)
         
         /* Load the styles, the cards and backgrounds need it */
         let styleBlockIdentifier = data.readOptionalUInt32(at: 0x1B4)

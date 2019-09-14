@@ -104,8 +104,6 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         displayScript(button.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
-        let fontName: String = stack.fontNameReferences.first(where: { $0.identifier == button.textFontIdentifier })?.name.description ?? ""
-        
         self.infos = [("Name", "\"\(button.name)\""),
             ("Style", "\(button.style)"),
             ("Rectangle", "\(button.rectangle.left),\(button.rectangle.top),\(button.rectangle.right),\(button.rectangle.bottom)"),
@@ -118,12 +116,78 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Icon ID", "\(button.iconIdentifier)"),
             ("Family", "\(button.family)"),
             ("Title Width", "\(button.titleWidth)"),
-            ("Text Font", fontName),
+            ("Text Font", describeTextFont(button.textFontIdentifier, stack: stack)),
             ("Text Size", "\(button.textFontSize)"),
             ("Text Style", "\(self.describeTextStyle(button.textStyle))"),
             ("Text Alignment", "\(button.textAlign)")]
         
         self.infoTable.reloadData()
+    }
+    
+    private func describeTextFont(_ identifier: Int, stack: Stack) -> String {
+        
+        switch stack.fileVersion {
+            
+        case .v1:
+            /* If the stack is v1, and so doesn't have a font name table, guess the name */
+            if let standardName = self.getStandardFontName(identifier) {
+                return standardName
+            }
+            
+        case .v2:
+            /* Look the name in the font name table */
+            if let fontReference = stack.fontNameReferences.first(where: { $0.identifier == identifier }) {
+                return fontReference.name.description
+            }
+        }
+        
+        /* Last resort */
+        return "ID \(identifier)"
+    }
+    
+    private func getStandardFontName(_ identifier: Int) -> String? {
+        
+        switch identifier {
+            
+        case FontIdentifiers.chicago:
+            return "Chicago"
+        case FontIdentifiers.newYork:
+            return "New York"
+        case FontIdentifiers.geneva:
+            return "Geneva"
+        case FontIdentifiers.monaco:
+            return "Monaco"
+        case FontIdentifiers.venice:
+            return "Venice"
+        case FontIdentifiers.london:
+            return "London"
+        case FontIdentifiers.athens:
+            return "Athens"
+        case FontIdentifiers.sanFrancisco:
+            return "San Francisco"
+        case FontIdentifiers.toronto:
+            return "Toronto"
+        case FontIdentifiers.cairo:
+            return "Cairo"
+        case FontIdentifiers.losAngeles:
+            return "Los Angeles"
+        case FontIdentifiers.palatino:
+            return "Palatino"
+        case FontIdentifiers.times:
+            return "Times"
+        case FontIdentifiers.helvetica:
+            return "Helvetica"
+        case FontIdentifiers.courier:
+            return "Courier"
+        case FontIdentifiers.symbol:
+            return "Symbol"
+        case FontIdentifiers.taliesin:
+            return "Taliesin"
+        case FontIdentifiers.charcoal:
+            return "Charcoal"
+        default:
+            return nil
+        }
     }
     
     func describeTextStyle(_ textStyle: TextStyle) -> String {
@@ -152,8 +216,6 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         displayScript(field.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
-        let fontName: String = stack.fontNameReferences.first(where: { $0.identifier == field.textFontIdentifier })?.name.description ?? ""
-        
         self.infos = [("Name", "\"\(field.name)\""),
             ("Style", "\(field.style)"),
             ("Rectangle", "\(field.rectangle.left),\(field.rectangle.top),\(field.rectangle.right),\(field.rectangle.bottom)"),
@@ -168,7 +230,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Wide Margins", "\(field.wideMargins ? "yes" : "no")"),
             ("Show Lines", "\(field.showLines ? "yes" : "no")"),
             ("Auto Select", "\(field.autoSelect ? "yes" : "no")"),
-            ("Text Font", fontName),
+            ("Text Font", describeTextFont(field.textFontIdentifier, stack: stack)),
             ("Text Size", "\(field.textFontSize)"),
             ("Text Style", "\(self.describeTextStyle(field.textStyle))"),
             ("Text Alignment", "\(field.textAlign)")]
