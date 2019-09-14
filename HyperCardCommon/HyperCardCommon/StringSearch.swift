@@ -11,6 +11,10 @@ public extension HString {
     
     func find(_ string: HString, from index: Int) -> Int? {
         
+        guard string.length > 0 else {
+            return nil
+        }
+        
         let pattern = SearchPattern(string)
         return self.find(pattern, from: index)
     }

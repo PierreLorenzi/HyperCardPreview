@@ -804,11 +804,15 @@ class Document: NSDocument, NSAnimationDelegate {
         guard let controller = self.searchController else {
             return
         }
+        let request = controller.currentRequest
+        guard request.length > 0 else {
+            return
+        }
         
         let selectedField = self.browser.selectedField
         let selectedRange = selectedField?.selectedRange
         
-        guard let position = self.browser.stack.find(controller.currentRequest, direction: direction, fromCardIndex: self.browser.cardIndex, field: selectedField?.field, range: selectedRange) else {
+        guard let position = self.browser.stack.find(request, direction: direction, fromCardIndex: self.browser.cardIndex, field: selectedField?.field, range: selectedRange) else {
             return
         }
         

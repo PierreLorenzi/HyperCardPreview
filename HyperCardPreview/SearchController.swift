@@ -71,6 +71,9 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     
     private func executeRequest(_ request: String, operation: Operation) -> [Result] {
         
+        guard !request.isEmpty else {
+            return []
+        }
         guard let string = HString(converting: request) else {
             return []
         }
