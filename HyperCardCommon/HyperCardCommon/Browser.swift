@@ -249,7 +249,11 @@ public class Browser: MouseResponder {
             return
         }
         
-        let viewIndex = self.views.firstIndex(where: { $0 === view })!
+        /* If we're changing card, the view may have disappeared */
+        guard let viewIndex = self.views.firstIndex(where: { $0 === view }) else {
+            return
+        }
+        
         self.addRefreshNeed(in: rectangle, at: viewIndex)
     }
     
