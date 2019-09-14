@@ -26,9 +26,10 @@ class GraphicTests: XCTestCase {
         }
         let file = ClassicFile(dataFork: dataFork, resourceFork: resourceFork)
         let hyperCardFile = try! HyperCardFile(file: file)
+        let imageBuffer = ImageBuffer(width: 2, height: 2)
         
         /* Make a browser to draw the cards */
-        let browser = Browser(hyperCardFile: hyperCardFile)
+        let browser = Browser(hyperCardFile: hyperCardFile, imageBuffer: imageBuffer)
         
         for cardIndex in 0..<hyperCardFile.stack.cards.count {
             
