@@ -91,6 +91,11 @@ public class FieldView: View, MouseResponder {
     }
     public var selectedRangeProperty = Property<Range<Int>?>(nil)
     
+    private var wholeTextImage: Image {
+        return self.wholeTextImageComputation.value
+    }
+    private let wholeTextImageComputation: Computation<Image>
+    
     /// The timer sending scroll updates while the user is clicking on an scroll arrow
     private var scrollingTimer: Timer? = nil
     private var scrollingDirection: Direction? = nil
@@ -112,12 +117,22 @@ public class FieldView: View, MouseResponder {
         self.richTextComputation = richTextComputation
         
         /* line layouts */
-        self.textLayoutComputation = Computation<TextLayout> {
+        let textLayoutComputation = Computation<TextLayout> {
             let text = richTextComputation.value
             let textWidth = FieldView.computeTextRectangle(of: field).width
             let lineHeight: Int? = field.fixedLineHeight ? field.textHeight : nil
             return TextLayout(for: text, textWidth: textWidth, alignment: field.textAlign, dontWrap: field.dontWrap, lineHeight: lineHeight)
         }
+        self.textLayoutComputation = textLayoutComputation
+        
+        let wholeTextImageComputation = Computation<Image> { () -> Image in
+            let textLayout = textLayoutComputation.value
+            let drawing = Drawing(width: textLayout.size.width, height: textLayout.size.height)
+            textLayout.draw(in: drawing, at: Point(x: 0, y: 0), clipRectangle: Rectangle(x: 0, y: 0, width: textLayout.size.width, height: textLayout.size.height))
+            return drawing.image
+        }
+        wholeTextImageComputation.dependsOn(textLayoutComputation.valueProperty)
+        self.wholeTextImageComputation = wholeTextImageComputation
         
         super.init()
         
@@ -373,6 +388,25 @@ public class FieldView: View, MouseResponder {
             return
         }
         
+        
+        /* Draw the characters */
+        self.drawTextContent(in: drawing, content: content, textLayout: textLayout, textRectangle: textRectangle, contentRectangle: contentRectangle)
+        
+        /* Draw the selection */
+        if let selectedRange = self.selectedRange {
+            self.drawSelection(selectedRange, in: drawing, layout: textLayout, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: field.scroll)
+        }
+        
+    }
+    
+    private func drawTextContent(in drawing: Drawing, content: RichText, textLayout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle) {
+        
+        /* Optimization for scrolling fields: cache the text image */
+        if self.field.style == .scrolling && field.scroll > 0 {
+            self.drawCachedText(in: drawing, textLayout: textLayout, textRectangle: textRectangle)
+            return
+        }
+        
         /* Draw the lines if necessary */
         let showLines = field.showLines && field.style != .scrolling
         if showLines {
@@ -381,12 +415,6 @@ public class FieldView: View, MouseResponder {
         
         /* Draw the text */
         textLayout.draw(in: drawing, at: Point(x: textRectangle.left, y: textRectangle.top - field.scroll), clipRectangle: contentRectangle)
-        
-        /* Draw the selection */
-        if let selectedRange = self.selectedRange {
-            self.drawSelection(selectedRange, in: drawing, layout: textLayout, textRectangle: textRectangle, contentRectangle: contentRectangle, scroll: field.scroll)
-        }
-        
     }
     
     private func drawLines(drawing: Drawing, layout: TextLayout, textRectangle: Rectangle, contentRectangle: Rectangle, scroll: Int) {
@@ -483,6 +511,13 @@ public class FieldView: View, MouseResponder {
         case .endOfLine:
             return contentRectangle.right
         }
+    }
+    
+    private func drawCachedText(in drawing: Drawing, textLayout: TextLayout, textRectangle: Rectangle) {
+        
+        /* Draw the text */
+        let rectangleToDraw = Rectangle(top: field.scroll, left: 0, bottom: min(textLayout.size.height, field.scroll + textLayout.size.height), right: textRectangle.width)
+        drawing.drawImage(self.wholeTextImage, position: Point(x: textRectangle.left, y: textRectangle.top), rectangleToDraw: rectangleToDraw, clipRectangle: textRectangle, composition: Drawing.DirectComposition)
     }
     
     public override var rectangle: Rectangle? {
