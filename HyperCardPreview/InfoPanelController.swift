@@ -18,6 +18,8 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
     @IBOutlet weak var contentView: NSTextView!
     @IBOutlet weak var scriptView: NSTextView!
     @IBOutlet weak var tabView: NSTabView!
+    @IBOutlet weak var pictureView: NSImageView!
+    @IBOutlet weak var noImageLabel: NSTextField!
     
     private static let textStyleNames: [(KeyPath<TextStyle,Bool>,String)] = [
         (\TextStyle.bold, "bold"),
@@ -48,7 +50,8 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.window!.title = "Stack Info"
         let stack = hyperCardFile.stack
         displayScript(stack.script)
-        tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
+        self.deleteContentTab()
+        self.deletePictureTab()
         
         let versionAtCreation: String = stack.versionAtCreation?.description ?? "unknown"
         let version: String = stack.versionAtLastModification?.description ?? "unknown"
@@ -70,10 +73,25 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.infoTable.reloadData()
     }
     
+    private func deleteContentTab() {
+        
+        let tabIndex = tabView.indexOfTabViewItem(withIdentifier: "content")
+        let tab = tabView.tabViewItem(at: tabIndex)
+        tabView.removeTabViewItem(tab)
+    }
+    
+    private func deletePictureTab() {
+        
+        let tabIndex = tabView.indexOfTabViewItem(withIdentifier: "picture")
+        let tab = tabView.tabViewItem(at: tabIndex)
+        tabView.removeTabViewItem(tab)
+    }
+    
     func displayBackground(_ background: Background) {
         self.window!.title = "Background ID \(background.identifier)"
         displayScript(background.script)
-        tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
+        self.deleteContentTab()
+        self.displayLayerImage(of: background)
         
         self.infos = [("Name", "\"\(background.name)\""),
             ("Number of parts", "\(background.parts.count)"),
@@ -87,7 +105,8 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
     func displayCard(_ card: Card) {
         self.window!.title = "Card ID \(card.identifier)"
         displayScript(card.script)
-        tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
+        self.deleteContentTab()
+        self.displayLayerImage(of: card)
         
         self.infos = [("Name", "\"\(card.name)\""),
             ("Number of parts", "\(card.parts.count)"),
@@ -99,10 +118,27 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.infoTable.reloadData()
     }
     
+    func displayLayerImage(of layer: Layer) {
+        
+        guard let image = layer.image else {
+            self.noImageLabel.stringValue = "No Picture"
+            return
+        }
+        
+        let cgImage = RgbConverter.convertMaskedImage(image)
+        self.pictureView.image = NSImage(cgImage: cgImage, size: NSZeroSize)
+        
+        /* Set-up the image view. We make it editable because it is the only way
+         the image can be copied */
+        self.pictureView.isEditable = true
+        self.pictureView.allowsCutCopyPaste = true
+    }
+    
     func displayButton(_ button: Button, withContent content: HString, stack: Stack) {
         self.window!.title = "Button ID \(button.identifier)"
         displayScript(button.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
+        self.deletePictureTab()
         
         self.infos = [("Name", "\"\(button.name)\""),
             ("Style", "\(button.style)"),
@@ -215,6 +251,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.window!.title = "Field ID \(field.identifier)"
         displayScript(field.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
+        self.deletePictureTab()
         
         self.infos = [("Name", "\"\(field.name)\""),
             ("Style", "\(field.style)"),

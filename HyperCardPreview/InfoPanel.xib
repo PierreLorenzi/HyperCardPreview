@@ -10,6 +10,8 @@
             <connections>
                 <outlet property="contentView" destination="La3-jY-OE9" id="19k-xY-7L3"/>
                 <outlet property="infoTable" destination="Bwr-dn-zFd" id="Fcm-1Y-gzZ"/>
+                <outlet property="noImageLabel" destination="3Rn-RK-qm8" id="jU5-ys-J6M"/>
+                <outlet property="pictureView" destination="cLP-Wr-a0M" id="abk-ek-xm9"/>
                 <outlet property="scriptView" destination="beH-qE-m4y" id="aOe-df-MBg"/>
                 <outlet property="tabView" destination="adw-CD-nz3" id="ox0-be-1kh"/>
                 <outlet property="window" destination="QvC-M9-y7g" id="cS6-b9-Vsx"/>
@@ -30,7 +32,7 @@
                         <rect key="frame" x="-8" y="-10" width="443" height="400"/>
                         <font key="font" metaFont="system"/>
                         <tabViewItems>
-                            <tabViewItem label="Info" identifier="1" id="GQC-PH-4tj">
+                            <tabViewItem label="Info" identifier="info" id="GQC-PH-4tj">
                                 <view key="view" id="mVK-h0-rLQ">
                                     <rect key="frame" x="10" y="33" width="423" height="354"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -43,13 +45,13 @@
                                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" selectionHighlightStyle="none" columnReordering="NO" columnResizing="NO" multipleSelection="NO" autosaveColumns="NO" typeSelect="NO" id="Bwr-dn-zFd">
-                                                        <rect key="frame" x="0.0" y="0.0" width="419" height="332"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="387" height="332"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <size key="intercellSpacing" width="3" height="2"/>
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         <tableColumns>
-                                                            <tableColumn identifier="name" width="185" minWidth="40" maxWidth="1000" id="SVI-KB-Ghl">
+                                                            <tableColumn identifier="name" width="169" minWidth="40" maxWidth="1000" id="SVI-KB-Ghl">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -62,7 +64,7 @@
                                                                 </textFieldCell>
                                                                 <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                             </tableColumn>
-                                                            <tableColumn identifier="value" width="228" minWidth="40" maxWidth="1000" id="0ZX-Lp-feY">
+                                                            <tableColumn identifier="value" width="212" minWidth="40" maxWidth="1000" id="0ZX-Lp-feY">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -82,7 +84,7 @@
                                                     </tableView>
                                                 </subviews>
                                             </clipView>
-                                            <scroller key="horizontalScroller" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="JpW-4b-yrR">
+                                            <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="JpW-4b-yrR">
                                                 <rect key="frame" x="1" y="317" width="387" height="16"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                             </scroller>
@@ -94,7 +96,7 @@
                                     </subviews>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Content" identifier="2" id="klq-Kt-j0n">
+                            <tabViewItem label="Content" identifier="content" id="klq-Kt-j0n">
                                 <view key="view" id="bwK-AP-2Yh">
                                     <rect key="frame" x="10" y="33" width="423" height="354"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -137,7 +139,29 @@
                                     </constraints>
                                 </view>
                             </tabViewItem>
-                            <tabViewItem label="Script" identifier="" id="Ogv-hT-sA6">
+                            <tabViewItem label="Picture" identifier="picture" id="Qr7-00-CkA">
+                                <view key="view" id="ITd-eN-o4z">
+                                    <rect key="frame" x="10" y="33" width="423" height="354"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <subviews>
+                                        <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3Rn-RK-qm8">
+                                            <rect key="frame" x="166" y="175" width="91" height="17"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES" flexibleMaxY="YES"/>
+                                            <textFieldCell key="cell" lineBreakMode="clipping" id="NiC-dV-NY3">
+                                                <font key="font" metaFont="system"/>
+                                                <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                                <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                            </textFieldCell>
+                                        </textField>
+                                        <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cLP-Wr-a0M">
+                                            <rect key="frame" x="17" y="17" width="389" height="334"/>
+                                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                            <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="fYm-SL-aWn"/>
+                                        </imageView>
+                                    </subviews>
+                                </view>
+                            </tabViewItem>
+                            <tabViewItem label="Script" identifier="script" id="Ogv-hT-sA6">
                                 <view key="view" id="OdW-7b-kOt">
                                     <rect key="frame" x="10" y="33" width="423" height="354"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -146,10 +170,10 @@
                                             <rect key="frame" x="-3" y="-3" width="429" height="354"/>
                                             <clipView key="contentView" drawsBackground="NO" id="Z9n-V3-miD">
                                                 <rect key="frame" x="1" y="1" width="427" height="352"/>
-                                                <autoresizingMask key="autoresizingMask"/>
+                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 <subviews>
                                                     <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" baseWritingDirection="leftToRight" findStyle="panel" allowsCharacterPickerTouchBarItem="NO" allowsNonContiguousLayout="YES" textCompletion="NO" id="beH-qE-m4y">
-                                                        <rect key="frame" x="0.0" y="-0.5" width="427" height="352"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="427" height="352"/>
                                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                         <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
