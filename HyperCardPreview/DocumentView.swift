@@ -312,6 +312,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         let part: LayerPart
         let layerType: LayerType
         let number: Int
+        let partNumber: Int
     }
     
     override func rightMouseDown(with event: NSEvent) {
@@ -359,6 +360,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         /* Keep trace of the part numbers */
         var fieldNumber = 0
         var buttonNumber = 0
+        var partNumber = 1
         
         for part in layer.parts {
             
@@ -376,9 +378,10 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
             
             /* Check if the part lies at the position */
             if part.part.rectangle.containsPosition(point) {
-                let partInMenu = PartInMenu(part: part, layerType: layerType, number: number)
+                let partInMenu = PartInMenu(part: part, layerType: layerType, number: number, partNumber: partNumber)
                 parts.append(partInMenu)
             }
+            partNumber += 1
         }
         
         return parts.reversed()
@@ -449,7 +452,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         let part = self.partsInMenu![tag]
         
         /* Show the script border of the part */
-        document.createScriptBorder(forPart: part.part, inLayerType: part.layerType)
+        document.createScriptBorder(forPart: part.part, inLayerType: part.layerType, number: part.number, partNumber: part.partNumber)
     }
     
     func menuDidClose(_ menu: NSMenu) {
@@ -466,9 +469,9 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         
         switch part.part {
         case .field(let field):
-            document.displayInfo().displayField(field, withContent: content, stack: self.document.browser.stack)
+            document.displayInfo().displayField(field, withContent: content, layerType: part.layerType, number: part.number, partNumber: part.partNumber, stack: self.document.browser.stack)
         case .button(let button):
-            document.displayInfo().displayButton(button, withContent: content, stack: self.document.browser.stack)
+            document.displayInfo().displayButton(button, withContent: content, layerType: part.layerType, number: part.number, partNumber: part.partNumber, stack: self.document.browser.stack)
         }
         
     }

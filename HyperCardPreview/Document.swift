@@ -595,27 +595,42 @@ class Document: NSDocument, NSAnimationDelegate {
     
     func createScriptBorders(in layer: Layer, includingFields: Bool, layerType: LayerType) {
         
+        var buttonNumber = 1
+        var fieldNumber = 1
+        var partNumber = 0
+        
         for part in layer.parts {
+            
+            /* Update the part numbers */
+            let number: Int
+            switch part {
+            case .button(_):
+                number = buttonNumber
+                buttonNumber += 1
+            case .field(_):
+                number = fieldNumber
+                fieldNumber += 1
+            }
+            partNumber += 1
             
             /* Exclude fields if necessary */
             if case LayerPart.field(_) = part, !includingFields {
                 continue
             }
             
-            createScriptBorder(forPart: part, inLayerType: layerType)
-            
+            createScriptBorder(forPart: part, inLayerType: layerType, number: number, partNumber: partNumber)
         }
         
     }
     
-    func createScriptBorder(forPart part: LayerPart, inLayerType layerType: LayerType) {
+    func createScriptBorder(forPart part: LayerPart, inLayerType layerType: LayerType, number: Int, partNumber: Int) {
         
         /* Convert the rectangle into current coordinates */
         let rectangle = part.part.rectangle
         let frame = self.computeRectangleFrame(of: rectangle)
         
         /* Create a view */
-        let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, inLayerType: layerType), document: self)
+        let view = ScriptBorderView(frame: frame, part: part, content: retrieveContent(part: part, inLayerType: layerType), layerType: layerType, number: number, partNumber: partNumber, document: self)
         view.wantsLayer = true
         view.layer!.borderColor = NSColor.blue.cgColor
         view.layer!.borderWidth = 1
@@ -822,10 +837,11 @@ class Document: NSDocument, NSAnimationDelegate {
         let fieldView = self.browser.getFieldView(of: field)
         fieldView.selectedRange = position.characterRange!
         fieldView.scrollToSelection()
+        let number = layer.parts[0...position.partIndex!].filter({ $0.part is Field }).count
         
         if !field.visible {
             self.removeScriptBorders()
-            self.createScriptBorder(forPart: layerPart, inLayerType: position.partLayer)
+            self.createScriptBorder(forPart: layerPart, inLayerType: position.partLayer, number: number, partNumber: position.partIndex!+1)
         }
     }
     

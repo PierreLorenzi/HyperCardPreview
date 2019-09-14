@@ -134,13 +134,16 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         self.pictureView.allowsCutCopyPaste = true
     }
     
-    func displayButton(_ button: Button, withContent content: HString, stack: Stack) {
-        self.window!.title = "Button ID \(button.identifier)"
+    func displayButton(_ button: Button, withContent content: HString, layerType: LayerType, number: Int, partNumber: Int, stack: Stack) {
+        self.window!.title = self.describePart(part: button, type: .button, layer: layerType, number: number)
         displayScript(button.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         self.deletePictureTab()
         
         self.infos = [("Name", "\"\(button.name)\""),
+            ("Number", "\(number)"),
+            ("Part Number", "\(partNumber)"),
+            ("ID", "\(button.identifier)"),
             ("Style", "\(button.style)"),
             ("Rectangle", "\(button.rectangle.left),\(button.rectangle.top),\(button.rectangle.right),\(button.rectangle.bottom)"),
             ("Visible", "\(button.visible ? "yes" : "no")"),
@@ -226,7 +229,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         }
     }
     
-    func describeTextStyle(_ textStyle: TextStyle) -> String {
+    private func describeTextStyle(_ textStyle: TextStyle) -> String {
         
         var string = ""
         
@@ -247,13 +250,29 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         return string
     }
     
-    func displayField(_ field: Field, withContent content: HString, stack: Stack) {
-        self.window!.title = "Field ID \(field.identifier)"
+    private func describePart(part: Part, type: PartType, layer: LayerType, number: Int) -> String {
+        
+        let partTypeName = (type == .field) ? "Field" : "Button"
+        let layerTypeName = (layer == .background) ? "Background" : "Card"
+        let typeName = "\(layerTypeName) \(partTypeName)"
+        
+        if part.name.length > 0 {
+            return "\(typeName) \"\(part.name)\""
+        }
+        
+        return "\(typeName) \(number)"
+    }
+    
+    func displayField(_ field: Field, withContent content: HString, layerType: LayerType, number: Int, partNumber: Int, stack: Stack) {
+        self.window!.title = self.describePart(part: field, type: .field, layer: layerType, number: number)
         displayScript(field.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         self.deletePictureTab()
         
         self.infos = [("Name", "\"\(field.name)\""),
+            ("Number", "\(number)"),
+            ("Part Number", "\(partNumber)"),
+            ("ID", "\(field.identifier)"),
             ("Style", "\(field.style)"),
             ("Rectangle", "\(field.rectangle.left),\(field.rectangle.top),\(field.rectangle.right),\(field.rectangle.bottom)"),
             ("Visible", "\(field.visible ? "yes" : "no")"),

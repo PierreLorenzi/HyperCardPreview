@@ -15,11 +15,17 @@ class ScriptBorderView: NSView {
     
     let part: LayerPart
     let content: HString
+    let layerType: LayerType
+    let number: Int
+    let partNumber: Int
     unowned let document: Document
     
-    init(frame: NSRect, part: LayerPart, content: HString, document: Document) {
+    init(frame: NSRect, part: LayerPart, content: HString, layerType: LayerType, number: Int, partNumber: Int, document: Document) {
         self.part = part
         self.content = content
+        self.layerType = layerType
+        self.number = number
+        self.partNumber = partNumber
         self.document = document
         super.init(frame: frame)
     }
@@ -35,9 +41,9 @@ class ScriptBorderView: NSView {
     override func mouseUp(with event: NSEvent) {
         switch part {
         case .field(let field):
-            document.displayInfo().displayField(field, withContent: content, stack: self.document.browser.stack)
+            document.displayInfo().displayField(field, withContent: content, layerType: self.layerType, number: self.number, partNumber: partNumber, stack: self.document.browser.stack)
         case .button(let button):
-            document.displayInfo().displayButton(button, withContent: content, stack: self.document.browser.stack)
+            document.displayInfo().displayButton(button, withContent: content, layerType: self.layerType, number: self.number, partNumber: partNumber, stack: self.document.browser.stack)
         }
     }
     
