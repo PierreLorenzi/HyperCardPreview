@@ -340,7 +340,6 @@ class Document: NSDocument, NSAnimationDelegate {
     
     /// Redraws the HyperCard view
     func refresh() {
-        removeScriptBorders()
         
         /* Update the image */
         browser.refresh()
@@ -499,6 +498,8 @@ class Document: NSDocument, NSAnimationDelegate {
     func goToCard(at index: Int, transition: Transition) {
         let possibleOldImage = (transition != .none) ? browser.image : nil
         
+        removeScriptBorders()
+        
         /* Stop refresh */
         self.willRefreshBrowser = true
         browser.cardIndex = index
@@ -558,6 +559,9 @@ class Document: NSDocument, NSAnimationDelegate {
     }
     
     @objc func displayOnlyBackground(_ sender: AnyObject) {
+        
+        removeScriptBorders()
+        
         browser.displayOnlyBackground = !browser.displayOnlyBackground
         
         if let menuItem = sender as? NSMenuItem {
@@ -826,6 +830,11 @@ class Document: NSDocument, NSAnimationDelegate {
         let fieldView = self.browser.getFieldView(of: field)
         fieldView.selectedRange = position.characterRange!
         fieldView.scrollToSelection()
+        
+        if !field.visible {
+            self.removeScriptBorders()
+            self.createScriptBorder(forPart: layerPart, inLayerType: position.partLayer)
+        }
     }
     
     private func buildSearchController() -> SearchController {

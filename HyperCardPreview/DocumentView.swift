@@ -210,6 +210,8 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
     
     override func mouseDown(with event: NSEvent) {
         
+        self.document.removeScriptBorders()
+        
         /* If the user hold the control key, act like for a right click */
         guard !event.modifierFlags.contains(NSEvent.ModifierFlags.control) else {
             
