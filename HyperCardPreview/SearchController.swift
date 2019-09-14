@@ -25,6 +25,8 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
     @IBOutlet weak var resultTable: NSTableView!
     @IBOutlet weak var resultCountField: NSTextField!
     @IBOutlet weak var goToResultButton: NSSegmentedControl!
+    @IBOutlet weak var cardOrderButton: NSButton!
+    @IBOutlet weak var rankingOrderButton: NSButton!
     
     override var windowNibName: NSNib.Name? {
         return "Search"
@@ -67,7 +69,12 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
             
             self.currentRequest = HString(converting: request) ?? ""
             self.results = results
-            self.resultTable.reloadData()
+            if self.rankingOrderButton.state == .on {
+                self.sortByCardRanking(nil)
+            }
+            else {
+                self.resultTable.reloadData()
+            }
             self.resultCountField.stringValue = self.writeResultCount()
             self.goToResultButton.isEnabled = !self.results.isEmpty
         }
@@ -201,6 +208,18 @@ class SearchController: NSWindowController, NSTableViewDataSource, NSTableViewDe
         default:
             return "\(resultCount) results"
         }
+    }
+    
+    @IBAction func sortByCardOrder(_ sender: Any?) {
+        self.rankingOrderButton.state = .off
+        self.results.sort(by: { return $0.cardIndex < $1.cardIndex })
+        self.resultTable.reloadData()
+    }
+    
+    @IBAction func sortByCardRanking(_ sender: Any?) {
+        self.cardOrderButton.state = .off
+        self.results.sort(by: { return $0.occurrenceCount > $1.occurrenceCount })
+        self.resultTable.reloadData()
     }
     
     func numberOfRows(in tableView: NSTableView) -> Int {
