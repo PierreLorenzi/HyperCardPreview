@@ -243,6 +243,7 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         
         /* Create the menu */
         let menu = NSMenu(title: "Pop Up Menu")
+        menu.autoenablesItems = false
         
         var index = 0
         
