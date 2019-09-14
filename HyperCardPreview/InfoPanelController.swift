@@ -55,7 +55,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         
         self.infos = [("Number of Cards", "\(stack.cards.count)"),
             ("Number of Backgrounds", "\(stack.backgrounds.count)"),
-            ("Resources", "\(hyperCardFile.resources != nil ? "yes (\(hyperCardFile.resources!.resources.count))" : "no")"),
+            ("Resource Fork", "\(hyperCardFile.resources != nil ? "yes (\(hyperCardFile.resources!.resources.count) resources)" : "no")"),
             ("Password", "\(stack.passwordHash != nil ? "yes" : "no")"),
             ("User Level", "\(stack.userLevel.rawValue) (\(stack.userLevel))"),
             ("Can't Abort", "\(stack.cantAbort ? "yes" : "no")"),
