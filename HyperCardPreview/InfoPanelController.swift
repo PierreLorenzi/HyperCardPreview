@@ -81,7 +81,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Can't Modify", "\(stack.cantModify ? "yes" : "no")"),
             ("Can't Peek", "\(stack.cantPeek ? "yes" : "no")"),
             ("Private Access", "\(stack.privateAccess ? "yes" : "no")"),
-            ("Stack Format", (stack.fileVersion == .v1) ? "Version 1.x.x" : "Version 2.x.x"),
+            ("Stack Format", (stack.fileVersion == .v1) ? "version 1.x.x" : "version 2.x.x"),
             ("Version when created", "\(versionAtCreation)"),
             ("Version when last edited", "\(version)"),
             ("Size", "\(stack.size.width) x \(stack.size.height)")]
