@@ -10,12 +10,25 @@ import AppKit
 import HyperCardCommon
 
 
-class InfoPanelController: NSWindowController {
+class InfoPanelController: NSWindowController, NSTableViewDataSource {
     
-    @IBOutlet weak var infoView: NSTextView!
+    private var infos: [(String, String)] = []
+    
+    @IBOutlet weak var infoTable: NSTableView!
     @IBOutlet weak var contentView: NSTextView!
     @IBOutlet weak var scriptView: NSTextView!
     @IBOutlet weak var tabView: NSTabView!
+    
+    private static let textStyleNames: [(KeyPath<TextStyle,Bool>,String)] = [
+        (\TextStyle.bold, "bold"),
+        (\TextStyle.italic, "italic"),
+        (\TextStyle.underline, "underline"),
+        (\TextStyle.outline, "outline"),
+        (\TextStyle.shadow, "shadow"),
+        (\TextStyle.condense, "condense"),
+        (\TextStyle.extend, "extend"),
+        (\TextStyle.group, "group"),
+    ]
     
     func setup() {
         
@@ -40,19 +53,21 @@ class InfoPanelController: NSWindowController {
         let versionAtCreation: String = stack.versionAtCreation?.description ?? "unknown"
         let version: String = stack.versionAtLastModification?.description ?? "unknown"
         
-        infoView.string = ["Number of Cards: \(stack.cards.count)",
-            "Number of Backgrounds: \(stack.backgrounds.count)",
-            "Resources: \(hyperCardFile.resources != nil)\n",
-            "Password: \(stack.passwordHash != nil)",
-            "User Level: \(stack.userLevel.rawValue)",
-            "Can't Abort: \(stack.cantAbort)",
-            "Can't Delete: \(stack.cantDelete)",
-            "Can't Modify: \(stack.cantModify)",
-            "Can't Peek: \(stack.cantPeek)",
-            "Private Access: \(stack.privateAccess)\n",
-            "HyperCard Version at creation: \(versionAtCreation)",
-            "HyperCard Version at last edition: \(version)\n",
-            "Size: \(stack.size.width) x \(stack.size.height)"].joined(separator: "\n")
+        self.infos = [("Number of Cards", "\(stack.cards.count)"),
+            ("Number of Backgrounds", "\(stack.backgrounds.count)"),
+            ("Resources", "\(hyperCardFile.resources != nil ? "yes (\(hyperCardFile.resources!.resources.count))" : "no")"),
+            ("Password", "\(stack.passwordHash != nil ? "yes" : "no")"),
+            ("User Level", "\(stack.userLevel.rawValue) (\(stack.userLevel))"),
+            ("Can't Abort", "\(stack.cantAbort ? "yes" : "no")"),
+            ("Can't Delete", "\(stack.cantDelete ? "yes" : "no")"),
+            ("Can't Modify", "\(stack.cantModify ? "yes" : "no")"),
+            ("Can't Peek", "\(stack.cantPeek ? "yes" : "no")"),
+            ("Private Access", "\(stack.privateAccess ? "yes" : "no")"),
+            ("HyperCard Version at creation", "\(versionAtCreation)"),
+            ("HyperCard Version at last edition", "\(version)"),
+            ("Size", "\(stack.size.width) x \(stack.size.height)")]
+        
+        self.infoTable.reloadData()
     }
     
     func displayBackground(_ background: Background) {
@@ -60,11 +75,13 @@ class InfoPanelController: NSWindowController {
         displayScript(background.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
-        infoView.string = ["Name: \"\(background.name)\"",
-            "Number of parts: \(background.parts.count)\n",
-            "Show Pict: \(background.showPict)\n",
-            "Don't Search: \(background.dontSearch)",
-            "Can't Delete: \(background.cantDelete)"].joined(separator: "\n")
+        self.infos = [("Name", "\"\(background.name)\""),
+            ("Number of parts", "\(background.parts.count)"),
+            ("Show Pict", "\(background.showPict ? "yes" : "no")"),
+            ("Don't Search", "\(background.dontSearch ? "yes" : "no")"),
+            ("Can't Delete", "\(background.cantDelete ? "yes" : "no")")]
+        
+        self.infoTable.reloadData()
     }
     
     func displayCard(_ card: Card) {
@@ -72,50 +89,91 @@ class InfoPanelController: NSWindowController {
         displayScript(card.script)
         tabView.removeTabViewItem(tabView.tabViewItem(at: 1))
         
-        infoView.string = ["Name: \"\(card.name)\"",
-            "Number of parts: \(card.parts.count)\n",
-            "Marked: \(card.marked)",
-            "Show Pict: \(card.showPict)\n",
-            "Don't Search: \(card.dontSearch)",
-            "Can't Delete: \(card.cantDelete)"].joined(separator: "\n")
+        self.infos = [("Name", "\"\(card.name)\""),
+            ("Number of parts", "\(card.parts.count)"),
+            ("Marked", "\(card.marked ? "yes" : "no")"),
+            ("Show Pict", "\(card.showPict ? "yes" : "no")"),
+            ("Don't Search", "\(card.dontSearch)"),
+            ("Can't Delete", "\(card.cantDelete ? "yes" : "no")")]
+        
+        self.infoTable.reloadData()
     }
     
-    func displayButton(_ button: Button, withContent content: HString) {
+    func displayButton(_ button: Button, withContent content: HString, stack: Stack) {
         self.window!.title = "Button ID \(button.identifier)"
         displayScript(button.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
-        infoView.string = ["Name: \"\(button.name)\"",
-            "Style: \(button.style)\n",
-            "Visible: \(button.visible)",
-            "Enabled: \(button.enabled)",
-            "Hilite: \(button.hilite)",
-            "Auto Hilite: \(button.autoHilite)",
-            "Shared Hilite: \(button.sharedHilite)",
-            "Show Name: \(button.showName)\n",
-            "Family: \(button.family)\n",
-            "Title Width: \(button.titleWidth)"].joined(separator: "\n")
+        let fontName: String = stack.fontNameReferences.first(where: { $0.identifier == button.textFontIdentifier })?.name.description ?? ""
+        
+        self.infos = [("Name", "\"\(button.name)\""),
+            ("Style", "\(button.style)"),
+            ("Rectangle", "\(button.rectangle.left),\(button.rectangle.top),\(button.rectangle.right),\(button.rectangle.bottom)"),
+            ("Visible", "\(button.visible ? "yes" : "no")"),
+            ("Show Name", "\(button.showName ? "yes" : "no")"),
+            ("Enabled", "\(button.enabled ? "yes" : "no")"),
+            ("Hilite", "\(button.hilite ? "yes" : "no")"),
+            ("Auto Hilite", "\(button.autoHilite ? "yes" : "no")"),
+            ("Shared Hilite", "\(button.sharedHilite ? "yes" : "no")"),
+            ("Icon ID", "\(button.iconIdentifier)"),
+            ("Family", "\(button.family)"),
+            ("Title Width", "\(button.titleWidth)"),
+            ("Text Font", fontName),
+            ("Text Size", "\(button.textFontSize)"),
+            ("Text Style", "\(self.describeTextStyle(button.textStyle))"),
+            ("Text Alignment", "\(button.textAlign)")]
+        
+        self.infoTable.reloadData()
     }
     
-    func displayField(_ field: Field, withContent content: HString) {
+    func describeTextStyle(_ textStyle: TextStyle) -> String {
+        
+        var string = ""
+        
+        for textStyleName in InfoPanelController.textStyleNames {
+            
+            if textStyle[keyPath: textStyleName.0] {
+                if string.isEmpty {
+                    string = textStyleName.1
+                }
+                else {
+                    string += ", \(textStyleName.1)"
+                }
+            }
+        }
+        if string.isEmpty {
+            return "plain"
+        }
+        return string
+    }
+    
+    func displayField(_ field: Field, withContent content: HString, stack: Stack) {
         self.window!.title = "Field ID \(field.identifier)"
         displayScript(field.script)
         contentView.string = content.description.replacingOccurrences(of: "\r", with: "\n")
         
-        infoView.string = ["Name: \"\(field.name)\"",
-            "Style: \(field.style)\n",
-            "Visible: \(field.visible)",
-            "Lock Text: \(field.lockText)",
-            "Auto Tab: \(field.autoTab)",
-            "Fixed Line Height: \(field.fixedLineHeight)",
-            "Shared Text: \(field.sharedText)",
-            "Don't Search: \(field.dontSearch)",
-            "Don't Wrap: \(field.dontWrap)",
-            "Multiple Lines: \(field.multipleLines)",
-            "Wide Margins: \(field.wideMargins)",
-            "Show Lines: \(field.showLines)",
-            "Auto Select: \(field.autoSelect)"].joined(separator: "\n")
+        let fontName: String = stack.fontNameReferences.first(where: { $0.identifier == field.textFontIdentifier })?.name.description ?? ""
         
+        self.infos = [("Name", "\"\(field.name)\""),
+            ("Style", "\(field.style)"),
+            ("Rectangle", "\(field.rectangle.left),\(field.rectangle.top),\(field.rectangle.right),\(field.rectangle.bottom)"),
+            ("Visible", "\(field.visible ? "yes" : "no")"),
+            ("Lock Text", "\(field.lockText ? "yes" : "no")"),
+            ("Auto Tab", "\(field.autoTab ? "yes" : "no")"),
+            ("Fixed Line Height", "\(field.fixedLineHeight ? "yes" : "no")"),
+            ("Shared Text", "\(field.sharedText ? "yes" : "no")"),
+            ("Don't Search", "\(field.dontSearch ? "yes" : "no")"),
+            ("Don't Wrap", "\(field.dontWrap ? "yes" : "no")"),
+            ("Multiple Lines", "\(field.multipleLines ? "yes" : "no")"),
+            ("Wide Margins", "\(field.wideMargins ? "yes" : "no")"),
+            ("Show Lines", "\(field.showLines ? "yes" : "no")"),
+            ("Auto Select", "\(field.autoSelect ? "yes" : "no")"),
+            ("Text Font", fontName),
+            ("Text Size", "\(field.textFontSize)"),
+            ("Text Style", "\(self.describeTextStyle(field.textStyle))"),
+            ("Text Alignment", "\(field.textAlign)")]
+        
+        self.infoTable.reloadData()
     }
     
     func displayScript(_ script: HString) {
@@ -293,6 +351,21 @@ class InfoPanelController: NSWindowController {
         }
         
         return HString(data: indentedData)
+    }
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return self.infos.count
+    }
+    
+    func tableView(_ tableView: NSTableView, objectValueFor tableColumn: NSTableColumn?, row: Int) -> Any? {
+        
+        let info = self.infos[row]
+        if tableColumn?.identifier.rawValue == "name" {
+            return info.0
+        }
+        else {
+            return info.1
+        }
     }
     
 }

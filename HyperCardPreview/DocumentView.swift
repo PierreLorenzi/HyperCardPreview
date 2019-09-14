@@ -466,9 +466,9 @@ class DocumentView: NSView, NSMenuDelegate, NSUserInterfaceValidations {
         
         switch part.part {
         case .field(let field):
-            document.displayInfo().displayField(field, withContent: content)
+            document.displayInfo().displayField(field, withContent: content, stack: self.document.browser.stack)
         case .button(let button):
-            document.displayInfo().displayButton(button, withContent: content)
+            document.displayInfo().displayButton(button, withContent: content, stack: self.document.browser.stack)
         }
         
     }
