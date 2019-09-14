@@ -32,6 +32,21 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         (\TextStyle.group, "group"),
     ]
     
+    private static let partStyleNames: [PartStyle: String] = [
+        PartStyle.transparent: "transparent",
+        PartStyle.opaque: "opaque",
+        PartStyle.rectangle: "rectangle",
+        PartStyle.shadow: "shadow",
+        PartStyle.scrolling: "scrolling",
+        PartStyle.checkBox: "check box",
+        PartStyle.radio: "radio",
+        PartStyle.standard: "standard",
+        PartStyle.`default`: "default",
+        PartStyle.oval: "oval",
+        PartStyle.popup: "pop-up",
+        PartStyle.roundRect: "round rect",
+    ]
+    
     func setup() {
         
         /* Don't wrap in script */
@@ -47,7 +62,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
     }
     
     func displayStack(_ hyperCardFile: HyperCardFile) {
-        self.window!.title = "Stack Info"
+        self.window!.title = "Stack"
         let stack = hyperCardFile.stack
         displayScript(stack.script)
         self.deleteContentTab()
@@ -66,8 +81,9 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Can't Modify", "\(stack.cantModify ? "yes" : "no")"),
             ("Can't Peek", "\(stack.cantPeek ? "yes" : "no")"),
             ("Private Access", "\(stack.privateAccess ? "yes" : "no")"),
-            ("HyperCard Version at creation", "\(versionAtCreation)"),
-            ("HyperCard Version at last edition", "\(version)"),
+            ("Stack Format", (stack.fileVersion == .v1) ? "Version 1.x.x" : "Version 2.x.x"),
+            ("Version when created", "\(versionAtCreation)"),
+            ("Version when last edited", "\(version)"),
             ("Size", "\(stack.size.width) x \(stack.size.height)")]
         
         self.infoTable.reloadData()
@@ -126,7 +142,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Number of parts", "\(card.parts.count)"),
             ("Marked", "\(card.marked ? "yes" : "no")"),
             ("Show Pict", "\(card.showPict ? "yes" : "no")"),
-            ("Don't Search", "\(card.dontSearch)"),
+            ("Don't Search", "\(card.dontSearch ? "yes" : "no")"),
             ("Can't Delete", "\(card.cantDelete ? "yes" : "no")")]
         
         self.infoTable.reloadData()
@@ -158,7 +174,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Number", "\(number)"),
             ("Part Number", "\(partNumber)"),
             ("ID", "\(button.identifier)"),
-            ("Style", "\(button.style)"),
+            ("Style", "\(InfoPanelController.partStyleNames[button.style]!)"),
             ("Rectangle", "\(button.rectangle.left),\(button.rectangle.top),\(button.rectangle.right),\(button.rectangle.bottom)"),
             ("Visible", "\(button.visible ? "yes" : "no")"),
             ("Show Name", "\(button.showName ? "yes" : "no")"),
@@ -287,7 +303,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Number", "\(number)"),
             ("Part Number", "\(partNumber)"),
             ("ID", "\(field.identifier)"),
-            ("Style", "\(field.style)"),
+            ("Style", "\(InfoPanelController.partStyleNames[field.style]!)"),
             ("Rectangle", "\(field.rectangle.left),\(field.rectangle.top),\(field.rectangle.right),\(field.rectangle.bottom)"),
             ("Visible", "\(field.visible ? "yes" : "no")"),
             ("Lock Text", "\(field.lockText ? "yes" : "no")"),

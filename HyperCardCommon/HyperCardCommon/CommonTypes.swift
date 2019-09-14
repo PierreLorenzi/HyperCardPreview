@@ -438,7 +438,7 @@ public enum PartType {
 /// Visual style of a part
 ///<p>
 /// The styles of buttons and fields are all mixed
-public enum PartStyle {
+public enum PartStyle: Equatable, Hashable {
     
     /// The part has no frame, only a title
     ///<p>
