@@ -51,7 +51,7 @@
                                                         <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
                                                         <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                         <tableColumns>
-                                                            <tableColumn identifier="name" width="169" minWidth="40" maxWidth="1000" id="SVI-KB-Ghl">
+                                                            <tableColumn identifier="name" editable="NO" width="169" minWidth="40" maxWidth="1000" id="SVI-KB-Ghl">
                                                                 <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border">
                                                                     <font key="font" metaFont="smallSystem"/>
                                                                     <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -105,7 +105,7 @@
                                             <rect key="frame" x="-3" y="-3" width="429" height="354"/>
                                             <clipView key="contentView" drawsBackground="NO" id="DlA-Jg-60u">
                                                 <rect key="frame" x="1" y="1" width="427" height="352"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" baseWritingDirection="leftToRight" findStyle="bar" allowsCharacterPickerTouchBarItem="NO" allowsNonContiguousLayout="YES" textCompletion="NO" id="La3-jY-OE9">
                                                         <rect key="frame" x="0.0" y="0.0" width="427" height="352"/>
@@ -170,7 +170,7 @@
                                             <rect key="frame" x="-3" y="-3" width="429" height="354"/>
                                             <clipView key="contentView" drawsBackground="NO" id="Z9n-V3-miD">
                                                 <rect key="frame" x="1" y="1" width="427" height="352"/>
-                                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                <autoresizingMask key="autoresizingMask"/>
                                                 <subviews>
                                                     <textView editable="NO" importsGraphics="NO" richText="NO" verticallyResizable="YES" baseWritingDirection="leftToRight" findStyle="panel" allowsCharacterPickerTouchBarItem="NO" allowsNonContiguousLayout="YES" textCompletion="NO" id="beH-qE-m4y">
                                                         <rect key="frame" x="0.0" y="0.0" width="427" height="352"/>
