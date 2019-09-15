@@ -703,7 +703,7 @@ public class FieldView: View, MouseResponder {
         let scrollRange = self.scrollRange
         
         /* Build a timer to continuously scroll the field */
-        let timer = Timer(timeInterval: timeInterval, repeats: true, block: {
+        let timer = Timer(fire: Date(), interval: timeInterval, repeats: true, block: {
             [unowned self](timer: Timer) in
             
             /* Compute the new scroll */
