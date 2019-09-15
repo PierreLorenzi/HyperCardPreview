@@ -109,6 +109,9 @@ public class ButtonView: View, MouseResponder {
     
     private let button: Button
     
+    private var hilite: Bool {
+        return hiliteComputation.value
+    }
     private let hiliteComputation: Computation<Bool>
     
     /// the font for the texts
@@ -325,13 +328,13 @@ public class ButtonView: View, MouseResponder {
         
         let transparent = button.style == .transparent || button.style == .oval
         
-        if hiliteComputation.value && transparent {
+        if self.hilite && transparent {
             return Drawing.XorComposition
         }
         
         /* Special case: hilited
          Even if the button is disabled, the text must be drawn in white on the gray background */
-        if hiliteComputation.value {
+        if self.hilite {
             return Drawing.MaskComposition
         }
         
@@ -343,12 +346,12 @@ public class ButtonView: View, MouseResponder {
     private func findBackgroundComposition() -> ImageComposition {
         
         /* Special case: disabled */
-        if !button.enabled && hiliteComputation.value {
+        if !button.enabled && self.hilite {
             return disabledComposition
         }
         
         /* Second special case: hilited */
-        if hiliteComputation.value {
+        if self.hilite {
             return Drawing.DirectComposition
         }
         
@@ -365,7 +368,7 @@ public class ButtonView: View, MouseResponder {
         switch button.style {
         case .transparent:
             if icon == nil {
-                if hiliteComputation.value {
+                if self.hilite {
                     drawing.drawRectangle(rectangle, composition: Drawing.XorComposition)
                 }
                 if !button.enabled {
@@ -388,7 +391,7 @@ public class ButtonView: View, MouseResponder {
             let borderComposition = button.enabled ? Drawing.DirectComposition : disabledComposition
             drawCornerImage(defaultCornerImage, rectangle: rectangle, drawing: drawing, borderThickness: defaultBorderThickness, borderComposition: borderComposition, composition:Drawing.MaskComposition)
         case .oval:
-            if hiliteComputation.value && icon == nil && rectangle.width > 0 && rectangle.height > 0 {
+            if self.hilite && icon == nil && rectangle.width > 0 && rectangle.height > 0 {
                 /* draw background oval */
                 let radiusX2 = Double(rectangle.width * rectangle.width) / 4
                 let factor2 = Double(rectangle.width * rectangle.width) / Double(rectangle.height * rectangle.height)
@@ -420,7 +423,7 @@ public class ButtonView: View, MouseResponder {
         let transparent = button.style == .transparent || button.style == .oval
         
         if transparent {
-            if hiliteComputation.value {
+            if self.hilite {
                 return (button.enabled ? Drawing.MaskComposition : disabledComposition, Drawing.DirectComposition)
             }
             else {
@@ -499,7 +502,7 @@ public class ButtonView: View, MouseResponder {
         /* Draw the image */
         let imagePosition = Point(x: rectangle.x + 3, y: rectangle.y + rectangle.height / 2 - frameImage.height / 2)
         drawing.drawMaskedImage(frameImage, position: imagePosition)
-        if hiliteComputation.value {
+        if self.hilite {
             let composition = (button.style == .radio && !button.enabled) ? disabledComposition : Drawing.DirectComposition
             drawing.drawMaskedImage(hiliteImage, position: imagePosition, imageComposition: composition)
         }
