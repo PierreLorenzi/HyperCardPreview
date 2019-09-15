@@ -107,10 +107,15 @@ private let grays = [ Image.Integer(truncatingIfNeeded: gray1), Image.Integer(tr
 /// The view of a button.
 public class ButtonView: View, MouseResponder {
     
-    private let button: Button
+    public let button: Button
     
-    private var hilite: Bool {
-        return hiliteComputation.value
+    public var hilite: Bool {
+        get {
+            return hiliteComputation.value
+        }
+        set {
+            hiliteComputation.value = newValue
+        }
     }
     private let hiliteComputation: Computation<Bool>
     
@@ -138,10 +143,14 @@ public class ButtonView: View, MouseResponder {
     }
     private let condensedFontComputation: Computation<BitmapFont>
     
-    public init(button: Button, hiliteComputation: Computation<Bool>, fontManager: FontManager, resources: ResourceSystem) {
+    private var clicked = false
+    private let familyCallback: (ButtonView) -> ()
+    
+    public init(button: Button, hiliteComputation: Computation<Bool>, fontManager: FontManager, resources: ResourceSystem, familyCallback: @escaping (ButtonView) -> ()) {
         
         self.button = button
         self.hiliteComputation = hiliteComputation
+        self.familyCallback = familyCallback
         
         /* font */
         fontComputation = Computation<BitmapFont> {
@@ -495,13 +504,16 @@ public class ButtonView: View, MouseResponder {
     private func drawCheckBoxButton(in drawing: Drawing) {
         
         /* Get the interface elements to draw the part */
-        let (frameImage, hiliteImage, _) = findCheckBoxImages()
+        let (frameImage, hiliteImage, clickedImage) = findCheckBoxImages()
         
         let rectangle = button.rectangle
         
         /* Draw the image */
         let imagePosition = Point(x: rectangle.x + 3, y: rectangle.y + rectangle.height / 2 - frameImage.height / 2)
         drawing.drawMaskedImage(frameImage, position: imagePosition)
+        if self.clicked {
+            drawing.drawMaskedImage(clickedImage, position: imagePosition)
+        }
         if self.hilite {
             let composition = (button.style == .radio && !button.enabled) ? disabledComposition : Drawing.DirectComposition
             drawing.drawMaskedImage(hiliteImage, position: imagePosition, imageComposition: composition)
@@ -647,6 +659,47 @@ public class ButtonView: View, MouseResponder {
     
     public func respondToMouseEvent(_ mouseEvent: MouseEvent, at position: Point) {
         
+        guard button.enabled else {
+            return
+        }
+        
+        switch mouseEvent {
+        case .mouseDown:
+            self.handleAutoHilite(clicked: true)
+            
+        case .mouseUp:
+            self.handleAutoHilite(clicked: false)
+            
+        default:
+            break
+        }
+    }
+    
+    private func handleAutoHilite(clicked: Bool) {
+        
+        guard button.autoHilite || button.family > 0 else {
+            return
+        }
+        
+        if !clicked && button.family > 0 {
+            self.familyCallback(self)
+        }
+        
+        switch button.style {
+            
+        case .transparent, .opaque, .rectangle, .shadow, .roundRect, .standard, .`default`, .oval:
+            self.hilite = clicked || button.family > 0
+            
+        case .checkBox, .radio:
+            self.clicked = clicked
+            self.refreshNeed = .refresh
+            if !clicked {
+                self.hilite = !self.hilite || button.family > 0
+            }
+            
+        default:
+            break
+        }
     }
     
     /// Little hack to allow the Cocoa view to display a contextual menu for us

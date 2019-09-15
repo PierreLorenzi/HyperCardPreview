@@ -19,7 +19,10 @@ public class Computation<T> {
     
     public var value: T {
         get { return valueProperty.value }
-        set { self.modify(newValue) }
+        set {
+            self.modify(newValue)
+            self.valueProperty.value = newValue
+        }
     }
     public var valueProperty: Property<T>
     

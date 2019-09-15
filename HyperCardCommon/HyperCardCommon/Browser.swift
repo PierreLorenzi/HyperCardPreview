@@ -8,7 +8,7 @@
 
 
 
-private let trueHiliteContent = "1"
+private let trueHiliteContent: HString = "1"
 
 
 /// Browses through a stack: maintains a current card and current background and draws them.
@@ -584,9 +584,14 @@ public class Browser: MouseResponder {
     
     private func buildButtonView(for button: Button) -> View {
         
-        let hiliteComputation = retrieveHilite(of: button)
+        /* Handle families */
+        let familyCallback = {
+            [unowned self] (view: ButtonView) in
+            self.buttonViewDidSetHilite(view)
+        }
         
-        return ButtonView(button: button, hiliteComputation: hiliteComputation, fontManager: fontManager, resources: resources)
+        let hiliteComputation = retrieveHilite(of: button)
+        return ButtonView(button: button, hiliteComputation: hiliteComputation, fontManager: fontManager, resources: resources, familyCallback: familyCallback)
     }
     
     private func retrieveHilite(of button: Button) -> Computation<Bool> {
@@ -594,42 +599,95 @@ public class Browser: MouseResponder {
         /* Special case: bg buttons with not shared hilite */
         if !button.sharedHilite && isPartInBackground(button) {
             
-            let computation = Computation<Bool> {
-                [unowned self, unowned button] () -> Bool in
-            
-                /* If we're displaying the background, do not display the card contents */
-                if self.displayOnlyBackground {
-                    return false
-                }
-                
-                /* Get the content of the button in the card */
-                guard let content = self.findContentInCurrentCard(of: button) else {
-                    return false
-                }
-                
-                /* If the card content is equal to "1", the button is hilited */
-                guard case PartContent.string(let textContent) = content, textContent == trueHiliteContent  else {
-                    return false
-                }
-            
-                return true
-            }
-            
-            /* Dependencies */
-            computation.dependsOn(self.cardIndexProperty)
-            computation.dependsOn(self.displayOnlyBackgroundProperty)
-            
+            let computation = self.buildBackgroundHiliteComputation(for: button)
             return computation
         }
         
         /* Usual case: just return hilite */
-        let computation = Computation<Bool> {
+        let computation = self.buildHiliteComputation(for: button)
+        return computation
+    }
+    
+    private func buildHiliteComputation(for button: Button) -> Computation<Bool> {
+        
+        let compute = {
             [unowned button] () -> Bool in
             return button.hilite
         }
+        let modify = {
+            [unowned button] (hilite: Bool) in
+            button.hilite = hilite
+        }
+        let computation = Computation<Bool>(compute: compute, modify: modify)
         computation.dependsOn(button.hiliteProperty)
-        
         return computation
+    }
+    
+    private func buildBackgroundHiliteComputation(for button: Button) -> Computation<Bool> {
+        
+        let compute = {
+            [unowned self, unowned button] () -> Bool in
+            
+            /* If we're displaying the background, do not display the card contents */
+            if self.displayOnlyBackground {
+                return false
+            }
+            
+            /* Get the content of the button in the card */
+            guard let content = self.findContentInCurrentCard(of: button) else {
+                return false
+            }
+            
+            /* If the card content is equal to "1", the button is hilited */
+            guard case PartContent.string(let textContent) = content, textContent == trueHiliteContent  else {
+                return false
+            }
+            
+            return true
+        }
+        let modify = {
+            [unowned self, unowned button] (hilite: Bool) -> () in
+            
+            /* Remove the current content */
+            self.currentCard.backgroundPartContents.removeAll(where: { $0.partIdentifier == button.identifier })
+            
+            /* If hilite, add the content to tell it */
+            if hilite {
+                let newContent = Card.BackgroundPartContent(partIdentifier: button.identifier, partContent: PartContent.string(trueHiliteContent))
+                self.currentCard.backgroundPartContents.append(newContent)
+            }
+        }
+        let computation = Computation<Bool>(compute: compute, modify: modify)
+        computation.dependsOn(self.cardIndexProperty)
+        computation.dependsOn(self.displayOnlyBackgroundProperty)
+        return computation
+    }
+    
+    private func buttonViewDidSetHilite(_ buttonView: ButtonView) {
+        
+        guard self.views.contains(where: { $0 === buttonView }) else {
+            return
+        }
+        guard buttonView.button.family > 0 else {
+            return
+        }
+        
+        let backgroundViewCount = 1 + currentBackground.parts.count + 1
+        let range: Range<Int> = self.isPartInBackground(buttonView.button) ? 0..<backgroundViewCount : backgroundViewCount..<self.views.count
+        
+        for i in range {
+            let otherView = self.views[i]
+            guard otherView !== buttonView else {
+                continue
+            }
+            guard let otherButtonView = otherView as? ButtonView else {
+                continue
+            }
+            guard otherButtonView.button.family == buttonView.button.family else {
+                continue
+            }
+            otherButtonView.hilite = false
+        }
     }
     
     private func isPartInBackground(_ part: Part) -> Bool {
