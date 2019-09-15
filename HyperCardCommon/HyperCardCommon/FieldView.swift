@@ -27,7 +27,7 @@ private let fieldLineComposition: ImageComposition = { (a: inout Image.Integer, 
     
 }
 
-private let scrollWidth = 17
+let scrollWidth = 17
 private let scrollButtonHeight = 16
 private let scrollKnobHeight = 16
 
@@ -101,10 +101,6 @@ public class FieldView: View, MouseResponder {
     private var scrollingDirection: Direction? = nil
     
     private var draggingState = DraggingState.none
-    
-    var cursorRectangle: Rectangle {
-        return FieldView.computeContentRectangle(of: self.field)
-    }
     
     public init(field: Field, contentComputation: Computation<PartContent>, fontManager: FontManager) {
         

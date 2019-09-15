@@ -175,17 +175,78 @@ public class Browser: MouseResponder {
         
         var rectangles: [Rectangle] = []
         
+        /* Function to loop on the cursor rectangles and break them so they
+         surround the argument rectangle */
+        func excludeRectangle(_ rectangle: Rectangle) {
+            
+            var i = rectangles.count - 1
+            while i >= 0 {
+                if let subRectangles = self.buildComplementSubRectangles(of: rectangles[i], around: rectangle) {
+                    rectangles.replaceSubrange(i..<(i+1), with: subRectangles)
+                }
+                i -= 1
+            }
+        }
+        
         for view in self.views {
             
-            if let fieldView = view as? FieldView, view.rectangle != nil {
-                rectangles.append(fieldView.cursorRectangle)
+            /* If the view is a field, include it in the cursor rectangles */
+            if view is FieldView, let rectangle = view.rectangle {
+                rectangles.append(rectangle)
             }
+            
+            /* If the view is a scrolling field, exclure the scroll from the cursor rectangles */
+            if let fieldView = view as? FieldView, fieldView.field.style == .scrolling, let wholeRectangle = view.rectangle {
+                let scrollRectangle = Rectangle(top: wholeRectangle.top, left: wholeRectangle.right - scrollWidth, bottom: wholeRectangle.bottom, right: wholeRectangle.right)
+                excludeRectangle(scrollRectangle)
+            }
+            
+            /* If the view is a button, exclude it from the cursor rectangles */
             if view is ButtonView, let rectangle = view.rectangle {
-               rectangles.removeAll(where: { $0.intersects(rectangle) })
+                excludeRectangle(rectangle)
             }
         }
         
         return rectangles
+    }
+    
+    private func buildComplementSubRectangles(of baseRectangle: Rectangle, around rectangle: Rectangle) -> [Rectangle]? {
+        
+        guard baseRectangle.intersects(rectangle) else {
+            return nil
+        }
+        
+        /* Build the four sub-rectangles around the rectangle */
+        var subRectangles: [Rectangle] = []
+        
+        /* Top */
+        let topSubRectangle = Rectangle(top: baseRectangle.top, left: baseRectangle.left, bottom: rectangle.top, right: baseRectangle.right)
+        if topSubRectangle.width > 0 && topSubRectangle.height > 0 {
+            subRectangles.append(topSubRectangle)
+        }
+        
+        /* Bottom */
+        let bottomSubRectangle = Rectangle(top: rectangle.bottom, left: baseRectangle.left, bottom: baseRectangle.bottom, right: baseRectangle.right)
+        if bottomSubRectangle.width > 0 && bottomSubRectangle.height > 0 {
+            subRectangles.append(bottomSubRectangle)
+        }
+        
+        let sideRectangleTop = max(rectangle.top, baseRectangle.top)
+        let sideRetangleBottom = min(rectangle.bottom, baseRectangle.bottom)
+        
+        /* Left */
+        let leftSubRectangle = Rectangle(top: sideRectangleTop, left: baseRectangle.left, bottom: sideRetangleBottom, right: rectangle.left)
+        if leftSubRectangle.width > 0 && leftSubRectangle.height > 0 {
+            subRectangles.append(leftSubRectangle)
+        }
+        
+        /* Right */
+        let rightSubRectangle = Rectangle(top: sideRectangleTop, left: rectangle.right, bottom: sideRetangleBottom, right: baseRectangle.right)
+        if rightSubRectangle.width > 0 && rightSubRectangle.height > 0 {
+            subRectangles.append(rightSubRectangle)
+        }
+        
+        return subRectangles
     }
     
     private func doesBackgroundHaveWhiteMask(_ background: Background) -> Bool {
@@ -229,9 +290,7 @@ public class Browser: MouseResponder {
         let index = self.views.firstIndex(where: { $0 === view })!
         self.views.remove(at: index)
         
-        if view is FieldView && view.rectangle != nil {
-            self.doCursorRectanglesChange = true
-        }
+        self.doCursorRectanglesChange = true
     }
     
     private func addRefreshNeed(under view: View) {
@@ -414,9 +473,7 @@ public class Browser: MouseResponder {
         self.views.append(view)
         self.addRefreshNeed(above: view)
         
-        if view is FieldView && view.rectangle != nil {
-            self.doCursorRectanglesChange = true
-        }
+        self.doCursorRectanglesChange = true
     }
     
     private func buildPartView(for part: LayerPart) -> View {
