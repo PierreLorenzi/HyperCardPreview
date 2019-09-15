@@ -406,6 +406,7 @@ public class Browser: MouseResponder {
             self.imageBuffer.drawImage(self.image, onlyRectangle: rectangle)
             
             /* Draw the colors */
+            imageBuffer.context.resetClip()
             imageBuffer.context.clip(to: cgRect)
             AddColorPainter.paintAddColor(ofFile: hyperCardFile, atCardIndex: cardIndex, excludeCardParts: self.displayOnlyBackground, onContext: imageBuffer.context)
         }
