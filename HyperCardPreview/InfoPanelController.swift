@@ -73,6 +73,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
         
         self.infos = [("Number of Cards", "\(stack.cards.count)"),
             ("Number of Backgrounds", "\(stack.backgrounds.count)"),
+            ("Size", "\(stack.size.width) x \(stack.size.height)"),
             ("Resource Fork", "\(hyperCardFile.resources != nil ? "yes (\(hyperCardFile.resources!.resources.count) resources)" : "no")"),
             ("Password", "\(stack.passwordHash != nil ? "yes" : "no")"),
             ("User Level", "\(stack.userLevel.rawValue) (\(stack.userLevel))"),
@@ -83,8 +84,7 @@ class InfoPanelController: NSWindowController, NSTableViewDataSource {
             ("Private Access", "\(stack.privateAccess ? "yes" : "no")"),
             ("Stack Format", (stack.fileVersion == .v1) ? "version 1.x.x" : "version 2.x.x"),
             ("Version when created", "\(versionAtCreation)"),
-            ("Version when last edited", "\(version)"),
-            ("Size", "\(stack.size.width) x \(stack.size.height)")]
+            ("Version when last edited", "\(version)")]
         
         self.infoTable.reloadData()
     }
