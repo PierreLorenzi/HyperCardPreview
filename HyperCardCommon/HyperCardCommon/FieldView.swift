@@ -403,7 +403,7 @@ public class FieldView: View, MouseResponder {
         
         /* Optimization for scrolling fields: cache the text image */
         if self.field.style == .scrolling && field.scroll > 0 {
-            self.drawCachedText(in: drawing, textLayout: textLayout, textRectangle: textRectangle)
+            self.drawCachedText(in: drawing, textLayout: textLayout, contentRectangle: contentRectangle, textRectangle: textRectangle)
             return
         }
         
@@ -513,11 +513,14 @@ public class FieldView: View, MouseResponder {
         }
     }
     
-    private func drawCachedText(in drawing: Drawing, textLayout: TextLayout, textRectangle: Rectangle) {
+    private func drawCachedText(in drawing: Drawing, textLayout: TextLayout, contentRectangle: Rectangle, textRectangle: Rectangle) {
         
         /* Draw the text */
-        let rectangleToDraw = Rectangle(top: field.scroll, left: 0, bottom: min(textLayout.size.height, field.scroll + textLayout.size.height), right: textRectangle.width)
-        drawing.drawImage(self.wholeTextImage, position: Point(x: textRectangle.left, y: textRectangle.top), rectangleToDraw: rectangleToDraw, clipRectangle: textRectangle, composition: Drawing.DirectComposition)
+        let textTop = max(contentRectangle.y, textRectangle.y - field.scroll)
+        let upperMargin = textRectangle.top - contentRectangle.top
+        let rectangleToDrawRealTop = field.scroll - upperMargin
+        let rectangleToDraw = Rectangle(top: max(rectangleToDrawRealTop, 0), left: 0, bottom: min(textLayout.size.height, rectangleToDrawRealTop + contentRectangle.height), right: textRectangle.width)
+        drawing.drawImage(self.wholeTextImage, position: Point(x: textRectangle.left, y: textTop), rectangleToDraw: rectangleToDraw, clipRectangle: contentRectangle, composition: Drawing.DirectComposition)
     }
     
     public override var rectangle: Rectangle? {
