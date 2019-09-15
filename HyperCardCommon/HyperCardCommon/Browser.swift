@@ -229,7 +229,7 @@ public class Browser: MouseResponder {
         let index = self.views.firstIndex(where: { $0 === view })!
         self.views.remove(at: index)
         
-        if view is FieldView {
+        if view is FieldView && view.rectangle != nil {
             self.doCursorRectanglesChange = true
         }
     }
@@ -414,7 +414,7 @@ public class Browser: MouseResponder {
         self.views.append(view)
         self.addRefreshNeed(above: view)
         
-        if view is FieldView {
+        if view is FieldView && view.rectangle != nil {
             self.doCursorRectanglesChange = true
         }
     }
