@@ -41,6 +41,19 @@ Get Field Info: press command-option-shift (like in HyperCard), both fields and 
 
 Get Info of a Covered Button or Field: right-click somewhere on the card, the list of the buttons and fields at that location appears, from the frontmost to the outmost. That way you can get info about a button or field even if it is covered by the others.
 
+## Changes in version 1.4
+
+Several new features, that make the app more lively:
+- stack windows can be resized,
+- text can be searched in the stacks,
+- text fields can be selected and copied,
+- auto-hilite buttons react to click,
+- images of cards and backgrounds can be seen and copied from the info panel,
+- info panels are more complete,
+- compressed sound resources can be played.
+
+Besides, performance has been improved. I thank FFMpeg (Laszlo Torok and Francois Revol) for retro-engineering the compression algorithm used by Apple in the sound resources, I now handle MACE 3-to-1 and 6-to-1 compressions.
+
 ## Technical details
 
 **JSON Export**
@@ -74,20 +87,6 @@ That means that old APIs had to be partially re-coded: resource fork reading, re
 **HyperCardPreview signing**
 
 It seems that I can't have a developer ID without paying a fee to Apple. And I'm not ready to do it just for that little soft.
-
-## Changes in last version
-
-**Changes in v1.3.2**
-
-Bugs were corrected in the window of the resources.
-
-**Changes in v1.3.1**
-
-The window of the resources has been improved.
-
-A bug was corrected where the help didn't show up.
-
-Minor fixes in the UI.
 
 ## The future of the app
 
