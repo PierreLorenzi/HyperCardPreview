@@ -336,7 +336,9 @@ public extension Stack {
         }
         
         /* Check checksum */
-        guard checksum == expectedChecksum else {
+        /* In old versions of stacks (in 1.0.1 but already not in 1.2.5), the checksum is
+         absent */
+        guard checksum == expectedChecksum || (expectedChecksum == 0 && fileVersion == .v1) else {
             fatalError()
         }
         
@@ -369,7 +371,9 @@ public extension Stack {
             offset += cardReferenceSize
         }
         
-        guard checksum == expectedChecksum else {
+        /* In old versions of stacks (in 1.0.1 but already not in 1.2.5), the checksum is
+         absent */
+        guard checksum == expectedChecksum || (expectedChecksum == 0 && fileVersion == .v1) else {
             fatalError()
         }
         
