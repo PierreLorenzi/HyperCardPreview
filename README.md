@@ -1,6 +1,6 @@
 **[Screenshot](http://pierrelorenzi.fr/hypercard/screenshot.png)**
 
-**[Download v1.3.2](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.3.2/HyperCardPreview.app.zip)** (January 7, 2019)
+**[Download v1.4](https://github.com/PierreLorenzi/HyperCardPreview/releases/download/1.4/HyperCardPreview.app.zip)** (September 16, 2019)
 
 Mac OS 10.12 minimum
 
