@@ -85,7 +85,7 @@ Offset | Type | Content
 0x64 | [Version](#version) | HyperCard version at last compacting. If zero, it is unknown.
 0x68 | [Version](#version) | HyperCard version at last modification since last compacting. If zero, it is unknown.
 0x6C | [Version](#version) | HyperCard version at last modification. If zero, it is unknown.
-0x70 | UInt32 | Checksum of the Stack Block (see [the procedure to check it](#check-the-check-sum-of-the-stack-block))
+0x70 | UInt32 | Checksum of the Stack Block (see [the procedure to check it](#check-the-checksum-of-the-stack-block))
 0x74 | UInt32 | Number of marked cards
 0x78 | [Rectangle](#rectangle) | Rectangle of the card window
 0x80 | [Rectangle](#rectangle) | Rectangle of the screen when the card window was measured
