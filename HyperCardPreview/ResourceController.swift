@@ -519,7 +519,7 @@ class ResourceController: NSWindowController, NSCollectionViewDataSource, NSColl
                     
                     let fileExtension = self.getFileExtensionForResource(resource)
                     let fileSuffix = (fileExtension != nil) ? ".\(fileExtension!)" : ""
-                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)\(fileSuffix)"
+                    let resourceFileName = "res-\(resource.type)-\(resource.identifier)-\(resource.name)\(fileSuffix)"
                     let resourceUrl = URL(fileURLWithPath: resourceFileName, relativeTo: url)
                     
                     
