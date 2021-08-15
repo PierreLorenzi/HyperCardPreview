@@ -98,6 +98,8 @@ But if you have bugs with some of your stacks, please inform me.
 
 ## Can HyperCard be ported to Mac OS X?
 
-If you have that in mind, check [Stacksmith](https://github.com/uliwitness/Stacksmith).
+If you have that in mind, check out [LiveCode](https://github.com/livecode/livecode) or [Stacksmith](https://github.com/uliwitness/Stacksmith).
 
 In my opinion, HyperCard might be re-invented, but with a big restriction on the use cases. HyperCard had too many of them and that’s why it was so difficult to explain when people asked what it did. For example, HyperCard had cards and backgrounds, intended for display of content (text, images, databases), which is now perfectly handled by websites.
+
+
